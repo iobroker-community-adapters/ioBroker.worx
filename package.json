@@ -1,0 +1,44 @@
+{
+  "name": "iobroker.worx",
+  "version": "0.0.1",
+  "description": "Control your Worx Landroid",
+  "keywords": [
+    "ioBroker",
+    "Worx",
+    "Landroid",
+    "Smart Home",
+    "home automation"
+  ],
+  "homepage": "https://github.com/MeisterTR/ioBroker.worx",
+  "bugs": {
+    "url": "https://github.com/MeisterTR/ioBroker.worx/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "MeisterTR",
+    "email": "meistertr.smarthome@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "MeisterTR",
+      "email": "meistertr.smarthome@gmail.com"
+    }
+  ],
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MeisterTR/ioBroker.worx.git"
+  },
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha --exit"
+  },
+  "dependencies": {
+    "mqtt": "^2.13.0",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "mocha": "^4.1.0",
+    "chai": "^4.1.2"
+  }
+}
