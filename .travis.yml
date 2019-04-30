@@ -5,7 +5,6 @@ os:
 
 language: node_js
 node_js:
-  - '6'
   - '8'
   - '10'
 
@@ -25,8 +24,8 @@ before_script:
   - export NPMVERSION=$(echo "$($(which npm) -v)"|cut -c1)
   - 'if [[ $NPMVERSION == 5 ]]; then npm install -g npm; fi'
   - npm -v
-  - npm install winston@2.3.1
-  - 'npm install https://github.com/ioBroker/ioBroker.js-controller/tarball/master --production'
 script:
   - npm run test:package
-  - npm run test:iobroker
+  - npm run test:unit
+  - export DEBUG=testing:*
+  - npm run test:integration
