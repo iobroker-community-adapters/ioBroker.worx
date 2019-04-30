@@ -1,15 +1,15 @@
-/* jshint -W097 */// jshint strict:false
-/*jslint node: true */
-var expect = require('chai').expect;
-var setup  = require(__dirname + '/lib/setup');
+'use strict';
 
-var objects = null;
-var states  = null;
-var onStateChanged = null;
-var onObjectChanged = null;
-var sendToID = 1;
+const expect = require('chai').expect;
+const setup  = require('./lib/setup');
 
-var adapterShortName = setup.adapterName.substring(setup.adapterName.indexOf('.')+1);
+let objects = null;
+let states  = null;
+let onStateChanged = null;
+// let onObjectChanged = null;
+let sendToID = 1;
+
+const adapterShortName = setup.adapterName.substring(setup.adapterName.indexOf('.')+1);
 
 function checkConnectionOfAdapter(cb, counter) {
     counter = counter || 0;
@@ -78,7 +78,7 @@ describe('Test ' + adapterShortName + ' adapter', function() {
         this.timeout(600000); // because of first install from npm
 
         setup.setupController(function () {
-            var config = setup.getAdapterConfig();
+            const config = setup.getAdapterConfig();
             // enable adapter
             config.common.enabled  = true;
             config.common.loglevel = 'debug';
@@ -87,14 +87,14 @@ describe('Test ' + adapterShortName + ' adapter', function() {
 
             setup.setAdapterConfig(config.common, config.native);
 
-            setup.startController(true, function(id, obj) {}, function (id, state) {
-                    if (onStateChanged) onStateChanged(id, state);
-                },
-                function (_objects, _states) {
-                    objects = _objects;
-                    states  = _states;
-                    _done();
-                });
+            setup.startController(true, (id, obj) => { }, function (id, state) {
+                if (onStateChanged) onStateChanged(id, state);
+            },
+            function (_objects, _states) {
+                objects = _objects;
+                states  = _states;
+                _done();
+            });
         });
     });
 
@@ -107,18 +107,17 @@ describe('Test ' + adapterShortName + ' adapter', function() {
             if (res) console.log(res);
             expect(res).not.to.be.equal('Cannot check connection');
             objects.setObject('system.adapter.test.0', {
-                    common: {
+                common: {
 
-                    },
-                    type: 'instance'
                 },
-                function () {
-                    states.subscribeMessage('system.adapter.test.0');
-                    done();
-                });
+                type: 'instance'
+            },
+            function () {
+                states.subscribeMessage('system.adapter.test.0');
+                done();
+            });
         });
     });
-/**/
 
 /*
     PUT YOUR OWN TESTS HERE USING

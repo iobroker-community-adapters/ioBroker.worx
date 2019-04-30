@@ -1,456 +1,100 @@
 {
-  "common": {
-    "name": "Worx",
-    "version": "0.0.1",
-    "news": {
-      "2.5.5": {
-        "en": "Initinal relase",
-        "de": "Erste Version"
-      }
-
+    "common": {
+        "name": "worx",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "control your worx",
+        "titleLang": {
+            "en": "control your worx",
+            "de": "steuere deine worx",
+            "ru": "управляй своим червем",
+            "pt": "controle seu worx",
+            "nl": "controleer uw worx",
+            "fr": "contrôlez votre travail",
+            "it": "controlla il tuo worx",
+            "es": "controla tu mundo",
+            "pl": "kontroluj swój worx",
+            "zh-cn": "控制你的烦恼"
+        },
+        "desc": {
+            "en": "control via cloud and mqtt",
+            "de": "Steuerung über Cloud und Mqtt",
+            "ru": "управление через облако и mqtt",
+            "pt": "controle via cloud e mqtt",
+            "nl": "controle via cloud en mqtt",
+            "fr": "contrôle via cloud et mqtt",
+            "it": "controllo via cloud e mqtt",
+            "es": "control a través de la nube y mqtt",
+            "pl": "kontrola przez chmurę i mqtt",
+            "zh-cn": "通过云和mqtt控制"
+        },
+        "authors": [
+            "MeisterTR <meistertr.smarthome@gmail.com>"
+        ],
+        "keywords": [
+            "ioBroker",
+            "template",
+            "Smart Home",
+            "home automation"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "worx.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/MeisterTR/ioBroker.worx/master/admin/worx.png",
+        "readme": "https://github.com/MeisterTR/ioBroker.worx/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "garden",
+        "compact": true,
+        "materialize": true,
+        "dependencies": [
+            {
+                "admin": ">=3.0.0"
+            }
+        ]
     },
-    "title": "Worx cloud connect",
-    "titleLang": {
-      "en": "Control Worx mower over cloud",
-      "de": "Worx mower über die Cloud steuern",
-      "ru": "Управление  Worx mower над облаком",
-      "pt": "Controle Worx mower sobre nuvem",
-      "nl": "Bestuur Worx mower via cloud",
-      "fr": "Contrôler Worx mower sur le cloud",
-      "it": "Controlla Worx mower su cloud",
-      "es": "Controle Worx mower sobre la nube",
-      "pl": "Kontroluj Worx mower przez chmurę"
+    "native": {
+        "mail": "default",
+        "password": "1",
+        "mower": 0
     },
-    "desc": {
-      "en": "The mower is connected via Worx cloud to iobroker",
-      "de": "Der Mäher ist über die Worx Cloud mit iobroker verbunden",
-      "ru": "косилка подключается через облако Worx к iobroker",
-      "pt": "o cortador está conectado via nuvem Worx ao iobroker",
-      "nl": "de maaier is verbonden via Worx cloud met iobroker",
-      "fr": "la tondeuse est connectée via Worx cloud à iobroker",
-      "it": "il rasaerba è collegato tramite Worx cloud a iobroker",
-      "es": "el cortacésped está conectado a través de la nube Worx a iobroker",
-      "pl": "kosiarka jest połączona przez chmurę Worx z iobroker"
-    },
-    "materialize": true,
-    "platform": "Javascript/Node.js",
-    "mode": "daemon",
-    "icon": "Worx.png",
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/MeisterTR/ioBroker.Worx/master/admin/Worx.png",
-    "keywords": [
-      "Worx",
-      "mower"
-    ],
-    "readme": "https://github.com/MeisterTR/ioBroker.Worx/blob/master/README.md",
-    "loglevel": "info",
-    "type": "garden",
-    "license": "MIT",
-    "restartAdapters": [
-    ],
-    "authors": [
-      {
-        "name": "MeisterTR",
-        "email": "meistertr.smarthome@gmail.com"
-      }
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to device or service",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
     ]
-  },
-  "native": {
-    "email": "max.mustermann@gmx.de",
-    "pwd": "PASSWORT",
-    "dev_sel": 0,
-    "enableJson": false,
-    "houerKm": false
-  },
-  "objects": [],
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected to CUL",
-        "type": "boolean",
-        "read": true
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.firmware",
-      "type": "state",
-      "common": {
-        "name": "Firmware Version",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Firmware Version"
-      },
-      "native": {}
-    },
-    {
-      "_id": "mower",
-      "type": "channel",
-      "common": {
-        "name": "mower"
-      },
-      "native": {}
-    },
-    {
-      "_id": "mower.batteryState",
-      "type": "state",
-      "common": {
-        "name": "mower battery state",
-        "type": "number",
-        "role": "value.battery",
-        "unit": "%",
-        "read": true,
-        "desc": "mower mower battery state in %"
-      },
-      "native": {}
-    },
-    {
-      "_id": "mower.waitRain",
-      "type": "state",
-      "common": {
-        "name": "Wait after rain",
-        "type": "number",
-        "role": "value",
-        "unit": "min",
-        "read": true,
-        "desc": "Time to wait after rain, in minutes"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar",
-      "type": "channel",
-      "common": {
-        "name": "calendar"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.monday",
-      "type": "channel",
-      "common": {
-        "name": "Monday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.monday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "role": "text",
-        "type": "string",
-        "read": true,
-        "desc": "Hour:Minutes on the day (monday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.monday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.monday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.tuesday",
-      "type": "channel",
-      "common": {
-        "name": "Tuesday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.tuesday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Hour:Minutes on the day (tuesday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.tuesday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min.",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.tuesday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.wednesday",
-      "type": "channel",
-      "common": {
-        "name": "Wednesday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.wednesday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Hour:Minutes on the day (wednesday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.wednesday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min.",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.wednesday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.thursday",
-      "type": "channel",
-      "common": {
-        "name": "Thursday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.thursday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Hour:Minutes on the day (thursday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.thursday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min.",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.thursday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.friday",
-      "type": "channel",
-      "common": {
-        "name": "Friday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.friday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Hour:Minutes on the day (friday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.friday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min.",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.friday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.saturday",
-      "type": "channel",
-      "common": {
-        "name": "Saturday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.saturday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Hour:Minutes on the day (saturday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.saturday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min.",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.saturday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.sunday",
-      "type": "channel",
-      "common": {
-        "name": "Sunday"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.sunday.startTime",
-      "type": "state",
-      "common": {
-        "name": "Start time",
-        "type": "string",
-        "role": "text",
-        "read": true,
-        "desc": "Hour:Minutes on the day (sunday) that the mower should start mowing"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.sunday.workTime",
-      "type": "state",
-      "common": {
-        "name": "Work time",
-        "type": "number",
-        "role": "value",
-        "unit": "min.",
-        "read": true,
-        "desc": "Decides for how long the mower will work each day"
-      },
-      "native": {}
-    },
-    {
-      "_id": "calendar.sunday.borderCut",
-      "type": "state",
-      "common": {
-        "name": "Border cut",
-        "type": "boolean",
-        "role": "switch",
-        "read": true,
-        "desc": "The mower cut border today"
-      },
-      "native": {}
-    }
-  ]
 }

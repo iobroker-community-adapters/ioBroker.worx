@@ -1,19 +1,14 @@
-/* jshint -W097 */
-/* jshint strict:false */
-/* jslint node: true */
-/* jshint expr: true */
-var expect = require('chai').expect;
-var fs        = require('fs');
+'use strict';
+
+const expect = require('chai').expect;
+const fs     = require('fs');
 
 describe('Test package.json and io-package.json', function() {
     it('Test package files', function (done) {
         console.log();
 
-        var fileContentIOPackage = fs.readFileSync(__dirname + '/../io-package.json', 'utf8');
-        var ioPackage = JSON.parse(fileContentIOPackage);
-
-        var fileContentNPMPackage = fs.readFileSync(__dirname + '/../package.json', 'utf8');
-        var npmPackage = JSON.parse(fileContentNPMPackage);
+        const ioPackage = require('../io-package.json');
+        const npmPackage = require('../package.json');
 
         expect(ioPackage).to.be.an('object');
         expect(npmPackage).to.be.an('object');
@@ -71,8 +66,8 @@ describe('Test package.json and io-package.json', function() {
             }
         }
 
-        var licenseFileExists = fs.existsSync(__dirname + '/../LICENSE');
-        var fileContentReadme = fs.readFileSync(__dirname + '/../README.md', 'utf8');
+        const licenseFileExists = fs.existsSync(__dirname + '/../LICENSE');
+        const fileContentReadme = fs.readFileSync(__dirname + '/../README.md', 'utf8');
         if (fileContentReadme.indexOf('## Changelog') === -1) {
             console.log('Warning: The README.md should have a section ## Changelog');
             console.log();

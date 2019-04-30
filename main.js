@@ -1,158 +1,321 @@
-/**
- *
- * template adapter
- *
- *
- *  file io-package.json comments:
- *
- *  {
- *      "common": {
- *          "name":         "template",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.0",                    // use "Semantic Versioning"! see http://semver.org/
- *          "title":        "Node.js template Adapter",  // Adapter title shown in User Interfaces
- *          "authors":  [                               // Array of authord
- *              "name <mail@template.com>"
- *          ]
- *          "desc":         "template adapter",          // Adapter description shown in User Interfaces. Can be a language object {de:"...",ru:"..."} or a string
- *          "platform":     "Javascript/Node.js",       // possible values "javascript", "javascript/Node.js" - more coming
- *          "mode":         "daemon",                   // possible values "daemon", "schedule", "subscribe"
- *          "materialize":  true,                       // support of admin3
- *          "schedule":     "0 0 * * *"                 // cron-style schedule. Only needed if mode=schedule
- *          "loglevel":     "info"                      // Adapters Log Level
- *      },
- *      "native": {                                     // the native object is available via adapter.config in your adapters code - use it for configuration
- *          "test1": true,
- *          "test2": 42,
- *          "mySelect": "auto"
- *      }
- *  }
- *
- */
-
-/* jshint -W097 */// jshint strict:false
-/*jslint node: true */
 'use strict';
 
-// you have to require the utils module and call adapter function
-const utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 
-// you have to call the adapter function and pass a options object
-// name has to be set and has to be equal to adapters folder name and main file name excluding extension
-// adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.template.0
-const adapter = new utils.Adapter('template');
+const utils = require('@iobroker/adapter-core');
+const worx = require(__dirname + '/lib/api');
 
-/*Variable declaration, since ES6 there are let to declare variables. Let has a more clearer definition where 
-it is available then var.The variable is available inside a block and it's childs, but not outside. 
-You can define the same variable name inside a child without produce a conflict with the variable of the parent block.*/
-let variable = 1234;
+/**
+ * The adapter instance
+ * @type {ioBroker.Adapter}
+ */
+let adapter;
 
-// is called when adapter shuts down - callback has to be called under any circumstances!
-adapter.on('unload', function (callback) {
-    try {
-        adapter.log.info('cleaned everything up...');
-        callback();
-    } catch (e) {
-        callback();
-    }
-});
+const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+/**
+ * Starts the adapter instance
+ * @param {Partial<ioBroker.AdapterOptions>} [options]
+ */
+function startAdapter(options) {
+    // Create the adapter and define its methods
+    return adapter = utils.adapter(Object.assign({}, options, {
+        name: 'worx',
 
-// is called if a subscribed object changes
-adapter.on('objectChange', function (id, obj) {
-    // Warning, obj can be null if it was deleted
-    adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
-});
+        // The ready callback is called when databases are connected and adapter received configuration.
+        // start here!
+        ready: main, // Main method defined below for readability
 
-// is called if a subscribed state changes
-adapter.on('stateChange', function (id, state) {
-    // Warning, state can be null if it was deleted
-    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+        // is called when adapter shuts down - callback has to be called under any circumstances!
+        unload: (callback) => {
+            try {
+                adapter.log.info('cleaned everything up...');
+                callback();
+            } catch (e) {
+                callback();
+            }
+        },
 
-    // you can use the ack flag to detect if it is status (true) or command (false)
-    if (state && !state.ack) {
-        adapter.log.info('ack is not set!');
-    }
-});
+        // is called if a subscribed object changes
+        objectChange: (id, obj) => {
+            if (obj) {
+                // The object was changed
+                adapter.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+            } else {
+                // The object was deleted
+                adapter.log.info(`object ${id} deleted`);
+            }
+        },
 
-// Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
-adapter.on('message', function (obj) {
-    if (typeof obj === 'object' && obj.message) {
-        if (obj.command === 'send') {
-            // e.g. send email or pushover or whatever
-            console.log('send command');
+        // is called if a subscribed state changes
+        stateChange: (id, state) => {
+            if (state) {
+                // The state was changed
+                adapter.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            } else {
+                // The state was deleted
+                adapter.log.info(`state ${id} deleted`);
+            }
+        },
 
-            // Send response in callback if required
-            if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-        }
-    }
-});
+        // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
+        // requires "common.message" property to be set to true in io-package.json
+        // message: (obj) => {
+        // 	if (typeof obj === "object" && obj.message) {
+        // 		if (obj.command === "send") {
+        // 			// e.g. send email or pushover or whatever
+        // 			adapter.log.info("send command");
 
-// is called when databases are connected and adapter received configuration.
-// start here!
-adapter.on('ready', function () {
-    main();
-});
+        // 			// Send response in callback if required
+        // 			if (obj.callback) adapter.sendTo(obj.from, obj.command, "Message received", obj.callback);
+        // 		}
+        // 	}
+        // },
+    }));
+}
 
 function main() {
 
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
-    adapter.log.info('config test1: '    + adapter.config.test1);
-    adapter.log.info('config test1: '    + adapter.config.test2);
-    adapter.log.info('config mySelect: ' + adapter.config.mySelect);
+    adapter.log.info('config e-mail: ' + adapter.config.mail);
+    adapter.log.info('config password: ' + adapter.config.password);
+    adapter.log.info('config mower: ' + adapter.config.mower);
+
+    adapter.setState('info.connection', false, true);
+    const WorxCloud = new worx(adapter.config.mail, adapter.config.password);
+
+    WorxCloud.on('connect', worxc => {
+        adapter.log.info('sucess conect!');
+        adapter.setState('info.connection', true, true);
 
 
-    /**
-     *
-     *      For every state in the system there has to be also an object of type state
-     *
-     *      Here a simple template for a boolean variable named "testVariable"
-     *
-     *      Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-     *
-     */
+    });
+    WorxCloud.on('found', mower => {
+        adapter.log.info('found!' + JSON.stringify(mower));
+        createDevices(mower);
+    });
 
+    WorxCloud.on('error', err => {
+        adapter.log.error('ERROR: ' + err);
+        adapter.setState('info.connection', false, true);
+    });
+
+    // Reset connection state at start
+    adapter.setState('info.connection', false, true);
+
+    /*
+        For every state in the system there has to be also an object of type state
+        Here a simple template for a boolean variable named "testVariable"
+        Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
+    */
     adapter.setObject('testVariable', {
         type: 'state',
         common: {
             name: 'testVariable',
             type: 'boolean',
-            role: 'indicator'
+            role: 'indicator',
+            read: true,
+            write: true,
         },
-        native: {}
+        native: {},
     });
 
     // in this template all states changes inside the adapters namespace are subscribed
     adapter.subscribeStates('*');
 
-
-    /**
-     *   setState examples
-     *
-     *   you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-     *
-     */
-
+    /*
+        setState examples
+        you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
+    */
     // the variable testVariable is set to true as command (ack=false)
     adapter.setState('testVariable', true);
 
     // same thing, but the value is flagged "ack"
     // ack should be always set to true if the value is received from or acknowledged from the target system
-    adapter.setState('testVariable', {val: true, ack: true});
+    adapter.setState('testVariable', {
+        val: true,
+        ack: true
+    });
 
     // same thing, but the state is deleted after 30s (getState will return null afterwards)
-    adapter.setState('testVariable', {val: true, ack: true, expire: 30});
-
-
+    adapter.setState('testVariable', {
+        val: true,
+        ack: true,
+        expire: 30
+    });
 
     // examples for the checkPassword/checkGroup functions
-    adapter.checkPassword('admin', 'iobroker', function (res) {
-        console.log('check user admin pw ioboker: ' + res);
+    adapter.checkPassword('admin', 'iobroker', (res) => {
+        adapter.log.info('check user admin pw ioboker: ' + res);
     });
 
-    adapter.checkGroup('admin', 'admin', function (res) {
-        console.log('check group user admin group admin: ' + res);
+    adapter.checkGroup('admin', 'admin', (res) => {
+        adapter.log.info('check group user admin group admin: ' + res);
+    });
+}
+/**
+ * @param {Object} mower
+ */
+function createDevices(mower) {
+
+    adapter.setObjectNotExists(mower.serial, {
+        type: 'device',
+        role: 'mower',
+        common: {
+            name: mower.raw.name
+        },
+        native: {}
+    });
+    adapter.setObjectNotExists(mower.serial + '.areas', {
+        type: 'channel',
+        role: 'mower.areas',
+        common: {
+            name: 'mower areas'
+        },
+        native: {}
+    });
+    adapter.setObjectNotExists(mower.serial + '.calendar', {
+        type: 'channel',
+        role: 'mower.calendar',
+        common: {
+            name: 'mower calendar'
+        },
+        native: {}
+    });
+    adapter.setObjectNotExists(mower.serial + '.mower', {
+        type: 'channel',
+        role: 'mower.control',
+        common: {
+            name: 'mower control'
+        },
+        native: {}
     });
 
+    for (let a = 0; a <= 3; a++) {
 
+        adapter.setObjectNotExists(mower.serial + '.areas.area_' + a, {
+            type: 'state',
+            common: {
+                name: 'Area' + a,
+                type: 'number',
+                role: 'value',
+                unit: 'm',
+                read: true,
+                write: true,
+                desc: 'Distance from Start point for area ' + a
+            },
+            native: {}
+        });
+    }
 
+    adapter.setObjectNotExists(mower.serial + '.areas.actualArea', {
+        type: 'state',
+        common: {
+            name: 'Actual area',
+            type: 'number',
+            role: 'value',
+            read: true,
+            write: false,
+            desc: 'Show the current area'
+        },
+        native: {}
+    });
+    adapter.setObjectNotExists(mower.serial + '.areas.startSequence', {
+        type: 'state',
+        common: {
+            name: 'Start sequence',
+            type: 'string',
+            role: 'value',
+            read: true,
+            write: true,
+            desc: 'Sequence of area to start from'
+        },
+        native: {}
+    });
+
+    //calendar
+    week.forEach(function (day) {
+        adapter.setObjectNotExists(mower.serial + '.calendar.' + day + '.borderCut', {
+            type: 'state',
+            common: {
+                name: 'Border cut',
+                type: 'boolean',
+                role: 'switch',
+                read: true,
+                write: true,
+                desc: 'The mower cut border today'
+            },
+            native: {}
+        });
+        adapter.setObjectNotExists(mower.serial + '.calendar.' + day + '.startTime', {
+            type: 'state',
+            common: {
+                name: 'Start time',
+                type: 'string',
+                role: 'value.datetime',
+                read: true,
+                write: true,
+                desc: 'Hour:Minutes on' + day + ' that the Landroid should start mowing'
+            },
+            native: {}
+        });
+        adapter.setObjectNotExists(mower.serial + '.calendar.' + day + '.workTime', {
+            type: 'state',
+            common: {
+                name: 'Work time',
+                type: 'number',
+                role: 'value.interval',
+                unit: 'min.',
+                read: true,
+                write: true,
+                desc: 'Decides for how long the mower will work on ' + day
+            },
+            native: {}
+        });
+    });
+    // info
+    adapter.setObjectNotExists(mower.serial + '.mower.online', {
+        type: 'state',
+        common: {
+            name: 'Online',
+            type: 'boolean',
+            role: 'indicator.connected',
+            read: true,
+            write: false,
+            desc: 'If mower connected to cloud'
+        },
+        native: {}
+    });
+    adapter.setObjectNotExists(mower.serial + '.mower.firmware', {
+        type: 'state',
+        common: {
+            name: 'Firmware Version',
+            type: 'string',
+            role: 'meta.version',
+            read: true,
+            write: false,
+            desc: 'Firmware Version'
+        },
+        native: {}
+    });
+    adapter.setObjectNotExists(mower.serial + '.mower.wifiQuality', {
+        type: 'state',
+        common: {
+            name: 'Wifi quality',
+            type: 'number',
+            role: 'value',
+            read: true,
+            write: false,
+            unit : 'dBm',
+            desc: 'Prozent of Wifi quality'
+        },
+        native: {}
+    });
+}
+
+if (module.parent) {
+    // Export startAdapter in compact mode
+    module.exports = startAdapter;
+} else {
+    // otherwise start the instance directly
+    startAdapter();
 }
