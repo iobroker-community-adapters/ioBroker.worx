@@ -23,7 +23,8 @@
     "@iobroker/adapter-core": "^1.0.3",
     "mqtt": "^2.13.0",
     "uuid": "^3.1.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^1.2.0",
