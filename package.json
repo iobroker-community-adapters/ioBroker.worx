@@ -48,11 +48,12 @@
   "main": "main.js",
   "scripts": {
     "test:js": "mocha --opts test/mocha.custom.opts",
-    "test:package": "mocha test/testPackageFiles.js --exit",
-    "test:iobroker": "mocha test/testStartup.js --exit",
+    "test:package": "mocha test/package --exit",
+    "test:unit": "mocha test/unit --exit",
+    "test:integration": "mocha test/integration --exit",
     "test": "npm run test:js && npm run test:package",
-    "lint": "npm run lint:ts \"src/**/*.ts\"",
-    "lint:ts": "tslint"
+    "lint": "npm run lint:js",
+    "lint:js": "eslint"
   },
   "bugs": {
     "url": "https://github.com/MeisterTR/ioBroker.worx/issues"
