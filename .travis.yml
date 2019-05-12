@@ -5,18 +5,18 @@ os:
 
 language: node_js
 node_js:
-  - '6'
   - '8'
   - '10'
+  - '12'
 
 env:
-  - CXX=g++-4.8
+  - CXX=g++-6
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-4.9
+      - g++-6
 
 before_install:
   - 'if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then CC=gcc-4.9; fi'
