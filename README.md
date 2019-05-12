@@ -1,7 +1,5 @@
-<h1>
-    <img src="admin/worx.png" width="64"/>
-    ioBroker.worx
-</h1>
+![Logo](admin/worx.png)
+# ioBroker.worx
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
