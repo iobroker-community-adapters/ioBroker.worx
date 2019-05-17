@@ -132,27 +132,6 @@ class Worx extends utils.Adapter {
         // in this template all states changes inside the adapters namespace are subscribed
         this.subscribeStates('*');
 
-        /*
-        setState examples
-        you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-        */
-        // the variable testVariable is set to true as command (ack=false)
-        await this.setStateAsync('testVariable', true);
-
-        // same thing, but the value is flagged "ack"
-        // ack should be always set to true if the value is received from or acknowledged from the target system
-        await this.setStateAsync('testVariable', {
-            val: true,
-            ack: true
-        });
-
-        // same thing, but the state is deleted after 30s (getState will return null afterwards)
-        await this.setStateAsync('testVariable', {
-            val: true,
-            ack: true,
-            expire: 30
-        });
-
         // examples for the checkPassword/checkGroup functions
         let result = await this.checkPasswordAsync('admin', 'iobroker');
         this.log.info('check user admin pw ioboker: ' + result);
