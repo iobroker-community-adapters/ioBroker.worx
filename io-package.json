@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "0.0.1",
+        "version": "0.1.0",
         "news": {
+            "0.1.0": {
+                "en": "first working version",
+                "de": "erste Arbeitsversion",
+                "ru": "первая рабочая версия",
+                "pt": "primeira versão de trabalho",
+                "nl": "eerste werkende versie",
+                "fr": "première version de travail",
+                "it": "prima versione funzionante",
+                "es": "primera versión de trabajo",
+                "pl": "pierwsza działająca wersja",
+                "zh-cn": "第一个工作版"
+              },
             "0.0.1": {
                 "en": "initial release",
                 "de": "Erstveröffentlichung",

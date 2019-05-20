@@ -1,6 +1,6 @@
 {
   "name": "iobroker.worx",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "control via cloud and mqtt",
   "author": {
     "name": "MeisterTR",
@@ -24,6 +24,7 @@
     "mqtt": "^2.13.0",
     "uuid": "^3.1.0",
     "request-promise": "^4.2.4",
+    "circular-json": "^0.5.9",
     "request": "^2.88.0"
   },
   "devDependencies": {
