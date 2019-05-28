@@ -185,7 +185,7 @@ class Worx extends utils.Adapter {
             val: (data.dat.bt && data.dat.bt.v ? data.dat.bt.v : null),
             ack: true
         });
-        that.setStateAsync(mowerSerial + ".mower.batteryTemterature", {
+        that.setStateAsync(mowerSerial + ".mower.batteryTemperature", {
             val: (data.dat.bt && data.dat.bt.t ? data.dat.bt.t : null),
             ack: true
         });
@@ -564,7 +564,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryTemterature', {
+        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryTemperature', {
             type: 'state',
             common: {
                 name: 'Battery temperature',
