@@ -11,6 +11,7 @@ const utils = require('@iobroker/adapter-core');
 // Load your modules here, e.g.:
 const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
+
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
     0: 'No error',
@@ -47,6 +48,7 @@ const STATUSCODES = {
     11: 'Debug',
     12: 'Remote control',
     30: 'Going home',
+    31: 'Zone training',
     32: 'Border Cut',
     33: 'Searching zone',
     34: 'Pause'
@@ -99,11 +101,11 @@ class Worx extends utils.Adapter {
         let that = this
         this.WorxCloud.on('found', function (mower) {
 
-            that.log.info('found!' + JSON.stringify(mower));
+            that.log.debug('found!' + JSON.stringify(mower));
             that.createDevices(mower).then(_ => {
                 mower.status().then(status => {
                     setTimeout(function () {
-                        that.setStates(mower.serial, status);
+                        that.setStates(mower, status);
                     }, 1000);
 
 
@@ -115,9 +117,9 @@ class Worx extends utils.Adapter {
                 that.log.info(data);
             });
 
-            mower.on('mqtt', (serial, data) => {
-                that.log.info(JSON.stringify(serial + " " + JSON.stringify(data)));
-                that.setStates(mower.serial, data);
+            mower.on('mqtt', (mower, data) => {
+
+                that.setStates(mower, data);
             });
 
         });
@@ -136,14 +138,15 @@ class Worx extends utils.Adapter {
     }
 
     /**
-     * @param {string} mowerSerial Serialnumber of mower
+     * @param {object} mower Serialnumber of mower
      * @param {object} data JSON from mqtt 
      */
-    setStates(mowerSerial, data) {
+    setStates(mower, data) {
         let that = this;
+        let mowerSerial = mower.serial;
         //mower set states
         var sequence = [];
-
+        that.log.debug("DATA: " + JSON.stringify(data));
         if (that.config.houerKm) {
             that.setStateAsync(mowerSerial + '.mower.totalTime', {
                 val: (data.dat.st && data.dat.st.wt ? data.dat.st.wt : null),
@@ -193,10 +196,12 @@ class Worx extends utils.Adapter {
             val: (data.dat && data.dat.le ? data.dat.le : 0),
             ack: true
         });
+        that.log.debug("Test Status: " + (data.dat && data.dat.ls ? data.dat.ls : 0));
         that.setStateAsync(mowerSerial + ".mower.status", {
             val: (data.dat && data.dat.ls ? data.dat.ls : 0),
             ack: true
         });
+
         that.setStateAsync(mowerSerial + ".mower.wifiQuality", {
             val: (data.dat && data.dat.rsi ? data.dat.rsi : 0),
             ack: true
@@ -273,16 +278,48 @@ class Worx extends utils.Adapter {
             });
         }
         evaluateCalendar(data.cfg.sc.d);
+
+        // edgecutting
+        if (mower.edgeCut && (state === 1 || state === 3)) {
+            that.log.debug('Edgecut Start section :' + state);
+        } else if (state === 31 && mower.edgeCut) {
+            setTimeout(function(){
+                that.log.debug('Edcut send cmd:2');
+                mower.sendMessage('{"cmd":2}');
+            }, 10000);
+ 
+        } else if (state === 34 && mower.edgeCut) {
+            that.log.debug('Edcut send cmd:3');
+            mower.sendMessage('{"cmd":3}');
+            mower.edgeCut = false;
+        } else if (mower.edgeCut === true && state !== 31 && state !== 34) {
+            mower.edgeCut = false;
+            that.log.warn('Something went wrong at edgeCut')
+        }
+
+
         //Calendar
+        /**
+         * @param {Array} arr
+         */
         function evaluateCalendar(arr) {
             if (arr) {
-        
+
                 for (var i = 0; i < week.length; i++) {
-                    that.setStateAsync(mowerSerial +".calendar." + week[i] + ".startTime", { val: arr[i][0], ack: true });
-                    that.setStateAsync(mowerSerial +".calendar." + week[i] + ".workTime", { val: arr[i][1], ack: true });
-                    that.setStateAsync(mowerSerial +".calendar." + week[i] + ".borderCut", { val: (arr[i][2] && arr[i][2] === 1 ? true : false), ack: true });
-        
-        
+                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + ".startTime", {
+                        val: arr[i][0],
+                        ack: true
+                    });
+                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + ".workTime", {
+                        val: arr[i][1],
+                        ack: true
+                    });
+                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + ".borderCut", {
+                        val: (arr[i][2] && arr[i][2] === 1 ? true : false),
+                        ack: true
+                    });
+
+
                 }
             }
         }
@@ -290,14 +327,14 @@ class Worx extends utils.Adapter {
 
     UpdateWeather(mower) {
         let that = this;
-        that.log.info("Weather_ " + JSON.stringify(mower));
+        that.log.debug("Weather_ " + JSON.stringify(mower));
         getWeather();
         setInterval(getWeather, WEATHERINTERVALL);
 
         function getWeather() {
             mower.weather().then(weather => {
-                that.log.info("Weather_ " + JSON.stringify(weather));
-                that.log.info("Weather_d " + new Date(weather.dt * 1000));
+                that.log.debug("Weather_ " + JSON.stringify(weather));
+                that.log.debug("Weather_d " + new Date(weather.dt * 1000));
                 that.setStateAsync(mower.serial + '.weather.clouds', {
                     val: weather.clouds.all,
                     ack: true
@@ -595,7 +632,7 @@ class Worx extends utils.Adapter {
             common: {
                 name: 'Error code',
                 type: 'number',
-                role: 'value.voltage',
+                role: 'value.error',
                 read: true,
                 write: false,
                 desc: 'Error code',
@@ -612,6 +649,19 @@ class Worx extends utils.Adapter {
                 read: true,
                 write: true,
                 desc: 'Pause the mover'
+
+            },
+            native: {}
+        });
+        await that.setObjectNotExistsAsync(mower.serial + '.mower.edgecut', {
+            type: 'state',
+            common: {
+                name: 'Edge cut',
+                type: 'boolean',
+                role: 'button.edgecut',
+                read: true,
+                write: true,
+                desc: 'start edge cutting'
 
             },
             native: {}
@@ -716,7 +766,6 @@ class Worx extends utils.Adapter {
                 role: 'switch',
                 read: true,
                 write: true,
-                unit: '%',
                 desc: 'Time-controlled mowing'
             },
             native: {}
@@ -900,10 +949,10 @@ class Worx extends utils.Adapter {
     onObjectChange(id, obj) {
         if (obj) {
             // The object was changed
-            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+            this.log.debug(`object ${id} changed: ${JSON.stringify(obj)}`);
         } else {
             // The object was deleted
-            this.log.info(`object ${id} deleted`);
+            this.log.debug(`object ${id} deleted`);
         }
     }
 
@@ -919,49 +968,42 @@ class Worx extends utils.Adapter {
             let command = id.split('.').pop();
             let mower_id = id.split('.')[2];
             let mower = that.WorxCloud.mower.find(device => device.serial === mower_id);
-    
-            this.log.info('id_____ '+id +' Mower ' + mower_id + '_____' + command + '______'+JSON.stringify(mower));
-            
-            if(mower){
+
+            this.log.info('id_____ ' + id + ' Mower ' + mower_id + '_____' + command + '______' + JSON.stringify(mower));
+
+            if (mower) {
                 if (command == 'state') {
                     if (state.val === true) {
-                       that.startMower(mower);
+                        that.startMower(mower);
                     } else {
                         that.stopMower(mower);
                     }
-                }
-                else if ((command == 'waitRain')) {
+                } else if ((command == 'waitRain')) {
                     let val = (isNaN(state.val) || state.val < 0 ? 100 : parseInt(state.val));
                     mower.sendMessage('{"rd":' + val + '}');
                     this.log.info('Changed time wait after rain to:' + val);
-                }
-                else if ((command === 'borderCut') || (command === 'startTime') || (command === 'workTime')) {
+                } else if ((command === 'borderCut') || (command === 'startTime') || (command === 'workTime')) {
                     that.changeMowerCfg(id, state.val, mower);
-                }
-                else if ((command === 'area_0') || (command === 'area_1') || (command === 'area_2') || (command === 'area_3')) {
-                    that.changeMowerArea(id, parseInt(state.val),mower);
-                }
-                else if (command === "startSequence") {
+                } else if ((command === 'area_0') || (command === 'area_1') || (command === 'area_2') || (command === 'area_3')) {
+                    that.changeMowerArea(id, parseInt(state.val), mower);
+                } else if (command === "startSequence") {
                     that.startSequences(id, state.val, mower);
-                }
-                else if (command === "pause") {
+                } else if (command === "pause") {
                     if (state.val === true) {
                         mower.sendMessage('{"cmd":2}');
                     }
-                }
-                else if (command === "mowTimeExtend") {
+                } else if (command === "mowTimeExtend") {
                     that.mowTimeEx(id, parseInt(state.val), mower);
-                }
-                else if (command === "mowerActive") {
+                } else if (command === "mowerActive") {
                     const val = (state.val ? 1 : 0);
                     const message = mower.message.cfg.sc;
                     message.m = val;
                     mower.sendMessage('{"sc":' + JSON.stringify(message) + '}');
                     that.log.info("Mow times disabled: " + message.m);
+                } else if (command === "edgecut") {
+                    that.edgeCutting(id, state.val, mower);
                 }
-            }
-
-            else that.log.error('No mower found!  '+ JSON.stringify(that.WorxCloud));
+            } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
         }
     }
@@ -970,7 +1012,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     async startMower(mower) {
-        this.log.info("Start mower "+ JSON.stringify(mower));
+        this.log.info("Start mower " + JSON.stringify(mower));
         if ((mower.message.dat.ls === 1 || mower.message.dat.ls === 34) && mower.message.dat.le === 0) {
             mower.sendMessage('{"cmd":1}'); //start code for mower
             this.log.info("Start mower");
@@ -987,7 +1029,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     stopMower(mower) {
-        if (mower.message.dat.ls  === 7 && mower.message.dat.le === 0) {
+        if (mower.message.dat.ls === 7 && mower.message.dat.le === 0) {
             mower.sendMessage('{"cmd":3}'); //"Back to home" code for mower
             this.log.info("mower going back home");
         } else {
@@ -1011,41 +1053,35 @@ class Worx extends utils.Adapter {
         let message = mower.message; // set aktual values
         let dayID = week.indexOf(id.split('.')[4]);
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
-    
+
         try {
             if (valID === 2) { // changed the border cut
                 sval = (valID === 2 && val === true) ? 1 : 0;
-            }
-            else if (valID === 0) { // changed the start time
+            } else if (valID === 0) { // changed the start time
                 var h = val.split(':')[0];
                 var m = val.split(':')[1];
                 that.log.info("h: " + h + " m: " + m);
                 if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
                     sval = val;
-                }
-                else that.log.error('Time out of range: e.g "10:00"');
-            }
-            else if (valID === 1) { // changed the worktime
-                if (val >= 0 && val <= 720) { 
+                } else that.log.error('Time out of range: e.g "10:00"');
+            } else if (valID === 1) { // changed the worktime
+                if (val >= 0 && val <= 720) {
                     sval = parseInt(val);
-                }
-                else that.log.error('Time out of range 0 min < time < 720 min.');
-    
-            }
-            else that.log.error('Something went wrong while setting new mower times');
-        }
-        catch (e) {
+                } else that.log.error('Time out of range 0 min < time < 720 min.');
+
+            } else that.log.error('Something went wrong while setting new mower times');
+        } catch (e) {
             that.log.error("Error while setting mowers config: " + e);
         }
-    
+
         if (sval !== undefined) {
             message[dayID][valID] = sval;
             that.log.debug("Mow time change to: " + JSON.stringify(message));
             mower.sendMessage('{"sc":{"d":' + JSON.stringify(message) + '}}');
-    
+
         }
         that.log.debug("test cfg: " + dayID + " valID: " + valID + " val: " + val + " sval: " + sval);
-    
+
     }
     /**
      * @param {string} id   
@@ -1057,19 +1093,20 @@ class Worx extends utils.Adapter {
         let val = value;
         let message = mower.message.cfg.mz; // set aktual values
         let areaID = Number((id.split('_').pop()));
-    
+
         try {
             if (!isNaN(val) && val >= 0 && val <= 500) {
                 message[areaID] = val;
                 mower.sendMessage('{"mz":' + JSON.stringify(message) + '}');
-                that.log.info('Change Area ' + ( areaID ) + ' : ' + JSON.stringify(message)); 
-            }
-            else {
+                that.log.info('Change Area ' + (areaID) + ' : ' + JSON.stringify(message));
+            } else {
                 that.log.error('Area Value ist not correct, please type in a val between 0 and 500');
-                that.setState('areas.area_' + ( areaID ), { val: (mower.message.cfg.mz && mower.message.cfg.mz[areaID] ? mower.message.cfg.mz[areaID] : 0), ack: true });
+                that.setState('areas.area_' + (areaID), {
+                    val: (mower.message.cfg.mz && mower.message.cfg.mz[areaID] ? mower.message.cfg.mz[areaID] : 0),
+                    ack: true
+                });
             }
-        }
-        catch (e) {
+        } catch (e) {
             that.log.error('Error while setting mowers areas: ' + e);
         }
     }
@@ -1086,14 +1123,14 @@ class Worx extends utils.Adapter {
         let seq = [];
         try {
             seq = JSON.parse("[" + val + "]");
-    
+
             for (var i = 0; i < 10; i++) {
                 if (seq[i] != undefined) {
                     if (isNaN(seq[i]) || seq[i] < 0 || seq[i] > 3) {
                         seq[i] = 0;
                         that.log.error("Wrong start sequence, set val " + i + " to 0");
                     }
-    
+
                 } else {
                     seq[i] = 0;
                     that.log.warn("Array ist too short, filling up with start point 0");
@@ -1101,9 +1138,8 @@ class Worx extends utils.Adapter {
             }
             mower.sendMessage('{"mzv":' + JSON.stringify(seq) + '}');
             that.log.info("new Array is: " + JSON.stringify(seq));
-    
-        }
-        catch (e) {
+
+        } catch (e) {
             that.log.error("Error while setting start seqence: " + e);
         }
     }
@@ -1114,7 +1150,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     mowTimeEx(id, value, mower) {
-        let that= this;
+        let that = this;
         const val = value;
         const message = mower.message.cfg.sc; // set aktual values
 
@@ -1122,10 +1158,26 @@ class Worx extends utils.Adapter {
             message.p = val;
             mower.sendMessage('{"sc":' + JSON.stringify(message) + '}');
             that.log.info("MowerTimeExtend set to : " + message.p);
-    
+
         } else {
             that.log.error("MowerTimeExtend must be a value between -100 and 100");
         }
+    }
+
+    /**
+     * @param {string} id
+     * @param {any} value
+     * @param {object} mower
+     */
+    edgeCutting(id, value, mower) {
+        let that = this;
+        const val = value;
+
+        if (val === true) {
+            mower.edgeCut = true;
+            mower.sendMessage('{"cmd":4}'); // starte ZoneTraining
+        }
+
     }
 
     // /**

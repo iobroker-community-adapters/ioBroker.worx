@@ -1,27 +1,36 @@
 ![Logo](admin/worx.png)
 # ioBroker.worx
 
+![Number of Installations](http://iobroker.live/badges/worx-installed.svg) 
+![Number of Installations](http://iobroker.live/badges/worx-stable.svg)
+
 [![NPM version](http://img.shields.io/npm/v/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
-[![Dependency Status](https://img.shields.io/david/MeisterTR/iobroker.worx.svg)](https://david-dm.org/MeisterTR/iobroker.worx)
+[![dependencies Status](https://david-dm.org/MeisterTR/iobroker.worx/status.svg)](https://david-dm.org/MeisterTR/iobroker.worx)
 [![Known Vulnerabilities](https://snyk.io/test/github/MeisterTR/ioBroker.worx/badge.svg)](https://snyk.io/test/github/MeisterTR/ioBroker.worx)
 
 [![NPM](https://nodei.co/npm/iobroker.worx.png?downloads=true)](https://nodei.co/npm/iobroker.worx/)
 
-**Tests:** Linux/Mac: [![Travis-CI](http://img.shields.io/travis/MeisterTR/ioBroker.worx/master.svg)](https://travis-ci.org/MeisterTR/ioBroker.worx)
-Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/MeisterTR/ioBroker.worx?branch=master&svg=true)](https://ci.appveyor.com/project/MeisterTR/ioBroker-worx/)
-[Deutsche Beschreibung hier](README_de.md)
+**Tests:** [![Travis-CI](http://img.shields.io/travis/MeisterTR/ioBroker.worx/master.svg)](https://travis-ci.org/MeisterTR/ioBroker.worx)
+
 ## worx adapter for ioBroker
 
 control via cloud and mqtt
 
-This adapter connects IoBroker with your Landroid S/M/L 
+This adapter connects IoBroker with your Landroid S/M/L via Cloud. 
 Temperatures, mowing times, battery level and various other data are read out from the mower
 The adapter can control the mower and you can change config params like mowtimes.
 
 <img src="admin/worx_ada2.png" alt="drawing" width="100%"/>
-## Changelog
 
+## Settings
+- to connect to the mower type in email and password from your worx account in the Config.
+
+## Changelog
+### 0.2.0 (01.06.2019)
+* (MeisterTR) add border
+* (MeisterTR) fix small errors
+* (MeisterTR) code cleanup
 ### 0.0.1
 * (MeisterTR) initial release
 
