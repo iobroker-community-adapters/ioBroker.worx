@@ -53,6 +53,18 @@ systemDictionary = {
         'es': 'Descripción de option3',
         'pl': 'opis opcji3',
         'zh-cn': 'option3描述'
-    }
+    },
+    "Delay for Edgecut": {
+        "en": "Delay for Edgecut in ms",
+        "ru": "Задержка для Edgecut in ms",
+        "de": "Verzögerung für Edgecut in ms",
+        "pt": "Atraso para Edgecut in ms",
+        "nl": "Vertraging voor Edgecut in ms",
+        "fr": "Retard pour Edgecut in ms",
+        "it": "Ritardo per Edgecut in ms",
+        "es": "Retraso para Edgecut in ms",
+        "pl": "Opóźnienie Edgecuta in ms",
+        "zh-cn": "Edgecut的延迟 in ms"
+      }
 
 };

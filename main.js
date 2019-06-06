@@ -82,7 +82,6 @@ class Worx extends utils.Adapter {
         // this.config:
         this.log.info('config e-mail: ' + this.config.mail);
         this.log.info('config password: ' + this.config.password);
-        this.log.info('config mower: ' + this.config.mower);
 
         this.setStateAsync('info.connection', {
             val: false,
@@ -286,7 +285,7 @@ class Worx extends utils.Adapter {
             setTimeout(function(){
                 that.log.debug('Edcut send cmd:2');
                 mower.sendMessage('{"cmd":2}');
-            }, 10000);
+            }, that.config.edgeCutDelay);
  
         } else if (state === 34 && mower.edgeCut) {
             that.log.debug('Edcut send cmd:3');

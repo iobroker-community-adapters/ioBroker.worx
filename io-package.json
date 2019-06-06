@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "0.2.0",
+        "version": "0.3.0",
         "news": {
+            "0.3.0": {
+                "en": "add delay in config for edgecut",
+                "de": "Einstellbare Verzögerung für edgecut"
+              },
             "0.2.0": {
                 "en": "add border cut, cleanup fixed errors",
                 "de": "border Cut hinzugefügt, code bereinigt, fkleine fehler behoben"
@@ -85,9 +89,9 @@
         ]
     },
     "native": {
-        "mail": "default",
-        "password": "1",
-        "mower": 0
+        "mail": "",
+        "password": "",
+        "edgeCutDelay": 5000
     },
     "objects": [],
     "instanceObjects": [
