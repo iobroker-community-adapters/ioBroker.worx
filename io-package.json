@@ -1,11 +1,19 @@
 {
     "common": {
         "name": "worx",
-        "version": "0.3.0",
+        "version": "0.3.1",
         "news": {
-            "0.3.0": {
-                "en": "add delay in config for edgecut",
-                "de": "Einstellbare Verzögerung für edgecut"
+            "0.3.1": {
+                "en": "add delay in config for edgecut, fix mowtime error",
+                "ru": "добавить задержку в конфигурации для edgecut, исправить ошибку mowtime",
+                "de": "Verzögerung in der Konfiguration für Kantenschnitt hinzufügen, Fehler bei der Mähzeit beheben",
+                "fr": "ajoute un délai dans la configuration pour edgecut, corrige l'erreur mowtime",
+                "nl": "voeg vertraging toe in config voor edgecut, fix maaittime error",
+                "es": "agregue retraso en la configuración para edgecut, arregle el error de mowtime",
+                "it": "aggiungere ritardo in config per edgecut, correggere l'errore di mowtime",
+                "pl": "dodaj opóźnienie w konfiguracji dla edgecut, napraw błąd mowtime",
+                "pt": "adicione o atraso na configuração para o edgecut, corrija o erro do mowtime",
+                "zh-cn": "在edgecut的配置中添加延迟，修复mowtime错误"
               },
             "0.2.0": {
                 "en": "add border cut, cleanup fixed errors",
@@ -36,37 +44,39 @@
                 "zh-cn": "首次出版"
             }
         },
-        "title": "control your worx",
+        "title": "Worx Landroid Cloud",
         "titleLang": {
-            "en": "control your worx",
-            "de": "steuere deine worx",
-            "ru": "управляй своим червем",
-            "pt": "controle seu worx",
-            "nl": "controleer uw worx",
-            "fr": "contrôlez votre travail",
-            "it": "controlla il tuo worx",
-            "es": "controla tu mundo",
-            "pl": "kontroluj swój worx",
-            "zh-cn": "控制你的烦恼"
-        },
+            "en": "Worx Landroid mower (cloud)",
+            "de": "Worx Landroid Mähroboter (Cloud)",
+            "ru": "Косилка Worx Landroid (облачная)",
+            "pt": "Segadeira Landroid Worx (nuvem)",
+            "fr": "Worx Landroid tondeuse (nuage)",
+            "nl": "Worx Landroid-maaier (cloud)",
+            "es": "Cortacésped Worx Landroid (nube)",
+            "it": "Worx Landroid mower (cloud)",
+            "pl": "Worx Kosiarka Landroid (chmura)",
+            "zh-cn": "Worx Landroid割草机（云）"
+          },
         "desc": {
-            "en": "control via cloud and mqtt",
-            "de": "Steuerung über Cloud und Mqtt",
-            "ru": "управление через облако и mqtt",
-            "pt": "controle via cloud e mqtt",
-            "nl": "controle via cloud en mqtt",
-            "fr": "contrôle via cloud et mqtt",
-            "it": "controllo via cloud e mqtt",
-            "es": "control a través de la nube y mqtt",
-            "pl": "kontrola przez chmurę i mqtt",
-            "zh-cn": "通过云和mqtt控制"
-        },
+            "en": "This adapter connects your ioBroker to the cloud of your Worx Landroid",
+            "ru": "Этот адаптер соединяет ваш ioBroker с облаком вашего Worx Landroid",
+            "de": "Dieser Adapter verbindet deinen ioBroker mit der Cloud deines Worx Landroids",
+            "pt": "Este adaptador conecta seu ioBroker à nuvem de seu Landroid Worx",
+            "fr": "Cet adaptateur connecte votre ioBroker au nuage de votre Worx Landroid",
+            "es": "Este adaptador conecta su ioBroker a la nube de su Worx Landroid",
+            "nl": "Deze adapter verbindt uw ioBroker met de cloud van uw Worx Landroid",
+            "it": "Questo adattatore collega ioBroker al cloud del tuo Worx Landroid",
+            "pl": "Ten adapter łączy urządzenie ioBroker z chmurą Worx Landroid",
+            "zh-cn": "此适配器将您的ioBroker连接到Worx Landroid的云"
+          },
         "authors": [
             "MeisterTR <meistertr.smarthome@gmail.com>"
         ],
         "keywords": [
             "ioBroker",
-            "template",
+            "mower",
+            "Landroid",
+            "Worx",
             "Smart Home",
             "home automation"
         ],

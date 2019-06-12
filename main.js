@@ -1049,7 +1049,7 @@ class Worx extends utils.Adapter {
 
         let val = value;
         let sval;
-        let message = mower.message; // set aktual values
+        let message = mower.message.cfg.sc.d; // set aktual values
         let dayID = week.indexOf(id.split('.')[4]);
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 

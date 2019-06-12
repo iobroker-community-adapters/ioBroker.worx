@@ -1,7 +1,7 @@
 {
   "name": "iobroker.worx",
-  "version": "0.3.0",
-  "description": "control via cloud and mqtt",
+  "version": "0.3.1",
+  "description": "Worx Landroid mower (Cloud)",
   "author": {
     "name": "MeisterTR",
     "email": "meistertr.smarthome@gmail.com"
