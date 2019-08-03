@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "0.3.1",
+        "version": "0.4.0",
         "news": {
+            "0.4.0":{    
+                "en": "fix multi mower fix online status fix loglevel",
+                "de": "Multi-Mäher reparieren Online-Status korrigieren loglevel",
+                "ru": "исправить мульти косилка исправить онлайн статус исправить лог-уровень",
+                "pt": "corrigir nível de log de correção de status on-line",
+                "nl": "fix multi maaier fix online status fix loglevel",
+                "fr": "fixer multi tondeuse fixer le statut en ligne",
+                "it": "correzione multi mower correzione dello stato online correzione loglevel",
+                "es": "arreglar multi cortacésped arreglar estado en línea arreglar loglevel",
+                "pl": "fix multi kosiarka fix online status fix loglevel",
+                "zh-cn": "修复多割草机修复在线状态修复loglevel"
+            },
             "0.3.1": {
                 "en": "add delay in config for edgecut, fix mowtime error",
                 "ru": "добавить задержку в конфигурации для edgecut, исправить ошибку mowtime",
