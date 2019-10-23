@@ -156,6 +156,12 @@ class Worx extends utils.Adapter {
         //mower set states
         var sequence = [];
         that.log.debug("GET MQTT DATA from API: " + JSON.stringify(data));
+
+        //catch error if onj is empty
+        if(Object.keys(data).length === 0 && data.constructor === Object){
+            that.log.debug("GET Empty MQTT DATA from API");
+            return
+        }
         if (that.config.houerKm) {
             that.setStateAsync(mowerSerial + '.mower.totalTime', {
                 val: (data.dat.st && data.dat.st.wt ? data.dat.st.wt : null),
