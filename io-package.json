@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "0.4.0",
+        "version": "1.0.0",
         "news": {
+            "1.0.0": {
+                "en": "stable, transfer to community",
+                "de": "stabil, Transfer in die Gemeinschaft",
+                "ru": "стабильный, передача в сообщество",
+                "pt": "estável, transferência para a comunidade",
+                "nl": "stabiel, overdracht naar gemeenschap",
+                "fr": "stable, transfert en communauté",
+                "it": "stabile, trasferimento in comunità",
+                "es": "estable, traslado a comunidad",
+                "pl": "stabilny, przeniesienie do społeczności",
+                "zh-cn": "稳定，转移到社区"
+              },
             "0.4.0":{    
                 "en": "fix multi mower fix online status fix loglevel",
                 "de": "Multi-Mäher reparieren Online-Status korrigieren loglevel",
@@ -97,8 +109,8 @@
         "main": "main.js",
         "icon": "worx.png",
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/MeisterTR/ioBroker.worx/master/admin/worx.png",
-        "readme": "https://github.com/MeisterTR/ioBroker.worx/blob/master/README.md",
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapter/ioBroker.worx/master/admin/worx.png",
+        "readme": "https://github.com/iobroker-community-adapter/ioBroker.worx/blob/master/README.md",
         "loglevel": "info",
         "mode": "daemon",
         "type": "garden",
