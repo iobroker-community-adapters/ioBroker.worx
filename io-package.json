@@ -110,7 +110,7 @@
         "icon": "worx.png",
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
-        "readme": "https://github.com/iobroker-community-adapter/ioBroker.worx/blob/master/README.md",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
         "loglevel": "info",
         "mode": "daemon",
         "type": "garden",
