@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "news": {
+            "1.0.1":{
+                "en": "fix  blocked error",
+                "de": "Blockierten Fehler beheben",
+                "ru": "исправить заблокированную ошибку",
+                "pt": "corrigir erro bloqueado",
+                "nl": "herstel geblokkeerde fout",
+                "fr": "corriger l'erreur bloquée",
+                "it": "correggere l'errore bloccato",
+                "es": "corregir error bloqueado",
+                "pl": "naprawić zablokowany błąd",
+                "zh-cn": "修复阻止的错误"
+              },
             "1.0.0": {
                 "en": "stable, transfer to community",
                 "de": "stabil, Transfer in die Gemeinschaft",
