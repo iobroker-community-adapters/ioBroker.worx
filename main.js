@@ -350,48 +350,51 @@ class Worx extends utils.Adapter {
             mower.weather().then(weather => {
                 that.log.debug("Weather_ " + JSON.stringify(weather));
                 that.log.debug("Weather_d " + new Date(weather.dt * 1000));
+
+                if(typeof(weather) === "undefined") return
+
                 that.setStateAsync(mower.serial + '.weather.clouds', {
-                    val: weather.clouds.all,
+                    val: weather.clouds.all | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.description', {
-                    val: weather.weather[0].description,
+                    val: weather.weather[0].description | 'no data',
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.main', {
-                    val: weather.weather[0].main,
+                    val: weather.weather[0].main | 0 ,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.icon', {
-                    val: weather.weather[0].icon,
+                    val: weather.weather[0].icon | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.humidity', {
-                    val: weather.main.humidity,
+                    val: weather.main.humidity | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.temp', {
-                    val: weather.main.temp,
+                    val: weather.main.temp | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.temp_min', {
-                    val: weather.main.temp_min,
+                    val: weather.main.temp_min | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.temp_max', {
-                    val: weather.main.temp_max,
+                    val: weather.main.temp_max | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.pressure', {
-                    val: weather.main.pressure,
+                    val: weather.main.pressure | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.wind_speed', {
-                    val: weather.wind.speed,
+                    val: weather.wind.speed | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.wind_deg', {
-                    val: weather.wind.deg,
+                    val: weather.wind.deg | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.lastUpdate', {
@@ -399,6 +402,7 @@ class Worx extends utils.Adapter {
                     ack: true
                 });
             })
+            .catch(error => {that.log.debug("Error while get Weather")});
         }
     }
     /**
