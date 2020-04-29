@@ -1,19 +1,19 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "news": {
-            "1.0.1":{
-                "en": "fix  blocked error",
-                "de": "Blockierten Fehler beheben",
-                "ru": "исправить заблокированную ошибку",
-                "pt": "corrigir erro bloqueado",
-                "nl": "herstel geblokkeerde fout",
-                "fr": "corriger l'erreur bloquée",
-                "it": "correggere l'errore bloccato",
-                "es": "corregir error bloqueado",
-                "pl": "naprawić zablokowany błąd",
-                "zh-cn": "修复阻止的错误"
+            "1.0.2":{
+                "en": "better error Handling, fixed blocked error",
+                "de": "Bessere Fehlerbehandlung, blockierter Fehler behoben",
+                "ru": "улучшена обработка ошибок, исправлена ошибка блокировки",
+                "pt": "melhor manipulação de erro, erro bloqueado fixo",
+                "nl": "betere fout Afhandeling, vaste geblokkeerde fout",
+                "fr": "meilleure gestion des erreurs, erreur bloquée fixe",
+                "it": "migliore gestione degli errori, errore bloccato bloccato",
+                "es": "mejor manejo de errores, error bloqueado fijo",
+                "pl": "lepszy błąd Obsługa, naprawiony zablokowany błąd",
+                "zh-cn": "更好的错误处理，修复了阻塞的错误"
               },
             "1.0.0": {
                 "en": "stable, transfer to community",
