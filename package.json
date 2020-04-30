@@ -25,7 +25,8 @@
     "uuid": "^3.1.0",
     "request-promise": "^4.2.4",
     "circular-json": "^0.5.9",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@iobroker/testing": "^1.2.0",
@@ -55,10 +56,13 @@
     "test:integration": "mocha test/integration --exit",
     "test": "npm run test:js && npm run test:package",
     "lint": "npm run lint:js",
-    "lint:js": "eslint"
+    "lint:js": "eslint",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.worx/issues"
   },
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "snyk": true
 }
