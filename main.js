@@ -947,7 +947,7 @@ class Worx extends utils.Adapter {
             common: {
                 name: 'send Command',
                 type: 'number',
-                role: '',
+                role: 'value',
                 read: true,
                 write: true,
                 desc: 'send Command to Landroid'
@@ -1221,7 +1221,7 @@ class Worx extends utils.Adapter {
         const val = value;
         
         that.log.debug('Send cmd:' + val);
-        that.WorxCloud.sendMessage('{"cmd": + val + '}',mower.serial);
+        that.WorxCloud.sendMessage('{"cmd":' + val + '}',mower.serial);
     }
 
     // /**
