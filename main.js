@@ -956,12 +956,15 @@ class Worx extends utils.Adapter {
                 name: 'send Command',
                 type: 'number',
                 role: 'indicator.Command',
+                min: '1',
+                max: '6',
                 read: true,
                 write: true,
                 desc: 'send Command to Landroid',
                 states: COMMANDCODES
             },
-            native: {}
+            native: {},
+            "type": "state"
         });
         return "ready";
 
