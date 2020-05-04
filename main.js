@@ -942,6 +942,19 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
+        await that.setObjectNotExistsAsync(mower.serial + '.mower.sendCommand', {
+            type: 'number',
+            common: {
+                name: 'send Command',
+                type: 'number',
+                role: '',
+                read: true,
+                write: true,
+                desc: 'send Command to Landroid'
+
+            },
+            native: {}
+        });
         return "ready";
 
     }
@@ -1201,6 +1214,14 @@ class Worx extends utils.Adapter {
             that.WorxCloud.sendMessage('{"cmd":4}',mower.serial); // starte ZoneTraining
         }
 
+    }
+    
+    sendCommand(value, mower) {
+        let that = this;
+        const val = value;
+        
+        that.log.debug('Send cmd:' + val);
+        that.WorxCloud.sendMessage('{"cmd": + val + '}',mower.serial);
     }
 
     // /**
