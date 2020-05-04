@@ -177,15 +177,15 @@ class Worx extends utils.Adapter {
             });
         } else {
             that.setStateAsync(mowerSerial + ".mower.totalTime", {
-                val: (data.dat.st && data.dat.st.wt ? Math.round(data.dat.st.wt / 6) / 10 : null),
+                val: (data.dat.st && data.dat.st.wt ? (data.dat.st.wt / 6) / 10 : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalDistance", {
-                val: (data.dat.st && data.dat.st.d ? Math.round(data.dat.st.d / 100) / 10 : null),
+                val: (data.dat.st && data.dat.st.d ? (data.dat.st.d / 100) / 10 : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalBladeTime", {
-                val: (data.dat.st && data.dat.st.b ? Math.round(data.dat.st.b / 6) / 10 : null),
+                val: (data.dat.st && data.dat.st.b ? (data.dat.st.b / 6) / 10 : null),
                 ack: true
             });
         }
