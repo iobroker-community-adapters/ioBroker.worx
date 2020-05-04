@@ -53,6 +53,14 @@ const STATUSCODES = {
     33: 'Searching zone',
     34: 'Pause'
 };
+const COMMANDCODES = {
+    1: 'Start',
+    2: 'Stop',
+    3: 'Home',
+    4: 'Zone Taining',
+    5: 'Lock',
+    6: 'Unlock'
+};
 const WEATHERINTERVALL = 60000 * 60 // = 30 min.
 
 class Worx extends utils.Adapter {
@@ -947,11 +955,11 @@ class Worx extends utils.Adapter {
             common: {
                 name: 'send Command',
                 type: 'number',
-                role: 'value',
+                role: 'indicator.Command',
                 read: true,
                 write: true,
-                desc: 'send Command to Landroid'
-
+                desc: 'send Command to Landroid',
+                states: COMMANDCODES
             },
             native: {}
         });
