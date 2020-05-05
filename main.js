@@ -1227,7 +1227,7 @@ class Worx extends utils.Adapter {
 
     }
     
-    sendCommand(value, mower) {
+    async sendCommand(value, mower) {
         let that = this;
         const val = value;
         
