@@ -59,7 +59,23 @@ const COMMANDCODES = {
     3: 'Home',
     4: 'Zone Taining',
     5: 'Lock',
-    6: 'Unlock'
+    6: 'Unlock',
+    7: ???,
+    8: ???,
+    9: ???,
+    10: ???,
+    11: ???,
+    12: ???,
+    13: ???,
+    14: ???,
+    15: ???,
+    16: ???,
+    17: ???,
+    18: ???,
+    19: ???,
+    20: ???,
+    21: ???,
+    22: ???   
 };
 const WEATHERINTERVALL = 60000 * 60 // = 30 min.
 
@@ -957,7 +973,7 @@ class Worx extends utils.Adapter {
                 type: 'number',
                 role: 'indicator.Command',
                 min: '1',
-                max: '6',
+                max: '22',
                 read: true,
                 write: true,
                 desc: 'send Command to Landroid',
