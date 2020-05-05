@@ -57,10 +57,10 @@ const COMMANDCODES = {
     1: 'Start',
     2: 'Stop',
     3: 'Home',
-    4: 'Zone Taining',
+    4: 'Start Zone Taining',
     5: 'Lock',
     6: 'Unlock',
-    7: 'Restart'
+    7: 'Restart Robot'
 };
 const WEATHERINTERVALL = 60000 * 60 // = 30 min.
 
