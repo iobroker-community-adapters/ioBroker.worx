@@ -198,7 +198,18 @@ class Worx extends utils.Adapter {
                 ack: true
             });
         }
-
+		that.setStateAsync(mowerSerial + ".mower.gradient", {
+			val: (data.dat.dmp && data.dat.dmp[0] ? data.dat.dmp[0] : 0),
+			ack: true
+		});
+		that.setStateAsync(mowerSerial + ".mower.inclination", {
+			val: (data.dat.dmp && data.dat.dmp[1] ? data.dat.dmp[1] : 0),
+			ack: true
+		});
+		that.setStateAsync(mowerSerial + ".mower.direction", {
+			val: (data.dat.dmp && data.dat.dmp[2] ? data.dat.dmp[2] : 0),
+			ack: true
+		});
 
         that.setStateAsync(mowerSerial + ".mower.batteryChargeCycle", {
             val: (data.dat.bt && data.dat.bt.nr ? data.dat.bt.nr : null),
@@ -966,6 +977,45 @@ class Worx extends utils.Adapter {
             },
             native: {},
             "type": "state"
+        });
+		await that.setObjectNotExistsAsync(mower.serial + '.mower.gradient', {
+            type: 'state',
+            common: {
+                name: 'Gradient',
+                type: 'number',
+                role: 'value.interval',
+                read: true,
+                write: false,
+                unit: '°',
+                desc: 'Gradient from the mower'
+            },
+            native: {}
+        });
+		await that.setObjectNotExistsAsync(mower.serial + '.mower.inclination', {
+            type: 'state',
+            common: {
+                name: 'Inclination',
+                type: 'number',
+                role: 'value.interval',
+                read: true,
+                write: false,
+                unit: '°',
+                desc: 'Inclination from the mower'
+            },
+            native: {}
+        });
+		await that.setObjectNotExistsAsync(mower.serial + '.mower.direction', {
+            type: 'state',
+            common: {
+                name: 'Direction',
+                type: 'number',
+                role: 'value.interval',
+                read: true,
+                write: false,
+                unit: '°',
+                desc: 'Direction from the mower'
+            },
+            native: {}
         });
         return "ready";
 
