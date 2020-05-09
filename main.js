@@ -332,7 +332,7 @@ class Worx extends utils.Adapter {
             that.log.warn('Something went wrong at edgeCut')
         }
 	if (mower.pull) {
-	    onReady();
+	    setStates();
 	}
 
 
