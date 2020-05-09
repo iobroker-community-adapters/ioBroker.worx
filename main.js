@@ -1017,19 +1017,6 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-	await that.setObjectNotExistsAsync(mower.serial + '.mower.pull', {
-            type: 'state',
-            common: {
-                name: 'Pull',
-                type: 'boolean',
-                role: 'button.pull',
-                read: true,
-                write: true,
-                desc: 'pull config'
-
-            },
-            native: {}
-        });
         return "ready";
 
     }
@@ -1111,9 +1098,7 @@ class Worx extends utils.Adapter {
                     that.edgeCutting(id, state.val, mower);
                 } else if (command === "sendCommand") {
                     that.sendCommand(state.val, mower);
-                } else if (command === "pull") {
-	    	    that.setStates(mower, data);
-		}
+                } 
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
         }
