@@ -331,6 +331,9 @@ class Worx extends utils.Adapter {
             mower.edgeCut = false;
             that.log.warn('Something went wrong at edgeCut')
         }
+	if (mower.pull) {
+	    onReady();
+	}
 
 
         //Calendar
@@ -1014,6 +1017,19 @@ class Worx extends utils.Adapter {
                 write: false,
                 unit: '°',
                 desc: 'Direction from the mower'
+            },
+            native: {}
+        });
+	await that.setObjectNotExistsAsync(mower.serial + '.mower.pull', {
+            type: 'state',
+            common: {
+                name: 'Pull',
+                type: 'boolean',
+                role: 'button.pull',
+                read: true,
+                write: true,
+                desc: 'pull config'
+
             },
             native: {}
         });
