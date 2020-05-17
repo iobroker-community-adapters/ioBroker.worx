@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.0.2",
+        "version": "1.1.0",
         "news": {
+            "1.1.0":{
+                "en": "added kress and landxcape",
+                "de": "Kress und Landxcape hinzugefügt",
+                "ru": "добавлен кресс и пейзаж",
+                "pt": "adicionado kress e landxcape",
+                "nl": "kress en landxcape toegevoegd",
+                "fr": "ajout de kress et landxcape",
+                "it": "aggiunto kress e landxcape",
+                "es": "Kress agregado y landxcape",
+                "pl": "dodano kress i landxcape",
+                "zh-cn": "添加了kress和landxcape"
+              },
             "1.0.2":{
                 "en": "better error Handling, fixed blocked error",
                 "de": "Bessere Fehlerbehandlung, blockierter Fehler behoben",
@@ -137,7 +149,8 @@
     "native": {
         "mail": "",
         "password": "",
-        "edgeCutDelay": 5000
+        "edgeCutDelay": 5000,
+        "server":"worx"
     },
     "objects": [],
     "instanceObjects": [
