@@ -53,6 +53,15 @@ const STATUSCODES = {
     33: 'Searching zone',
     34: 'Pause'
 };
+const COMMANDCODES = {
+    1: 'Start',
+    2: 'Stop',
+    3: 'Home',
+    4: 'Start Zone Taining',
+    5: 'Lock',
+    6: 'Unlock',
+    7: 'Restart Robot'
+};
 const WEATHERINTERVALL = 60000 * 60 // = 30 min.
 
 class Worx extends utils.Adapter {
@@ -177,19 +186,30 @@ class Worx extends utils.Adapter {
             });
         } else {
             that.setStateAsync(mowerSerial + ".mower.totalTime", {
-                val: (data.dat.st && data.dat.st.wt ? Math.round(data.dat.st.wt / 6) / 10 : null),
+                val: (data.dat.st && data.dat.st.wt ? (data.dat.st.wt / 6) / 10 : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalDistance", {
-                val: (data.dat.st && data.dat.st.d ? Math.round(data.dat.st.d / 100) / 10 : null),
+                val: (data.dat.st && data.dat.st.d ? (data.dat.st.d / 100) / 10 : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalBladeTime", {
-                val: (data.dat.st && data.dat.st.b ? Math.round(data.dat.st.b / 6) / 10 : null),
+                val: (data.dat.st && data.dat.st.b ? (data.dat.st.b / 6) / 10 : null),
                 ack: true
             });
         }
-
+		that.setStateAsync(mowerSerial + ".mower.gradient", {
+			val: (data.dat.dmp && data.dat.dmp[0] ? data.dat.dmp[0] : 0),
+			ack: true
+		});
+		that.setStateAsync(mowerSerial + ".mower.inclination", {
+			val: (data.dat.dmp && data.dat.dmp[1] ? data.dat.dmp[1] : 0),
+			ack: true
+		});
+		that.setStateAsync(mowerSerial + ".mower.direction", {
+			val: (data.dat.dmp && data.dat.dmp[2] ? data.dat.dmp[2] : 0),
+			ack: true
+		});
 
         that.setStateAsync(mowerSerial + ".mower.batteryChargeCycle", {
             val: (data.dat.bt && data.dat.bt.nr ? data.dat.bt.nr : null),
@@ -942,6 +962,61 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
+        await that.setObjectNotExistsAsync(mower.serial + '.mower.sendCommand', {
+            type: 'number',
+            common: {
+                name: 'send Command',
+                type: 'number',
+                role: 'indicator.Command',
+                min: '1',
+                max: '7',
+                read: true,
+                write: true,
+                desc: 'send Command to Landroid',
+                states: COMMANDCODES
+            },
+            native: {},
+            "type": "state"
+        });
+		await that.setObjectNotExistsAsync(mower.serial + '.mower.gradient', {
+            type: 'state',
+            common: {
+                name: 'Gradient',
+                type: 'number',
+                role: 'value.interval',
+                read: true,
+                write: false,
+                unit: '°',
+                desc: 'Gradient from the mower'
+            },
+            native: {}
+        });
+		await that.setObjectNotExistsAsync(mower.serial + '.mower.inclination', {
+            type: 'state',
+            common: {
+                name: 'Inclination',
+                type: 'number',
+                role: 'value.interval',
+                read: true,
+                write: false,
+                unit: '°',
+                desc: 'Inclination from the mower'
+            },
+            native: {}
+        });
+		await that.setObjectNotExistsAsync(mower.serial + '.mower.direction', {
+            type: 'state',
+            common: {
+                name: 'Direction',
+                type: 'number',
+                role: 'value.interval',
+                read: true,
+                write: false,
+                unit: '°',
+                desc: 'Direction from the mower'
+            },
+            native: {}
+        });
         return "ready";
 
     }
@@ -1021,7 +1096,9 @@ class Worx extends utils.Adapter {
                     that.log.debug("Mow times disabled: " + message.m);
                 } else if (command === "edgecut") {
                     that.edgeCutting(id, state.val, mower);
-                }
+                } else if (command === "sendCommand") {
+                    that.sendCommand(state.val, mower);
+                } 
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
         }
@@ -1201,6 +1278,14 @@ class Worx extends utils.Adapter {
             that.WorxCloud.sendMessage('{"cmd":4}',mower.serial); // starte ZoneTraining
         }
 
+    }
+    
+    async sendCommand(value, mower) {
+        let that = this;
+        const val = value;
+        
+        that.log.debug('Send cmd:' + val);
+        that.WorxCloud.sendMessage('{"cmd":' + val + '}',mower.serial);
     }
 
     // /**
