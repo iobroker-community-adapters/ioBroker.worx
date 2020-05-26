@@ -1253,6 +1253,8 @@ class Worx extends utils.Adapter {
         let that = this;
         const val = value;
         const message = mower.message.cfg.sc; // set aktual values
+	
+	that.log.debug("MowerTimeExtend JSON : " + JSON.stringify(message));
 
         if (!isNaN(val) && val >= -100 && val <= 100) {
             message.p = val;
