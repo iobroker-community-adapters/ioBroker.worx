@@ -1091,6 +1091,10 @@ class Worx extends utils.Adapter {
                 } else if (command === "mowerActive") {
                     const val = (state.val ? 1 : 0);
                     const message = mower.message.cfg.sc;
+
+                    //hotfix 030620
+                    delete message.ots;
+
                     message.m = val;
                     that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}',mower.serial);
                     that.log.debug("Mow times disabled: " + message.m);
@@ -1253,6 +1257,10 @@ class Worx extends utils.Adapter {
         let that = this;
         const val = value;
         const message = mower.message.cfg.sc; // set aktual values
+
+        
+        //hotfix 030620
+        delete message.ots;
 
         if (!isNaN(val) && val >= -100 && val <= 100) {
             message.p = val;
