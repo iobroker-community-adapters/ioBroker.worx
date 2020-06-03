@@ -1257,6 +1257,8 @@ class Worx extends utils.Adapter {
         let that = this;
         const val = value;
         const message = mower.message.cfg.sc; // set aktual values
+	
+	that.log.debug("MowerTimeExtend JSON : " + JSON.stringify(message));
 
         
         //hotfix 030620
