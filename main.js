@@ -194,7 +194,7 @@ class Worx extends utils.Adapter {
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalBladeTime", {
-                val: (data.dat.st && data.dat.st.b ? parseFloat((data.dat.st.b / 6) / 10)).toFixed(2) : null),
+                val: (data.dat.st && data.dat.st.b ? parseFloat((data.dat.st.b / 6) / 10).toFixed(2) : null),
                 ack: true
             });
         }
