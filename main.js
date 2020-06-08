@@ -173,28 +173,28 @@ class Worx extends utils.Adapter {
         }
         if (that.config.houerKm) {
             that.setStateAsync(mowerSerial + '.mower.totalTime', {
-                val: (data.dat.st && data.dat.st.wt ? data.dat.st.wt : null),
+                val: (data.dat.st && data.dat.st.wt ? parseFloat(data.dat.st.wt).toFixed(2) : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalDistance", {
-                val: (data.dat.st && data.dat.st.d ? data.dat.st.d : null),
+                val: (data.dat.st && data.dat.st.d ? parseFloat(data.dat.st.d).toFixed(2) : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalBladeTime", {
-                val: (data.dat.st && data.dat.st.b ? data.dat.st.b : null),
+                val: (data.dat.st && data.dat.st.b ? parseFloat(data.dat.st.b).toFixed(2) : null),
                 ack: true
             });
         } else {
             that.setStateAsync(mowerSerial + ".mower.totalTime", {
-                val: (data.dat.st && data.dat.st.wt ? (data.dat.st.wt / 6) / 10 : null),
+                val: (data.dat.st && data.dat.st.wt ? parseFloat((data.dat.st.wt / 6) / 10).toFixed(2) : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalDistance", {
-                val: (data.dat.st && data.dat.st.d ? (data.dat.st.d / 100) / 10 : null),
+                val: (data.dat.st && data.dat.st.d ? parseFloat((data.dat.st.d / 100) / 10).toFixed(2) : null),
                 ack: true
             });
             that.setStateAsync(mowerSerial + ".mower.totalBladeTime", {
-                val: (data.dat.st && data.dat.st.b ? (data.dat.st.b / 6) / 10 : null),
+                val: (data.dat.st && data.dat.st.b ? parseFloat((data.dat.st.b / 6) / 10).toFixed(2) : null),
                 ack: true
             });
         }
