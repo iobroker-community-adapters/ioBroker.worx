@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "news": {
+            "1.1.1":{
+                "en": "removed typos"
+            },
             "1.1.0":{
                 "en": "added kress and landxcape",
                 "de": "Kress und Landxcape hinzugefügt",
@@ -14,7 +17,7 @@
                 "es": "Kress agregado y landxcape",
                 "pl": "dodano kress i landxcape",
                 "zh-cn": "添加了kress和landxcape"
-              },
+            },
             "1.0.2":{
                 "en": "better error Handling, fixed blocked error",
                 "de": "Bessere Fehlerbehandlung, blockierter Fehler behoben",
@@ -26,7 +29,7 @@
                 "es": "mejor manejo de errores, error bloqueado fijo",
                 "pl": "lepszy błąd Obsługa, naprawiony zablokowany błąd",
                 "zh-cn": "更好的错误处理，修复了阻塞的错误"
-              },
+            },
             "1.0.0": {
                 "en": "stable, transfer to community",
                 "de": "stabil, Transfer in die Gemeinschaft",
@@ -38,7 +41,7 @@
                 "es": "estable, traslado a comunidad",
                 "pl": "stabilny, przeniesienie do społeczności",
                 "zh-cn": "稳定，转移到社区"
-              },
+            },
             "0.4.0":{    
                 "en": "fix multi mower fix online status fix loglevel",
                 "de": "Multi-Mäher reparieren Online-Status korrigieren loglevel",
@@ -62,11 +65,11 @@
                 "pl": "dodaj opóźnienie w konfiguracji dla edgecut, napraw błąd mowtime",
                 "pt": "adicione o atraso na configuração para o edgecut, corrija o erro do mowtime",
                 "zh-cn": "在edgecut的配置中添加延迟，修复mowtime错误"
-              },
+            },
             "0.2.0": {
                 "en": "add border cut, cleanup fixed errors",
-                "de": "border Cut hinzugefügt, code bereinigt, fkleine fehler behoben"
-              },
+                "de": "border Cut hinzugefügt, code bereinigt, kleine fehler behoben"
+            },
             "0.1.0": {
                 "en": "first working version",
                 "de": "erste Arbeitsversion",
@@ -78,7 +81,7 @@
                 "es": "primera versión de trabajo",
                 "pl": "pierwsza działająca wersja",
                 "zh-cn": "第一个工作版"
-              },
+            },
             "0.0.1": {
                 "en": "initial release",
                 "de": "Erstveröffentlichung",
