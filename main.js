@@ -1031,7 +1031,8 @@ class Worx extends utils.Adapter {
             this.log.info('cleaned everything up...');
             callback();
         } catch (e) {
-            callback();
+            this.log.error('Error cleaning up adapter on shut down ' + e);
+	    callback();
         }
     }
 
