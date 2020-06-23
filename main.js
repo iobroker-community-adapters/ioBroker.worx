@@ -1122,7 +1122,7 @@ class Worx extends utils.Adapter {
             that.WorxCloud.sendMessage('{"cmd":1}', mower.serial); //start code for mower
             that.log.debug("Start mower");
         } else {
-            that.log.warn("Can not start mover because he is not at home or there is an Error please take a look at the mover");
+            that.log.warn("Can not start mower because he is not at home or there is an error please verify mower state");
             that.setStateAsync(mower.serial + ".mower.state", {
                 val: false,
                 ack: true
@@ -1138,7 +1138,7 @@ class Worx extends utils.Adapter {
             this.WorxCloud.sendMessage('{"cmd":3}',mower.serial); //"Back to home" code for mower
             this.log.debug("mower going back home");
         } else {
-            this.log.warn("Can not stop mover because he did not mow or theres an error");
+            this.log.warn("Can not stop mower because he did not mow or there is an error");
             this.setStateAsync(mower.serial + ".mower.state", {
                 val: true,
                 ack: true
@@ -1155,7 +1155,7 @@ class Worx extends utils.Adapter {
 
         let val = value;
         let sval;
-        let message = mower.message.cfg.sc.d; // set aktual values
+        let message = mower.message.cfg.sc.d; // set actual values
         let dayID = week.indexOf(id.split('.')[4]);
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 
@@ -1176,12 +1176,12 @@ class Worx extends utils.Adapter {
 
             } else that.log.error('Something went wrong while setting new mower times');
         } catch (e) {
-            that.log.error("Error while setting mowers config: " + e);
+            that.log.error("Error while setting mower config: " + e);
         }
 
         if (sval !== undefined) {
             message[dayID][valID] = sval;
-            that.log.debug("Mow time change to: " + JSON.stringify(message));
+            that.log.debug("Mowing time change to: " + JSON.stringify(message));
             that.WorxCloud.sendMessage('{"sc":{"d":' + JSON.stringify(message) + '}}',mower.serial);
 
         }
@@ -1196,7 +1196,7 @@ class Worx extends utils.Adapter {
     changeMowerArea(id, value, mower) {
         let that = this;
         let val = value;
-        let message = mower.message.cfg.mz; // set aktual values
+        let message = mower.message.cfg.mz; // set actual values
         let areaID = Number((id.split('_').pop()));
 
         try {
@@ -1205,14 +1205,14 @@ class Worx extends utils.Adapter {
                 that.WorxCloud.sendMessage('{"mz":' + JSON.stringify(message) + '}', mower.serial);
                 that.log.debug('Change Area ' + (areaID) + ' : ' + JSON.stringify(message));
             } else {
-                that.log.error('Area Value ist not correct, please type in a val between 0 and 500');
+                that.log.error('Area Value ist not correct, please type in a value between 0 and 500');
                 that.setState('areas.area_' + (areaID), {
                     val: (mower.message.cfg.mz && mower.message.cfg.mz[areaID] ? mower.message.cfg.mz[areaID] : 0),
                     ack: true
                 });
             }
         } catch (e) {
-            that.log.error('Error while setting mowers areas: ' + e);
+            that.log.error('Error while setting mower areas: ' + e);
         }
     }
 
@@ -1224,7 +1224,7 @@ class Worx extends utils.Adapter {
     startSequences(id, value, mower) {
         let that = this;
         let val = value;
-        let message = mower.message.cfg.mz; // set aktual values
+        let message = mower.message.cfg.mz; // set actual values
         let seq = [];
         try {
             seq = JSON.parse("[" + val + "]");
@@ -1245,7 +1245,7 @@ class Worx extends utils.Adapter {
             that.log.debug("new Array is: " + JSON.stringify(seq));
 
         } catch (e) {
-            that.log.error("Error while setting start seqence: " + e);
+            that.log.error("Error while setting start sequence: " + e);
         }
     }
 
@@ -1260,7 +1260,6 @@ class Worx extends utils.Adapter {
         const message = mower.message.cfg.sc; // set aktual values
 	
 	that.log.debug("MowerTimeExtend JSON : " + JSON.stringify(message));
-
         
         //hotfix 030620
         delete message.ots;
