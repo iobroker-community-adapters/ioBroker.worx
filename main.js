@@ -99,7 +99,7 @@ class Worx extends utils.Adapter {
         this.WorxCloud = new worx(this.config.mail, this.config.password,this);
 
         this.WorxCloud.on('connect', worxc => {
-            this.log.debug('Sucess connect to Worx Server!');
+            this.log.debug('Success connect to Worx Server!');
             this.setStateAsync('info.connection', {
                 val: true,
                 ack: true
