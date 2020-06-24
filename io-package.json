@@ -4,7 +4,7 @@
         "version": "1.1.1",
         "news": {
             "1.1.1":{
-                "en": "removed several typos, added error handling for server connection"
+                "en": "removed several typos, added error handling for server connection, updated dependencies"
             },
             "1.1.0":{
                 "en": "added kress and landxcape",
