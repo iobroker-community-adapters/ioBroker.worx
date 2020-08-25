@@ -12,6 +12,7 @@ travis/
 appveyor.yml
 .travis.yaml
 appveyor.yaml
+tsconfig.json
 
 tslint.json
 .eslintrc.json
