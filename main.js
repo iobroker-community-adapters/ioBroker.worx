@@ -1125,6 +1125,7 @@ class Worx extends utils.Adapter {
 
                     //hotfix 030620
                     delete message.ots;
+                    delete message.distm;
 
                     message.m = val;
                     that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
