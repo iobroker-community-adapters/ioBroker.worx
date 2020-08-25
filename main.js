@@ -63,6 +63,7 @@ const COMMANDCODES = {
     7: 'Restart Robot'
 };
 const WEATHERINTERVALL = 60000 * 60 // = 30 min.
+let weatherTimeout = null; 
 
 class Worx extends utils.Adapter {
 
@@ -362,12 +363,17 @@ class Worx extends utils.Adapter {
 
     UpdateWeather(mower) {
         let that = this;
+        
+
         that.log.debug("Weather_ " + JSON.stringify(mower));
         getWeather();
-        setInterval(getWeather, WEATHERINTERVALL);
+        weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
 
         function getWeather() {
             mower.weather().then(weather => {
+
+                    clearTimeout(weatherTimeout);
+
                     that.log.debug("Weather_ " + JSON.stringify(weather));
                     that.log.debug("Weather_d " + new Date(weather.dt * 1000));
 
@@ -421,9 +427,14 @@ class Worx extends utils.Adapter {
                         val: new Date((weather.dt * 1000)),
                         ack: true
                     });
+
+                    weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
                 })
                 .catch(error => {
-                    that.log.debug("Error while get Weather")
+                    that.log.debug("Error while get Weather: " + error)
+
+                    clearTimeout(weatherTimeout);
+                    weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
                 });
         }
     }
