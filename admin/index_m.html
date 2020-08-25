@@ -28,14 +28,12 @@
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.prop('checked', settings[id])
-                        .on('change', () => onChange())
-                        ;
+                        .on('change', () => onChange());
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.val(settings[id])
                         .on('change', () => onChange())
-                        .on('keyup', () => onChange())
-                        ;
+                        .on('keyup', () => onChange());
                 }
             });
             onChange(false);
@@ -72,27 +70,44 @@
         <!-- For example columns with settings: -->
         <div class="row">
 
-                    <div class="col s6 input-field">
-                        <input type="text" class="value" id="mail" />
-                        <label for="mail" class="translate">e-mail adress</label>
-                    </div>
-                    <div class="col s6 input-field">
-                        <input type="password" class="value" id="password" />
-                        <label for="password" class="translate">Type your pw</label>
-                    </div>
-                    <div class="input-field col s12 m4 l2 ">
-                        <select class="value " id="server" type="text">
-                            <option value="" disabled selected class="translate">server</option>
-                            <option value="worx">Worx</option>
-                            <option value="kress">Kress</option>
-                            <option value="landxcape">Landxcape</option>
-                        </select>
-                        <label class="translate" for="server">Server</label>
-                    </div>
-                    <div class="col s6 input-field">
-                        <input type="number" class="value" id="edgeCutDelay" />
-                        <label for="edgeCutDelay" class="translate">Delay for Edgecut</label>
-                    </div>
+            <div class="col s6 input-field">
+                <input type="text" class="value" id="mail" />
+                <label for="mail" class="translate">e-mail adress</label>
+            </div>
+            <div class="col s6 input-field">
+                <input type="password" class="value" id="password" />
+                <label for="password" class="translate">Type your pw</label>
+            </div>
+            <div class="input-field col s12 m4 l2 ">
+                <select class="value " id="server" type="text">
+                    <option value="" disabled selected class="translate">server</option>
+                    <option value="worx">Worx</option>
+                    <option value="kress">Kress</option>
+                    <option value="landxcape">Landxcape</option>
+                </select>
+                <label class="translate" for="server">Server</label>
+            </div>
+            <div class="col s6 input-field">
+                <input type="number" class="value" id="edgeCutDelay" />
+                <label for="edgeCutDelay" class="translate">Delay for Edgecut</label>
+            </div>
+        </div>
+        <div class="row" style="background-color: #2196f3;">
+            <div class="col s12">
+                <span class="translate">additional settings</span>
+                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <input class="value" id="enableJson" type="checkbox" /><span class="translate">add raw data</span>
+                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
+            </div>
+            <div class="col s12">
+                <input class="value" id="meterMin" type="checkbox" /><span class="translate">Distance and time in min and m</span>
+                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
+            </div>
         </div>
 
     </div>

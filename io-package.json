@@ -150,7 +150,8 @@
         "mail": "",
         "password": "",
         "edgeCutDelay": 5000,
-        "server":"worx"
+        "enableJson":false,
+        "meterMin":false
     },
     "objects": [],
     "instanceObjects": [

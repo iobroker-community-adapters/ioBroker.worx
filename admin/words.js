@@ -65,6 +65,40 @@ systemDictionary = {
         "es": "Retraso para Edgecut in ms",
         "pl": "Opóźnienie Edgecuta in ms",
         "zh-cn": "Edgecut的延迟 in ms"
-      }
+      },
+      "add raw data": {
+        "en": "add raw data",
+        "de": "Rohdaten hinzufügen",
+        "ru": "добавить необработанные данные",
+        "pt": "adicionar dados brutos",
+        "nl": "voeg onbewerkte gegevens toe",
+        "fr": "ajouter des données brutes",
+        "it": "aggiungi dati grezzi",
+        "es": "agregar datos sin procesar",
+        "pl": "dodaj surowe dane"
+    },
+
+    "Distance and time in min and m": {
+        "en": "Distance and time in min. and meter",
+        "de": "Entfernung und Zeit in Min. und Meter",
+        "ru": "Расстояние и время в мин и м",
+        "pt": "Distância e tempo em min e m",
+        "nl": "Afstand en tijd in min en m",
+        "fr": "Distance et temps en min et m",
+        "it": "Distanza e tempo in min e m",
+        "es": "Distancia y tiempo en minutos y m",
+        "pl": "Odległość i czas w minutach i m"
+    },
+    "additional settings": {
+        "en": "additional settings",
+        "de": "zusätzliche Einstellungen",
+        "ru": "дополнительные настройки",
+        "pt": "Configurações adicionais",
+        "nl": "aanvullende instellingen",
+        "fr": "paramètres additionnels",
+        "it": "altre impostazioni",
+        "es": "ajustes adicionales",
+        "pl": "dodatkowe ustawienia"
+    }
 
 };
