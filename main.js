@@ -11,6 +11,7 @@ const utils = require('@iobroker/adapter-core');
 // Load your modules here, e.g.:
 const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
+const objects = require(__dirname + '/lib/objects');
 
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
@@ -63,7 +64,7 @@ const COMMANDCODES = {
     7: 'Restart Robot'
 };
 const WEATHERINTERVALL = 60000 * 60 // = 30 min.
-let weatherTimeout = null; 
+let weatherTimeout = null;
 
 class Worx extends utils.Adapter {
 
@@ -156,16 +157,30 @@ class Worx extends utils.Adapter {
 
     }
 
+    async secShedule(mower) {
+        //calendar
+        let that = this;
+
+        week.forEach(function (day) {
+            objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '2.' + o._id, o));
+        });
+    }
+
     /**
      * @param {object} mower Serialnumber of mower
      * @param {object} data JSON from mqtt 
      */
-    setStates(mower, data) {
+    async setStates(mower, data) {
         let that = this;
         let mowerSerial = mower.serial;
         //mower set states
         var sequence = [];
         that.log.debug("GET MQTT DATA from API: " + JSON.stringify(data));
+
+
+        objects.calendar.map(o => that.log.debug("onbje: " + o._id));
+        
+
 
         //catch error if onj is empty
         if (Object.keys(data).length === 0 && data.constructor === Object) {
@@ -313,7 +328,11 @@ class Worx extends utils.Adapter {
                 ack: true
             });
         }
-        evaluateCalendar(data.cfg.sc.d);
+        evaluateCalendar(data.cfg.sc.d, false);
+        if(data.cfg.sc.dd){
+            await that.secShedule(mower)
+            evaluateCalendar(data.cfg.sc.dd, true);
+        }
 
         // edgecutting
         if (mower.edgeCut && (state === 1 || state === 3)) {
@@ -337,25 +356,25 @@ class Worx extends utils.Adapter {
         //Calendar
         /**
          * @param {Array} arr
+         * @param {boolean} sec if sec is true, use second mowtime
          */
-        function evaluateCalendar(arr) {
+        function evaluateCalendar(arr, sec) {
             if (arr) {
+                let secString =  sec ? '2' : ''
 
                 for (var i = 0; i < week.length; i++) {
-                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + ".startTime", {
+                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + secString + ".startTime", {
                         val: arr[i][0],
                         ack: true
                     });
-                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + ".workTime", {
+                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + secString + ".workTime", {
                         val: arr[i][1],
                         ack: true
                     });
-                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + ".borderCut", {
+                    that.setStateAsync(mowerSerial + ".calendar." + week[i] + secString + ".borderCut", {
                         val: (arr[i][2] && arr[i][2] === 1 ? true : false),
                         ack: true
                     });
-
-
                 }
             }
         }
@@ -363,7 +382,7 @@ class Worx extends utils.Adapter {
 
     UpdateWeather(mower) {
         let that = this;
-        
+
 
         that.log.debug("Weather_ " + JSON.stringify(mower));
         getWeather();
@@ -445,7 +464,6 @@ class Worx extends utils.Adapter {
         let that = this;
         await that.setObjectNotExistsAsync(mower.serial, {
             type: 'device',
-            role: 'mower',
             common: {
                 name: mower.raw.name
             },
@@ -453,7 +471,6 @@ class Worx extends utils.Adapter {
         });
         await that.setObjectNotExistsAsync(mower.serial + '.areas', {
             type: 'channel',
-            role: 'mower.areas',
             common: {
                 name: 'mower areas'
             },
@@ -461,7 +478,6 @@ class Worx extends utils.Adapter {
         });
         await that.setObjectNotExistsAsync(mower.serial + '.calendar', {
             type: 'channel',
-            role: 'mower.calendar',
             common: {
                 name: 'mower calendar'
             },
@@ -469,7 +485,6 @@ class Worx extends utils.Adapter {
         });
         await that.setObjectNotExistsAsync(mower.serial + '.mower', {
             type: 'channel',
-            role: 'mower.control',
             common: {
                 name: 'mower control'
             },
@@ -477,7 +492,6 @@ class Worx extends utils.Adapter {
         });
         await that.setObjectNotExistsAsync(mower.serial + '.weather', {
             type: 'channel',
-            role: 'weather',
             common: {
                 name: 'mower control'
             },
@@ -540,43 +554,7 @@ class Worx extends utils.Adapter {
 
         //calendar
         week.forEach(function (day) {
-            that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '.borderCut', {
-                type: 'state',
-                common: {
-                    name: 'Border cut',
-                    type: 'boolean',
-                    role: 'switch',
-                    read: true,
-                    write: true,
-                    desc: 'The mower cut border today'
-                },
-                native: {}
-            });
-            that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '.startTime', {
-                type: 'state',
-                common: {
-                    name: 'Start time',
-                    type: 'string',
-                    role: 'value.datetime',
-                    read: true,
-                    write: true,
-                    desc: 'Hour:Minutes on' + day + ' that the Landroid should start mowing'
-                },
-                native: {}
-            });
-            that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '.workTime', {
-                type: 'state',
-                common: {
-                    name: 'Work time',
-                    type: 'number',
-                    role: 'value.interval',
-                    unit: 'min.',
-                    read: true,
-                    write: true,
-                    desc: 'Decides for how long the mower will work on ' + day
-                },
-                native: {}
-            });
+            objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '.' + o._id, o));
         });
         // mower
         await that.setObjectNotExistsAsync(mower.serial + '.mower.online', {
