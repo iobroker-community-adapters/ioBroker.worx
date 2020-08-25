@@ -1163,7 +1163,11 @@ class Worx extends utils.Adapter {
 
         let val = value;
         let sval;
-        let message = mower.message.cfg.sc.d; // set aktual values
+
+        //find number 2 for second shedule
+        let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
+
+        let message = mower.message.cfg.sc[sheduleSel]; // set aktual values
         let dayID = week.indexOf(id.split('.')[4]);
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 
@@ -1189,8 +1193,8 @@ class Worx extends utils.Adapter {
 
         if (sval !== undefined) {
             message[dayID][valID] = sval;
-            that.log.debug("Mow time change to: " + JSON.stringify(message));
-            that.WorxCloud.sendMessage('{"sc":{"d":' + JSON.stringify(message) + '}}', mower.serial);
+            that.log.debug("Mow time change at "+ sheduleSel+  " to: " + JSON.stringify(message));
+            that.WorxCloud.sendMessage('{"sc":{"'+ sheduleSel +'":' + JSON.stringify(message) + '}}', mower.serial);
 
         }
         that.log.debug("test cfg: " + dayID + " valID: " + valID + " val: " + val + " sval: " + sval);
