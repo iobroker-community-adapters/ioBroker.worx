@@ -967,7 +967,7 @@ class Worx extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'lastUpdate',
-                type: 'date',
+                type: 'number',
                 role: 'value.date',
                 read: true,
                 write: false,
@@ -980,16 +980,15 @@ class Worx extends utils.Adapter {
             common: {
                 name: 'send Command',
                 type: 'number',
-                role: 'indicator.Command',
-                min: '1',
-                max: '7',
+                role: 'value',
+                min: 1,
+                max: 7,
                 read: true,
                 write: true,
                 desc: 'send Command to Landroid',
                 states: COMMANDCODES
             },
-            native: {},
-            "type": "state"
+            native: {}
         });
         await that.setObjectNotExistsAsync(mower.serial + '.mower.gradient', {
             type: 'state',
