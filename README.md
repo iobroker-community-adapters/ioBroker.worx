@@ -27,7 +27,8 @@ The adapter can control the mower and you can change config params like mowtimes
 - Delay for Edgecut : If the edgecut starts in a curve or bend, the lawnmower may lose the wire and stop with a fault, or the blades may not rotate. For this purpose, the starting point at which the blades start to rotate can be set.
 
 ## Changelog
-### 1.1.0 (03.12.2019)
+### 1.2.0 (26.08.2020)
+* (MeisterTR) add double Shedule
 * (MeisterTR) fix setIntervall => setTimeout
 * (MeisterTR) fix error with Meter and Min. in Config
 * (MeisterTR) add Kress and Landxcape

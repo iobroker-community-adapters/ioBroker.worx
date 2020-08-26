@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "news": {
-            "1.1.0":{
+            "1.2.0":{
                 "en": "added kress and landxcape",
                 "de": "Kress und Landxcape hinzugefügt",
                 "ru": "добавлен кресс и пейзаж",
