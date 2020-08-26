@@ -1168,8 +1168,16 @@ class Worx extends utils.Adapter {
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
 
         let message = mower.message.cfg.sc[sheduleSel]; // set aktual values
-        let dayID = week.indexOf(id.split('.')[4]);
+        let dayID
+
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
+        
+        if(sheduleSel === 'd'){
+            dayID = week.indexOf(id.split('.')[4]);
+        }else{
+            let modWeekday = id.split('.')[4];
+            dayID = week.indexOf(modWeekday.substring(0, modWeekday.length -1));
+        }
 
         try {
             if (valID === 2) { // changed the border cut
