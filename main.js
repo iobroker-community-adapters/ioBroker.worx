@@ -13,6 +13,9 @@ const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
 const objects = require(__dirname + '/lib/objects');
 
+let testmsg = {"cfg":{"id":23029,"lg":"it","tm":"22:31:43","dt":"26/08/2020","sc":{"m":1,"distm":0,"ots":{"bc":0,"wtm":90},"p":0,"d":[["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["14:30",60,0],["00:00",0,0]],"dd":[["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["17:00",210,1],["00:10",255,0]]},"cmd":0,"mz":[5,0,0,0],"mzv":[0,0,0,0,0,0,0,0,0,0],"rd":1,"sn":"xxxxxxxxxxxxxxxxxxxx","modules":{}},"dat":{"mac":"XXXXXXXXXXXXX","fw":3.16,"fwb":12,"bt":{"t":18.4,"v":20.06,"p":100,"nr":461,"c":0,"m":0},"dmp":[1.8,-2.6,163.4],"st":{"b":45006,"d":803979,"wt":47170,"bl":80},"ls":1,"le":0,"lz":1,"rsi":-83,"lk":0,"act":1,"tr":0,"conn":"wifi","rain":{"s":0,"cnt":0},"modules":{"DF":{"stat":"ok"}}}}
+
+
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
     0: 'No error',
@@ -114,6 +117,27 @@ class Worx extends utils.Adapter {
             //that.log.debug('found!' + JSON.stringify(mower));
             that.createDevices(mower).then(_ => {
                 mower.status().then(status => {
+
+                    // test
+                    //status = testmsg;
+
+                    //check if new FW functions
+                    if(status.cfg.sc.dd){
+                        that.log.debug('found DoubleShedule, create states...');
+                        
+                        // create States
+                        week.forEach(day => {
+                            objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '2.' + o._id, o));
+                        
+                        });
+                    }
+                    if(status.cfg.sc.ots){
+                        that.log.debug('found OneTimeShedule, create states...');
+                        
+                        // create States
+                        objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
+                    }
+
                     setTimeout(function () {
                         that.setStates(mower, status);
                     }, 1000);
@@ -157,13 +181,8 @@ class Worx extends utils.Adapter {
 
     }
 
-    async secShedule(mower) {
-        //calendar
-        let that = this;
-
-        week.forEach(function (day) {
-            objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '2.' + o._id, o));
-        });
+    async oneTimeShedule(mower) {
+        objects.oneTimeShedule.map(o => this.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
     }
 
     /**
@@ -175,12 +194,8 @@ class Worx extends utils.Adapter {
         let mowerSerial = mower.serial;
         //mower set states
         var sequence = [];
+        data = testmsg
         that.log.debug("GET MQTT DATA from API: " + JSON.stringify(data));
-
-
-        objects.calendar.map(o => that.log.debug("onbje: " + o._id));
-        
-
 
         //catch error if onj is empty
         if (Object.keys(data).length === 0 && data.constructor === Object) {
@@ -329,9 +344,19 @@ class Worx extends utils.Adapter {
             });
         }
         evaluateCalendar(data.cfg.sc.d, false);
-        if(data.cfg.sc.dd){
-            await that.secShedule(mower)
+        if (data.cfg.sc.dd) {
             evaluateCalendar(data.cfg.sc.dd, true);
+        }
+
+        //1TimeShedule
+        if (data.cfg.sc.ots || true) {
+            /*
+            that.setStateAsync(mowerSerial + ".areas.actualAreaIndicator", {
+                val: (data.dat && data.dat.lz ? data.dat.lz : null),
+                ack: true
+            });
+            */
+
         }
 
         // edgecutting
@@ -360,9 +385,10 @@ class Worx extends utils.Adapter {
          */
         function evaluateCalendar(arr, sec) {
             if (arr) {
-                let secString =  sec ? '2' : ''
+                let secString = sec ? '2' : ''
 
                 for (var i = 0; i < week.length; i++) {
+                    that.log.debug(mowerSerial + ".calendar." + week[i] + secString + ".startTime");
                     that.setStateAsync(mowerSerial + ".calendar." + week[i] + secString + ".startTime", {
                         val: arr[i][0],
                         ack: true
@@ -385,7 +411,7 @@ class Worx extends utils.Adapter {
 
 
         that.log.debug("Weather_ " + JSON.stringify(mower));
-        getWeather();
+        //getWeather();
         weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
 
         function getWeather() {
@@ -1153,6 +1179,15 @@ class Worx extends utils.Adapter {
             });
         }
     }
+
+    /**
+     * @param {string} id id of state
+     * @param {object} mower object of mower that changed
+     */
+    startOneShedule (id, mower){
+
+    }
+
     /**
      * @param {string} id id of state
      * @param {any} value value that changed
@@ -1171,12 +1206,14 @@ class Worx extends utils.Adapter {
         let dayID
 
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
-        
-        if(sheduleSel === 'd'){
+
+        if (sheduleSel === 'd') {
             dayID = week.indexOf(id.split('.')[4]);
-        }else{
+        } else {
             let modWeekday = id.split('.')[4];
-            dayID = week.indexOf(modWeekday.substring(0, modWeekday.length -1));
+
+            //erase the number 2
+            dayID = week.indexOf(modWeekday.substring(0, modWeekday.length - 1));
         }
 
         try {
@@ -1198,11 +1235,11 @@ class Worx extends utils.Adapter {
         } catch (e) {
             that.log.error("Error while setting mowers config: " + e);
         }
-
+        that.log.debug('dayid_'+ dayID +' valID_'+ valID);
         if (sval !== undefined) {
             message[dayID][valID] = sval;
-            that.log.debug("Mow time change at "+ sheduleSel+  " to: " + JSON.stringify(message));
-            that.WorxCloud.sendMessage('{"sc":{"'+ sheduleSel +'":' + JSON.stringify(message) + '}}', mower.serial);
+            that.log.debug("Mow time change at " + sheduleSel + " to: " + JSON.stringify(message));
+            that.WorxCloud.sendMessage('{"sc":{"' + sheduleSel + '":' + JSON.stringify(message) + '}}', mower.serial);
 
         }
         that.log.debug("test cfg: " + dayID + " valID: " + valID + " val: " + val + " sval: " + sval);
