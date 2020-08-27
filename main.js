@@ -13,7 +13,84 @@ const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
 const objects = require(__dirname + '/lib/objects');
 
-let testmsg = {"cfg":{"id":23029,"lg":"it","tm":"22:31:43","dt":"26/08/2020","sc":{"m":1,"distm":0,"ots":{"bc":0,"wtm":90},"p":0,"d":[["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["14:30",60,0],["00:00",0,0]],"dd":[["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["00:00",0,0],["17:00",210,1],["00:10",255,0]]},"cmd":0,"mz":[5,0,0,0],"mzv":[0,0,0,0,0,0,0,0,0,0],"rd":1,"sn":"xxxxxxxxxxxxxxxxxxxx","modules":{}},"dat":{"mac":"XXXXXXXXXXXXX","fw":3.16,"fwb":12,"bt":{"t":18.4,"v":20.06,"p":100,"nr":461,"c":0,"m":0},"dmp":[1.8,-2.6,163.4],"st":{"b":45006,"d":803979,"wt":47170,"bl":80},"ls":1,"le":0,"lz":1,"rsi":-83,"lk":0,"act":1,"tr":0,"conn":"wifi","rain":{"s":0,"cnt":0},"modules":{"DF":{"stat":"ok"}}}}
+let testmsg = {
+    "cfg": {
+        "id": 23029,
+        "lg": "it",
+        "tm": "22:31:43",
+        "dt": "26/08/2020",
+        "sc": {
+            "m": 1,
+            "distm": 0,
+            "ots": {
+                "bc": 0,
+                "wtm": 90
+            },
+            "p": 0,
+            "d": [
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["14:30", 60, 0],
+                ["00:00", 0, 0]
+            ],
+            "dd": [
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["00:00", 0, 0],
+                ["17:00", 210, 1],
+                ["00:10", 255, 0]
+            ]
+        },
+        "cmd": 0,
+        "mz": [5, 0, 0, 0],
+        "mzv": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "rd": 1,
+        "sn": "xxxxxxxxxxxxxxxxxxxx",
+        "modules": {}
+    },
+    "dat": {
+        "mac": "XXXXXXXXXXXXX",
+        "fw": 3.16,
+        "fwb": 12,
+        "bt": {
+            "t": 18.4,
+            "v": 20.06,
+            "p": 100,
+            "nr": 461,
+            "c": 0,
+            "m": 0
+        },
+        "dmp": [1.8, -2.6, 163.4],
+        "st": {
+            "b": 45006,
+            "d": 803979,
+            "wt": 47170,
+            "bl": 80
+        },
+        "ls": 1,
+        "le": 0,
+        "lz": 1,
+        "rsi": -83,
+        "lk": 0,
+        "act": 1,
+        "tr": 0,
+        "conn": "wifi",
+        "rain": {
+            "s": 0,
+            "cnt": 0
+        },
+        "modules": {
+            "DF": {
+                "stat": "ok"
+            }
+        }
+    }
+}
 
 
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -122,18 +199,18 @@ class Worx extends utils.Adapter {
                     //status = testmsg;
 
                     //check if new FW functions
-                    if(status.cfg.sc.dd){
+                    if (status.cfg.sc.dd) {
                         that.log.debug('found DoubleShedule, create states...');
-                        
+
                         // create States
                         week.forEach(day => {
                             objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '2.' + o._id, o));
-                        
+
                         });
                     }
-                    if(status.cfg.sc.ots){
+                    if (status.cfg.sc.ots) {
                         that.log.debug('found OneTimeShedule, create states...');
-                        
+
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
@@ -194,7 +271,7 @@ class Worx extends utils.Adapter {
         let mowerSerial = mower.serial;
         //mower set states
         var sequence = [];
-        data = testmsg
+        //data = testmsg
         that.log.debug("GET MQTT DATA from API: " + JSON.stringify(data));
 
         //catch error if onj is empty
@@ -344,19 +421,27 @@ class Worx extends utils.Adapter {
             });
         }
         evaluateCalendar(data.cfg.sc.d, false);
+
+        // Second Mowtime
         if (data.cfg.sc.dd) {
             evaluateCalendar(data.cfg.sc.dd, true);
         }
 
-        //1TimeShedule
-        if (data.cfg.sc.ots || true) {
-            /*
-            that.setStateAsync(mowerSerial + ".areas.actualAreaIndicator", {
-                val: (data.dat && data.dat.lz ? data.dat.lz : null),
+        // 1TimeShedule
+        if (data.cfg.sc.ots) {
+
+            that.setStateAsync(mowerSerial + ".mower.oneTimeWithBorder", {
+                val: (data.cfg.sc.ots.bc ? true : false),
                 ack: true
             });
-            */
-
+            that.setStateAsync(mowerSerial + ".mower.oneTimeWorkTime", {
+                val: (data.cfg.sc.ots.wtm),
+                ack: true
+            });
+            that.setStateAsync(mowerSerial + ".mower.oneTimeJson", {
+                val: JSON.stringify(data.cfg.sc.ots),
+                ack: true
+            });
         }
 
         // edgecutting
@@ -980,7 +1065,7 @@ class Worx extends utils.Adapter {
             native: {}
         });
         await that.setObjectNotExistsAsync(mower.serial + '.mower.sendCommand', {
-            type: 'number',
+            type: 'state',
             common: {
                 name: 'send Command',
                 type: 'number',
@@ -1137,6 +1222,9 @@ class Worx extends utils.Adapter {
                     that.edgeCutting(id, state.val, mower);
                 } else if (command === "sendCommand") {
                     that.sendCommand(state.val, mower);
+                } 
+                else if (command === "oneTimeStart" || command === "oneTimeJson") {
+                    that.startOneShedule(id, state.val, mower);
                 }
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
@@ -1183,9 +1271,36 @@ class Worx extends utils.Adapter {
     /**
      * @param {string} id id of state
      * @param {object} mower object of mower that changed
+     * @param {string} value string of Json
      */
-    startOneShedule (id, mower){
+    async startOneShedule(id, value , mower) {
+        let msgJson;
+        let idType = id.split('.')[4]
 
+        if (idType === 'oneTimeStart') {
+            let bc =  await this.getStateAsync(mower.serial + '.mower.oneTimeWithBorder')
+            let wtm = await this.getStateAsync(mower.serial + '.mower.oneTimeWorkTime')
+            msgJson = {
+                "bc": (bc.val ? 1 : 0),
+                "wtm": wtm.val
+            };
+        } else if (idType === 'oneTimeJson') {
+            try {
+                msgJson = JSON.parse(value)
+
+                if(typeof(msgJson.bc) === 'undefined' || typeof(msgJson.wtm) === 'undefined'){
+                    this.log.error('ONETIMESHEDULE: NO vailed format. must contain "bc" and "wtm"')
+                    return
+                }
+                
+            } catch (error) {
+                this.log.error('ONETIMESHEDULE: NO vailed JSON format');
+                return
+            }
+        }
+
+        this.log.debug('ONETIMESHEDULE: ' + JSON.stringify(msgJson))
+        this.WorxCloud.sendMessage('{"sc":{"ots":' + JSON.stringify(msgJson) + '}}', mower.serial);
     }
 
     /**
@@ -1196,15 +1311,14 @@ class Worx extends utils.Adapter {
     changeMowerCfg(id, value, mower) {
         let that = this;
 
+
+
         let val = value;
-        let sval;
+        let sval, dayID;
 
         //find number 2 for second shedule
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
-
         let message = mower.message.cfg.sc[sheduleSel]; // set aktual values
-        let dayID
-
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 
         if (sheduleSel === 'd') {
@@ -1235,7 +1349,6 @@ class Worx extends utils.Adapter {
         } catch (e) {
             that.log.error("Error while setting mowers config: " + e);
         }
-        that.log.debug('dayid_'+ dayID +' valID_'+ valID);
         if (sval !== undefined) {
             message[dayID][valID] = sval;
             that.log.debug("Mow time change at " + sheduleSel + " to: " + JSON.stringify(message));
