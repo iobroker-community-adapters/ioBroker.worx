@@ -1160,6 +1160,10 @@ class Worx extends utils.Adapter {
                 else if (command === "oneTimeStart" || command === "oneTimeJson") {
                     that.startOneShedule(id, state.val, mower);
                 }
+                else if (command === "partyModus" ) {
+                    that.sendPartyModus(id, state.val, mower);
+                }
+
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
         }
@@ -1205,7 +1209,7 @@ class Worx extends utils.Adapter {
     /**
      * @param {string} id id of state
      * @param {object} mower object of mower that changed
-     * @param {string} value string of Json
+     * @param {any} value string of Json
      */
     async startOneShedule(id, value , mower) {
         let msgJson;
