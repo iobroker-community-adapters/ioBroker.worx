@@ -13,86 +13,6 @@ const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
 const objects = require(__dirname + '/lib/objects');
 
-let testmsg = {
-    "cfg": {
-        "id": 23029,
-        "lg": "it",
-        "tm": "22:31:43",
-        "dt": "26/08/2020",
-        "sc": {
-            "m": 1,
-            "distm": 0,
-            "ots": {
-                "bc": 0,
-                "wtm": 90
-            },
-            "p": 0,
-            "d": [
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["14:30", 60, 0],
-                ["00:00", 0, 0]
-            ],
-            "dd": [
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["00:00", 0, 0],
-                ["17:00", 210, 1],
-                ["00:10", 255, 0]
-            ]
-        },
-        "cmd": 0,
-        "mz": [5, 0, 0, 0],
-        "mzv": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "rd": 1,
-        "sn": "xxxxxxxxxxxxxxxxxxxx",
-        "modules": {}
-    },
-    "dat": {
-        "mac": "XXXXXXXXXXXXX",
-        "fw": 3.16,
-        "fwb": 12,
-        "bt": {
-            "t": 18.4,
-            "v": 20.06,
-            "p": 100,
-            "nr": 461,
-            "c": 0,
-            "m": 0
-        },
-        "dmp": [1.8, -2.6, 163.4],
-        "st": {
-            "b": 45006,
-            "d": 803979,
-            "wt": 47170,
-            "bl": 80
-        },
-        "ls": 1,
-        "le": 0,
-        "lz": 1,
-        "rsi": -83,
-        "lk": 0,
-        "act": 1,
-        "tr": 0,
-        "conn": "wifi",
-        "rain": {
-            "s": 0,
-            "cnt": 0
-        },
-        "modules": {
-            "DF": {
-                "stat": "ok"
-            }
-        }
-    }
-}
-
-
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
     0: 'No error',
@@ -214,6 +134,13 @@ class Worx extends utils.Adapter {
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
+                    if (typeof (status.cfg.sc.distm) !== "undefined" && typeof (status.cfg.sc.m) !== "undefined" ) {
+                        that.log.debug('found PartyModus, create states...');
+
+                        // create States
+                        objects.partyModus.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
+                    }
+
 
                     setTimeout(function () {
                         that.setStates(mower, status);
@@ -444,6 +371,14 @@ class Worx extends utils.Adapter {
             });
         }
 
+        // PartyModus
+        if (typeof (status.cfg.sc.distm) !== "undefined" && typeof (status.cfg.sc.m) !== "undefined" ) {
+            that.setStateAsync(mowerSerial + ".mower.partyModus", {
+                val: (data.cfg.sc.m === 2 ? true : false),
+                ack: true
+            });
+        }
+
         // edgecutting
         if (mower.edgeCut && (state === 1 || state === 3)) {
             that.log.debug('Edgecut Start section :' + state);
@@ -473,7 +408,6 @@ class Worx extends utils.Adapter {
                 let secString = sec ? '2' : ''
 
                 for (var i = 0; i < week.length; i++) {
-                    that.log.debug(mowerSerial + ".calendar." + week[i] + secString + ".startTime");
                     that.setStateAsync(mowerSerial + ".calendar." + week[i] + secString + ".startTime", {
                         val: arr[i][0],
                         ack: true
@@ -1383,6 +1317,20 @@ class Worx extends utils.Adapter {
             }
         } catch (e) {
             that.log.error('Error while setting mowers areas: ' + e);
+        }
+    }
+
+       /**
+     * @param {string} id   
+     * @param {any} value
+     * @param {{ message: any; sendMessage: (arg0: string) => void; }} mower
+     */
+    sendPartyModus(id, value, mower) {
+        if(value){
+            this.WorxCloud.sendMessage('{"sc":{ "m":2, "distm": 0}}', mower.serial);
+        }
+        else{
+            this.WorxCloud.sendMessage('{"sc":{ "m":1, "distm": 0}}', mower.serial);
         }
     }
 
