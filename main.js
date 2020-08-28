@@ -372,7 +372,7 @@ class Worx extends utils.Adapter {
         }
 
         // PartyModus
-        if (typeof (status.cfg.sc.distm) !== "undefined" && typeof (status.cfg.sc.m) !== "undefined" ) {
+        if (typeof (data.cfg.sc.distm) !== "undefined" && typeof (data.cfg.sc.m) !== "undefined" ) {
             that.setStateAsync(mowerSerial + ".mower.partyModus", {
                 val: (data.cfg.sc.m === 2 ? true : false),
                 ack: true
@@ -610,7 +610,7 @@ class Worx extends utils.Adapter {
                 role: 'indicator.connected',
                 read: true,
                 write: false,
-                desc: 'If mower connected to cloud'
+                desc: 'If mower connected to cloud' 
             },
             native: {}
         });
