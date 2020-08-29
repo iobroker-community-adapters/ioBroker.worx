@@ -17,7 +17,7 @@ systemDictionary = {
     },
 
     'e-mail adress': {
-        'en': 'e-mail adress',
+        'en': 'e-mail address',
         'de': 'E-Mail-Adresse',
         'ru': 'электронный адрес',
         'pt': 'endereço de email',

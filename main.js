@@ -1070,7 +1070,7 @@ class Worx extends utils.Adapter {
             that.WorxCloud.sendMessage('{"cmd":1}', mower.serial); //start code for mower
             that.log.debug("Start mower");
         } else {
-            that.log.warn("Can not start mover because he is not at home or there is an Error please take a look at the mover");
+            that.log.warn("Can not start mower because he is not at home or there is an error please verify mower state");
             that.setStateAsync(mower.serial + ".mower.state", {
                 val: false,
                 ack: true
@@ -1086,7 +1086,7 @@ class Worx extends utils.Adapter {
             this.WorxCloud.sendMessage('{"cmd":3}', mower.serial); //"Back to home" code for mower
             this.log.debug("mower going back home");
         } else {
-            this.log.warn("Can not stop mover because he did not mow or theres an error");
+            this.log.warn("Can not stop mower because he did not mow or there is an error");
             this.setStateAsync(mower.serial + ".mower.state", {
                 val: true,
                 ack: true
@@ -1202,7 +1202,7 @@ class Worx extends utils.Adapter {
 
         //find number 2 for second shedule
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
-        let message = mower.message.cfg.sc[sheduleSel]; // set aktual values
+        let message = mower.message.cfg.sc[sheduleSel]; // set actual values 
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 
         if (sheduleSel === 'd') {
@@ -1231,11 +1231,11 @@ class Worx extends utils.Adapter {
 
             } else that.log.error('Something went wrong while setting new mower times');
         } catch (e) {
-            that.log.error("Error while setting mowers config: " + e);
+            that.log.error("Error while setting mower config: " + e);
         }
         if (sval !== undefined) {
             message[dayID][valID] = sval;
-            that.log.debug("Mow time change at " + sheduleSel + " to: " + JSON.stringify(message));
+            that.log.debug("Mowing time change at " + sheduleSel + " to: " + JSON.stringify(message));
             that.WorxCloud.sendMessage('{"sc":{"' + sheduleSel + '":' + JSON.stringify(message) + '}}', mower.serial);
 
         }
@@ -1250,7 +1250,7 @@ class Worx extends utils.Adapter {
     changeMowerArea(id, value, mower) {
         let that = this;
         let val = value;
-        let message = mower.message.cfg.mz; // set aktual values
+        let message = mower.message.cfg.mz; // set actual values
         let areaID = Number((id.split('_').pop()));
 
         try {
@@ -1266,7 +1266,7 @@ class Worx extends utils.Adapter {
                 });
             }
         } catch (e) {
-            that.log.error('Error while setting mowers areas: ' + e);
+            that.log.error('Error while setting mower areas: ' + e);
         }
     }
 
@@ -1312,7 +1312,7 @@ class Worx extends utils.Adapter {
             that.log.debug("new Array is: " + JSON.stringify(seq));
 
         } catch (e) {
-            that.log.error("Error while setting start seqence: " + e);
+            that.log.error("Error while setting start sequence: " + e);
         }
     }
 
