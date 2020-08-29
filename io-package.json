@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.2.2",
+        "version": "1.2.3",
         "news": {
+            "1.2.3":{
+                "en": "add kress, Landxcape, functions from app2.0, disable weather, add Raw datas",
+                "de": "Kress, Landxcape, Funktionen ab App 2.0 hinzufügen, Wetter deaktivieren, Rohdaten hinzufügen",
+                "ru": "добавить kress, Landxcape, функции из app2.0, отключить погоду, добавить необработанные данные",
+                "pt": "adicionar kress, Landxcape, funções de app2.0, desativar clima, adicionar dados brutos",
+                "nl": "kress, Landxcape, functies van app2.0 toevoegen, weer uitschakelen, Raw-gegevens toevoegen",
+                "fr": "ajouter kress, Landxcape, fonctions de app2.0, désactiver la météo, ajouter des données brutes",
+                "it": "aggiungi kress, Landxcape, funzioni da app2.0, disabilita meteo, aggiungi dati grezzi",
+                "es": "agregar kress, Landxcape, funciones de la aplicación 2.0, deshabilitar el clima, agregar datos sin procesar",
+                "pl": "dodaj kress, Landxcape, funkcje z app2.0, wyłącz pogodę, dodaj surowe dane",
+                "zh-cn": "添加kress，Landxcape，来自app2.0的功能，禁用天气，添加原始数据"
+              },
             "1.2.0":{
                 "en": "added kress and landxcape",
                 "de": "Kress und Landxcape hinzugefügt",
@@ -106,9 +118,9 @@
             "zh-cn": "Worx Landroid割草机（云）"
           },
         "desc": {
-            "en": "This adapter connects your ioBroker to the cloud of your Worx Landroid",
-            "ru": "Этот адаптер соединяет ваш ioBroker с облаком вашего Worx Landroid",
-            "de": "Dieser Adapter verbindet deinen ioBroker mit der Cloud deines Worx Landroids",
+            "en": "This adapter connects your ioBroker to the cloud of your  Worx, Kresss pr Landxcape",
+            "ru": "Этот адаптер соединяет ваш ioBroker с облаком вашего  Worx, Kresss, Landxcape",
+            "de": "Dieser Adapter verbindet deinen ioBroker mit der Cloud deines Worx, Kresss oder Landxcape",
             "pt": "Este adaptador conecta seu ioBroker à nuvem de seu Landroid Worx",
             "fr": "Cet adaptateur connecte votre ioBroker au nuage de votre Worx Landroid",
             "es": "Este adaptador conecta su ioBroker a la nube de su Worx Landroid",
@@ -125,6 +137,8 @@
             "mower",
             "Landroid",
             "Worx",
+            "Kress",
+            "Landxcape",
             "Smart Home",
             "home automation"
         ],
