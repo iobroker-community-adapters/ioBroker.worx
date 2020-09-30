@@ -489,15 +489,15 @@ class Worx extends utils.Adapter {
                         ack: true
                     });
                     that.setStateAsync(mower.serial + '.weather.description', {
-                        val: weather.weather[0].description | 'no data',
+                        val: weather.weather[0].description || 'no data',
                         ack: true
                     });
                     that.setStateAsync(mower.serial + '.weather.main', {
-                        val: weather.weather[0].main | 0,
+                        val: weather.weather[0].main || 'no data',
                         ack: true
                     });
                     that.setStateAsync(mower.serial + '.weather.icon', {
-                        val: weather.weather[0].icon | 0,
+                        val: weather.weather[0].icon || '',
                         ack: true
                     });
                     that.setStateAsync(mower.serial + '.weather.humidity', {
