@@ -119,7 +119,7 @@ class Worx extends utils.Adapter {
                     //status = testmsg;
 
                     //check if new FW functions
-                    if (status.cfg.sc.dd) {
+                    if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
                         that.log.debug('found DoubleShedule, create states...');
 
                         // create States
@@ -128,13 +128,13 @@ class Worx extends utils.Adapter {
 
                         });
                     }
-                    if (status.cfg.sc.ots) {
+                    if (status && status.cfg && status.cfg.sc && status.cfg.sc.ots) {
                         that.log.debug('found OneTimeShedule, create states...');
 
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
-                    if (typeof (status.cfg.sc.distm) !== "undefined" && typeof (status.cfg.sc.m) !== "undefined") {
+                    if (status && status.cfg && status.cfg.sc && typeof (status.cfg.sc.distm) !== "undefined" && typeof (status.cfg.sc.m) !== "undefined") {
                         that.log.debug('found PartyModus, create states...');
 
                         // create States

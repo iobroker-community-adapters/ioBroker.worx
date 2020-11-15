@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.2.3",
+        "version": "1.2.4",
         "news": {
-            "1.2.3":{
+            "1.2.4":{
                 "en": "add kress, Landxcape, functions from app2.0, disable weather, add Raw datas",
                 "de": "Kress, Landxcape, Funktionen ab App 2.0 hinzufügen, Wetter deaktivieren, Rohdaten hinzufügen",
                 "ru": "добавить kress, Landxcape, функции из app2.0, отключить погоду, добавить необработанные данные",
