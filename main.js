@@ -233,6 +233,12 @@ class Worx extends utils.Adapter {
             that.log.debug("GET Empty MQTT DATA from API");
             return
         }
+
+        // catch if JSON contain other data e.g. {"ota":"ota fail","mac":"XXXXXXXXXXXX"}"
+        if(typeof(data.dat) === 'undefined'){
+            that.log.info('No data Message: ' + JSON.stringify(data));
+            return
+        }
         if (that.config.meterMin) {
             that.setStateAsync(mowerSerial + '.mower.totalTime', {
                 val: (data.dat.st && data.dat.st.wt ? parseFloat(data.dat.st.wt).toFixed(2) : null),
