@@ -1,11 +1,12 @@
-![Logo](admin/worx.png)
-# ioBroker.worx
 [![Number of Installations](http://iobroker.live/badges/worx-installed.svg)](http://iobroker.live/badges/worx-installed.svg)
 [![Stable version](http://iobroker.live/badges/worx-stable.svg)](http://iobroker.live/badges/worx-stable.svg)
 [![NPM version](http://img.shields.io/npm/v/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
 [![TESTS](https://github.com/iobroker-community-adapters/ioBroker.worx/workflows/Test%20and%20Release/badge.svg)](https://github.com/iobroker-community-adapters/ioBroker.worx/commits/master) 
 
+
+![Logo](admin/worx.png)
+# ioBroker.worx
 
 ## Worx adapter for ioBroker
 
