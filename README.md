@@ -8,11 +8,11 @@
 ![Logo](admin/worx.png)
 # ioBroker.worx
 
-## Worx adapter for ioBroker
+## Worx (Kress and Landxcape) adapter for ioBroker
 
 control via cloud and mqtt
 
-This adapter connects IoBroker with your Landroid S/M/L via Cloud. 
+This adapter connects IoBroker with your Landroid Kress or Landxcape mower via Cloud. 
 Temperatures, mowing times, battery level and various other data are read out from the mower.
 The adapter can control the mower and you can change config params like mowtimes.
 
