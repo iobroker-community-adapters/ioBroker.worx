@@ -1,10 +1,10 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.2.5",
+        "version": "1.2.6",
         "news": {
-            "1.2.5": {
-                "en": "add sentry ",
+            "1.2.6": {
+                "en": "add sentry, fix error",
                 "de": "sentry hinzufügen",
                 "ru": "добавить часового",
                 "pt": "adicionar sentinela",
