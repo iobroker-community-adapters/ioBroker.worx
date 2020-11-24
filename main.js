@@ -151,7 +151,7 @@ class Worx extends utils.Adapter {
                     // Json fpr weekmow
                     if (that.config.enableJson === true) {
                         that.setObjectNotExistsAsync(mower.serial + '.calendar.' + objects.calJson[0]._id, objects.calJson[0]);
-                        if (status.cfg.sc.dd) that.setObjectNotExistsAsync(mower.serial + '.calendar.' + objects.calJson[0]._id + '2', objects.calJson[0]);
+                        if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) that.setObjectNotExistsAsync(mower.serial + '.calendar.' + objects.calJson[0]._id + '2', objects.calJson[0]);
                     } else if (that.config.enableJson === false) {
                         that.delObj(mower.serial + '.calendar.' + objects.calJson[0]._id)
                         that.delObj(mower.serial + '.calendar.' + objects.calJson[0]._id + '2')
