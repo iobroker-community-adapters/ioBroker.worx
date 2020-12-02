@@ -1207,6 +1207,12 @@ class Worx extends utils.Adapter {
         let val = value;
         let sval, dayID;
 
+        if(typeof(mower.message.cfg) === 'undefined'){
+            // check if config exist
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            return;
+        };
+
         //find number 2 for second shedule
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
         let message = mower.message.cfg.sc[sheduleSel]; // set actual values 
@@ -1257,6 +1263,13 @@ class Worx extends utils.Adapter {
     changeMowerArea(id, value, mower) {
         let that = this;
         let val = value;
+
+        if(typeof(mower.message.cfg) === 'undefined'){
+            // check if config exist
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            return;
+        }
+
         let message = mower.message.cfg.mz; // set actual values
         let areaID = Number((id.split('_').pop()));
 
@@ -1298,6 +1311,13 @@ class Worx extends utils.Adapter {
     startSequences(id, value, mower) {
         let that = this;
         let val = value;
+
+        if(typeof(mower.message.cfg) === 'undefined'){
+            // check if config exist
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            return;
+        }
+
         let message = mower.message.cfg.mz; // set aktual values
         let seq = [];
         try {
@@ -1331,6 +1351,13 @@ class Worx extends utils.Adapter {
     mowTimeEx(id, value, mower) {
         let that = this;
         const val = value;
+
+        if(typeof(mower.message.cfg) === 'undefined'){
+            // check if config exist
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            return;
+        }
+
         const message = mower.message.cfg.sc; // set aktual values
 
         that.log.debug("MowerTimeExtend JSON : " + JSON.stringify(message));
@@ -1357,6 +1384,12 @@ class Worx extends utils.Adapter {
     edgeCutting(id, value, mower) {
         let that = this;
         const val = value;
+
+        if(typeof(mower.message.cfg) === 'undefined'){
+            // check if config exist
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            return;
+        }
 
         if (val === true && typeof (mower.message.cfg.sc.ots) === 'undefined') {
             mower.edgeCut = true;
