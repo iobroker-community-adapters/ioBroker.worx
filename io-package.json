@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.2.9",
+        "version": "1.3.0",
         "news": {
+            "1.3.0":  {
+                "en": "fixed https error",
+                "de": "https Fehler behoben",
+                "ru": "исправлена ошибка https",
+                "pt": "erro de https corrigido",
+                "nl": "vaste https-fout",
+                "fr": "erreur https corrigée",
+                "it": "corretto errore https",
+                "es": "error https fijo",
+                "pl": "naprawiony błąd https",
+                "zh-cn": "修复了https错误"
+              },           
             "1.2.9": {
                 "en": "add sentry, fix error",
                 "de": "sentry hinzufügen",
