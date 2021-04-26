@@ -176,6 +176,7 @@
         "loglevel": "info",
         "mode": "daemon",
         "type": "garden",
+        "connectionType": "cloud",
         "compact": true,
         "materialize": true,
         "dependencies": [{
