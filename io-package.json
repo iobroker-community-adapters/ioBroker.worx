@@ -177,6 +177,7 @@
         "mode": "daemon",
         "type": "garden",
         "connectionType": "cloud",
+        "dataSource": "push",
         "compact": true,
         "materialize": true,
         "dependencies": [{
