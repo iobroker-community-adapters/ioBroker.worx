@@ -1089,7 +1089,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     stopMower(mower) {
-        if (mower.message.dat.ls === 7 && mower.message.dat.le === 0) {
+        if (mower.message.dat && mower.message.dat.ls === 7 && mower.message.dat.le === 0) {
             this.WorxCloud.sendMessage('{"cmd":3}', mower.serial); //"Back to home" code for mower
             this.log.debug("mower going back home");
         } else {
