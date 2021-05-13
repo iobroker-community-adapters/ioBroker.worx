@@ -62,7 +62,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ## License
 MIT License
 
-Copyright (c) 2020 MeisterTR
+Copyright (c) 2021 MeisterTR
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
