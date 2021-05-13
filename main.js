@@ -1269,7 +1269,7 @@ class Worx extends utils.Adapter {
         let that = this;
         let val = value;
 
-        if(typeof(mower.message.cfg) === 'undefined'){
+        if(mower.message && typeof(mower.message.cfg) === 'undefined' || typeof(mower.message) === 'undefined' ){
             // check if config exist
             that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
             return;
