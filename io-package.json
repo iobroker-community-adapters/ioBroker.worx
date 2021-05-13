@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.3.0",
+        "version": "1.3.1",
         "news": {
+            "1.3.1": {
+                "en": "fixed some errors",
+                "de": "Einige Fehler wurden behoben",
+                "ru": "исправлены некоторые ошибки",
+                "pt": "consertou alguns erros",
+                "nl": "enkele fouten opgelost",
+                "fr": "corrigé quelques erreurs",
+                "it": "risolti alcuni errori",
+                "es": "arreglados algunos errores",
+                "pl": "naprawiono niektóre błędy",
+                "zh-cn": "修复了一些错误"
+              },
             "1.3.0":  {
                 "en": "fixed https error",
                 "de": "https Fehler behoben",
