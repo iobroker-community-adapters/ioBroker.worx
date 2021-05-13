@@ -1216,6 +1216,11 @@ class Worx extends utils.Adapter {
         //find number 2 for second shedule
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
         let message = mower.message.cfg.sc[sheduleSel]; // set actual values 
+
+        if(typeof message === 'undefined'){
+            that.log.warn('try again later!');
+            return
+        }
         let valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 
         if (sheduleSel === 'd') {
