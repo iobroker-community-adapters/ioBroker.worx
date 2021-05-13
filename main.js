@@ -336,7 +336,7 @@ class Worx extends utils.Adapter {
             ack: true
         });
         that.setStateAsync(mowerSerial + ".areas.actualArea", {
-            val: (data.dat ? data.cfg.mzv[data.dat.lz] : null),
+            val: (data.dat && data.cfg && data.cfg.mzv ? data.cfg.mzv[data.dat.lz] : null),
             ack: true
         });
         that.setStateAsync(mowerSerial + ".areas.actualAreaIndicator", {
