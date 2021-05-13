@@ -1073,7 +1073,7 @@ class Worx extends utils.Adapter {
         that.log.debug("Start mower " + JSON.stringify(mower));
         that.log.debug("Start mowerff " + JSON.stringify(that.WorxCloud.mower));
 
-        if ((mower.message.dat.ls === 1 || mower.message.dat.ls === 34) && mower.message.dat.le === 0) {
+        if (mower.message.dat && (mower.message.dat.ls === 1 || mower.message.dat.ls === 34) && mower.message.dat.le === 0) {
             that.WorxCloud.sendMessage('{"cmd":1}', mower.serial); //start code for mower
             that.log.debug("Start mower");
         } else {
