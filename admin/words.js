@@ -99,6 +99,18 @@ systemDictionary = {
         "it": "altre impostazioni",
         "es": "ajustes adicionales",
         "pl": "dodatkowe ustawienia"
-    }
+    },
+    "donateInformation": {
+        "en": "Feel free to suggest new features or devices via Github or ioBroker forum. If you like this adapter, you very welcome to donate.",
+        "de": "Neue Geräte / Features können gerne über Github oder das ioBroker Forum angefragt werden. Wenn dieser Adapter gefällt / nützlich ist, sind Spenden herzlich Willkommen.",
+        "ru": "Не стесняйтесь предлагать новые функции или устройства через Github или форум ioBroker. Если вам понравился этот адаптер, пожалуйста, сделайте пожертвование.",
+        "pt": "Sinta-se à vontade para sugerir novos recursos ou dispositivos por meio do fórum Github ou ioBroker. Se você gosta deste adaptador, fique à vontade para doar.",
+        "nl": "Voel je vrij om nieuwe functies of apparaten voor te stellen via Github of het ioBroker-forum. Als je deze adapter leuk vindt, ben je van harte welkom om te doneren.",
+        "fr": "N'hésitez pas à proposer de nouvelles fonctionnalités ou appareils via le forum Github ou ioBroker. Si vous aimez cet adaptateur, n'hésitez pas à faire un don.",
+        "it": "Sentiti libero di suggerire nuove funzionalità o dispositivi tramite Github o il forum ioBroker. Se ti piace questo adattatore, ti invitiamo a donare.",
+        "es": "No dude en sugerir nuevas funciones o dispositivos a través de Github o del foro ioBroker. Si le gusta este adaptador, le invitamos a donar.",
+        "pl": "Zachęcamy do sugerowania nowych funkcji lub urządzeń za pośrednictwem forum Github lub ioBroker. Jeśli podoba Ci się ten adapter, możesz przekazać darowiznę.",
+        "zh-cn": "欢迎通过Github或ioBroker论坛建议新功能或设备。如果您喜欢此适配器，则非常欢迎您捐赠。"
+      }
 
 };

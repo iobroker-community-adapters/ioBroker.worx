@@ -1,3 +1,5 @@
+[![Paypal Donation](https://img.shields.io/badge/paypal-donate%20|%20spenden-blue.svg)](https://www.paypal.com/paypalme/MeisterTR)
+
 [![Number of Installations](http://iobroker.live/badges/worx-installed.svg)](http://iobroker.live/badges/worx-installed.svg)
 [![Stable version](http://iobroker.live/badges/worx-stable.svg)](http://iobroker.live/badges/worx-stable.svg)
 [![NPM version](http://img.shields.io/npm/v/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
