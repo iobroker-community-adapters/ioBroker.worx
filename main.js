@@ -1148,6 +1148,7 @@ class Worx extends utils.Adapter {
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
         let fail = false
         let idType = id.split('.')[4]
+        let message = mower.message.cfg.sc;
 
         try {
             msgJson = JSON.parse(value)
@@ -1191,7 +1192,8 @@ class Worx extends utils.Adapter {
 
 
         fail && this.log.debug('FAIL: ' + fail + ' CALJSON: ' + JSON.stringify(msgJson))
-        if (!fail) that.WorxCloud.sendMessage('{"sc":{"' + sheduleSel + '":' + JSON.stringify(msgJson) + '}}', mower.serial);
+        message[sheduleSel] = msgJson;
+        if (!fail) that.WorxCloud.sendMessage('{"sc":'+ JSON.stringify(message) + '}', mower.serial);
     }
 
     /**
@@ -1215,7 +1217,8 @@ class Worx extends utils.Adapter {
 
         //find number 2 for second shedule
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
-        let message = mower.message.cfg.sc[sheduleSel]; // set actual values 
+        let message = mower.message.cfg.sc; // set actual values 
+        //let fullMessage = mower.message.cfg.sc;
 
         if(typeof message === 'undefined'){
             that.log.warn('try again later!');
@@ -1252,9 +1255,9 @@ class Worx extends utils.Adapter {
             that.log.error("Error while setting mower config: " + e);
         }
         if (sval !== undefined) {
-            message[dayID][valID] = sval;
+            message[sheduleSel][dayID][valID] = sval;
             that.log.debug("Mowing time change at " + sheduleSel + " to: " + JSON.stringify(message));
-            that.WorxCloud.sendMessage('{"sc":{"' + sheduleSel + '":' + JSON.stringify(message) + '}}', mower.serial);
+            that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
 
         }
         that.log.debug("test cfg: " + dayID + " valID: " + valID + " val: " + val + " sval: " + sval);
