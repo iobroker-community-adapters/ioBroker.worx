@@ -1190,7 +1190,7 @@ class Worx extends utils.Adapter {
         }
 
 
-        this.log.debug('FAIL: ' + fail + ' CALJSON: ' + JSON.stringify(msgJson))
+        fail && this.log.debug('FAIL: ' + fail + ' CALJSON: ' + JSON.stringify(msgJson))
         if (!fail) that.WorxCloud.sendMessage('{"sc":{"' + sheduleSel + '":' + JSON.stringify(msgJson) + '}}', mower.serial);
     }
 
