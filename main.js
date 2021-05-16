@@ -345,7 +345,7 @@ class Worx extends utils.Adapter {
         });
 
         that.setStateAsync(mowerSerial + ".mower.firmware", {
-            val: data.dat.fw.toString(),
+            val: data.dat && data.dat.fw ? data.dat.fw.toString() : '-',
             ack: true
         });
         that.setStateAsync(mowerSerial + ".mower.waitRain", {
@@ -1150,6 +1150,8 @@ class Worx extends utils.Adapter {
         let idType = id.split('.')[4]
         let message = mower.message.cfg.sc;
 
+        message.ots && delete message.ots
+
         try {
             msgJson = JSON.parse(value)
             if (msgJson.length !== 7) {
@@ -1219,6 +1221,8 @@ class Worx extends utils.Adapter {
         let sheduleSel = id.split('.')[4].search("2") === -1 ? 'd' : 'dd';
         let message = mower.message.cfg.sc; // set actual values 
         //let fullMessage = mower.message.cfg.sc;
+
+        message.ots && delete message.ots
 
         if(typeof message === 'undefined'){
             that.log.warn('try again later!');
