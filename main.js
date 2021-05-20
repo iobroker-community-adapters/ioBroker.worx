@@ -445,12 +445,12 @@ class Worx extends utils.Adapter {
                 that.log.warn('Something went wrong at edgeCut')
             }
         } catch (error) {
-            //if (that.supportsFeature && that.supportsFeature('PLUGINS')) {
-            //    const sentryInstance = that.getPluginInstance('sentry');
-            //    if (sentryInstance) {
-            //        sentryInstance.getSentryObject().captureException(error + JSON.stringify(data));
-            //    }
-           // }
+            if (this.supportsFeature && this.supportsFeature('PLUGINS')) {
+                const sentryInstance = this.getPluginInstance('sentry');
+                if (sentryInstance) {
+                    sentryInstance.getSentryObject().captureException(error + JSON.stringify(data));
+                }
+            }
         }
         
         //Calendar
