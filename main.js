@@ -448,7 +448,7 @@ class Worx extends utils.Adapter {
             if (this.supportsFeature && this.supportsFeature('PLUGINS')) {
                 const sentryInstance = this.getPluginInstance('sentry');
                 if (sentryInstance) {
-                    sentryInstance.getSentryObject().captureException(error + ' data: '+ JSON.stringify(data));
+                    sentryInstance.getSentryObject().captureException(error, { extra: { data } });
                 }
             }
         }
