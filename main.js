@@ -363,7 +363,7 @@ class Worx extends utils.Adapter {
                 sequence.push(data.cfg.mzv[i]);
             }
             that.setStateAsync(mowerSerial + ".areas.startSequence", {
-                val: (sequence),
+                val: (JSON.stringfy(sequence)),
                 ack: true
             });
     
@@ -543,7 +543,7 @@ class Worx extends utils.Adapter {
                         ack: true
                     });
                     that.setStateAsync(mower.serial + '.weather.lastUpdate', {
-                        val: new Date((weather.dt * 1000)),
+                        val: weather.dt * 1000,
                         ack: true
                     });
 
