@@ -1332,7 +1332,7 @@ class Worx extends utils.Adapter {
      */
     startSequences(id, value, mower) {
         let that = this;
-        let val = value;
+        let val = JSON.parse(value);
 
         if(typeof(mower.message.cfg) === 'undefined'){
             // check if config exist
