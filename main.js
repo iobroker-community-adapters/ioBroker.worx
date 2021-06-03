@@ -1344,7 +1344,11 @@ class Worx extends utils.Adapter {
         try {
             seq = JSON.parse(value);
         } catch (e) {
+            try {
             seq = JSON.parse("[" + value + "]");
+            } catch (e) {
+                that.log.error("Error while setting start sequence: " + e);
+            }
         }
 
         try {
