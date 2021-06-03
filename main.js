@@ -1332,7 +1332,6 @@ class Worx extends utils.Adapter {
      */
     startSequences(id, value, mower) {
         let that = this;
-        let val = JSON.parse(value);
 
         if(typeof(mower.message.cfg) === 'undefined'){
             // check if config exist
@@ -1343,8 +1342,12 @@ class Worx extends utils.Adapter {
         let message = mower.message.cfg.mz; // set aktual values
         let seq = [];
         try {
-            seq = JSON.parse("[" + val + "]");
+            seq = JSON.parse(value);
+        } catch (e) {
+            seq = JSON.parse("[" + value + "]");
+        }
 
+        try {
             for (var i = 0; i < 10; i++) {
                 if (seq[i] != undefined) {
                     if (isNaN(seq[i]) || seq[i] < 0 || seq[i] > 3) {
