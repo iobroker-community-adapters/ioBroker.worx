@@ -363,7 +363,7 @@ class Worx extends utils.Adapter {
                 sequence.push(data.cfg.mzv[i]);
             }
             that.setStateAsync(mowerSerial + ".areas.startSequence", {
-                val: (JSON.stringfy(sequence)),
+                val: (JSON.stringify(sequence)),
                 ack: true
             });
     
