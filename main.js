@@ -12,6 +12,7 @@ const utils = require('@iobroker/adapter-core');
 const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
 const objects = require(__dirname + '/lib/objects');
+const { extractKeys } = require("./lib/extractKeys");
 
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
@@ -162,6 +163,28 @@ class Worx extends utils.Adapter {
                         if (that.config.weather === true) that.UpdateWeather(mower);
                     }, 5000);
 
+                    if (that.config.enableJson === true) {
+                        that.log.debug(JSON.stringify(mower))
+                        that.setObjectNotExistsAsync(mower.serial + '.rawMqtt', {
+                            type: 'channel',
+                            common: {
+                                name: 'raw Mqtt response'
+                            },
+                            native: {}
+                        }).then(()=> {
+                            extractKeys(that,mower.serial + ".rawMqtt", mower, null, true)
+                        }).catch(()=>{
+                            that.log.error("Failed to create raw mqtt channel")
+                         })
+                    } else {
+                        that.getStates(mower.serial + '.rawMqtt.*', (err, states) => {
+                            const allIds = Object.keys(states);
+                            allIds.forEach((keyName) => {
+                                    that.delObject(keyName.split(".").slice(2).join("."));
+                            });
+                            that.delObject(mower.serial + '.rawMqtt');
+                        });
+                    }
 
                 });
             });
