@@ -363,7 +363,7 @@ class Worx extends utils.Adapter {
                 sequence.push(data.cfg.mzv[i]);
             }
             that.setStateAsync(mowerSerial + ".areas.startSequence", {
-                val: (sequence),
+                val: (JSON.stringify(sequence)),
                 ack: true
             });
     
@@ -543,7 +543,7 @@ class Worx extends utils.Adapter {
                         ack: true
                     });
                     that.setStateAsync(mower.serial + '.weather.lastUpdate', {
-                        val: new Date((weather.dt * 1000)),
+                        val: weather.dt * 1000,
                         ack: true
                     });
 
@@ -1332,7 +1332,6 @@ class Worx extends utils.Adapter {
      */
     startSequences(id, value, mower) {
         let that = this;
-        let val = value;
 
         if(typeof(mower.message.cfg) === 'undefined'){
             // check if config exist
@@ -1343,8 +1342,16 @@ class Worx extends utils.Adapter {
         let message = mower.message.cfg.mz; // set aktual values
         let seq = [];
         try {
-            seq = JSON.parse("[" + val + "]");
+            seq = JSON.parse(value);
+        } catch (e) {
+            try {
+            seq = JSON.parse("[" + value + "]");
+            } catch (e) {
+                that.log.error("Error while setting start sequence: " + e);
+            }
+        }
 
+        try {
             for (var i = 0; i < 10; i++) {
                 if (seq[i] != undefined) {
                     if (isNaN(seq[i]) || seq[i] < 0 || seq[i] > 3) {
