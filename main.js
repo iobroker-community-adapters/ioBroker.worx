@@ -194,6 +194,9 @@ class Worx extends utils.Adapter {
 
         this.WorxCloud.on('mqtt', function (mower, data) {
             that.setStates(mower, data);
+            if (that.config.enableJson === true) {
+                extractKeys(that,mower.serial + '.rawMqtt', mower, null, true);
+            }
         });
 
         this.WorxCloud.on('online', function (mower, state) {
