@@ -479,11 +479,11 @@ class Worx extends utils.Adapter {
                     await this.setObjectNotExistsAsync(mowerSerial +'.modules.4G.' + o._id, o);
                 }));
                 await this.setStateAsync(mowerSerial + '.modules.4G.longitude', {
-                    val: data.cfg.modules.4G.geo.coo[1],
+                    val: data.cfg.modules['4G']['geo']['coo'][1],
                     ack: true
                 });
                 await this.setStateAsync(mowerSerial + '.modules.4G.latitude', {
-                    val: data.cfg.modules.4G.geo.coo[0],
+                    val: data.cfg.modules['4G']['geo']['coo'][0],
                     ack: true
                 });
             }
