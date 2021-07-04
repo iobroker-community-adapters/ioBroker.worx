@@ -261,7 +261,7 @@ class Worx extends utils.Adapter {
         }
 
         // catch if JSON contain other data e.g. {"ota":"ota fail","mac":"XXXXXXXXXXXX"}"
-        if(typeof(data.dat) === 'undefined'){
+        if(typeof(data.dat) === 'undefined' || typeof(data.cfg) === 'undefined'){
             that.log.info('No data Message: ' + JSON.stringify(data));
             return;
         }
@@ -472,6 +472,24 @@ class Worx extends utils.Adapter {
             }
 
 
+            //moodules
+            if(data.cfg.modules && data.cfg.modules.4G){
+
+                await Promise.all(objects.module_4g.map(async (o) => {
+                    await this.setObjectNotExistsAsync(mowerSerial +'.modules.4G.' + o._id, o);
+                }));
+                await this.setStateAsync(mowerSerial + '.modules.4G.longitude', {
+                    val: data.cfg.modules.4G.geo.coo[1],
+                    ack: true
+                });
+                await this.setStateAsync(mowerSerial + '.modules.4G.latitude', {
+                    val: data.cfg.modules.4G.geo.coo[0],
+                    ack: true
+                });
+            }
+
+
+
         } catch (error) {
             if (this.supportsFeature && this.supportsFeature('PLUGINS')) {
                 const sentryInstance = this.getPluginInstance('sentry');
@@ -506,23 +524,6 @@ class Worx extends utils.Adapter {
                 }
             }
         }
-    }
-
-    /**
-     * @param {{ serial: string; raw: { name: string; }; }} mower
-     */
-    async modulCecker(mower, data){
-        try {
-            const modules = data.cfg.modules;
-
-            if(modules && modules.length >0 ){
-                
-            }
-            
-        } catch (error) {
-            
-        }
-
     }
 
     UpdateWeather(mower) {
