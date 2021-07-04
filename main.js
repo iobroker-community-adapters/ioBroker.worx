@@ -473,7 +473,7 @@ class Worx extends utils.Adapter {
 
 
             //moodules
-            if(data.cfg.modules && data.cfg.modules.4G){
+            if(data.cfg.modules && data.cfg.modules['4G'] ){
 
                 await Promise.all(objects.module_4g.map(async (o) => {
                     await this.setObjectNotExistsAsync(mowerSerial +'.modules.4G.' + o._id, o);
