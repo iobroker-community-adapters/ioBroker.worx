@@ -34,6 +34,10 @@ const ERRORCODES = {
     15: 'Timeout finding home',
     16: 'Mower locked',
     17: 'Battery over temperature',
+    18: 'dummy model',
+    19: 'Battery trunk open timeout',
+    20: 'wire sync',
+    21: 'msg num'
 };
 const STATUSCODES = {
     0: 'IDLE',
@@ -49,6 +53,7 @@ const STATUSCODES = {
     10: 'Blade blocked',
     11: 'Debug',
     12: 'Remote control',
+    13: 'escape from off limits',
     30: 'Going home',
     31: 'Zone training',
     32: 'Border Cut',
@@ -62,7 +67,9 @@ const COMMANDCODES = {
     4: 'Start Zone Taining',
     5: 'Lock',
     6: 'Unlock',
-    7: 'Restart Robot'
+    7: 'Restart Robot',
+    8: 'pause when follow wire',
+    9: 'safe homing'
 };
 const WEATHERINTERVALL = 60000 * 60; // = 30 min.
 let weatherTimeout = null;
