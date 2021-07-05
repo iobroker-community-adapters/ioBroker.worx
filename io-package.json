@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.3.7",
+        "version": "1.4.0",
         "news": {
+            "1.4.0": {
+                "en": "update testing\nadd gps coordinates\nadd new status states\nadd new Autolock states\nadd new OffLinits states",
+                "de": "Update-Tests\nGPS-Koordinaten hinzufügen\nneue Statuszustände hinzufügen\nneue Autolock-Zustände hinzufügen\nneue OffLinits-Zustände hinzufügen",
+                "ru": "обновление тестирования\nдобавить координаты gps\nдобавить новые статусы\nдобавить новые состояния автоблокировки\nдобавить новые состояния OffLinits",
+                "pt": "teste de atualização\nadicionar coordenadas GPS\nadicionar novos estados de status\nadicionar novos estados de Autolock\nadicionar novos estados OffLinits",
+                "nl": "update testen\nvoeg gps-coördinaten toe\nnieuwe statusstatussen toevoegen\nnieuwe Autolock-statussen toevoegen\nnieuwe OffLinits-statussen toevoegen",
+                "fr": "test de mise à jour\najouter des coordonnées gps\najouter de nouveaux états de statut\najouter de nouveaux états Autolock\najouter de nouveaux états OffLinits",
+                "it": "aggiorna i test\naggiungi le coordinate gps\naggiungi nuovi stati di stato\naggiungi nuovi stati Autolock\naggiungi nuovi stati OffLinits",
+                "es": "actualizar las pruebas\nagregar coordenadas gps\nagregar nuevos estados de estado\nagregar nuevos estados de Autolock\nagregar nuevos estados OffLinits",
+                "pl": "testowanie aktualizacji\ndodaj współrzędne GPS\ndodaj nowe stany statusu\ndodaj nowe stany Autolock\ndodaj nowe stany OffLinits",
+                "zh-cn": "更新测试\n添加 GPS 坐标\n添加新的状态\n添加新的自动锁定状态\n添加新的 OffLinits 状态"
+            },
             "1.3.7": {
                 "en": "fixed some errors",
                 "de": "Einige Fehler wurden behoben",
@@ -14,8 +26,8 @@
                 "es": "arreglados algunos errores",
                 "pl": "naprawiono niektóre błędy",
                 "zh-cn": "修复了一些错误"
-              },
-            "1.3.0":  {
+            },
+            "1.3.0": {
                 "en": "fixed https error",
                 "de": "https Fehler behoben",
                 "ru": "исправлена ошибка https",
@@ -26,7 +38,7 @@
                 "es": "error https fijo",
                 "pl": "naprawiony błąd https",
                 "zh-cn": "修复了https错误"
-              },           
+            },
             "1.2.9": {
                 "en": "add sentry, fix error",
                 "de": "sentry hinzufügen",
@@ -192,9 +204,11 @@
         "dataSource": "push",
         "compact": true,
         "materialize": true,
-        "dependencies": [{
-            "admin": ">=3.0.0"
-        }],
+        "dependencies": [
+            {
+                "admin": ">=3.0.0"
+            }
+        ],
         "plugins": {
             "sentry": {
                 "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
@@ -211,7 +225,8 @@
         "weather": true
     },
     "objects": [],
-    "instanceObjects": [{
+    "instanceObjects": [
+        {
             "_id": "info",
             "type": "channel",
             "common": {
