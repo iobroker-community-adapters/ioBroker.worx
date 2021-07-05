@@ -140,8 +140,8 @@ jobs:
                   export SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
                   export SENTRY_URL=https://sentry.iobroker.net
                   export SENTRY_ORG=iobroker
-                  export SENTRY_PROJECT=iobroker-mihome-vacuum
-                  export SENTRY_VERSION=iobroker.mihome-vacuum@${{ steps.extract_release.outputs.VERSION }}
+                  export SENTRY_PROJECT=iobroker-worx
+                  export SENTRY_VERSION=iobroker.worx@${{ steps.extract_release.outputs.VERSION }}
                   sentry-cli releases new $SENTRY_VERSION
                   sentry-cli releases set-commits $SENTRY_VERSION --auto
                   sentry-cli releases finalize $SENTRY_VERSION
