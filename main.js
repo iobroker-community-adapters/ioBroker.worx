@@ -12,7 +12,9 @@ const utils = require('@iobroker/adapter-core');
 const worx = require(__dirname + '/lib/api');
 const JSON = require('circular-json');
 const objects = require(__dirname + '/lib/objects');
-const { extractKeys } = require('./lib/extractKeys');
+const {
+    extractKeys
+} = require('./lib/extractKeys');
 
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
@@ -73,7 +75,7 @@ const COMMANDCODES = {
 };
 const WEATHERINTERVALL = 60000 * 60; // = 30 min.
 let weatherTimeout = null;
-let modules = {};
+const modules = {};
 
 class Worx extends utils.Adapter {
 
@@ -143,7 +145,7 @@ class Worx extends utils.Adapter {
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
-                    if (status && status.cfg && status.cfg.sc && typeof (status.cfg.sc.distm) !== 'undefined' && typeof (status.cfg.sc.m) !== 'undefined') {
+                    if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm && status.cfg.sc.m) {
                         that.log.debug('found PartyModus, create states...');
 
                         // create States
@@ -179,9 +181,9 @@ class Worx extends utils.Adapter {
                                 name: 'raw Mqtt response'
                             },
                             native: {}
-                        }).then(()=> {
-                            extractKeys(that,mower.serial + '.rawMqtt', mower, null, true);
-                        }).catch(()=>{
+                        }).then(() => {
+                            extractKeys(that, mower.serial + '.rawMqtt', mower, null, true);
+                        }).catch(() => {
                             that.log.error('Failed to create raw mqtt channel');
                         });
                     } else {
@@ -203,7 +205,7 @@ class Worx extends utils.Adapter {
         this.WorxCloud.on('mqtt', function (mower, data) {
             that.setStates(mower, data);
             if (that.config.enableJson === true) {
-                extractKeys(that,mower.serial + '.rawMqtt', mower, null, true);
+                extractKeys(that, mower.serial + '.rawMqtt', mower, null, true);
             }
         });
 
@@ -269,7 +271,7 @@ class Worx extends utils.Adapter {
         }
 
         // catch if JSON contain other data e.g. {"ota":"ota fail","mac":"XXXXXXXXXXXX"}"
-        if(typeof(data.dat) === 'undefined' || typeof(data.cfg) === 'undefined'){
+        if (typeof (data.dat) === 'undefined' || typeof (data.cfg) === 'undefined') {
             that.log.info('No data Message: ' + JSON.stringify(data));
             return;
         }
@@ -481,21 +483,69 @@ class Worx extends utils.Adapter {
 
 
             //moodules
-            if(data.cfg.modules && data.cfg.modules['4G'] ){
-                if(!modules['4G']){
-                    await Promise.all(objects.module_4g.map(async (o) => {
-                        await this.setObjectNotExistsAsync(mowerSerial +'.modules.4G.' + o._id, o);
-                    }));
+            if (data.cfg.modules && !modules.channel) {
+                await that.setObjectNotExistsAsync(mowerSerial + '.modules', {
+                    type: 'channel',
+                    common: {
+                        name: 'mower modules'
+                    },
+                    native: {}
+                });
+                modules.channel = true;
+            }
 
+
+            //4G Module
+            if (data.cfg.modules && data.cfg.modules['4G']) {
+                if (!modules['4G']) {
+                    await Promise.all(objects.module_4g.map(async (o) => {
+                        await this.setObjectNotExistsAsync(mowerSerial + '.modules.4G.' + o._id, o);
+                        this.log.info('GSP Module found! Create State : ' + o._id);
+                    }));
                 }
                 modules['4G'] = data.cfg.modules['4G'];
-
                 await this.setStateAsync(mowerSerial + '.modules.4G.longitude', {
                     val: data.cfg.modules['4G']['geo']['coo'][1],
                     ack: true
                 });
                 await this.setStateAsync(mowerSerial + '.modules.4G.latitude', {
                     val: data.cfg.modules['4G']['geo']['coo'][0],
+                    ack: true
+                });
+            }
+            // Df Module
+            if (data.cfg.modules && data.cfg.modules.DF) {
+                if (!modules.DF) {
+                    await Promise.all(objects.module_df.map(async (o) => {
+                        await this.setObjectNotExistsAsync(mowerSerial + '.modules.DF.' + o._id, o);
+                        this.log.info('OffLimits Module found! Create State : ' + o._id);
+                    }));
+                }
+                modules.DF = data.cfg.modules.DF;
+                await this.setStateAsync(mowerSerial + '.modules.DF.OLMSwitch_Cutting', {
+                    val: !!data.cfg.modules.DF.cut,
+                    ack: true
+                });
+                await this.setStateAsync(mowerSerial + '.modules.DF.OLMSwitch_FastHoming', {
+                    val: !!data.cfg.modules.DF.fh,
+                    ack: true
+                });
+            }
+            //Autolock feture
+            if (data.cfg && data.cfg.al) {
+                if (!modules.al) {
+                    await Promise.all(objects.al.map(async (o) => {
+                        await this.setObjectNotExistsAsync(mowerSerial + '.mower.' + o._id, o);
+                        this.log.info('Autolock found! Create State : ' + o._id);
+                    }));
+                }
+                modules.al = data.cfg.al;
+                await this.setStateAsync(mowerSerial + '.mower.AutoLock', {
+                    val: !!data.cfg.al.lvl,
+                    ack: true
+                });
+                await this.setStateAsync(mowerSerial + '.mower.AutoLockTimer', {
+                    val: !!data.cfg.al.t,
                     ack: true
                 });
             }
@@ -506,7 +556,11 @@ class Worx extends utils.Adapter {
             if (this.supportsFeature && this.supportsFeature('PLUGINS')) {
                 const sentryInstance = this.getPluginInstance('sentry');
                 if (sentryInstance) {
-                    sentryInstance.getSentryObject().captureException(error, { extra: {'data:' : JSON.stringify(data)} });
+                    sentryInstance.getSentryObject().captureException(error, {
+                        extra: {
+                            'data:': JSON.stringify(data)
+                        }
+                    });
                 }
             }
         }
@@ -1124,6 +1178,30 @@ class Worx extends utils.Adapter {
                 } else if (command === 'calJson' || command === 'calJson2') {
                     that.changeWeekJson(id, state.val, mower);
                 }
+                else if ((command === 'AutoLock')){
+                    const msg = modules.al;
+                    msg.lvl = state.val | 0;
+                    that.WorxCloud.sendMessage('{"al":' + JSON.stringify(msg) + '}', mower.serial);
+                }
+                else if ((command === 'AutoLockTimer')){
+                    if(state.val < 0 || state.val > 600){
+                        this.log.warn('Please use value between 0 and 600 for Autolocktimer');
+                        return;
+                    }
+                    const msg = modules.al;
+                    msg.t = parseInt(state.val);
+                    that.WorxCloud.sendMessage('{"al":' + JSON.stringify(msg) + '}', mower.serial);
+                }
+                else if ((command === 'OLMSwitch_Cutting')){
+                    const msg = modules.DF;
+                    msg.cut = state.val | 0;
+                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}', mower.serial);
+                }
+                else if ((command === 'OLMSwitch_FastHoming')){
+                    const msg = modules.DF;
+                    msg.fh = state.val | 0;
+                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}', mower.serial);
+                }
 
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
@@ -1262,7 +1340,7 @@ class Worx extends utils.Adapter {
 
         fail && this.log.debug('FAIL: ' + fail + ' CALJSON: ' + JSON.stringify(msgJson));
         message[sheduleSel] = msgJson;
-        if (!fail) that.WorxCloud.sendMessage('{"sc":'+ JSON.stringify(message) + '}', mower.serial);
+        if (!fail) that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
     }
 
     /**
@@ -1278,9 +1356,9 @@ class Worx extends utils.Adapter {
         const val = value;
         let sval, dayID;
 
-        if(typeof(mower.message.cfg) === 'undefined'){
+        if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
             return;
         }
 
@@ -1292,7 +1370,7 @@ class Worx extends utils.Adapter {
         message.ots && delete message.ots;
         message.distm && delete message.distm;
 
-        if(typeof message === 'undefined'){
+        if (typeof message === 'undefined') {
             that.log.warn('try again later!');
             return;
         }
@@ -1344,9 +1422,9 @@ class Worx extends utils.Adapter {
         const that = this;
         const val = value;
 
-        if(mower.message && typeof(mower.message.cfg) === 'undefined' || typeof(mower.message) === 'undefined' ){
+        if (mower.message && typeof (mower.message.cfg) === 'undefined' || typeof (mower.message) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
             return;
         }
 
@@ -1391,9 +1469,9 @@ class Worx extends utils.Adapter {
     startSequences(id, value, mower) {
         const that = this;
 
-        if(typeof(mower.message.cfg) === 'undefined'){
+        if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
             return;
         }
 
@@ -1439,9 +1517,9 @@ class Worx extends utils.Adapter {
         const that = this;
         const val = value;
 
-        if(typeof(mower.message.cfg) === 'undefined'){
+        if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
             return;
         }
 
@@ -1472,9 +1550,9 @@ class Worx extends utils.Adapter {
         const that = this;
         const val = value;
 
-        if(typeof(mower.message.cfg) === 'undefined'){
+        if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: '+ JSON.stringify(mower.message) );
+            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
             return;
         }
 
