@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.4.0",
+        "version": "1.4.1",
         "news": {
+            "1.4.1": {
+                "en": "fix bug in sendCommand (please remove state manually)",
+                "de": "Fehler in sendCommand beheben (bitte Status manuell entfernen)",
+                "ru": "исправить ошибку в sendCommand (удалите состояние вручную)",
+                "pt": "consertar bug em sendCommand (remova o estado manualmente)",
+                "nl": "fix bug in sendCommand (gelieve de status handmatig te verwijderen)",
+                "fr": "correction d'un bug dans sendCommand (veuillez supprimer l'état manuellement)",
+                "it": "correggere il bug in sendCommand (rimuovere lo stato manualmente)",
+                "es": "corregir el error en sendCommand (elimine el estado manualmente)",
+                "pl": "napraw błąd w sendCommand (proszę usunąć stan ręcznie)",
+                "zh-cn": "修复 sendCommand 中的错误（请手动删除状态）"
+            },
             "1.4.0": {
                 "en": "update testing\nadd gps coordinates\nadd new status states\nadd new Autolock states\nadd new OffLinits states",
                 "de": "Update-Tests\nGPS-Koordinaten hinzufügen\nneue Statuszustände hinzufügen\nneue Autolock-Zustände hinzufügen\nneue OffLinits-Zustände hinzufügen",
