@@ -29,6 +29,9 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
+### **WORK IN PROGRESS**
+(TA2k) fix error with wrong serialnumber
+(MeisterTR) fix bug in autolock function
 ### 1.4.1 (2021-07-06)
 * (MeisterTR) fix bug in sendCommand (please remove state manually)
 ### 1.4.0 (2021-07-05)

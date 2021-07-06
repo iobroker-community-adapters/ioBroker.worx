@@ -545,7 +545,7 @@ class Worx extends utils.Adapter {
                     ack: true
                 });
                 await this.setStateAsync(mowerSerial + '.mower.AutoLockTimer', {
-                    val: !!data.cfg.al.t,
+                    val: data.cfg.al.t,
                     ack: true
                 });
             }
