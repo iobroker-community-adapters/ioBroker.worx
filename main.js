@@ -1018,8 +1018,6 @@ class Worx extends utils.Adapter {
                 name: 'send Command',
                 type: 'number',
                 role: 'value',
-                min: 1,
-                max: 7,
                 read: true,
                 write: true,
                 desc: 'send Command to Landroid',
