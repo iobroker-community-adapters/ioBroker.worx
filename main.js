@@ -1324,8 +1324,8 @@ class Worx extends utils.Adapter {
                     fail = true;
                 }
 
-                if (element[1] < 0 || element[1] > 720) {
-                    that.log.error('Time out of range 0 min < time < 720 min.');
+                if (element[1] < 0 || element[1] > 1440) {
+                    that.log.error('Time out of range 0 min < time < 1440 min.');
                     fail = true;
 
                 }
@@ -1397,9 +1397,9 @@ class Worx extends utils.Adapter {
                     sval = val;
                 } else that.log.error('Time out of range: e.g "10:00"');
             } else if (valID === 1) { // changed the worktime
-                if (val >= 0 && val <= 720) {
+                if (val >= 0 && val <= 1440) {
                     sval = parseInt(val);
-                } else that.log.error('Time out of range 0 min < time < 720 min.');
+                } else that.log.error('Time out of range 0 min < time < 1440 min.');
 
             } else that.log.error('Something went wrong while setting new mower times');
         } catch (e) {
