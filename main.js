@@ -442,7 +442,7 @@ class Worx extends utils.Adapter {
             }
 
             // PartyModus
-            if (typeof (data.cfg.sc.distm) !== 'undefined' && typeof (data.cfg.sc.m) !== 'undefined') {
+            if (data && data.cfg && data.cfg.sc && data.cfg.sc.distm && data.cfg.sc.m) {
                 that.setStateAsync(mowerSerial + '.mower.partyModus', {
                     val: (data.cfg.sc.m === 2 ? true : false),
                     ack: true
@@ -540,6 +540,9 @@ class Worx extends utils.Adapter {
                     }));
                 }
                 modules.al = data.cfg.al;
+                // save last positive Value
+                if(data.cfg.al.t > 0) modules.al_last = data.cfg.al.t
+
                 await this.setStateAsync(mowerSerial + '.mower.AutoLock', {
                     val: !!data.cfg.al.lvl,
                     ack: true
@@ -1193,12 +1196,12 @@ class Worx extends utils.Adapter {
                 else if ((command === 'OLMSwitch_Cutting')){
                     const msg = modules.DF;
                     msg.cut = state.val | 0;
-                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}', mower.serial);
+                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
                 }
                 else if ((command === 'OLMSwitch_FastHoming')){
                     const msg = modules.DF;
                     msg.fh = state.val | 0;
-                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}', mower.serial);
+                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
                 }
 
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
