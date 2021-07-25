@@ -131,7 +131,7 @@ class Worx extends utils.Adapter {
 
                     //check if new FW functions
                     if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
-                        that.log.debug('found DoubleShedule, create states...');
+                        that.log.info('found DoubleShedule, create states...');
 
                         // create States
                         week.forEach(day => {
@@ -140,13 +140,13 @@ class Worx extends utils.Adapter {
                         });
                     }
                     if (status && status.cfg && status.cfg.sc && status.cfg.sc.ots) {
-                        that.log.debug('found OneTimeShedule, create states...');
+                        that.log.info('found OneTimeShedule, create states...');
 
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
-                    if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm && status.cfg.sc.m) {
-                        that.log.debug('found PartyModus, create states...');
+                    if (typeof (status.cfg.sc.distm) !== 'undefined' && typeof(status.cfg.sc.m) !== 'undefined') {
+                        that.log.info('found PartyModus, create states...');
 
                         // create States
                         objects.partyModus.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
@@ -442,7 +442,7 @@ class Worx extends utils.Adapter {
             }
 
             // PartyModus
-            if (data && data.cfg && data.cfg.sc && data.cfg.sc.distm && data.cfg.sc.m) {
+            if (typeof (data.cfg.sc.distm) !== 'undefined' && typeof(data.cfg.sc.m) !== 'undefined') {
                 that.setStateAsync(mowerSerial + '.mower.partyModus', {
                     val: (data.cfg.sc.m === 2 ? true : false),
                     ack: true
