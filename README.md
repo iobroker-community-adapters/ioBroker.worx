@@ -29,7 +29,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.4.3 (2021-07-25)
 * (MeisterTR) fix Partymode detection
 ### 1.4.2 (2021-07-24)
 (MeisterTR) fix bug with OLMSwitch_Cutting

@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.4.2",
+        "version": "1.4.3",
         "news": {
+            "1.4.3": {
+                "en": "fix Partymode detection",
+                "de": "Partymode-Erkennung behoben",
+                "ru": "исправить обнаружение Partymode",
+                "pt": "corrigir detecção de Partymode",
+                "nl": "repareer Partymode-detectie",
+                "fr": "correction de la détection du mode Party",
+                "it": "correggere il rilevamento della modalità Party",
+                "es": "arreglar la detección del modo Fiesta",
+                "pl": "napraw wykrywanie trybu Party",
+                "zh-cn": "修复派对模式检测"
+            },
             "1.4.2": {
                 "en": "(MeisterTR) fix bug with OLMSwitch_Cutting\n(MeisterTR) fix bug with PartyMode\n(TA2k) fix error with wrong serialnumber (please delete all objects manually)\n(MeisterTR) fix bug in autolock function",
                 "de": "(MeisterTR) Fehler mit OLMSwitch_Cutting behoben\n(MeisterTR) Fehler mit PartyMode beheben\n(TA2k) Fehler mit falscher Seriennummer beheben (bitte alle Objekte manuell löschen)\n(MeisterTR) Fehler in der Autolock-Funktion behoben",
