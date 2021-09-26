@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.4.3",
+        "version": "1.5.0",
         "news": {
+            "1.5.0": {
+                "en": "many fixes\nadd torque control\nfixed States",
+                "de": "viele Korrekturen\nDrehmomentkontrolle hinzufügen\nfeste Staaten",
+                "ru": "много исправлений\nдобавить контроль крутящего момента\nфиксированные состояния",
+                "pt": "muitas correções\nadicionar controle de torque\nestados fixos",
+                "nl": "veel reparaties\nkoppelregeling toevoegen\nvaste toestanden",
+                "fr": "de nombreuses corrections\najouter un contrôle de couple\nétats fixes",
+                "it": "molte correzioni\naggiungi il controllo della coppia\nStati fissi",
+                "es": "muchas correcciones\nagregar control de torque\nestados fijos",
+                "pl": "wiele poprawek\ndodaj kontrolę momentu obrotowego;\nstany stałe",
+                "zh-cn": "许多修复\n添加扭矩控制\n固定状态"
+            },
             "1.4.3": {
                 "en": "fix Partymode detection",
                 "de": "Partymode-Erkennung behoben",
