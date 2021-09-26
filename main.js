@@ -145,7 +145,14 @@ class Worx extends utils.Adapter {
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
-                    if (typeof (status.cfg.sc.distm) !== 'undefined' && typeof(status.cfg.sc.m) !== 'undefined') {
+                    //torque control found
+                    if (status && status.cfg && status.cfg.tq) {
+                        that.log.info('found torque control, create states...');
+
+                        // create States
+                        objects.module_tq.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
+                    }
+                    if (status && status.cfg && status.cfg.sc && typeof (status.cfg.sc.distm) !== 'undefined' && typeof(status.cfg.sc.m) !== 'undefined') {
                         that.log.info('found PartyModus, create states...');
 
                         // create States
@@ -389,7 +396,7 @@ class Worx extends utils.Adapter {
                 val: data.cfg.rd,
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.batteryState', {
+            data.dat.bt && that.setStateAsync(mowerSerial + '.mower.batteryState', {
                 val: data.dat.bt.p,
                 ack: true
             });
@@ -422,6 +429,14 @@ class Worx extends utils.Adapter {
             // Second Mowtime
             if (data.cfg.sc.dd) {
                 evaluateCalendar(data.cfg.sc.dd, true);
+            }
+
+            // torque control
+            if (data.cfg.tq) {
+                that.setStateAsync(mowerSerial + '.mower.torque', {
+                    val: parseInt(data.cfg.tq),
+                    ack: true
+                });
             }
 
             // 1TimeShedule
@@ -496,7 +511,7 @@ class Worx extends utils.Adapter {
 
 
             //4G Module
-            if (data.cfg.modules && data.cfg.modules['4G']) {
+            if (data.cfg.modules && data.cfg.modules['4G'] && data.cfg.modules['4G']['geo']) {
                 if (!modules['4G']) {
                     await Promise.all(objects.module_4g.map(async (o) => {
                         await this.setObjectNotExistsAsync(mowerSerial + '.modules.4G.' + o._id, o);
@@ -541,7 +556,7 @@ class Worx extends utils.Adapter {
                 }
                 modules.al = data.cfg.al;
                 // save last positive Value
-                if(data.cfg.al.t > 0) modules.al_last = data.cfg.al.t
+                if(data.cfg.al.t > 0) modules.al_last = data.cfg.al.t;
 
                 await this.setStateAsync(mowerSerial + '.mower.AutoLock', {
                     val: !!data.cfg.al.lvl,
@@ -630,7 +645,7 @@ class Worx extends utils.Adapter {
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.humidity', {
-                    val: weather.main.humidity | 0,
+                    val: parseInt(weather.main.humidity) | 0,
                     ack: true
                 });
                 that.setStateAsync(mower.serial + '.weather.temp', {
@@ -1203,6 +1218,11 @@ class Worx extends utils.Adapter {
                     msg.fh = state.val | 0;
                     that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
                 }
+                else if ((command === 'torque')){
+                    if(state.val < -50 || state.val > 50) return;
+                    const tqval = parseInt(state.val);
+                    that.WorxCloud.sendMessage('{"tq":' + tqval + '}', mower.serial);
+                }
 
             } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
 
@@ -1406,6 +1426,10 @@ class Worx extends utils.Adapter {
             that.log.error('Error while setting mower config: ' + e);
         }
         if (sval !== undefined) {
+            if(typeof message[sheduleSel][dayID][valID] === 'undefined') {
+                that.log.warn('Something went wrong, plese try again later');
+                return;
+            }
             message[sheduleSel][dayID][valID] = sval;
             that.log.debug('Mowing time change at ' + sheduleSel + ' to: ' + JSON.stringify(message));
             that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
