@@ -139,14 +139,14 @@ class Worx extends utils.Adapter {
 
                         });
                     }
-                    if (status && status.cfg && status.cfg.sc && status.cfg.sc.ots) {
+                    if (status && status.cfg && typeof (status.cfg.sc) !== 'undefined' && typeof (status.cfg.sc.ots) !== 'undefined' ) {
                         that.log.info('found OneTimeShedule, create states...');
 
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
                     //torque control found
-                    if (status && status.cfg && status.cfg.tq) {
+                    if (status && status.cfg &&  typeof (status.cfg.tq) !== 'undefined') {
                         that.log.info('found torque control, create states...');
 
                         // create States
