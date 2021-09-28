@@ -5,3 +5,6 @@ nbproject
 admin/i18n/flat.txt
 admin/i18n/*/flat.txt
 .vs
+
+# ioBroker dev-server
+.dev-server/
