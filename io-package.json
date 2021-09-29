@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "worx",
-        "version": "1.5.1",
+        "version": "1.5.4",
         "news": {
-            "1.5.1": {
+            "1.5.4": {
                 "en": "many fixes\nadd torque control\nfixed States",
                 "de": "viele Korrekturen\nDrehmomentkontrolle hinzufügen\nfeste Staaten",
                 "ru": "много исправлений\nдобавить контроль крутящего момента\nфиксированные состояния",
