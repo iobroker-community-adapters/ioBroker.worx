@@ -29,7 +29,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.5.2 (2021-09-29)
 * (MeisterTR) fix error
 
 ### 1.5.0 (2021-09-26)
