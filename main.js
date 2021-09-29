@@ -495,7 +495,7 @@ class Worx extends utils.Adapter {
                 that.setStateAsync(mowerSerial + '.mower.torque', {
                     val: parseInt(data.cfg.tq),
                     ack: true
-                });
+                }); 
 
             }
 
