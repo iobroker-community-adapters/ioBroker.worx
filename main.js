@@ -145,13 +145,7 @@ class Worx extends utils.Adapter {
                         // create States
                         objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
                     }
-                    //torque control found
-                    if (status && status.cfg &&  typeof (status.cfg.tq) !== 'undefined') {
-                        that.log.info('found torque control, create states...');
 
-                        // create States
-                        objects.module_tq.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
-                    }
                     if (status && status.cfg && status.cfg.sc && typeof (status.cfg.sc.distm) !== 'undefined' && typeof(status.cfg.sc.m) !== 'undefined') {
                         that.log.info('found PartyModus, create states...');
 
@@ -431,14 +425,6 @@ class Worx extends utils.Adapter {
                 evaluateCalendar(data.cfg.sc.dd, true);
             }
 
-            // torque control
-            if (data.cfg.tq) {
-                that.setStateAsync(mowerSerial + '.mower.torque', {
-                    val: parseInt(data.cfg.tq),
-                    ack: true
-                });
-            }
-
             // 1TimeShedule
             if (data.cfg.sc.ots) {
 
@@ -496,8 +482,25 @@ class Worx extends utils.Adapter {
                 that.log.warn('Something went wrong at edgeCut');
             }
 
+            //
+            //torque control found
+            if (data && data.cfg &&  typeof (data.cfg.tq) !== 'undefined') {
+                if(typeof (modules['tq']) === 'undefined' ){
+                    that.log.info('found torque control, create states...');
+                    await Promise.all(objects.module_tq.map(async (o) => {
+                        await this.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o);
+                    }));
+                }
+                modules['tq'] = data.cfg.tq;
+                that.setStateAsync(mowerSerial + '.mower.torque', {
+                    val: parseInt(data.cfg.tq),
+                    ack: true
+                }); 
 
-            //moodules
+            }
+
+
+            //modules
             if (data.cfg.modules && !modules.channel) {
                 await that.setObjectNotExistsAsync(mowerSerial + '.modules', {
                     type: 'channel',

@@ -1,6 +1,6 @@
 {
   "name": "iobroker.worx",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Worx Landroid mower (Cloud)",
   "author": {
     "name": "MeisterTR",
@@ -58,6 +58,15 @@
     "lint": "eslint",
     "release": "release-script"
   },
+  "files": [
+    "admin{,/!(src)/**}/!(tsconfig|tsconfig.*).json",
+    "admin{,/!(src)/**}/*.{html,css,png,svg,jpg,js}",
+    "lib/",
+    "www/",
+    "io-package.json",
+    "LICENSE",
+    "main.js"
+  ],
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.worx/issues"
   },
