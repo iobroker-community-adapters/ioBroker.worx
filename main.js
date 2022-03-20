@@ -395,14 +395,16 @@ class Worx extends utils.Adapter {
                 ack: true
             });
 
-            for (let i = 0; i < data.cfg.mzv.length; i++) {
-                //  adapter.setState("areas.startSequence", { val: data.cfg.mzv[i], ack: true });
-                sequence.push(data.cfg.mzv[i]);
+            if (data.cfg.mzv) {
+                for (let i = 0; i < data.cfg.mzv.length; i++) {
+                    //  adapter.setState("areas.startSequence", { val: data.cfg.mzv[i], ack: true });
+                    sequence.push(data.cfg.mzv[i]);
+                }
+                that.setStateAsync(mowerSerial + '.areas.startSequence', {
+                    val: (JSON.stringify(sequence)),
+                    ack: true
+                });
             }
-            that.setStateAsync(mowerSerial + '.areas.startSequence', {
-                val: (JSON.stringify(sequence)),
-                ack: true
-            });
 
             const state = (data.dat && data.dat.ls ? data.dat.ls : 0);
             const error = (data.dat && data.dat.le ? data.dat.le : 0);
@@ -495,7 +497,7 @@ class Worx extends utils.Adapter {
                 that.setStateAsync(mowerSerial + '.mower.torque', {
                     val: parseInt(data.cfg.tq),
                     ack: true
-                }); 
+                });
 
             }
 
@@ -541,11 +543,11 @@ class Worx extends utils.Adapter {
                 }
                 modules.DF = data.cfg.modules.DF;
                 await this.setStateAsync(mowerSerial + '.modules.DF.OLMSwitch_Cutting', {
-                    val: !!data.cfg.modules.DF.cut,
+                    val: data.cfg.modules && data.cfg.modules.DF ? !!data.cfg.modules.DF.cut : false,
                     ack: true
                 });
                 await this.setStateAsync(mowerSerial + '.modules.DF.OLMSwitch_FastHoming', {
-                    val: !!data.cfg.modules.DF.fh,
+                    val: data.cfg.modules && data.cfg.modules.DF ? !!data.cfg.modules.DF.fh : false,
                     ack: true
                 });
             }
@@ -1175,7 +1177,7 @@ class Worx extends utils.Adapter {
                     }
                 } else if (command === 'mowTimeExtend') {
                     that.mowTimeEx(id, parseInt(state.val), mower);
-                } else if (command === 'mowerActive') {
+                } else if (command === 'mowerActive' && mower.message && mower.message.cfg && mower.message.cfg.sc) {
                     const val = (state.val ? 1 : 0);
                     const message = mower.message.cfg.sc;
 
@@ -1211,12 +1213,12 @@ class Worx extends utils.Adapter {
                     msg.t = parseInt(state.val);
                     that.WorxCloud.sendMessage('{"al":' + JSON.stringify(msg) + '}', mower.serial);
                 }
-                else if ((command === 'OLMSwitch_Cutting')){
+                else if (command === 'OLMSwitch_Cutting' && modules.DF) {
                     const msg = modules.DF;
                     msg.cut = state.val | 0;
                     that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
                 }
-                else if ((command === 'OLMSwitch_FastHoming')){
+                else if (command === 'OLMSwitch_FastHoming' && modules.DF) {
                     const msg = modules.DF;
                     msg.fh = state.val | 0;
                     that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
@@ -1241,7 +1243,7 @@ class Worx extends utils.Adapter {
         that.log.debug('Start mower ' + JSON.stringify(mower));
         that.log.debug('Start mowerff ' + JSON.stringify(that.WorxCloud.mower));
 
-        if (mower.message.dat && (mower.message.dat.ls === 1 || mower.message.dat.ls === 34) && mower.message.dat.le === 0) {
+        if (mower.message && mower.message.dat && (mower.message.dat.ls === 1 || mower.message.dat.ls === 34) && mower.message.dat.le === 0) {
             that.WorxCloud.sendMessage('{"cmd":1}', mower.serial); //start code for mower
             that.log.debug('Start mower');
         } else {
@@ -1257,7 +1259,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     stopMower(mower) {
-        if (mower.message.dat && mower.message.dat.ls === 7 && mower.message.dat.le === 0) {
+        if (mower.message && mower.message.dat && mower.message.dat.ls === 7 && mower.message.dat.le === 0) {
             this.WorxCloud.sendMessage('{"cmd":3}', mower.serial); //"Back to home" code for mower
             this.log.debug('mower going back home');
         } else {
@@ -1281,10 +1283,12 @@ class Worx extends utils.Adapter {
         if (idType === 'oneTimeStart') {
             const bc = await this.getStateAsync(mower.serial + '.mower.oneTimeWithBorder');
             const wtm = await this.getStateAsync(mower.serial + '.mower.oneTimeWorkTime');
-            msgJson = {
-                'bc': (bc.val ? 1 : 0),
-                'wtm': wtm.val
-            };
+            if (bc && wtm) {
+                msgJson = {
+                    'bc': (bc.val ? 1 : 0),
+                    'wtm': wtm.val
+                };
+            }
         } else if (idType === 'oneTimeJson') {
             try {
                 msgJson = JSON.parse(value);
@@ -1380,7 +1384,7 @@ class Worx extends utils.Adapter {
         const val = value;
         let sval, dayID;
 
-        if (typeof (mower.message.cfg) === 'undefined') {
+        if (!mower.message || typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
             that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
             return;
@@ -1584,7 +1588,7 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        if (val === true && typeof (mower.message.cfg.sc.ots) === 'undefined') {
+        if (val === true && (!mower.message || mower.message.cfg || !mower.message.cfg.sc || typeof (mower.message.cfg.sc.ots) === 'undefined')) {
             mower.edgeCut = true;
             that.WorxCloud.sendMessage('{"cmd":4}', mower.serial); // starte ZoneTraining
         } else if (val === true && mower.message.cfg.sc.ots) {
