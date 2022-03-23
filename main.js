@@ -9,9 +9,9 @@
 const utils = require('@iobroker/adapter-core');
 
 // Load your modules here, e.g.:
-const worx = require(__dirname + '/lib/api');
+const worx = require(`${__dirname}/lib/api`);
 const JSON = require('circular-json');
-const objects = require(__dirname + '/lib/objects');
+const objects = require(`${__dirname}/lib/objects`);
 const {
     extractKeys
 } = require('./lib/extractKeys');
@@ -135,7 +135,7 @@ class Worx extends utils.Adapter {
 
                         // create States
                         week.forEach(day => {
-                            objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '2.' + o._id, o));
+                            objects.calendar.map(o => that.setObjectNotExistsAsync(`${mower.serial}.calendar.${day}2.${o._id}`, o));
 
                         });
                     }
@@ -143,30 +143,30 @@ class Worx extends utils.Adapter {
                         that.log.info('found OneTimeShedule, create states...');
 
                         // create States
-                        objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
+                        objects.oneTimeShedule.map(o => that.setObjectNotExistsAsync(`${mower.serial}.mower.${o._id}`, o));
                     }
 
                     if (status && status.cfg && status.cfg.sc && typeof (status.cfg.sc.distm) !== 'undefined' && typeof(status.cfg.sc.m) !== 'undefined') {
                         that.log.info('found PartyModus, create states...');
 
                         // create States
-                        objects.partyModus.map(o => that.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o));
+                        objects.partyModus.map(o => that.setObjectNotExistsAsync(`${mower.serial}.mower.${o._id}`, o));
                     }
 
                     //disable or enable weather
                     if (that.config.weather === true) {
-                        objects.weather.map(o => that.setObjectNotExistsAsync(mower.serial + '.weather.' + o._id, o));
+                        objects.weather.map(o => that.setObjectNotExistsAsync(`${mower.serial}.weather.${o._id}`, o));
                     } else if (that.config.weather === false) {
-                        objects.weather.map(o => that.delObj(mower.serial + '.weather.' + o._id));
+                        objects.weather.map(o => that.delObj(`${mower.serial}.weather.${o._id}`));
                     }
 
                     // Json fpr weekmow
                     if (that.config.enableJson === true) {
-                        that.setObjectNotExistsAsync(mower.serial + '.calendar.' + objects.calJson[0]._id, objects.calJson[0]);
-                        if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) that.setObjectNotExistsAsync(mower.serial + '.calendar.' + objects.calJson[0]._id + '2', objects.calJson[0]);
+                        that.setObjectNotExistsAsync(`${mower.serial}.calendar.${objects.calJson[0]._id}`, objects.calJson[0]);
+                        if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) that.setObjectNotExistsAsync(`${mower.serial}.calendar.${objects.calJson[0]._id}2`, objects.calJson[0]);
                     } else if (that.config.enableJson === false) {
-                        that.delObj(mower.serial + '.calendar.' + objects.calJson[0]._id);
-                        that.delObj(mower.serial + '.calendar.' + objects.calJson[0]._id + '2');
+                        that.delObj(`${mower.serial}.calendar.${objects.calJson[0]._id}`);
+                        that.delObj(`${mower.serial}.calendar.${objects.calJson[0]._id}2`);
                     }
 
                     setTimeout(function () {
@@ -176,24 +176,28 @@ class Worx extends utils.Adapter {
 
                     if (that.config.enableJson === true) {
                         that.log.debug(JSON.stringify(mower));
-                        that.setObjectNotExistsAsync(mower.serial + '.rawMqtt', {
+                        that.setObjectNotExistsAsync(`${mower.serial}.rawMqtt`, {
                             type: 'channel',
                             common: {
                                 name: 'raw Mqtt response'
                             },
                             native: {}
                         }).then(() => {
-                            extractKeys(that, mower.serial + '.rawMqtt', mower, null, true);
+                            extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
                         }).catch(() => {
                             that.log.error('Failed to create raw mqtt channel');
                         });
                     } else {
-                        that.getStates(mower.serial + '.rawMqtt.*', (err, states) => {
+                        that.getStates(`${mower.serial}.rawMqtt.*`, (err, states) => {
+                            if (err || !states) {
+                                that.log.error(`Can not get States: ${err.message}`);
+                                return;
+                            }
                             const allIds = Object.keys(states);
                             allIds.forEach((keyName) => {
                                 that.delObject(keyName.split('.').slice(2).join('.'));
                             });
-                            that.delObject(mower.serial + '.rawMqtt');
+                            that.delObject(`${mower.serial}.rawMqtt`);
                         });
                     }
 
@@ -206,20 +210,20 @@ class Worx extends utils.Adapter {
         this.WorxCloud.on('mqtt', function (mower, data) {
             that.setStates(mower, data);
             if (that.config.enableJson === true) {
-                extractKeys(that, mower.serial + '.rawMqtt', mower, null, true);
+                extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
             }
         });
 
         this.WorxCloud.on('online', function (mower, state) {
 
-            that.setStateAsync(mower.serial + '.mower.online', {
+            that.setStateAsync(`${mower.serial}.mower.online`, {
                 val: true,
                 ack: true
             });
         });
         this.WorxCloud.on('offline', function (mower, state) {
 
-            that.setStateAsync(mower.serial + '.mower.online', {
+            that.setStateAsync(`${mower.serial}.mower.online`, {
                 val: false,
                 ack: true
             });
@@ -227,7 +231,7 @@ class Worx extends utils.Adapter {
 
 
         this.WorxCloud.on('error', err => {
-            this.log.error('ERROR: ' + err);
+            this.log.error(`ERROR: ${err}`);
             this.setStateAsync('info.connection', {
                 val: false,
                 ack: true
@@ -263,7 +267,7 @@ class Worx extends utils.Adapter {
         //mower set states
         const sequence = [];
         //data = testmsg
-        that.log.debug('GET MQTT DATA from API: ' + JSON.stringify(data));
+        that.log.debug(`GET MQTT DATA from API: ${JSON.stringify(data)}`);
 
         //catch error if onj is empty
         if (Object.keys(data).length === 0 && data.constructor === Object) {
@@ -273,124 +277,124 @@ class Worx extends utils.Adapter {
 
         // catch if JSON contain other data e.g. {"ota":"ota fail","mac":"XXXXXXXXXXXX"}"
         if (typeof (data.dat) === 'undefined' || typeof (data.cfg) === 'undefined') {
-            that.log.info('No data Message: ' + JSON.stringify(data));
+            that.log.info(`No data Message: ${JSON.stringify(data)}`);
             return;
         }
         try {
             if (that.config.meterMin) {
-                that.setStateAsync(mowerSerial + '.mower.totalTime', {
+                that.setStateAsync(`${mowerSerial}.mower.totalTime`, {
                     val: (data.dat.st && data.dat.st.wt ? parseFloat((data.dat.st.wt).toFixed(2)) : null),
                     ack: true
                 });
-                that.setStateAsync(mowerSerial + '.mower.totalDistance', {
+                that.setStateAsync(`${mowerSerial}.mower.totalDistance`, {
                     val: (data.dat.st && data.dat.st.d ? parseFloat((data.dat.st.d).toFixed(2)) : null),
                     ack: true
                 });
-                that.setStateAsync(mowerSerial + '.mower.totalBladeTime', {
+                that.setStateAsync(`${mowerSerial}.mower.totalBladeTime`, {
                     val: (data.dat.st && data.dat.st.b ? parseFloat((data.dat.st.b).toFixed(2)) : null),
                     ack: true
                 });
             } else {
-                that.setStateAsync(mowerSerial + '.mower.totalTime', {
+                that.setStateAsync(`${mowerSerial}.mower.totalTime`, {
                     val: (data.dat.st && data.dat.st.wt ? parseFloat(((data.dat.st.wt / 6) / 10).toFixed(2)) : null),
                     ack: true
                 });
-                that.setStateAsync(mowerSerial + '.mower.totalDistance', {
+                that.setStateAsync(`${mowerSerial}.mower.totalDistance`, {
                     val: (data.dat.st && data.dat.st.d ? parseFloat(((data.dat.st.d / 100) / 10).toFixed(2)) : null),
                     ack: true
                 });
-                that.setStateAsync(mowerSerial + '.mower.totalBladeTime', {
+                that.setStateAsync(`${mowerSerial}.mower.totalBladeTime`, {
                     val: (data.dat.st && data.dat.st.b ? parseFloat(((data.dat.st.b / 6) / 10).toFixed(2)) : null),
                     ack: true
                 });
             }
-            that.setStateAsync(mowerSerial + '.mower.gradient', {
+            that.setStateAsync(`${mowerSerial}.mower.gradient`, {
                 val: (data.dat.dmp && data.dat.dmp[0] ? data.dat.dmp[0] : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.inclination', {
+            that.setStateAsync(`${mowerSerial}.mower.inclination`, {
                 val: (data.dat.dmp && data.dat.dmp[1] ? data.dat.dmp[1] : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.direction', {
+            that.setStateAsync(`${mowerSerial}.mower.direction`, {
                 val: (data.dat.dmp && data.dat.dmp[2] ? data.dat.dmp[2] : 0),
                 ack: true
             });
 
-            that.setStateAsync(mowerSerial + '.mower.batteryChargeCycle', {
+            that.setStateAsync(`${mowerSerial}.mower.batteryChargeCycle`, {
                 val: (data.dat.bt && data.dat.bt.nr ? data.dat.bt.nr : null),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.batteryCharging', {
+            that.setStateAsync(`${mowerSerial}.mower.batteryCharging`, {
                 val: (data.dat.bt && data.dat.bt.c ? true : false),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.batteryVoltage', {
+            that.setStateAsync(`${mowerSerial}.mower.batteryVoltage`, {
                 val: (data.dat.bt && data.dat.bt.v ? data.dat.bt.v : null),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.batteryTemperature', {
+            that.setStateAsync(`${mowerSerial}.mower.batteryTemperature`, {
                 val: (data.dat.bt && data.dat.bt.t ? data.dat.bt.t : null),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.error', {
+            that.setStateAsync(`${mowerSerial}.mower.error`, {
                 val: (data.dat && data.dat.le ? data.dat.le : 0),
                 ack: true
             });
-            that.log.debug('Test Status: ' + (data.dat && data.dat.ls ? data.dat.ls : 0));
-            that.setStateAsync(mowerSerial + '.mower.status', {
+            that.log.debug(`Test Status: ${data.dat && data.dat.ls ? data.dat.ls : 0}`);
+            that.setStateAsync(`${mowerSerial}.mower.status`, {
                 val: (data.dat && data.dat.ls ? data.dat.ls : 0),
                 ack: true
             });
 
-            that.setStateAsync(mowerSerial + '.mower.wifiQuality', {
+            that.setStateAsync(`${mowerSerial}.mower.wifiQuality`, {
                 val: (data.dat && data.dat.rsi ? data.dat.rsi : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.mowerActive', {
+            that.setStateAsync(`${mowerSerial}.mower.mowerActive`, {
                 val: (data.cfg.sc && data.cfg.sc.m ? true : false),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.mowTimeExtend', {
+            that.setStateAsync(`${mowerSerial}.mower.mowTimeExtend`, {
                 val: (data.cfg.sc && data.cfg.sc.p ? data.cfg.sc.p : 0),
                 ack: true
             });
 
             // sort Areas
-            that.setStateAsync(mowerSerial + '.areas.area_0', {
+            that.setStateAsync(`${mowerSerial}.areas.area_0`, {
                 val: (data.cfg.mz && data.cfg.mz[0] ? data.cfg.mz[0] : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.areas.area_1', {
+            that.setStateAsync(`${mowerSerial}.areas.area_1`, {
                 val: (data.cfg.mz && data.cfg.mz[1] ? data.cfg.mz[1] : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.areas.area_2', {
+            that.setStateAsync(`${mowerSerial}.areas.area_2`, {
                 val: (data.cfg.mz && data.cfg.mz[2] ? data.cfg.mz[2] : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.areas.area_3', {
+            that.setStateAsync(`${mowerSerial}.areas.area_3`, {
                 val: (data.cfg.mz && data.cfg.mz[3] ? data.cfg.mz[3] : 0),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.areas.actualArea', {
+            that.setStateAsync(`${mowerSerial}.areas.actualArea`, {
                 val: (data.dat && data.cfg && data.cfg.mzv ? data.cfg.mzv[data.dat.lz] : null),
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.areas.actualAreaIndicator', {
+            that.setStateAsync(`${mowerSerial}.areas.actualAreaIndicator`, {
                 val: (data.dat && data.dat.lz ? data.dat.lz : null),
                 ack: true
             });
 
-            that.setStateAsync(mowerSerial + '.mower.firmware', {
+            that.setStateAsync(`${mowerSerial}.mower.firmware`, {
                 val: data.dat && data.dat.fw ? data.dat.fw.toString() : '-',
                 ack: true
             });
-            that.setStateAsync(mowerSerial + '.mower.waitRain', {
+            that.setStateAsync(`${mowerSerial}.mower.waitRain`, {
                 val: data.cfg.rd,
                 ack: true
             });
-            data.dat.bt && that.setStateAsync(mowerSerial + '.mower.batteryState', {
+            data.dat.bt && that.setStateAsync(`${mowerSerial}.mower.batteryState`, {
                 val: data.dat.bt.p,
                 ack: true
             });
@@ -400,7 +404,7 @@ class Worx extends utils.Adapter {
                     //  adapter.setState("areas.startSequence", { val: data.cfg.mzv[i], ack: true });
                     sequence.push(data.cfg.mzv[i]);
                 }
-                that.setStateAsync(mowerSerial + '.areas.startSequence', {
+                that.setStateAsync(`${mowerSerial}.areas.startSequence`, {
                     val: (JSON.stringify(sequence)),
                     ack: true
                 });
@@ -410,12 +414,12 @@ class Worx extends utils.Adapter {
             const error = (data.dat && data.dat.le ? data.dat.le : 0);
 
             if ((state === 7 || state === 9) && error === 0) {
-                that.setStateAsync(mowerSerial + '.mower.state', {
+                that.setStateAsync(`${mowerSerial}.mower.state`, {
                     val: true,
                     ack: true
                 });
             } else {
-                that.setStateAsync(mowerSerial + '.mower.state', {
+                that.setStateAsync(`${mowerSerial}.mower.state`, {
                     val: false,
                     ack: true
                 });
@@ -430,15 +434,15 @@ class Worx extends utils.Adapter {
             // 1TimeShedule
             if (data.cfg.sc.ots) {
 
-                that.setStateAsync(mowerSerial + '.mower.oneTimeWithBorder', {
+                that.setStateAsync(`${mowerSerial}.mower.oneTimeWithBorder`, {
                     val: (data.cfg.sc.ots.bc ? true : false),
                     ack: true
                 });
-                that.setStateAsync(mowerSerial + '.mower.oneTimeWorkTime', {
+                that.setStateAsync(`${mowerSerial}.mower.oneTimeWorkTime`, {
                     val: (data.cfg.sc.ots.wtm),
                     ack: true
                 });
-                that.setStateAsync(mowerSerial + '.mower.oneTimeJson', {
+                that.setStateAsync(`${mowerSerial}.mower.oneTimeJson`, {
                     val: JSON.stringify(data.cfg.sc.ots),
                     ack: true
                 });
@@ -446,7 +450,7 @@ class Worx extends utils.Adapter {
 
             // PartyModus
             if (typeof (data.cfg.sc.distm) !== 'undefined' && typeof(data.cfg.sc.m) !== 'undefined') {
-                that.setStateAsync(mowerSerial + '.mower.partyModus', {
+                that.setStateAsync(`${mowerSerial}.mower.partyModus`, {
                     val: (data.cfg.sc.m === 2 ? true : false),
                     ack: true
                 });
@@ -454,12 +458,12 @@ class Worx extends utils.Adapter {
 
             //JSON week
             if (that.config.enableJson === true) {
-                that.setStateAsync(mowerSerial + '.calendar.calJson', {
+                that.setStateAsync(`${mowerSerial}.calendar.calJson`, {
                     val: JSON.stringify(data.cfg.sc.d),
                     ack: true
                 });
                 if (data.cfg.sc.dd) {
-                    that.setStateAsync(mowerSerial + '.calendar.calJson2', {
+                    that.setStateAsync(`${mowerSerial}.calendar.calJson2`, {
                         val: JSON.stringify(data.cfg.sc.dd),
                         ack: true
                     });
@@ -468,7 +472,7 @@ class Worx extends utils.Adapter {
 
             // edgecutting
             if (mower.edgeCut && (state === 1 || state === 3)) {
-                that.log.debug('Edgecut Start section :' + state);
+                that.log.debug(`Edgecut Start section :${state}`);
             } else if (state === 31 && mower.edgeCut) {
                 setTimeout(function () {
                     that.log.debug('Edcut send cmd:2');
@@ -490,11 +494,11 @@ class Worx extends utils.Adapter {
                 if(typeof (modules['tq']) === 'undefined' ){
                     that.log.info('found torque control, create states...');
                     await Promise.all(objects.module_tq.map(async (o) => {
-                        await this.setObjectNotExistsAsync(mower.serial + '.mower.' + o._id, o);
+                        await this.setObjectNotExistsAsync(`${mower.serial}.mower.${o._id}`, o);
                     }));
                 }
                 modules['tq'] = data.cfg.tq;
-                that.setStateAsync(mowerSerial + '.mower.torque', {
+                that.setStateAsync(`${mowerSerial}.mower.torque`, {
                     val: parseInt(data.cfg.tq),
                     ack: true
                 });
@@ -504,7 +508,7 @@ class Worx extends utils.Adapter {
 
             //modules
             if (data.cfg.modules && !modules.channel) {
-                await that.setObjectNotExistsAsync(mowerSerial + '.modules', {
+                await that.setObjectNotExistsAsync(`${mowerSerial}.modules`, {
                     type: 'channel',
                     common: {
                         name: 'mower modules'
@@ -519,16 +523,16 @@ class Worx extends utils.Adapter {
             if (data.cfg.modules && data.cfg.modules['4G'] && data.cfg.modules['4G']['geo']) {
                 if (!modules['4G']) {
                     await Promise.all(objects.module_4g.map(async (o) => {
-                        await this.setObjectNotExistsAsync(mowerSerial + '.modules.4G.' + o._id, o);
-                        this.log.info('GSP Module found! Create State : ' + o._id);
+                        await this.setObjectNotExistsAsync(`${mowerSerial}.modules.4G.${o._id}`, o);
+                        this.log.info(`GSP Module found! Create State : ${o._id}`);
                     }));
                 }
                 modules['4G'] = data.cfg.modules['4G'];
-                await this.setStateAsync(mowerSerial + '.modules.4G.longitude', {
+                await this.setStateAsync(`${mowerSerial}.modules.4G.longitude`, {
                     val: data.cfg.modules['4G']['geo']['coo'][1],
                     ack: true
                 });
-                await this.setStateAsync(mowerSerial + '.modules.4G.latitude', {
+                await this.setStateAsync(`${mowerSerial}.modules.4G.latitude`, {
                     val: data.cfg.modules['4G']['geo']['coo'][0],
                     ack: true
                 });
@@ -537,16 +541,16 @@ class Worx extends utils.Adapter {
             if (data.cfg.modules && data.cfg.modules.DF) {
                 if (!modules.DF) {
                     await Promise.all(objects.module_df.map(async (o) => {
-                        await this.setObjectNotExistsAsync(mowerSerial + '.modules.DF.' + o._id, o);
-                        this.log.info('OffLimits Module found! Create State : ' + o._id);
+                        await this.setObjectNotExistsAsync(`${mowerSerial}.modules.DF.${o._id}`, o);
+                        this.log.info(`OffLimits Module found! Create State : ${o._id}`);
                     }));
                 }
                 modules.DF = data.cfg.modules.DF;
-                await this.setStateAsync(mowerSerial + '.modules.DF.OLMSwitch_Cutting', {
+                await this.setStateAsync(`${mowerSerial}.modules.DF.OLMSwitch_Cutting`, {
                     val: data.cfg.modules && data.cfg.modules.DF ? !!data.cfg.modules.DF.cut : false,
                     ack: true
                 });
-                await this.setStateAsync(mowerSerial + '.modules.DF.OLMSwitch_FastHoming', {
+                await this.setStateAsync(`${mowerSerial}.modules.DF.OLMSwitch_FastHoming`, {
                     val: data.cfg.modules && data.cfg.modules.DF ? !!data.cfg.modules.DF.fh : false,
                     ack: true
                 });
@@ -555,19 +559,19 @@ class Worx extends utils.Adapter {
             if (data.cfg && data.cfg.al) {
                 if (!modules.al) {
                     await Promise.all(objects.al.map(async (o) => {
-                        await this.setObjectNotExistsAsync(mowerSerial + '.mower.' + o._id, o);
-                        this.log.info('Autolock found! Create State : ' + o._id);
+                        await this.setObjectNotExistsAsync(`${mowerSerial}.mower.${o._id}`, o);
+                        this.log.info(`Autolock found! Create State : ${o._id}`);
                     }));
                 }
                 modules.al = data.cfg.al;
                 // save last positive Value
                 if(data.cfg.al.t > 0) modules.al_last = data.cfg.al.t;
 
-                await this.setStateAsync(mowerSerial + '.mower.AutoLock', {
+                await this.setStateAsync(`${mowerSerial}.mower.AutoLock`, {
                     val: !!data.cfg.al.lvl,
                     ack: true
                 });
-                await this.setStateAsync(mowerSerial + '.mower.AutoLockTimer', {
+                await this.setStateAsync(`${mowerSerial}.mower.AutoLockTimer`, {
                     val: data.cfg.al.t,
                     ack: true
                 });
@@ -598,15 +602,15 @@ class Worx extends utils.Adapter {
                 const secString = sec ? '2' : '';
 
                 for (let i = 0; i < week.length; i++) {
-                    that.setStateAsync(mowerSerial + '.calendar.' + week[i] + secString + '.startTime', {
+                    that.setStateAsync(`${mowerSerial}.calendar.${week[i]}${secString}.startTime`, {
                         val: arr[i][0],
                         ack: true
                     });
-                    that.setStateAsync(mowerSerial + '.calendar.' + week[i] + secString + '.workTime', {
+                    that.setStateAsync(`${mowerSerial}.calendar.${week[i]}${secString}.workTime`, {
                         val: arr[i][1],
                         ack: true
                     });
-                    that.setStateAsync(mowerSerial + '.calendar.' + week[i] + secString + '.borderCut', {
+                    that.setStateAsync(`${mowerSerial}.calendar.${week[i]}${secString}.borderCut`, {
                         val: (arr[i][2] && arr[i][2] === 1 ? true : false),
                         ack: true
                     });
@@ -619,7 +623,7 @@ class Worx extends utils.Adapter {
         const that = this;
 
 
-        that.log.debug('Weather_ ' + JSON.stringify(mower));
+        that.log.debug(`Weather_ ${JSON.stringify(mower)}`);
         getWeather();
         weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
 
@@ -628,56 +632,56 @@ class Worx extends utils.Adapter {
 
                 clearTimeout(weatherTimeout);
 
-                that.log.debug('Weather_ ' + JSON.stringify(weather));
-                that.log.debug('Weather_d ' + new Date(weather.dt * 1000));
+                that.log.debug(`Weather_ ${JSON.stringify(weather)}`);
+                that.log.debug(`Weather_d ${new Date(weather.dt * 1000)}`);
 
                 if (typeof (weather) === 'undefined') return;
 
-                that.setStateAsync(mower.serial + '.weather.clouds', {
+                that.setStateAsync(`${mower.serial}.weather.clouds`, {
                     val: weather.clouds.all | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.description', {
+                that.setStateAsync(`${mower.serial}.weather.description`, {
                     val: weather.weather[0].description || 'no data',
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.main', {
+                that.setStateAsync(`${mower.serial}.weather.main`, {
                     val: weather.weather[0].main || 'no data',
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.icon', {
+                that.setStateAsync(`${mower.serial}.weather.icon`, {
                     val: weather.weather[0].icon || '',
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.humidity', {
+                that.setStateAsync(`${mower.serial}.weather.humidity`, {
                     val: parseInt(weather.main.humidity) | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.temp', {
+                that.setStateAsync(`${mower.serial}.weather.temp`, {
                     val: weather.main.temp | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.temp_min', {
+                that.setStateAsync(`${mower.serial}.weather.temp_min`, {
                     val: weather.main.temp_min | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.temp_max', {
+                that.setStateAsync(`${mower.serial}.weather.temp_max`, {
                     val: weather.main.temp_max | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.pressure', {
+                that.setStateAsync(`${mower.serial}.weather.pressure`, {
                     val: weather.main.pressure | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.wind_speed', {
+                that.setStateAsync(`${mower.serial}.weather.wind_speed`, {
                     val: weather.wind.speed | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.wind_deg', {
+                that.setStateAsync(`${mower.serial}.weather.wind_deg`, {
                     val: weather.wind.deg | 0,
                     ack: true
                 });
-                that.setStateAsync(mower.serial + '.weather.lastUpdate', {
+                that.setStateAsync(`${mower.serial}.weather.lastUpdate`, {
                     val: weather.dt * 1000,
                     ack: true
                 });
@@ -685,7 +689,7 @@ class Worx extends utils.Adapter {
                 weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
             })
                 .catch(error => {
-                    that.log.debug('Error while get Weather: ' + error);
+                    that.log.debug(`Error while get Weather: ${error}`);
 
                     clearTimeout(weatherTimeout);
                     weatherTimeout = setTimeout(getWeather, WEATHERINTERVALL);
@@ -704,28 +708,28 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.areas', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.areas`, {
             type: 'channel',
             common: {
                 name: 'mower areas'
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.calendar', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.calendar`, {
             type: 'channel',
             common: {
                 name: 'mower calendar'
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower`, {
             type: 'channel',
             common: {
                 name: 'mower control'
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.weather', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.weather`, {
             type: 'channel',
             common: {
                 name: 'mower control'
@@ -735,22 +739,22 @@ class Worx extends utils.Adapter {
 
         for (let a = 0; a <= 3; a++) {
 
-            await that.setObjectNotExistsAsync(mower.serial + '.areas.area_' + a, {
+            await that.setObjectNotExistsAsync(`${mower.serial}.areas.area_${a}`, {
                 type: 'state',
                 common: {
-                    name: 'Area' + a,
+                    name: `Area${a}`,
                     type: 'number',
                     role: 'value',
                     unit: 'm',
                     read: true,
                     write: true,
-                    desc: 'Distance from Start point for area ' + a
+                    desc: `Distance from Start point for area ${a}`
                 },
                 native: {}
             });
         }
 
-        await that.setObjectNotExistsAsync(mower.serial + '.areas.actualArea', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.areas.actualArea`, {
             type: 'state',
             common: {
                 name: 'Actual area',
@@ -762,7 +766,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.areas.actualAreaIndicator', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.areas.actualAreaIndicator`, {
             type: 'state',
             common: {
                 name: 'Actual area',
@@ -774,7 +778,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.areas.startSequence', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.areas.startSequence`, {
             type: 'state',
             common: {
                 name: 'Start sequence',
@@ -789,10 +793,10 @@ class Worx extends utils.Adapter {
 
         //calendar
         week.forEach(function (day) {
-            objects.calendar.map(o => that.setObjectNotExistsAsync(mower.serial + '.calendar.' + day + '.' + o._id, o));
+            objects.calendar.map(o => that.setObjectNotExistsAsync(`${mower.serial}.calendar.${day}.${o._id}`, o));
         });
         // mower
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.online', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.online`, {
             type: 'state',
             common: {
                 name: 'Online',
@@ -804,7 +808,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.firmware', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.firmware`, {
             type: 'state',
             common: {
                 name: 'Firmware Version',
@@ -816,7 +820,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.wifiQuality', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.wifiQuality`, {
             type: 'state',
             common: {
                 name: 'Wifi quality',
@@ -829,7 +833,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryChargeCycle', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.batteryChargeCycle`, {
             type: 'state',
             common: {
                 name: 'Battery charge cycle',
@@ -841,7 +845,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryCharging', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.batteryCharging`, {
             type: 'state',
             common: {
                 name: 'Battery charger state',
@@ -853,7 +857,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryState', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.batteryState`, {
             type: 'state',
             common: {
                 name: 'Landroid battery state',
@@ -866,7 +870,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryTemperature', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.batteryTemperature`, {
             type: 'state',
             common: {
                 name: 'Battery temperature',
@@ -879,7 +883,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.batteryVoltage', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.batteryVoltage`, {
             type: 'state',
             common: {
                 name: 'Battery voltage',
@@ -892,7 +896,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.error', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.error`, {
             type: 'state',
             common: {
                 name: 'Error code',
@@ -905,7 +909,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.pause', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.pause`, {
             type: 'state',
             common: {
                 name: 'Pause',
@@ -918,7 +922,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.edgecut', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.edgecut`, {
             type: 'state',
             common: {
                 name: 'Edge cut',
@@ -931,7 +935,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.state', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.state`, {
             type: 'state',
             common: {
                 name: 'Start/Stop',
@@ -944,7 +948,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.status', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.status`, {
             type: 'state',
             common: {
                 name: 'Landroid status',
@@ -958,7 +962,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.totalBladeTime', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.totalBladeTime`, {
             type: 'state',
             common: {
                 name: 'Runtime of the blades',
@@ -971,7 +975,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.totalDistance', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.totalDistance`, {
             type: 'state',
             common: {
                 name: 'Total mower distance',
@@ -984,7 +988,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.totalTime', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.totalTime`, {
             type: 'state',
             common: {
                 name: 'Total mower time',
@@ -997,7 +1001,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.waitRain', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.waitRain`, {
             type: 'state',
             common: {
                 name: 'Wait after rain',
@@ -1010,7 +1014,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.mowTimeExtend', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.mowTimeExtend`, {
             type: 'state',
             common: {
                 name: 'Mowing times exceed',
@@ -1023,7 +1027,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.mowerActive', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.mowerActive`, {
             type: 'state',
             common: {
                 name: 'Time-controlled mowing',
@@ -1035,7 +1039,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.sendCommand', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.sendCommand`, {
             type: 'state',
             common: {
                 name: 'send Command',
@@ -1048,7 +1052,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.gradient', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.gradient`, {
             type: 'state',
             common: {
                 name: 'Gradient',
@@ -1061,7 +1065,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.inclination', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.inclination`, {
             type: 'state',
             common: {
                 name: 'Inclination',
@@ -1074,7 +1078,7 @@ class Worx extends utils.Adapter {
             },
             native: {}
         });
-        await that.setObjectNotExistsAsync(mower.serial + '.mower.direction', {
+        await that.setObjectNotExistsAsync(`${mower.serial}.mower.direction`, {
             type: 'state',
             common: {
                 name: 'Direction',
@@ -1088,17 +1092,17 @@ class Worx extends utils.Adapter {
             native: {}
         });
 
-        this.extendObject(mower.serial + '.mower.totalTime', {
+        this.extendObject(`${mower.serial}.mower.totalTime`, {
             common: {
                 unit: that.config.meterMin ? 'min.' : 'h'
             }
         });
-        this.extendObject(mower.serial + '.mower.totalDistance', {
+        this.extendObject(`${mower.serial}.mower.totalDistance`, {
             common: {
                 unit: that.config.meterMin ? 'm' : 'Km'
             }
         });
-        this.extendObject(mower.serial + '.mower.totalBladeTime', {
+        this.extendObject(`${mower.serial}.mower.totalBladeTime`, {
             common: {
                 unit: that.config.meterMin ? 'min.' : 'h'
             }
@@ -1152,7 +1156,7 @@ class Worx extends utils.Adapter {
             const mower_id = id.split('.')[2];
             const mower = that.WorxCloud.mower.find(device => device.serial === mower_id);
 
-            this.log.debug('state change: id_____ ' + id + ' Mower ' + mower_id + '_____' + command + '______' + JSON.stringify(mower));
+            this.log.debug(`state change: id_____ ${id} Mower ${mower_id}_____${command}______${JSON.stringify(mower)}`);
 
             if (mower) {
                 if (command == 'state') {
@@ -1163,8 +1167,8 @@ class Worx extends utils.Adapter {
                     }
                 } else if ((command == 'waitRain')) {
                     const val = (isNaN(state.val) || state.val < 0 ? 100 : parseInt(state.val));
-                    that.WorxCloud.sendMessage('{"rd":' + val + '}', mower.serial);
-                    this.log.debug('Changed time wait after rain to:' + val);
+                    that.WorxCloud.sendMessage(`{"rd":${val}}`, mower.serial);
+                    this.log.debug(`Changed time wait after rain to:${val}`);
                 } else if ((command === 'borderCut') || (command === 'startTime') || (command === 'workTime')) {
                     that.changeMowerCfg(id, state.val, mower);
                 } else if ((command === 'area_0') || (command === 'area_1') || (command === 'area_2') || (command === 'area_3')) {
@@ -1186,8 +1190,8 @@ class Worx extends utils.Adapter {
                     delete message.distm;
 
                     message.m = val;
-                    that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
-                    that.log.debug('Mow times disabled: ' + message.m);
+                    that.WorxCloud.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial);
+                    that.log.debug(`Mow times disabled: ${message.m}`);
                 } else if (command === 'edgecut') {
                     that.edgeCutting(id, state.val, mower);
                 } else if (command === 'sendCommand') {
@@ -1202,7 +1206,7 @@ class Worx extends utils.Adapter {
                 else if ((command === 'AutoLock')){
                     const msg = modules.al;
                     msg.lvl = state.val | 0;
-                    that.WorxCloud.sendMessage('{"al":' + JSON.stringify(msg) + '}', mower.serial);
+                    that.WorxCloud.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial);
                 }
                 else if ((command === 'AutoLockTimer')){
                     if(state.val < 0 || state.val > 600){
@@ -1211,25 +1215,25 @@ class Worx extends utils.Adapter {
                     }
                     const msg = modules.al;
                     msg.t = parseInt(state.val);
-                    that.WorxCloud.sendMessage('{"al":' + JSON.stringify(msg) + '}', mower.serial);
+                    that.WorxCloud.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial);
                 }
                 else if (command === 'OLMSwitch_Cutting' && modules.DF) {
                     const msg = modules.DF;
                     msg.cut = state.val | 0;
-                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
+                    that.WorxCloud.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial);
                 }
                 else if (command === 'OLMSwitch_FastHoming' && modules.DF) {
                     const msg = modules.DF;
                     msg.fh = state.val | 0;
-                    that.WorxCloud.sendMessage('{"modules":{"DF":' + JSON.stringify(msg) + '}}', mower.serial);
+                    that.WorxCloud.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial);
                 }
                 else if ((command === 'torque')){
                     if(state.val < -50 || state.val > 50) return;
                     const tqval = parseInt(state.val);
-                    that.WorxCloud.sendMessage('{"tq":' + tqval + '}', mower.serial);
+                    that.WorxCloud.sendMessage(`{"tq":${tqval}}`, mower.serial);
                 }
 
-            } else that.log.error('No mower found!  ' + JSON.stringify(that.WorxCloud));
+            } else that.log.error(`No mower found!  ${JSON.stringify(that.WorxCloud)}`);
 
         }
     }
@@ -1240,15 +1244,15 @@ class Worx extends utils.Adapter {
     async startMower(mower) {
         const that = this;
 
-        that.log.debug('Start mower ' + JSON.stringify(mower));
-        that.log.debug('Start mowerff ' + JSON.stringify(that.WorxCloud.mower));
+        that.log.debug(`Start mower ${JSON.stringify(mower)}`);
+        that.log.debug(`Start mowerff ${JSON.stringify(that.WorxCloud.mower)}`);
 
         if (mower.message && mower.message.dat && (mower.message.dat.ls === 1 || mower.message.dat.ls === 34) && mower.message.dat.le === 0) {
             that.WorxCloud.sendMessage('{"cmd":1}', mower.serial); //start code for mower
             that.log.debug('Start mower');
         } else {
             that.log.warn('Can not start mower because he is not at home or there is an error please verify mower state');
-            that.setStateAsync(mower.serial + '.mower.state', {
+            that.setStateAsync(`${mower.serial}.mower.state`, {
                 val: false,
                 ack: true
             });
@@ -1264,7 +1268,7 @@ class Worx extends utils.Adapter {
             this.log.debug('mower going back home');
         } else {
             this.log.warn('Can not stop mower because he did not mow or there is an error');
-            this.setStateAsync(mower.serial + '.mower.state', {
+            this.setStateAsync(`${mower.serial}.mower.state`, {
                 val: true,
                 ack: true
             });
@@ -1281,8 +1285,8 @@ class Worx extends utils.Adapter {
         const idType = id.split('.')[4];
 
         if (idType === 'oneTimeStart') {
-            const bc = await this.getStateAsync(mower.serial + '.mower.oneTimeWithBorder');
-            const wtm = await this.getStateAsync(mower.serial + '.mower.oneTimeWorkTime');
+            const bc = await this.getStateAsync(`${mower.serial}.mower.oneTimeWithBorder`);
+            const wtm = await this.getStateAsync(`${mower.serial}.mower.oneTimeWorkTime`);
             if (bc && wtm) {
                 msgJson = {
                     'bc': (bc.val ? 1 : 0),
@@ -1304,8 +1308,8 @@ class Worx extends utils.Adapter {
             }
         }
 
-        this.log.debug('ONETIMESHEDULE: ' + JSON.stringify(msgJson));
-        this.WorxCloud.sendMessage('{"sc":{"ots":' + JSON.stringify(msgJson) + '}}', mower.serial);
+        this.log.debug(`ONETIMESHEDULE: ${JSON.stringify(msgJson)}`);
+        this.WorxCloud.sendMessage(`{"sc":{"ots":${JSON.stringify(msgJson)}}}`, mower.serial);
     }
 
 
@@ -1332,7 +1336,7 @@ class Worx extends utils.Adapter {
                 fail = true;
             }
             msgJson.forEach(element => {
-                this.log.debug('CALJSON: ' + JSON.stringify(element));
+                this.log.debug(`CALJSON: ${JSON.stringify(element)}`);
                 if (element.length !== 3) {
                     that.log.error('CALJSON: Arguments missing!!');
                     fail = true;
@@ -1345,7 +1349,7 @@ class Worx extends utils.Adapter {
                 }
                 const h = element[0].split(':')[0];
                 const m = element[0].split(':')[1];
-                that.log.debug('h: ' + h + ' m: ' + m);
+                that.log.debug(`h: ${h} m: ${m}`);
                 if (h < 0 || h > 23 || m < 0 || m > 59) {
                     that.log.error('CALJSON: Start time is not correct!!');
                     fail = true;
@@ -1358,7 +1362,7 @@ class Worx extends utils.Adapter {
                 }
             });
 
-            this.log.debug('CALJSON length: ' + msgJson.length);
+            this.log.debug(`CALJSON length: ${msgJson.length}`);
 
         } catch (error) {
             this.log.error('CALJSON: NO vailed JSON format');
@@ -1366,9 +1370,9 @@ class Worx extends utils.Adapter {
         }
 
 
-        fail && this.log.debug('FAIL: ' + fail + ' CALJSON: ' + JSON.stringify(msgJson));
+        fail && this.log.debug(`FAIL: ${fail} CALJSON: ${JSON.stringify(msgJson)}`);
         message[sheduleSel] = msgJson;
-        if (!fail) that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
+        if (!fail) that.WorxCloud.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial);
     }
 
     /**
@@ -1386,7 +1390,7 @@ class Worx extends utils.Adapter {
 
         if (!mower.message || typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
+            that.log.warn(`Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(mower.message)}`);
             return;
         }
 
@@ -1419,7 +1423,7 @@ class Worx extends utils.Adapter {
             } else if (valID === 0) { // changed the start time
                 const h = val.split(':')[0];
                 const m = val.split(':')[1];
-                that.log.debug('h: ' + h + ' m: ' + m);
+                that.log.debug(`h: ${h} m: ${m}`);
                 if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
                     sval = val;
                 } else that.log.error('Time out of range: e.g "10:00"');
@@ -1430,7 +1434,7 @@ class Worx extends utils.Adapter {
 
             } else that.log.error('Something went wrong while setting new mower times');
         } catch (e) {
-            that.log.error('Error while setting mower config: ' + e);
+            that.log.error(`Error while setting mower config: ${e}`);
         }
         if (sval !== undefined) {
             if(typeof message[sheduleSel][dayID][valID] === 'undefined') {
@@ -1438,11 +1442,11 @@ class Worx extends utils.Adapter {
                 return;
             }
             message[sheduleSel][dayID][valID] = sval;
-            that.log.debug('Mowing time change at ' + sheduleSel + ' to: ' + JSON.stringify(message));
-            that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
+            that.log.debug(`Mowing time change at ${sheduleSel} to: ${JSON.stringify(message)}`);
+            that.WorxCloud.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial);
 
         }
-        that.log.debug('test cfg: ' + dayID + ' valID: ' + valID + ' val: ' + val + ' sval: ' + sval);
+        that.log.debug(`test cfg: ${dayID} valID: ${valID} val: ${val} sval: ${sval}`);
 
     }
     /**
@@ -1456,7 +1460,7 @@ class Worx extends utils.Adapter {
 
         if (mower.message && typeof (mower.message.cfg) === 'undefined' || typeof (mower.message) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
+            that.log.warn(`Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(mower.message)}`);
             return;
         }
 
@@ -1466,17 +1470,17 @@ class Worx extends utils.Adapter {
         try {
             if (!isNaN(val) && val >= 0 && val <= 500) {
                 message[areaID] = val;
-                that.WorxCloud.sendMessage('{"mz":' + JSON.stringify(message) + '}', mower.serial);
-                that.log.debug('Change Area ' + (areaID) + ' : ' + JSON.stringify(message));
+                that.WorxCloud.sendMessage(`{"mz":${JSON.stringify(message)}}`, mower.serial);
+                that.log.debug(`Change Area ${areaID} : ${JSON.stringify(message)}`);
             } else {
                 that.log.error('Area Value ist not correct, please type in a val between 0 and 500');
-                that.setState('areas.area_' + (areaID), {
+                that.setState(`areas.area_${areaID}`, {
                     val: (mower.message.cfg.mz && mower.message.cfg.mz[areaID] ? mower.message.cfg.mz[areaID] : 0),
                     ack: true
                 });
             }
         } catch (e) {
-            that.log.error('Error while setting mower areas: ' + e);
+            that.log.error(`Error while setting mower areas: ${e}`);
         }
     }
 
@@ -1503,7 +1507,7 @@ class Worx extends utils.Adapter {
 
         if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
+            that.log.warn(`Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(mower.message)}`);
             return;
         }
 
@@ -1513,9 +1517,9 @@ class Worx extends utils.Adapter {
             seq = JSON.parse(value);
         } catch (e) {
             try {
-                seq = JSON.parse('[' + value + ']');
+                seq = JSON.parse(`[${value}]`);
             } catch (e) {
-                that.log.error('Error while setting start sequence: ' + e);
+                that.log.error(`Error while setting start sequence: ${e}`);
             }
         }
 
@@ -1524,7 +1528,7 @@ class Worx extends utils.Adapter {
                 if (seq[i] != undefined) {
                     if (isNaN(seq[i]) || seq[i] < 0 || seq[i] > 3) {
                         seq[i] = 0;
-                        that.log.error('Wrong start sequence, set val ' + i + ' to 0');
+                        that.log.error(`Wrong start sequence, set val ${i} to 0`);
                     }
 
                 } else {
@@ -1532,11 +1536,11 @@ class Worx extends utils.Adapter {
                     that.log.warn('Array ist too short, filling up with start point 0');
                 }
             }
-            that.WorxCloud.sendMessage('{"mzv":' + JSON.stringify(seq) + '}', mower.serial);
-            that.log.debug('new Array is: ' + JSON.stringify(seq));
+            that.WorxCloud.sendMessage(`{"mzv":${JSON.stringify(seq)}}`, mower.serial);
+            that.log.debug(`new Array is: ${JSON.stringify(seq)}`);
 
         } catch (e) {
-            that.log.error('Error while setting start sequence: ' + e);
+            that.log.error(`Error while setting start sequence: ${e}`);
         }
     }
 
@@ -1551,13 +1555,13 @@ class Worx extends utils.Adapter {
 
         if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
+            that.log.warn(`Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(mower.message)}`);
             return;
         }
 
         const message = mower.message.cfg.sc; // set aktual values
 
-        that.log.debug('MowerTimeExtend JSON : ' + JSON.stringify(message));
+        that.log.debug(`MowerTimeExtend JSON : ${JSON.stringify(message)}`);
 
 
         //hotfix 030620
@@ -1565,8 +1569,8 @@ class Worx extends utils.Adapter {
 
         if (!isNaN(val) && val >= -100 && val <= 100) {
             message.p = val;
-            that.WorxCloud.sendMessage('{"sc":' + JSON.stringify(message) + '}', mower.serial);
-            that.log.debug('MowerTimeExtend set to : ' + message.p);
+            that.WorxCloud.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial);
+            that.log.debug(`MowerTimeExtend set to : ${message.p}`);
 
         } else {
             that.log.error('MowerTimeExtend must be a value between -100 and 100');
@@ -1584,7 +1588,7 @@ class Worx extends utils.Adapter {
 
         if (typeof (mower.message.cfg) === 'undefined') {
             // check if config exist
-            that.log.warn('Cant send command because no Configdata from cloud exist please try again later. last message: ' + JSON.stringify(mower.message));
+            that.log.warn(`Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(mower.message)}`);
             return;
         }
 
@@ -1600,8 +1604,8 @@ class Worx extends utils.Adapter {
         const that = this;
         const val = value;
 
-        that.log.debug('Send cmd:' + val);
-        that.WorxCloud.sendMessage('{"cmd":' + val + '}', mower.serial);
+        that.log.debug(`Send cmd:${val}`);
+        that.WorxCloud.sendMessage(`{"cmd":${val}}`, mower.serial);
     }
 
     // /**
