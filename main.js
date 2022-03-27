@@ -1399,13 +1399,13 @@ class Worx extends utils.Adapter {
         const message = mower.message.cfg.sc; // set actual values
         //let fullMessage = mower.message.cfg.sc;
 
-        message.ots && delete message.ots;
-        message.distm && delete message.distm;
-
         if (typeof message === 'undefined') {
             that.log.warn('try again later!');
             return;
         }
+        message.ots && delete message.ots;
+        message.distm && delete message.distm;
+
         const valID = ['startTime', 'workTime', 'borderCut'].indexOf(id.split('.')[5]);
 
         if (sheduleSel === 'd') {
@@ -1563,9 +1563,8 @@ class Worx extends utils.Adapter {
 
         that.log.debug(`MowerTimeExtend JSON : ${JSON.stringify(message)}`);
 
-
         //hotfix 030620
-        delete message.ots;
+        message && delete message.ots;
 
         if (!isNaN(val) && val >= -100 && val <= 100) {
             message.p = val;
