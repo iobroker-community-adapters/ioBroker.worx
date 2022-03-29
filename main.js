@@ -1437,7 +1437,7 @@ class Worx extends utils.Adapter {
             that.log.error(`Error while setting mower config: ${e}`);
         }
         if (sval !== undefined) {
-            if(typeof message[sheduleSel][dayID][valID] === 'undefined') {
+            if(typeof message[sheduleSel] === 'undefined' || typeof message[sheduleSel][dayID] === 'undefined' || typeof message[sheduleSel][dayID][valID] === 'undefined') {
                 that.log.warn('Something went wrong, plese try again later');
                 return;
             }
