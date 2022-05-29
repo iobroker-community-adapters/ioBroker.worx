@@ -75,6 +75,11 @@ const COMMANDCODES = {
 };
 const WEATHERINTERVALL = 60000 * 60; // = 30 min.
 let weatherTimeout = null;
+let generic = 0;
+let irrigation = 0;
+let set_arr = 0;
+let slots_save = [];
+
 const modules = {};
 
 class Worx extends utils.Adapter {
@@ -183,6 +188,48 @@ class Worx extends utils.Adapter {
                             },
                             native: {}
                         }).then(() => {
+                            if (mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
+                                Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days).forEach( async (key) => {
+                                    if (Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
+                                        generic = 0;
+                                        irrigation = 0;
+                                        slots_save = mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"];
+                                        mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"] = [{"start_time":0,"duration":0,"reason":""},{"start_time":0,"duration":0,"reason":""},{"start_time":0,"duration":0,"reason":""},{"start_time":0,"duration":0,"reason":""}];
+                                        if (Object.keys(slots_save).length === 1) {
+                                            if (slots_save[0].reason === "generic") {
+                                                set_arr = 0;
+                                            } else {
+                                                set_arr = 2;
+                                            }
+                                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].start_time = slots_save[0].start_time;
+                                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].duration = slots_save[0].duration;
+                                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].reason = slots_save[0].reason;
+                                        } else if (Object.keys(slots_save).length > 1) {
+                                            Object.keys(slots_save).forEach( async (sl) => {
+                                                if (slots_save[sl].reason === "generic" && generic === 0) {
+                                                    set_arr = 0;
+                                                    generic = 1;
+                                                } else if (slots_save[sl].reason === "generic" && generic === 1) {
+                                                    set_arr = 1;
+                                                } else if (slots_save[sl].reason === "irrigation" && irrigation === 0) {
+                                                    set_arr = 2;
+                                                    irrigation = 2;
+                                                } else if (slots_save[sl].reason === "irrigation" && irrigation === 2) {
+                                                    set_arr = 3;
+                                                }
+                                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].start_time = slots_save[sl].start_time;
+                                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].duration = slots_save[sl].duration;
+                                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].reason = slots_save[sl].reason;
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                            if (mower.raw.auto_schedule_settings.nutrition !== 'undefined') {
+                                if (mower.raw.auto_schedule_settings.nutrition === null) {
+                                    mower.raw.auto_schedule_settings.nutrition = {"n":0,"p":0,"k":0};
+                                }
+                            }
                             extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
                         }).catch(() => {
                             that.log.error('Failed to create raw mqtt channel');
@@ -210,6 +257,47 @@ class Worx extends utils.Adapter {
         this.WorxCloud.on('mqtt', function (mower, data) {
             that.setStates(mower, data);
             if (that.config.enableJson === true) {
+                if (mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
+                    Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days).forEach( async (key) => {
+                        if (Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
+                            generic = 0;
+                            irrigation = 0;
+                            slots_save = mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"];
+                            mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"] = [{"start_time":0,"duration":0,"reason":""},{"start_time":0,"duration":0,"reason":""},{"start_time":0,"duration":0,"reason":""},{"start_time":0,"duration":0,"reason":""}];
+                            if (Object.keys(slots_save).length === 1) {
+                                if (slots_save[0].reason === "generic") {
+                                    set_arr = 0;
+                                } else {
+                                    set_arr = 2;
+                                }
+                                mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].start_time = slots_save[0].start_time;
+                                mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].duration = slots_save[0].duration;
+                                mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].reason = slots_save[0].reason;
+                            } else if (Object.keys(slots_save).length > 1) {
+                                Object.keys(slots_save).forEach( async (sl) => {
+                                    if (slots_save[sl].reason === "generic" && generic === 0) {
+                                        set_arr = 0;
+                                        generic = 1;
+                                    } else if (slots_save[sl].reason === "generic" && generic === 1) {
+                                        set_arr = 1;
+                                    } else if (slots_save[sl].reason === "irrigation" && irrigation === 0) {
+                                        set_arr = 2;
+                                        irrigation = 2;
+                                    } else if (slots_save[sl].reason === "irrigation" && irrigation === 2) {
+                                        set_arr = 3;
+                                    }
+                                mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].start_time = slots_save[sl].start_time;
+                                mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].duration = slots_save[sl].duration;
+                                mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].reason = slots_save[sl].reason;
+                                });
+                            }
+                        }
+                    });
+                }
+                if (mower.raw.auto_schedule_settings.nutrition !== 'undefined') {
+                    if (mower.raw.auto_schedule_settings.nutrition === null)
+                        mower.raw.auto_schedule_settings.nutrition = {"n":0,"p":0,"k":0};
+                }
                 extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
             }
         });
