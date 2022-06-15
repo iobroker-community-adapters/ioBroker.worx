@@ -537,6 +537,24 @@ class Worx extends utils.Adapter {
                     ack: true
                 });
             }
+            //US Module
+            if (data.cfg.modules && data.cfg.modules['US']) {
+                if (!modules['US']) {
+                    await Promise.all(objects.US.map(async (o) => {
+                        await this.setObjectNotExistsAsync(mowerSerial + '.modules.US.' + o._id, o);
+                        this.log.info('ACS Module found! Create State : ' + o._id);
+                    }));
+                }
+                modules['US'] = data.cfg.modules['US'];
+                await this.setStateAsync(mowerSerial + '.modules.US.ACS', {
+                    val: data.cfg.modules['US']['enabled'],
+                    ack: true
+                });
+                await this.setStateAsync(mowerSerial + '.modules.US.ACS_Status', {
+                    val: data.dat.modules['US']['stat'],
+                    ack: true
+                });
+            }
             // Df Module
             if (data.cfg.modules && data.cfg.modules.DF) {
                 if (!modules.DF) {
@@ -1226,6 +1244,11 @@ class Worx extends utils.Adapter {
                     const msg = modules.DF;
                     msg.fh = state.val | 0;
                     that.WorxCloud.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial);
+                }
+                else if ((command === 'ACS') && modules.US){
+                    const msg = modules.US;
+                    msg.enabled = state.val | 0;
+                    that.WorxCloud.sendMessage('{"modules":{"US":' + JSON.stringify(msg) + '}}', mower.serial);
                 }
                 else if ((command === 'torque')){
                     if(state.val < -50 || state.val > 50) return;
