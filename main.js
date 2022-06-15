@@ -188,7 +188,7 @@ class Worx extends utils.Adapter {
                             },
                             native: {}
                         }).then(() => {
-                            if (mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
+                            if (mower.raw.auto_schedule_settings.exclusion_scheduler && mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
                                 Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days).forEach( async (key) => {
                                     if (Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
                                         generic = 0;
@@ -231,8 +231,8 @@ class Worx extends utils.Adapter {
                                 }
                             }
                             extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
-                        }).catch(() => {
-                            that.log.error('Failed to create raw mqtt channel');
+                        }).catch((error) => {
+                            that.log.error('Error while creating rawMqtt channel: ' + error);
                         });
                     } else {
                         that.getStates(`${mower.serial}.rawMqtt.*`, (err, states) => {
@@ -257,7 +257,7 @@ class Worx extends utils.Adapter {
         this.WorxCloud.on('mqtt', function (mower, data) {
             that.setStates(mower, data);
             if (that.config.enableJson === true) {
-                if (mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
+                if (mower.raw.auto_schedule_settings.exclusion_scheduler && mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
                     Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days).forEach( async (key) => {
                         if (Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
                             generic = 0;
