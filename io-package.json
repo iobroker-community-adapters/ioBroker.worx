@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.5.5",
+    "version": "1.6.0",
     "news": {
+      "1.6.0": {
+        "en": "fix some error cases reported by Sentry",
+        "de": "einige Fehlerfälle von Sentry melden",
+        "ru": "исправить некоторые случаи ошибок, описанные Sentry",
+        "pt": "corrigir alguns casos de erro relatados por Sentry",
+        "nl": "vertaling:",
+        "fr": "corriger certains cas d'erreur signalés par Sentry",
+        "it": "risolvere alcuni casi di errore segnalati da Sentry",
+        "es": "solucionar algunos casos de error reportados por Sentry",
+        "pl": "sentry case (ang.)",
+        "zh-cn": "fix Sentry所报告的一些错误案件"
+      },
       "1.5.5": {
         "en": "fix error",
         "de": "Fehler beheben",
@@ -74,18 +86,6 @@
         "es": "actualizar las pruebas\nagregar coordenadas gps\nagregar nuevos estados de estado\nagregar nuevos estados de Autolock\nagregar nuevos estados OffLinits",
         "pl": "testowanie aktualizacji\ndodaj współrzędne GPS\ndodaj nowe stany statusu\ndodaj nowe stany Autolock\ndodaj nowe stany OffLinits",
         "zh-cn": "更新测试\n添加 GPS 坐标\n添加新的状态\n添加新的自动锁定状态\n添加新的 OffLinits 状态"
-      },
-      "1.3.7": {
-        "en": "fixed some errors",
-        "de": "Einige Fehler wurden behoben",
-        "ru": "исправлены некоторые ошибки",
-        "pt": "consertou alguns erros",
-        "nl": "enkele fouten opgelost",
-        "fr": "corrigé quelques erreurs",
-        "it": "risolti alcuni errori",
-        "es": "arreglados algunos errores",
-        "pl": "naprawiono niektóre błędy",
-        "zh-cn": "修复了一些错误"
       }
     },
     "title": "Worx Landroid Cloud",
