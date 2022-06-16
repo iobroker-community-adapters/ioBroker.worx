@@ -257,7 +257,7 @@ class Worx extends utils.Adapter {
         this.WorxCloud.on('mqtt', function (mower, data) {
             that.setStates(mower, data);
             if (that.config.enableJson === true) {
-                if (mower.raw.auto_schedule_settings.exclusion_scheduler && mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
+                if (mower.raw.auto_schedule_settings.exclusion_scheduler && mower.raw.auto_schedule_settings.exclusion_scheduler.days && typeof mower.raw.auto_schedule_settings.exclusion_scheduler.days === 'object') {
                     Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days).forEach( async (key) => {
                         if (Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
                             generic = 0;
