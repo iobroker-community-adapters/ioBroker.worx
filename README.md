@@ -29,7 +29,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
-### 1.6.1 (2022-06-17)
+### __WORK IN PROGRESS__
 * (TA2k) fix issues introduced in 1.6.0
 
 ### 1.6.1 (2022-06-17)
