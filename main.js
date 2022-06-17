@@ -264,6 +264,7 @@ class Worx extends utils.Adapter {
             that.setStates(mower, data);
             if (that.config.enableJson === true) {
                 if (
+                    mower.raw.auto_schedule_settings &&
                     mower.raw.auto_schedule_settings.exclusion_scheduler &&
                     mower.raw.auto_schedule_settings.exclusion_scheduler.days &&
                     typeof mower.raw.auto_schedule_settings.exclusion_scheduler.days === 'object'
@@ -521,15 +522,16 @@ class Worx extends utils.Adapter {
                     ack: true
                 });
             }
-            evaluateCalendar(data.cfg.sc.d, false);
-
+            if (data.cfg.sc && data.cfg.sc.d) {
+                evaluateCalendar(data.cfg.sc.d, false);
+            }
             // Second Mowtime
-            if (data.cfg.sc.dd) {
+            if (data.cfg.sc && data.cfg.sc.dd) {
                 evaluateCalendar(data.cfg.sc.dd, true);
             }
 
             // 1TimeShedule
-            if (data.cfg.sc.ots) {
+            if (data.cfg.sc && data.cfg.sc.ots) {
                 that.setStateAsync(`${mowerSerial}.mower.oneTimeWithBorder`, {
                     val: data.cfg.sc.ots.bc ? true : false,
                     ack: true
@@ -545,7 +547,7 @@ class Worx extends utils.Adapter {
             }
 
             // PartyModus
-            if (typeof data.cfg.sc.distm !== 'undefined' && typeof data.cfg.sc.m !== 'undefined') {
+            if (data.cfg.sc && typeof data.cfg.sc.distm !== 'undefined' && typeof data.cfg.sc.m !== 'undefined') {
                 that.setStateAsync(`${mowerSerial}.mower.partyModus`, {
                     val: data.cfg.sc.m === 2 ? true : false,
                     ack: true
@@ -558,7 +560,7 @@ class Worx extends utils.Adapter {
                     val: JSON.stringify(data.cfg.sc.d),
                     ack: true
                 });
-                if (data.cfg.sc.dd) {
+                if (data.cfg.sc && data.cfg.sc.dd) {
                     that.setStateAsync(`${mowerSerial}.calendar.calJson2`, {
                         val: JSON.stringify(data.cfg.sc.dd),
                         ack: true

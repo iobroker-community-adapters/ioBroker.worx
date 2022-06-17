@@ -29,6 +29,9 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (Apollon77) fix some error cases reported by Sentry
+
 ### 1.6.2 (2022-06-17)
 * (TA2k) fix issues introduced in 1.6.0
 
