@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "news": {
+      "1.6.3": {
+        "en": "fix some error cases reported by Sentry",
+        "de": "einige Fehlerfälle von Sentry melden",
+        "ru": "исправить некоторые случаи ошибок, описанные Sentry",
+        "pt": "corrigir alguns casos de erro relatados por Sentry",
+        "nl": "vertaling:",
+        "fr": "corriger certains cas d'erreur signalés par Sentry",
+        "it": "risolvere alcuni casi di errore segnalati da Sentry",
+        "es": "solucionar algunos casos de error reportados por Sentry",
+        "pl": "sentry case (ang.)",
+        "zh-cn": "fix Sentry所报告的一些错误案件"
+      },
       "1.6.2": {
         "en": "fix issues introduced in 1.6.0",
         "de": "probleme in 1.6.0 behoben",
@@ -74,18 +86,6 @@
         "es": "arreglar la detección del modo Fiesta",
         "pl": "napraw wykrywanie trybu Party",
         "zh-cn": "修复派对模式检测"
-      },
-      "1.4.2": {
-        "en": "(MeisterTR) fix bug with OLMSwitch_Cutting\n(MeisterTR) fix bug with PartyMode\n(TA2k) fix error with wrong serialnumber (please delete all objects manually)\n(MeisterTR) fix bug in autolock function",
-        "de": "(MeisterTR) Fehler mit OLMSwitch_Cutting behoben\n(MeisterTR) Fehler mit PartyMode beheben\n(TA2k) Fehler mit falscher Seriennummer beheben (bitte alle Objekte manuell löschen)\n(MeisterTR) Fehler in der Autolock-Funktion behoben",
-        "ru": "(MeisterTR) исправлена ошибка с OLMSwitch_Cutting\n(MeisterTR) исправить ошибку с PartyMode\n(TA2k) исправить ошибку с неправильным серийным номером (удалите все объекты вручную)\n(MeisterTR) исправлена ошибка в функции автоблокировки",
-        "pt": "(MeisterTR) correção de bug com OLMSwitch_Cutting\n(MeisterTR) correção de bug com PartyMode\n(TA2k) corrige o erro com o número de série errado (exclua todos os objetos manualmente)\n(MeisterTR) correção de bug na função autolock",
-        "nl": "(MeisterTR) bug repareren met OLMSwitch_Cutting\n(MeisterTR) bug repareren met PartyMode\n(TA2k) herstel fout met verkeerd serienummer (verwijder alle objecten handmatig)\n(MeisterTR) bug in autolock-functie repareren",
-        "fr": "(MeisterTR) corrige un bug avec OLMSwitch_Cutting\n(MeisterTR) corrige un bug avec PartyMode\n(TA2k) corrige une erreur avec un mauvais numéro de série (veuillez supprimer tous les objets manuellement)\n(MeisterTR) corrige un bug dans la fonction de verrouillage automatique",
-        "it": "(MeisterTR) corregge un bug con OLMSwitch_Cutting\n(MeisterTR) risolve bug con PartyMode\n(TA2k) correggere l'errore con numero di serie errato (eliminare tutti gli oggetti manualmente)\n(MeisterTR) corretto bug nella funzione di blocco automatico",
-        "es": "(MeisterTR) corregir un error con OLMSwitch_Cutting\n(MeisterTR) corregir un error con PartyMode\n(TA2k) corregir el error con un número de serie incorrecto (elimine todos los objetos manualmente)\n(MeisterTR) corregir un error en la función de bloqueo automático",
-        "pl": "(MeisterTR) napraw błąd z OLMSwitch_Cutting\n(MeisterTR) naprawiony błąd w PartyMode\n(TA2k) napraw błąd z nieprawidłowym numerem seryjnym (proszę usunąć wszystkie obiekty ręcznie)\n(MeisterTR) naprawiony błąd w funkcji automatycznego blokowania",
-        "zh-cn": "(MeisterTR) 使用 OLMSwitch_Cutting 修复错误\n(MeisterTR) 修复 PartyMode 的错误\n(TA2k) 修复序列号错误的错误（请手动删除所有对象）\n(MeisterTR) 修复自动锁定功能中的错误"
       }
     },
     "title": "Worx Landroid Cloud",
