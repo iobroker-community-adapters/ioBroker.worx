@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "news": {
+      "1.6.1": {
+        "en": "fix some error cases reported by Sentry",
+        "de": "einige Fehlerfälle von Sentry melden",
+        "ru": "исправить некоторые случаи ошибок, описанные Sentry",
+        "pt": "corrigir alguns casos de erro relatados por Sentry",
+        "nl": "vertaling:",
+        "fr": "corriger certains cas d'erreur signalés par Sentry",
+        "it": "risolvere alcuni casi di errore segnalati da Sentry",
+        "es": "solucionar algunos casos de error reportados por Sentry",
+        "pl": "sentry case (ang.)",
+        "zh-cn": "fix Sentry所报告的一些错误案件"
+      },
       "1.6.0": {
         "en": "fix some error cases reported by Sentry",
         "de": "einige Fehlerfälle von Sentry melden",
@@ -74,18 +86,6 @@
         "es": "corregir el error en sendCommand (elimine el estado manualmente)",
         "pl": "napraw błąd w sendCommand (proszę usunąć stan ręcznie)",
         "zh-cn": "修复 sendCommand 中的错误（请手动删除状态）"
-      },
-      "1.4.0": {
-        "en": "update testing\nadd gps coordinates\nadd new status states\nadd new Autolock states\nadd new OffLinits states",
-        "de": "Update-Tests\nGPS-Koordinaten hinzufügen\nneue Statuszustände hinzufügen\nneue Autolock-Zustände hinzufügen\nneue OffLinits-Zustände hinzufügen",
-        "ru": "обновление тестирования\nдобавить координаты gps\nдобавить новые статусы\nдобавить новые состояния автоблокировки\nдобавить новые состояния OffLinits",
-        "pt": "teste de atualização\nadicionar coordenadas GPS\nadicionar novos estados de status\nadicionar novos estados de Autolock\nadicionar novos estados OffLinits",
-        "nl": "update testen\nvoeg gps-coördinaten toe\nnieuwe statusstatussen toevoegen\nnieuwe Autolock-statussen toevoegen\nnieuwe OffLinits-statussen toevoegen",
-        "fr": "test de mise à jour\najouter des coordonnées gps\najouter de nouveaux états de statut\najouter de nouveaux états Autolock\najouter de nouveaux états OffLinits",
-        "it": "aggiorna i test\naggiungi le coordinate gps\naggiungi nuovi stati di stato\naggiungi nuovi stati Autolock\naggiungi nuovi stati OffLinits",
-        "es": "actualizar las pruebas\nagregar coordenadas gps\nagregar nuevos estados de estado\nagregar nuevos estados de Autolock\nagregar nuevos estados OffLinits",
-        "pl": "testowanie aktualizacji\ndodaj współrzędne GPS\ndodaj nowe stany statusu\ndodaj nowe stany Autolock\ndodaj nowe stany OffLinits",
-        "zh-cn": "更新测试\n添加 GPS 坐标\n添加新的状态\n添加新的自动锁定状态\n添加新的 OffLinits 状态"
       }
     },
     "title": "Worx Landroid Cloud",
