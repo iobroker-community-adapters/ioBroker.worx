@@ -188,7 +188,7 @@ class Worx extends utils.Adapter {
                             },
                             native: {}
                         }).then(() => {
-                            if (mower.raw.auto_schedule_settings.exclusion_scheduler && mower.raw.auto_schedule_settings.exclusion_scheduler !== 'undefined') {
+                            if (mower.raw && mower.raw.auto_schedule_settings && mower.raw.auto_schedule_settings.exclusion_scheduler) {
                                 Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days).forEach( async (key) => {
                                     if (Object.keys(mower.raw.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
                                         generic = 0;
