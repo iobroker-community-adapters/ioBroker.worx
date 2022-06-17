@@ -122,8 +122,15 @@ class Worx extends utils.Adapter {
         });
 
         const that = this;
-        this.WorxCloud.on('found', function (mower) {
+        this.WorxCloud.on('found', async function (mower) {
             //that.log.debug('found!' + JSON.stringify(mower));
+            //delete unwanted instance information from object tree because of a 1.6.0 bug
+            const instanceStates = await that.getObjectAsync(mower.serial + '.rawMqtt.worxInstance');
+
+            if (instanceStates) {
+                that.log.debug('clean instance states');
+                that.delObject(mower.serial + '.rawMqtt.worxInstance', { recursive: true });
+            }
             that.createDevices(mower).then((_) => {
                 mower.status(that.WorxCloud).then((status) => {
                     // test
