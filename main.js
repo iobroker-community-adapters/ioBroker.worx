@@ -125,7 +125,7 @@ class Worx extends utils.Adapter {
         this.WorxCloud.on('found', function (mower) {
             //that.log.debug('found!' + JSON.stringify(mower));
             that.createDevices(mower).then((_) => {
-                mower.status().then((status) => {
+                mower.status(that.WorxCloud).then((status) => {
                     // test
                     //status = testmsg;
 
@@ -230,6 +230,7 @@ class Worx extends utils.Adapter {
                                         mower.raw.auto_schedule_settings.nutrition = { n: 0, p: 0, k: 0 };
                                     }
                                 }
+
                                 extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
                             })
                             .catch((error) => {
@@ -737,7 +738,7 @@ class Worx extends utils.Adapter {
 
         function getWeather() {
             mower
-                .weather()
+                .weather(that.WorxCloud)
                 .then((weather) => {
                     clearTimeout(weatherTimeout);
 
