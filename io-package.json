@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.1",
+    "version": "1.6.2",
     "news": {
+      "1.6.2": {
+        "en": "fix issues introduced in 1.6.0",
+        "de": "probleme in 1.6.0 behoben",
+        "ru": "исправление вопросов, введенных в 1.6.0",
+        "pt": "corrigir problemas introduzidos em 1.6.0",
+        "nl": "vertaling:",
+        "fr": "les problèmes de fixation introduits dans 1.6.0",
+        "it": "risolvere i problemi introdotti in 1.6.0",
+        "es": "solucionar problemas introducidos en 1.6.0",
+        "pl": "problemy naprawcze wprowadzone w 1.6.0",
+        "zh-cn": "f1.6.0所列的ix问题"
+      },
       "1.6.1": {
         "en": "fix some error cases reported by Sentry",
         "de": "einige Fehlerfälle von Sentry melden",
@@ -74,18 +86,6 @@
         "es": "(MeisterTR) corregir un error con OLMSwitch_Cutting\n(MeisterTR) corregir un error con PartyMode\n(TA2k) corregir el error con un número de serie incorrecto (elimine todos los objetos manualmente)\n(MeisterTR) corregir un error en la función de bloqueo automático",
         "pl": "(MeisterTR) napraw błąd z OLMSwitch_Cutting\n(MeisterTR) naprawiony błąd w PartyMode\n(TA2k) napraw błąd z nieprawidłowym numerem seryjnym (proszę usunąć wszystkie obiekty ręcznie)\n(MeisterTR) naprawiony błąd w funkcji automatycznego blokowania",
         "zh-cn": "(MeisterTR) 使用 OLMSwitch_Cutting 修复错误\n(MeisterTR) 修复 PartyMode 的错误\n(TA2k) 修复序列号错误的错误（请手动删除所有对象）\n(MeisterTR) 修复自动锁定功能中的错误"
-      },
-      "1.4.1": {
-        "en": "fix bug in sendCommand (please remove state manually)",
-        "de": "Fehler in sendCommand beheben (bitte Status manuell entfernen)",
-        "ru": "исправить ошибку в sendCommand (удалите состояние вручную)",
-        "pt": "consertar bug em sendCommand (remova o estado manualmente)",
-        "nl": "fix bug in sendCommand (gelieve de status handmatig te verwijderen)",
-        "fr": "correction d'un bug dans sendCommand (veuillez supprimer l'état manuellement)",
-        "it": "correggere il bug in sendCommand (rimuovere lo stato manualmente)",
-        "es": "corregir el error en sendCommand (elimine el estado manualmente)",
-        "pl": "napraw błąd w sendCommand (proszę usunąć stan ręcznie)",
-        "zh-cn": "修复 sendCommand 中的错误（请手动删除状态）"
       }
     },
     "title": "Worx Landroid Cloud",
