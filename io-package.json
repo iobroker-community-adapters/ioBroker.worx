@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.3",
+    "version": "1.6.4",
     "news": {
+      "1.6.4": {
+        "en": "Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions\nfix error cases reported by Sentry",
+        "de": "Entfernen Sie die Logik, um ein 0/0/0 Ernährungsniveau einzustellen, wenn sie wieder deaktiviert wurde, wie es in pre 1.6 Versionen war\nfehlerfälle von Sentry behoben",
+        "ru": "Удалить логику, чтобы установить уровень питания 0/0/0 при деактивации снова, как это было в версиях до 1.6\nисправить случаи ошибок, описанные Sentry",
+        "pt": "Remova a lógica para definir um nível de nutrição 0/0/0 quando desativado novamente como estava em versões anteriores 1.6\ncorrigir casos de erro relatados por Sentry",
+        "nl": "Verwijder logica om een 0/0-0 voedingsniveau te plaatsen toen het weer werd gedeactiveerd in pre 1,6 versies\nvertaling:",
+        "fr": "Retirer la logique pour définir un niveau nutritionnel 0/0/0 lorsque désactivé à nouveau comme il était dans les versions pré 1.6\ncorriger les cas d'erreur signalés par Sentry",
+        "it": "Rimuovere la logica per impostare un livello di nutrizione 0/0/0 quando disattivato di nuovo come era nelle versioni pre 1.6\nrisolvere i casi di errore segnalati da Sentry",
+        "es": "Quitar la lógica para establecer un nivel de nutrición 0/0/0 cuando se desactiva de nuevo como en versiones anteriores a 1.6\ncasos de error de corrección reportados por Sentry",
+        "pl": "Zmienił logikę, aby ustawić poziom odżywiania 0/0, kiedy ponownie uruchomiono ją w wersji 1.6\nobserwacje błędów doniesione przez Sentry'a",
+        "zh-cn": "取消逻辑,在1.6个版本中再次发生时,将0./0/0营养水平定为0.。\nfix Sentry所报告的错误案件"
+      },
       "1.6.3": {
         "en": "fix some error cases reported by Sentry",
         "de": "einige Fehlerfälle von Sentry melden",
@@ -74,18 +86,6 @@
         "es": "muchas correcciones\nagregar control de torque\nestados fijos",
         "pl": "wiele poprawek\ndodaj kontrolę momentu obrotowego;\nstany stałe",
         "zh-cn": "许多修复\n添加扭矩控制\n固定状态"
-      },
-      "1.4.3": {
-        "en": "fix Partymode detection",
-        "de": "Partymode-Erkennung behoben",
-        "ru": "исправить обнаружение Partymode",
-        "pt": "corrigir detecção de Partymode",
-        "nl": "repareer Partymode-detectie",
-        "fr": "correction de la détection du mode Party",
-        "it": "correggere il rilevamento della modalità Party",
-        "es": "arreglar la detección del modo Fiesta",
-        "pl": "napraw wykrywanie trybu Party",
-        "zh-cn": "修复派对模式检测"
       }
     },
     "title": "Worx Landroid Cloud",
