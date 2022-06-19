@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.4",
+    "version": "1.6.5",
     "news": {
+      "1.6.5": {
+        "en": "Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions also on second place",
+        "de": "Entfernen Sie die Logik, um eine 0/0/0 Ernährungsniveau zu setzen, wenn sie wieder deaktiviert wurde, wie es in pre 1.6 Versionen auch an zweiter Stelle war",
+        "ru": "Удалить логику, чтобы установить уровень питания 0/0/0 при деактивации снова, как это было в версиях до 1.6 также на втором месте",
+        "pt": "Remova a lógica para definir um nível de nutrição 0/0/0 quando desativado novamente como estava em versões pre 1.6 também em segundo lugar",
+        "nl": "Verwijder logica om een 0/0-0 voedingsniveau te plaatsen toen hij weer gedeactiveerd was in pre 1,6 versies ook op de tweede plaats",
+        "fr": "Retirer la logique pour définir un niveau nutritionnel 0/0/0 lorsqu'il est désactivé à nouveau comme il était dans les versions pré 1.6 également sur la deuxième place",
+        "it": "Rimuovere la logica per impostare un livello di nutrizione 0/0/0 quando disattivato di nuovo come era nelle versioni pre 1.6 anche al secondo posto",
+        "es": "Quitar la lógica para establecer un nivel de nutrición 0/0/0 cuando se desactiva de nuevo ya que estaba en versiones pre 1.6 también en segundo lugar",
+        "pl": "Technologia przesuwająca się do poziomu od 0/0, kiedy została ponownie uruchomiona, jako że była ona w wersjach przed 1.6",
+        "zh-cn": "取消逻辑,一旦再次发生,在1.6个前的版本中,就有0./0/0营养水平。"
+      },
       "1.6.4": {
         "en": "Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions\nfix error cases reported by Sentry",
         "de": "Entfernen Sie die Logik, um ein 0/0/0 Ernährungsniveau einzustellen, wenn sie wieder deaktiviert wurde, wie es in pre 1.6 Versionen war\nfehlerfälle von Sentry behoben",
@@ -74,18 +86,6 @@
         "es": "arreglar error",
         "pl": "naprawić bład",
         "zh-cn": "解决错误"
-      },
-      "1.5.4": {
-        "en": "many fixes\nadd torque control\nfixed States",
-        "de": "viele Korrekturen\nDrehmomentkontrolle hinzufügen\nfeste Staaten",
-        "ru": "много исправлений\nдобавить контроль крутящего момента\nфиксированные состояния",
-        "pt": "muitas correções\nadicionar controle de torque\nestados fixos",
-        "nl": "veel reparaties\nkoppelregeling toevoegen\nvaste toestanden",
-        "fr": "de nombreuses corrections\najouter un contrôle de couple\nétats fixes",
-        "it": "molte correzioni\naggiungi il controllo della coppia\nStati fissi",
-        "es": "muchas correcciones\nagregar control de torque\nestados fijos",
-        "pl": "wiele poprawek\ndodaj kontrolę momentu obrotowego;\nstany stałe",
-        "zh-cn": "许多修复\n添加扭矩控制\n固定状态"
       }
     },
     "title": "Worx Landroid Cloud",
