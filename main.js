@@ -232,11 +232,6 @@ class Worx extends utils.Adapter {
                                         }
                                     });
                                 }
-                                if (mower.raw.auto_schedule_settings.nutrition !== 'undefined') {
-                                    if (mower.raw.auto_schedule_settings.nutrition === null) {
-                                        mower.raw.auto_schedule_settings.nutrition = { n: 0, p: 0, k: 0 };
-                                    }
-                                }
 
                                 extractKeys(that, `${mower.serial}.rawMqtt`, mower, null, true);
                             })

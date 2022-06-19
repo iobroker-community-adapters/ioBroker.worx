@@ -29,6 +29,10 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
+
+### __WORK IN PROGRESS__
+* (Apollon77) Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions also on second place
+
 ### 1.6.4 (2022-06-18)
 * (Apollon77) Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions
 * (Apollon77) fix error cases reported by Sentry
