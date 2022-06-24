@@ -565,11 +565,11 @@ class Worx extends utils.Adapter {
                 that.log.debug(`Edgecut Start section :${state}`);
             } else if (state === 31 && mower.edgeCut) {
                 setTimeout(function () {
-                    that.log.debug('Edcut send cmd:2');
+                    that.log.debug('Edgecut send cmd:2');
                     that.WorxCloud.sendMessage('{"cmd":2}', mowerSerial);
                 }, that.config.edgeCutDelay);
             } else if (state === 34 && mower.edgeCut) {
-                that.log.debug('Edcut send cmd:3');
+                that.log.debug('Edgecut send cmd:3');
                 that.WorxCloud.sendMessage('{"cmd":3}', mowerSerial);
                 mower.edgeCut = false;
             } else if (mower.edgeCut === true && state !== 31 && state !== 34) {
