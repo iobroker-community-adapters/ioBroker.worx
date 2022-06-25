@@ -1681,11 +1681,14 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        if (val === true && (!mower.message || mower.message.cfg || !mower.message.cfg.sc || typeof mower.message.cfg.sc.ots === 'undefined')) {
+        if (val === true && (mower.message && mower.message.cfg && mower.message.cfg.sc && typeof mower.message.cfg.sc.ots === 'undefined')) {
             mower.edgeCut = true;
             that.WorxCloud.sendMessage('{"cmd":4}', mower.serial); // starte ZoneTraining
-        } else if (val === true && mower.message.cfg.sc.ots) {
+        } else if (val === true && mower.message && mower.message.cfg && mower.message.cfg.sc && mower.message.cfg.sc.ots) {
             that.WorxCloud.sendMessage('{"sc":{"ots":{"bc":1,"wtm":0}}}', mower.serial);
+        }
+        else{
+            that.log.warn('EdgeCutting is not possible');
         }
     }
 
