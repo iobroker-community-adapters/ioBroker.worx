@@ -1,14 +1,23 @@
-[![Paypal Donation](https://img.shields.io/badge/paypal-donate%20|%20spenden-blue.svg)](https://www.paypal.com/paypalme/MeisterTR)
-
-[![Number of Installations](http://iobroker.live/badges/worx-installed.svg)](http://iobroker.live/badges/worx-installed.svg)
-[![Stable version](http://iobroker.live/badges/worx-stable.svg)](http://iobroker.live/badges/worx-stable.svg)
-[![NPM version](http://img.shields.io/npm/v/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.worx.svg)](https://www.npmjs.com/package/iobroker.worx)
-[![TESTS](https://github.com/iobroker-community-adapters/ioBroker.worx/workflows/Test%20and%20Release/badge.svg)](https://github.com/iobroker-community-adapters/ioBroker.worx/commits/master) 
-
-
 ![Logo](admin/worx.png)
 # ioBroker.worx
+[![NPM version](https://img.shields.io/npm/v/iobroker.worx?style=flat-square)](https://www.npmjs.com/package/iobroker.worx)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.worx?label=npm%20downloads&style=flat-square)](https://www.npmjs.com/package/iobroker.worx)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/iobroker.worx?label=npm%20vulnerabilities&style=flat-square)
+![node-lts](https://img.shields.io/node/v-lts/iobroker.worx?style=flat-square)
+![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/iobroker.worx?label=npm%20dependencies&style=flat-square)
+
+![GitHub](https://img.shields.io/github/license/iobroker-community-adapters/iobroker.worx?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/iobroker-community-adapters/iobroker.worx?logo=github&style=flat-square)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/iobroker-community-adapters/iobroker.worx?logo=github&style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/iobroker-community-adapters/iobroker.worx?logo=github&style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/iobroker-community-adapters/iobroker.worx?logo=github&style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/iobroker-community-adapters/iobroker.worx/Test%20and%20Release?label=Test%20and%20Release&logo=github&style=flat-square)
+![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/iobroker-community-adapters/iobroker.worx?label=repo%20vulnerabilities&logo=github&style=flat-square)
+## Versions
+
+![Beta](https://img.shields.io/npm/v/iobroker.worx.svg?color=red&label=beta)
+![Stable](http://iobroker.live/badges/worx-stable.svg)
+![Installed](http://iobroker.live/badges/worx-installed.svg)
 
 ## Worx (Kress and Landxcape) adapter for ioBroker
 
@@ -29,6 +38,13 @@ The adapter can control the mower and you can change config params like mowtimes
 
 
 ## Changelog
+
+<!--
+  Placeholder for the next version (at the beginning of the line):
+  ### **WORK IN PROGRESS**
+-->
+### **WORK IN PROGRESS**
+* (MeisterTR) fix edgecut
 ### 1.6.5 (2022-06-19)
 * (Apollon77) Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions also on second place
 
