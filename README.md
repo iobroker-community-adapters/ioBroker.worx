@@ -43,8 +43,9 @@ The adapter can control the mower and you can change config params like mowtimes
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.6.6 (2022-06-25)
 * (MeisterTR) fix edgecut
+
 ### 1.6.5 (2022-06-19)
 * (Apollon77) Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions also on second place
 

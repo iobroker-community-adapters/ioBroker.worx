@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.5",
+    "version": "1.6.6",
     "news": {
+      "1.6.6": {
+        "en": "fix edgecut",
+        "de": "befestigungskantenschnitt",
+        "ru": "исправить edgecut",
+        "pt": "corrigir o corte de borda",
+        "nl": "vertaling:",
+        "fr": "fixation",
+        "it": "taglio del bordo",
+        "es": "corte de borde",
+        "pl": "ułożenie krawędzi",
+        "zh-cn": "f 执行优势"
+      },
       "1.6.5": {
         "en": "Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions also on second place",
         "de": "Entfernen Sie die Logik, um eine 0/0/0 Ernährungsniveau zu setzen, wenn sie wieder deaktiviert wurde, wie es in pre 1.6 Versionen auch an zweiter Stelle war",
@@ -74,18 +86,6 @@
         "es": "solucionar algunos casos de error reportados por Sentry",
         "pl": "sentry case (ang.)",
         "zh-cn": "fix Sentry所报告的一些错误案件"
-      },
-      "1.5.5": {
-        "en": "fix error",
-        "de": "Fehler beheben",
-        "ru": "исправить ошибку",
-        "pt": "correção de erro",
-        "nl": "fout oplossen",
-        "fr": "corriger l'erreur",
-        "it": "correggere l'errore",
-        "es": "arreglar error",
-        "pl": "naprawić bład",
-        "zh-cn": "解决错误"
       }
     },
     "title": "Worx Landroid Cloud",
