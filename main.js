@@ -131,12 +131,12 @@ class Worx extends utils.Adapter {
             // test
             //status = testmsg;
 
-            if (kc.jsonkc(status, ['last_status','payload','cfg'])) {
-                status["dat"] = status.last_status.payload.dat;
-                delete status["last_status"]["payload"]["dat"];
-                status["cfg"] = status.last_status.payload.cfg;
-                status["timestamp"] = status.last_status.timestamp;
-                delete status["last_status"];
+            if (kc.jsonkc(status, ['last_status', 'payload', 'cfg'])) {
+                status['dat'] = status.last_status.payload.dat;
+                delete status['last_status']['payload']['dat'];
+                status['cfg'] = status.last_status.payload.cfg;
+                status['timestamp'] = status.last_status.timestamp;
+                delete status['last_status'];
             }
 
             //check if new FW functions
@@ -199,7 +199,7 @@ class Worx extends utils.Adapter {
                 that.setStates(mower, status);
                 if (that.config.weather === true) that.UpdateWeather(mower);
                 if (that.counter_mower === countDev) {
-                    await that.sleep(2000)
+                    await that.sleep(2000);
                     that.log.info('Start MQTT connection');
                     that.WorxCloud.start_mqtt(status);
                 }
