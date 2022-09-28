@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.7",
+    "version": "1.7.0",
     "news": {
-      "1.6.7": {
+      "1.7.0": {
         "en": "Login Fixed",
         "de": "Anmeldung gefixt",
         "ru": "Войти Fixed",

@@ -43,7 +43,7 @@ The adapter can control the mower and you can change config params like mowtimes
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### 1.6.7 (2022-09-28)
+### 1.7.0 (2022-09-28)
 * (TA2k) fix login
   
 ### 1.6.6 (2022-06-25)
