@@ -13,6 +13,7 @@ const worxApi = require(`${__dirname}/lib/api`);
 const JSON = require('circular-json');
 const objects = require(`${__dirname}/lib/objects`);
 const { extractKeys } = require('./lib/extractKeys');
+const kc = require('./lib/jsonkeycheck');
 
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
@@ -94,6 +95,7 @@ class Worx extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+        this.counter_mower = 0;
     }
 
     /**
@@ -112,7 +114,8 @@ class Worx extends utils.Adapter {
         await this.WorxCloud.login();
 
         const that = this;
-        this.WorxCloud.on('found', async function (mower) {
+        this.WorxCloud.on('found', async function (mower, countDev) {
+            ++that.counter_mower;
             //that.log.debug('found!' + JSON.stringify(mower));
             //delete unwanted instance information from object tree because of a 1.6.0 bug
             const instanceStates = await that.getObjectAsync(mower.serial + '.rawMqtt.worxInstance');
@@ -126,6 +129,14 @@ class Worx extends utils.Adapter {
 
             // test
             //status = testmsg;
+
+            if (kc.jsonkc(status, ['last_status','payload','cfg']) {
+                status["dat"] = status.last_status.payload.dat;
+                delete status["last_status"]["payload"]["dat"];
+                status["cfg"] = status.last_status.payload.cfg;
+                status["timestamp"] = status.last_status.timestamp;
+                delete status["last_status"];
+            }
 
             //check if new FW functions
             if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
@@ -186,6 +197,7 @@ class Worx extends utils.Adapter {
             setTimeout(function () {
                 that.setStates(mower, status);
                 if (that.config.weather === true) that.UpdateWeather(mower);
+                if (that.counter_mower === countDev) that.WorxCloud.start_mqtt();
             }, 5000);
 
             if (that.config.enableJson === true) {
