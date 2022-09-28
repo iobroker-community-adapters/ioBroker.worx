@@ -13,6 +13,7 @@ const worxApi = require(`${__dirname}/lib/api`);
 const JSON = require('circular-json');
 const objects = require(`${__dirname}/lib/objects`);
 const { extractKeys } = require('./lib/extractKeys');
+const kc = require('./lib/jsonkeycheck');
 
 const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const ERRORCODES = {
@@ -94,6 +95,8 @@ class Worx extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+        this.counter_mower = 0;
+        this.sleepTimer = null;
     }
 
     /**
@@ -112,7 +115,8 @@ class Worx extends utils.Adapter {
         await this.WorxCloud.login();
 
         const that = this;
-        this.WorxCloud.on('found', async function (mower) {
+        this.WorxCloud.on('found', async function (mower, countDev) {
+            ++that.counter_mower;
             //that.log.debug('found!' + JSON.stringify(mower));
             //delete unwanted instance information from object tree because of a 1.6.0 bug
             const instanceStates = await that.getObjectAsync(mower.serial + '.rawMqtt.worxInstance');
@@ -126,6 +130,14 @@ class Worx extends utils.Adapter {
 
             // test
             //status = testmsg;
+
+            if (kc.jsonkc(status, ['last_status','payload','cfg'])) {
+                status["dat"] = status.last_status.payload.dat;
+                delete status["last_status"]["payload"]["dat"];
+                status["cfg"] = status.last_status.payload.cfg;
+                status["timestamp"] = status.last_status.timestamp;
+                delete status["last_status"];
+            }
 
             //check if new FW functions
             if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
@@ -183,9 +195,14 @@ class Worx extends utils.Adapter {
                 that.delObj(`${mower.serial}.calendar.${objects.calJson[0]._id}2`);
             }
 
-            setTimeout(function () {
+            setTimeout(async function () {
                 that.setStates(mower, status);
                 if (that.config.weather === true) that.UpdateWeather(mower);
+                if (that.counter_mower === countDev) {
+                    await that.sleep(2000)
+                    that.log.info('Start MQTT connection');
+                    that.WorxCloud.start_mqtt(status);
+                }
             }, 5000);
 
             if (that.config.enableJson === true) {
@@ -1262,12 +1279,22 @@ class Worx extends utils.Adapter {
     }
 
     /**
+     * @param {number} milliseconds
+     */
+    sleep(ms) {
+        return new Promise((resolve) => {
+            this.sleepTimer = setTimeout(resolve, ms);
+        });
+    }
+
+    /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      * @param {() => void} callback
      */
     onUnload(callback) {
         try {
             this.log.info('cleaned everything up...');
+            this.sleepTimer && clearTimeout(this.sleepTimer);
             this.WorxCloud.disconnect();
             callback();
         } catch (e) {
