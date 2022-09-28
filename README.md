@@ -43,6 +43,9 @@ The adapter can control the mower and you can change config params like mowtimes
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### 1.6.7 (2022-09-28)
+* (TA2k) fix login
+  
 ### 1.6.6 (2022-06-25)
 * (MeisterTR) fix edgecut
 
@@ -139,7 +142,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ## License
 MIT License
 
-Copyright (c) 2021 MeisterTR
+Copyright (c) 2022 MeisterTR
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
