@@ -96,6 +96,7 @@ class Worx extends utils.Adapter {
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
         this.counter_mower = 0;
+        this.sleepTimer = null;
     }
 
     /**
@@ -194,10 +195,14 @@ class Worx extends utils.Adapter {
                 that.delObj(`${mower.serial}.calendar.${objects.calJson[0]._id}2`);
             }
 
-            setTimeout(function () {
+            setTimeout(async function () {
                 that.setStates(mower, status);
                 if (that.config.weather === true) that.UpdateWeather(mower);
-                if (that.counter_mower === countDev) that.WorxCloud.start_mqtt();
+                if (that.counter_mower === countDev) {
+                    that.log.info('Start MQTT in 2 sec.');
+                    await that.sleep(2000)
+                    that.WorxCloud.start_mqtt();
+                }
             }, 5000);
 
             if (that.config.enableJson === true) {
@@ -1274,12 +1279,22 @@ class Worx extends utils.Adapter {
     }
 
     /**
+     * @param {number} milliseconds
+     */
+    sleep(ms) {
+        return new Promise((resolve) => {
+            this.sleepTimer = setTimeout(resolve, ms);
+        });
+    }
+
+    /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      * @param {() => void} callback
      */
     onUnload(callback) {
         try {
             this.log.info('cleaned everything up...');
+            this.sleepTimer && clearTimeout(this.sleepTimer);
             this.WorxCloud.disconnect();
             callback();
         } catch (e) {
