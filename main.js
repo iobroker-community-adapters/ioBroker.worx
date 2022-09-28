@@ -130,7 +130,7 @@ class Worx extends utils.Adapter {
             // test
             //status = testmsg;
 
-            if (kc.jsonkc(status, ['last_status','payload','cfg']) {
+            if (kc.jsonkc(status, ['last_status','payload','cfg'])) {
                 status["dat"] = status.last_status.payload.dat;
                 delete status["last_status"]["payload"]["dat"];
                 status["cfg"] = status.last_status.payload.cfg;
