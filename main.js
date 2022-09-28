@@ -100,26 +100,16 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
-        // Initialize your adapter here
-
-        // The adapters config (in the instance object everything under the attribute "native") is accessible via
-        // this.config:
-        //this.log.info('config e-mail: ' + this.config.mail);
-        //this.log.info('config password: ' + this.config.password);
-
         this.setStateAsync('info.connection', {
             val: false,
             ack: true,
         });
+        if (!this.config.mail || !this.config.password) {
+            this.log.error('Please enter your e-mail and password in the adapter settings!');
+            return;
+        }
         this.WorxCloud = new worxApi(this.config.mail, this.config.password, this);
         await this.WorxCloud.login();
-        this.WorxCloud.on('connect', (worxc) => {
-            this.log.debug('Sucess connect to Worx Server!');
-            this.setStateAsync('info.connection', {
-                val: true,
-                ack: true,
-            });
-        });
 
         const that = this;
         this.WorxCloud.on('found', async function (mower) {
