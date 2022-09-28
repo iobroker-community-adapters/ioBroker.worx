@@ -199,9 +199,9 @@ class Worx extends utils.Adapter {
                 that.setStates(mower, status);
                 if (that.config.weather === true) that.UpdateWeather(mower);
                 if (that.counter_mower === countDev) {
-                    that.log.info('Start MQTT in 2 sec.');
                     await that.sleep(2000)
-                    that.WorxCloud.start_mqtt();
+                    that.log.info('Start MQTT connection');
+                    that.WorxCloud.start_mqtt(status);
                 }
             }, 5000);
 
