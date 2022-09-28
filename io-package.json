@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "worx",
-    "version": "1.6.6",
+    "version": "1.6.7",
     "news": {
+      "1.6.7": {
+        "en": "Login Fixed",
+        "de": "Anmeldung gefixt",
+        "ru": "Войти Fixed",
+        "pt": "Login Fixo",
+        "nl": "Login Fix",
+        "fr": "Se connecter Fixe",
+        "it": "Login Fisso",
+        "es": "Conexión fija",
+        "pl": "Login Fixed",
+        "zh-cn": "C. 损失"
+      },
       "1.6.6": {
         "en": "fix edgecut",
         "de": "befestigungskantenschnitt",
@@ -113,19 +125,8 @@
       "pl": "Ten adapter łączy urządzenie ioBroker z chmurą Worx Landroid",
       "zh-cn": "此适配器将您的ioBroker连接到Worx Landroid的云"
     },
-    "authors": [
-      "MeisterTR <meistertr.smarthome@gmail.com>"
-    ],
-    "keywords": [
-      "ioBroker",
-      "mower",
-      "Landroid",
-      "Worx",
-      "Kress",
-      "Landxcape",
-      "Smart Home",
-      "home automation"
-    ],
+    "authors": ["MeisterTR <meistertr.smarthome@gmail.com>", "TA2k <tombox2020@gmail.com>"],
+    "keywords": ["ioBroker", "mower", "Landroid", "Worx", "Kress", "Landxcape", "Smart Home", "home automation"],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",

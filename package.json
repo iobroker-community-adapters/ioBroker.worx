@@ -1,11 +1,17 @@
 {
   "name": "iobroker.worx",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "description": "Worx Landroid mower (Cloud)",
   "author": {
     "name": "MeisterTR",
     "email": "meistertr.smarthome@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "TA2k",
+      "email": "tombox2020@gmail.com"
+    }
+  ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.worx",
   "license": "MIT",
   "keywords": [
