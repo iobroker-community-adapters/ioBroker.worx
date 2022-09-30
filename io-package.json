@@ -14,6 +14,18 @@
                 "es": "Versión inicial",
                 "pl": "Pierwsze wydanie",
                 "zh-cn": "首次出版"
+            },
+            "1.7.0": {
+                "en": "Login Fixed",
+                "de": "Anmeldung gefixt",
+                "ru": "Войти Fixed",
+                "pt": "Login Fixo",
+                "nl": "Login Fix",
+                "fr": "Se connecter Fixe",
+                "it": "Login Fisso",
+                "es": "Conexión fija",
+                "pl": "Login Fixed",
+                "zh-cn": "C. 损失"
             }
         },
         "title": "Worx",
