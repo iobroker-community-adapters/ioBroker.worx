@@ -29,6 +29,7 @@ class Worx extends utils.Adapter {
         this.on("stateChange", this.onStateChange.bind(this));
         this.on("unload", this.onUnload.bind(this));
         this.deviceArray = [];
+        this.fw_available = {};
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         this.userAgent = "ioBroker 1.6.7";
         this.reLoginTimeout = null;
@@ -96,6 +97,10 @@ class Worx extends utils.Adapter {
             await this.updateDevices();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
+
+            this.updateFW = setInterval(async () => {
+                await this.updateFirmware();
+            }, 60 * 1000 * 60); // 1 hour
 
             this.updateInterval = setInterval(async () => {
                 await this.updateDevices();
@@ -213,11 +218,14 @@ class Worx extends utils.Adapter {
                 for (const device of res.data) {
                     const id = device.serial_number;
                     const name = device.name;
+                    this.fw_available[device.serial_number] = false;
                     this.log.info(`Found device ${name} with id ${id}`);
 
                     await this.cleanOldVersion(id);
                     this.deviceArray.push(device);
                     await this.createDevices(device);
+                    const fw_id = await this.getRequest(`product-items/${id}/firmwares`);
+                    device["fw_json"] = fw_id
                     await this.createAdditionalDeviceStates(device);
                     // this.json2iob.parse(id, device, { forceIndex: true });
                 }
@@ -226,6 +234,35 @@ class Worx extends utils.Adapter {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
+    }
+
+    async updateFirmware() {
+        for (const mower of this.deviceArray) {
+            if (this.fw_available[mower.serial_number] === true) {
+                const fw_json = await this.getRequest(`product-items/${mower.serial_number}/firmwares`);
+                if (
+                    fw_json &&
+                    Object.keys(fw_json).length > 0 && 
+                    fw_json[0] && 
+                    fw_json[0].version && 
+                    fw_json[0].updated_at
+                ) {
+                    this.log.info(`Update Firmware ${mower.serial_number}`);
+                    await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+                        val: fw_json[0].version,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+                        val: fw_json[0].updated_at,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+                        val: JSON.stringify(fw_json),
+                        ack: true,
+                    });
+                }
+            }
+        }
     }
 
     async updateDevices() {
@@ -352,6 +389,33 @@ class Worx extends utils.Adapter {
                 // @ts-ignore
                 this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
             }
+        }
+
+        if (
+            mower &&
+            mower.fw_json &&
+            Object.keys(mower.fw_json).length > 0 && 
+            mower.fw_json[0] && 
+            mower.fw_json[0].version && 
+            mower.fw_json[0].updated_at
+        ) {
+            this.fw_available[mower.serial_number] = true;
+            this.log.info("found available firmware, create states...");
+            for (const o of objects.firmware_available) {
+                await this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+            }
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+                val: mower.fw_json[0].version,
+                ack: true,
+            });
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+                val: mower.fw_json[0].updated_at,
+                ack: true,
+            });
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+                val: JSON.stringify(mower.fw_json),
+                ack: true,
+            });
         }
 
         if (
@@ -571,6 +635,7 @@ class Worx extends utils.Adapter {
             this.mqttC.end();
             this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
             this.updateInterval && clearInterval(this.updateInterval);
+            this.updateFW && clearInterval(this.updateFW);
             this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
             callback();
         } catch (e) {
