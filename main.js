@@ -1638,7 +1638,7 @@ class Worx extends utils.Adapter {
         let msgJson;
         const sheduleSel = id.split(".")[4].search("2") === -1 ? "d" : "dd";
         let fail = false;
-        const idType = id.split(".")[4];
+        // const idType = id.split(".")[4];
         const message = mower.last_status.payload.cfg.sc;
 
         message.ots && delete message.ots;
@@ -1838,7 +1838,7 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        const message = mower.last_status.payload.cfg.mz; // set aktual values
+        // const message = mower.last_status.payload.cfg.mz; // set aktual values
         let seq = [];
         try {
             seq = JSON.parse(value);
