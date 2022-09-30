@@ -1513,7 +1513,7 @@ class Worx extends utils.Adapter {
             this.log.warn(
                 "Can not start mower because he is not at home or there is an error please verify mower state",
             );
-            this.setStateAsync(`${mower.serial}.mower.state`, {
+            this.setStateAsync(`${mower.serial_number}.mower.state`, {
                 val: false,
                 ack: true,
             });
@@ -1534,7 +1534,7 @@ class Worx extends utils.Adapter {
             this.log.debug("mower going back home");
         } else {
             this.log.warn("Can not stop mower because he did not mow or there is an error");
-            this.setStateAsync(`${mower.serial}.mower.state`, {
+            this.setStateAsync(`${mower.serial_number}.mower.state`, {
                 val: true,
                 ack: true,
             });
@@ -1551,8 +1551,8 @@ class Worx extends utils.Adapter {
         const idType = id.split(".")[4];
 
         if (idType === "oneTimeStart") {
-            const bc = await this.getStateAsync(`${mower.serial}.mower.oneTimeWithBorder`);
-            const wtm = await this.getStateAsync(`${mower.serial}.mower.oneTimeWorkTime`);
+            const bc = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeWithBorder`);
+            const wtm = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeWorkTime`);
             if (bc && wtm) {
                 msgJson = {
                     bc: bc.val ? 1 : 0,
