@@ -213,6 +213,8 @@ class Worx extends utils.Adapter {
                     const id = device.serial_number;
                     const name = device.name;
                     this.log.info(`Found device ${name} with id ${id}`);
+
+                    await this.cleanOldVersion(id);
                     this.deviceArray.push(device);
                     await this.createDevices(device);
                     await this.createAdditionalDeviceStates(device);
@@ -715,8 +717,7 @@ class Worx extends utils.Adapter {
                         const preferedArrayName = null;
                         device = data;
                         await this.setStates(data);
-                        await this.formatRawData(data);
-                        this.json2iob.parse(`${mower.serial_number}.mower.${element.path}`, data, {
+                        this.json2iob.parse(`${device.serial_number}.${element.path}`, data, {
                             forceIndex: forceIndex,
                             preferedArrayName: preferedArrayName,
                             channelName: element.desc,
@@ -836,58 +837,6 @@ class Worx extends utils.Adapter {
             );
 
         this.log.debug(JSON.stringify(mower));
-    }
-
-    async formatRawData(data) {
-        if (data && data.auto_schedule_settings && data.auto_schedule_settings.exclusion_scheduler) {
-            for (const key in data.auto_schedule_settings.exclusion_scheduler.days) {
-                if (Object.keys(data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"]).length < 4) {
-                    let generic = 0;
-                    let irrigation = 0;
-                    let set_arr = 0;
-                    const slots_save = data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"];
-                    data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"] = [
-                        { start_time: 0, duration: 0, reason: "" },
-                        { start_time: 0, duration: 0, reason: "" },
-                        { start_time: 0, duration: 0, reason: "" },
-                        { start_time: 0, duration: 0, reason: "" },
-                    ];
-                    if (Object.keys(slots_save).length === 1) {
-                        if (slots_save[0].reason === "generic") {
-                            set_arr = 0;
-                        } else {
-                            set_arr = 2;
-                        }
-                        data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].start_time =
-                            slots_save[0].start_time;
-                        data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].duration =
-                            slots_save[0].duration;
-                        data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].reason =
-                            slots_save[0].reason;
-                    } else if (Object.keys(slots_save).length > 1) {
-                        for (const sl in slots_save) {
-                            if (slots_save[sl].reason === "generic" && generic === 0) {
-                                set_arr = 0;
-                                generic = 1;
-                            } else if (slots_save[sl].reason === "generic" && generic === 1) {
-                                set_arr = 1;
-                            } else if (slots_save[sl].reason === "irrigation" && irrigation === 0) {
-                                set_arr = 2;
-                                irrigation = 2;
-                            } else if (slots_save[sl].reason === "irrigation" && irrigation === 2) {
-                                set_arr = 3;
-                            }
-                            data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].start_time =
-                                slots_save[sl].start_time;
-                            data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].duration =
-                                slots_save[sl].duration;
-                            data.auto_schedule_settings.exclusion_scheduler.days[key]["slots"][set_arr].reason =
-                                slots_save[sl].reason;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     async getRequest(path) {
@@ -1336,8 +1285,7 @@ class Worx extends utils.Adapter {
                 mower.last_status.payload = data;
                 mower.last_status.timestamp = new Date().toISOString().replace("T", " ").replace("Z", "");
                 await this.setStates(mower);
-                await this.formatRawData(data);
-                this.json2iob.parse(`${mower.serial_number}.mower.rawMqtt`, mower, {
+                this.json2iob.parse(`${mower.serial_number}.rawMqtt`, mower, {
                     forceIndex: true,
                     preferedArrayName: null,
                 });
@@ -1638,7 +1586,7 @@ class Worx extends utils.Adapter {
         let msgJson;
         const sheduleSel = id.split(".")[4].search("2") === -1 ? "d" : "dd";
         let fail = false;
-        // const idType = id.split(".")[4];
+        const idType = id.split(".")[4];
         const message = mower.last_status.payload.cfg.sc;
 
         message.ots && delete message.ots;
@@ -1838,7 +1786,7 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        // const message = mower.last_status.payload.cfg.mz; // set aktual values
+        const message = mower.last_status.payload.cfg.mz; // set aktual values
         let seq = [];
         try {
             seq = JSON.parse(value);
@@ -1948,6 +1896,30 @@ class Worx extends utils.Adapter {
 
         this.log.debug(`Send cmd:${val}`);
         this.sendMessage(`{"cmd":${val}}`, mower.serial_number);
+    }
+    async cleanOldVersion(serial) {
+        const cleanOldVersion = await this.getObjectAsync(
+            this.name + "." + this.instance + "." + serial + ".oldVersionCleaned",
+        );
+        if (!cleanOldVersion) {
+            this.log.info("Please wait a few minutes.... clean old version");
+            await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".rawMqtt", {
+                recursive: true,
+            });
+            await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
+                type: "state",
+                common: {
+                    type: "boolean",
+                    role: "boolean",
+                    write: false,
+                    read: true,
+                },
+                native: {},
+            });
+
+            this.log.info("Done with cleaning");
+            this.restart();
+        }
     }
 }
 
