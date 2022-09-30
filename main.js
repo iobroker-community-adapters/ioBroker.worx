@@ -1319,7 +1319,7 @@ class Worx extends utils.Adapter {
         const mower = this.deviceArray.find((mower) => mower.serial_number === serial);
 
         if (mower && this.mqttC) {
-            this.mqttC.publish(mower.command_in, message);
+            this.mqttC.publish(mower.mqtt_topics.command_in, message);
         } else {
             this.log.error("Try to send a message but could not find the mower");
         }
