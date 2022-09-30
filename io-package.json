@@ -41,7 +41,7 @@
             "pl": "Ten adapter łączy ioBroker z chmurą Worx, Kresss lub Landxcape",
             "zh-cn": "此适配器将您的 ioBroker 连接到您的 Worx、Kresss 或 Landxcape 的云"
         },
-        "authors": ["TA2k <tombox2020@gmail.com>"],
+        "authors": ["TA2k <tombox2020@gmail.com>", "MeisterTR", "Lucky-ESA"],
         "keywords": ["mower", "Worx", "Kress", "Landxcape"],
         "license": "MIT",
         "platform": "Javascript/Node.js",
