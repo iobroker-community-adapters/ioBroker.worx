@@ -92,7 +92,9 @@ class Worx extends utils.Adapter {
             await this.getDeviceList();
             await this.updateDevices();
             this.log.info("Start MQTT connection");
-            await this.start_mqtt();
+            for (const mower of this.deviceArray) {
+                await this.start_mqtt(mower);
+            }
 
             this.updateInterval = setInterval(async () => {
                 await this.updateDevices();
@@ -1278,6 +1280,10 @@ class Worx extends utils.Adapter {
         }
     }
     async start_mqtt(mower) {
+        if (!mower) {
+            this.log.warn("No mower found to start mqtt");
+            return;
+        }
         if (!mower.uuid) {
             mower.uuid = uuidv4();
         }
@@ -1315,19 +1321,20 @@ class Worx extends utils.Adapter {
         this.mqttC.on("connect", () => {
             this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
             for (const mower of this.deviceArray) {
-                this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.mqtt_command_out);
-                this.mqttC.subscribe(mower.mqtt_topics.mqtt_command_out);
-                this.mqttC.publish(mower.mqtt_topics.mqtt_command_in, "{}");
+                this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
+                this.mqttC.subscribe(mower.mqtt_topics.command_out);
+                this.mqttC.publish(mower.mqtt_topics.command_in, "{}");
             }
         });
 
         this.mqttC.on("message", async (topic, message) => {
             const data = JSON.parse(message);
-            const mower = this.deviceArray.find((mower) => mower.mqtt_topics.mqtt_command_out === topic);
+            const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
 
             if (mower) {
                 this.log.debug("Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")");
                 mower.last_status.payload = data;
+                mower.last_status.timestamp = new Date().toISOString().replace("T", " ").replace("Z", "");
                 await this.setStates(mower);
                 await this.formatRawData(data);
                 this.json2iob.parse("rawMqtt", mower, {
@@ -1364,7 +1371,7 @@ class Worx extends utils.Adapter {
         const mower = this.deviceArray.find((mower) => mower.serial_number === serial);
 
         if (mower && this.mqttC) {
-            this.mqttC.publish(mower.mqtt_command_in, message);
+            this.mqttC.publish(mower.command_in, message);
         } else {
             this.log.error("Try to send a message but could not find the mower");
         }

@@ -56,6 +56,39 @@
         "compact": true,
         "connectionType": "cloud",
         "dataSource": "push",
+        "messages": [
+            {
+                "condition": {
+                    "operand": "and",
+                    "rules": ["oldVersion<2.0.0", "newVersion>=2.0.0"]
+                },
+                "title": {
+                    "en": "Important notice!",
+                    "de": "Wichtiger Hinweis!",
+                    "ru": "Важное замечание!",
+                    "pt": "Notícia importante!",
+                    "nl": "Belangrijke mededeling!",
+                    "fr": "Avis important!",
+                    "it": "Avviso IMPORTANTE!",
+                    "es": "Noticia importante!",
+                    "pl": "Ważna uwaga!",
+                    "zh-cn": "重要通知!"
+                },
+                "text": {
+                    "en": "Since v2.0.0 the password is saved encrypted. Please reenter your password in the settings after update.",
+                    "de": "Seit v2.0.0 wird das Passwort verschlüsselt gespeichert. Bitte geben Sie Ihr Passwort erneut in den Einstellungen nach dem Update ein.",
+                    "ru": "С v2.0.0 пароль сохранен зашифрован. Пожалуйста, повторите пароль в настройках после обновления.",
+                    "pt": "Desde v2.0.0 a senha é salva criptografada. Por favor, digite sua senha nas configurações após a atualização.",
+                    "nl": "Aangezien het wachtwoord versleuteld is. Steun uw wachtwoord in de setting na update.",
+                    "fr": "Depuis v2.0.0 le mot de passe est enregistré crypté. Veuillez entrer votre mot de passe dans les paramètres après la mise à jour.",
+                    "it": "Dal v2.0.0 la password viene salvata crittografata. Si prega di reinserire la password nelle impostazioni dopo l'aggiornamento.",
+                    "es": "Desde v2.0.0 la contraseña se guarda encriptada. Por favor vuelva a introducir su contraseña en la configuración después de la actualización.",
+                    "pl": "Od wersji v2.0.0 zapisywane jest hasłem. Powracaj do wasze hasło w ustawieniach.",
+                    "zh-cn": "自第2.0.0号密码被加密。 请在更新后的环境中重新写言。."
+                },
+                "buttons": ["agree", "cancel"]
+            }
+        ],
         "adminUI": {
             "config": "json"
         },
