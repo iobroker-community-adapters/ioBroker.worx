@@ -1,7 +1,7 @@
 {
     "i18n": false,
     "items": {
-        "username": {
+        "mail": {
             "type": "text",
             "label": {
                 "en": "App Email",
