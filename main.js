@@ -225,7 +225,7 @@ class Worx extends utils.Adapter {
                     this.deviceArray.push(device);
                     await this.createDevices(device);
                     const fw_id = await this.getRequest(`product-items/${id}/firmwares`);
-                    device["fw_json"] = fw_id
+                    device["fw_json"] = fw_id;
                     await this.createAdditionalDeviceStates(device);
                     // this.json2iob.parse(id, device, { forceIndex: true });
                 }
