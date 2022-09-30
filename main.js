@@ -255,13 +255,6 @@ class Worx extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExistsAsync(`${mower.serial_number}.weather`, {
-            type: "channel",
-            common: {
-                name: "mower control",
-            },
-            native: {},
-        });
 
         for (let a = 0; a <= 3; a++) {
             await this.setObjectNotExistsAsync(`${mower.serial_number}.areas.area_${a}`, {
@@ -1906,6 +1899,10 @@ class Worx extends utils.Adapter {
             await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".rawMqtt", {
                 recursive: true,
             });
+            await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".weather", {
+                recursive: true,
+            });
+
             await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
                 type: "state",
                 common: {
