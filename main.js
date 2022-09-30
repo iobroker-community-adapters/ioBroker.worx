@@ -1915,7 +1915,6 @@ class Worx extends utils.Adapter {
             });
 
             this.log.info("Done with cleaning");
-            this.restart();
         }
     }
 }
