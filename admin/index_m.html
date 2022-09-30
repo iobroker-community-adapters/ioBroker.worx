@@ -1,131 +1,37 @@
 <html>
+    <head>
+        <!-- Load ioBroker scripts and styles-->
+        <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+        <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css" />
 
-<head>
+        <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-    <!-- Load ioBroker scripts and styles-->
-    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+        <script type="text/javascript" src="../../js/translate.js"></script>
+        <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+        <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
-    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
-
-    <script type="text/javascript" src="../../js/translate.js"></script>
-    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
-    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
-
-    <!-- Load our own files -->
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script type="text/javascript" src="words.js"></script>
-
-    <script type="text/javascript">
-        // This will be called by the admin adapter when the settings page loads
-        function load(settings, onChange) {
-            // example: select elements with id=key and class=value and insert value
-            if (!settings) return;
-            $('.value').each(function () {
-                var $key = $(this);
-                var id = $key.attr('id');
-                if ($key.attr('type') === 'checkbox') {
-                    // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id])
-                        .on('change', () => onChange());
-                } else {
-                    // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id])
-                        .on('change', () => onChange())
-                        .on('keyup', () => onChange());
-                }
-            });
-            onChange(false);
-            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-            if (M) M.updateTextFields();
-        }
-
-        // This will be called by the admin adapter when the user presses the save button
-        function save(callback) {
-            // example: select elements with class=value and build settings object
-            var obj = {};
-            $('.value').each(function () {
-                var $this = $(this);
-                if ($this.attr('type') === 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
-                } else {
-                    obj[$this.attr('id')] = $this.val();
-                }
-            });
-            callback(obj);
-        }
-    </script>
-
-</head>
-
-<body>
-
-    <div class="m adapter-container">
-        <div class="row">
-            <div class="col s12 m4 l2">
-                <img src="worx.png" class="logo">
+        <script type="text/javascript">
+            // This will be called by the admin adapter when the settings page loads
+            function load(settings, onChange) {}
+            // This will be called by the admin adapter when the user presses the save button
+            function save(callback) {}
+        </script>
+    </head>
+    <body>
+        <div class="m adapter-container">
+            <div class="col s12 page">
+                <div class="row">
+                    <div class="col s6">
+                        <img src="bosch-ebike.png" class="logo" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <p style="font-weight: bold; font-size: 1.2em; color: red">This adapter version has no support for "Admin 4 UI" configuration. Please switch to "Admin 5" UI</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-			<div class="col s12 m3 L2" style="padding-top: 10px">
-				<a target="_blank" href="https://paypal.me/MeisterTR"><img src="https://www.paypalobjects.com/webstatic/de_DE/i/de-pp-logo-200px.png" alt="PayPal" /></a>
-			</div>
-			<div class="col s12 m4 L4" style="padding-top: 10px">
-				<p class="subtitle translate">donateInformation</p>
-			</div>
-
-			
-		</div>
-        <!-- For example columns with settings: -->
-        <div class="row">
-
-            <div class="col s6 input-field">
-                <input type="text" class="value" id="mail" />
-                <label for="mail" class="translate">e-mail adress</label>
-            </div>
-            <div class="col s6 input-field">
-                <input type="password" class="value" id="password" />
-                <label for="password" class="translate">Type your pw</label>
-            </div>
-            <div class="input-field col s12 m4 l2 ">
-                <select class="value " id="server" type="text">
-                    <option value="" disabled selected class="translate">server</option>
-                    <option value="worx">Worx</option>
-                    <option value="kress">Kress</option>
-                    <option value="landxcape">Landxcape</option>
-                </select>
-                <label class="translate" for="server">Server</label>
-            </div>
-            <div class="col s6 input-field">
-                <input type="number" class="value" id="edgeCutDelay" />
-                <label for="edgeCutDelay" class="translate">Delay for Edgecut</label>
-            </div>
-        </div>
-        <div class="row" style="background-color: #2196f3;">
-            <div class="col s12">
-                <span class="translate">additional settings</span>
-                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col s12">
-                <input class="value" id="enableJson" type="checkbox" /><span class="translate">add raw data</span>
-                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
-            </div>
-            <div class="col s12">
-                <input class="value" id="meterMin" type="checkbox" /><span class="translate">Distance and time in min and m</span>
-                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
-            </div>
-            <div class="col s12">
-                <input class="value" id="weather" type="checkbox" /><span class="translate">Enable weather data</span>
-                <!-- Important: span must come directly after checkbox input (only by checkbox the span will be used!) -->
-            </div>
-        </div>
-
-    </div>
-
-</body>
-
+    </body>
 </html>

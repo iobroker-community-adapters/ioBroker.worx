@@ -1,0 +1,106 @@
+{
+    "i18n": false,
+    "items": {
+        "username": {
+            "type": "text",
+            "label": {
+                "en": "App Email",
+                "de": "App-E-Mail",
+                "ru": "Электронная почта приложения",
+                "pt": "Email do aplicativo",
+                "nl": "App-e-mail",
+                "fr": "Courriel de l'application",
+                "it": "E-mail dell'app",
+                "es": "Correo electrónico de la aplicación",
+                "pl": "E-mail aplikacji",
+                "zh-cn": "应用电子邮件"
+            },
+            "newLine": true,
+            "sm": 3
+        },
+        "password": {
+            "type": "password",
+            "newLine": true,
+            "repeat": false,
+            "visible": true,
+            "sm": 3,
+            "label": {
+                "en": "App Password",
+                "de": "App-Passwort",
+                "ru": "Пароль приложения",
+                "pt": "Senha de app",
+                "nl": "App-wachtwoord",
+                "fr": "Mot de passe de l'application",
+                "it": "Password dell'app",
+                "es": "Contraseña de la aplicación",
+                "pl": "Hasło do aplikacji",
+                "zh-cn": "应用密码"
+            }
+        },
+        "server": {
+            "type": "select",
+            "newLine": true,
+            "sm": 3,
+            "options": [
+                {
+                    "label": "Worx",
+                    "value": "worx"
+                },
+                {
+                    "label": "Kress",
+                    "value": "kress"
+                },
+                {
+                    "label": "Landxcape",
+                    "value": "landxcape"
+                }
+            ],
+            "label": {
+                "en": "App Name",
+                "de": "App Name",
+                "ru": "Имя приложения",
+                "pt": "Nome do aplicativo",
+                "nl": "App Naam",
+                "fr": "App Name",
+                "it": "Nome dell'app",
+                "es": "Nombre de la aplicación",
+                "pl": "Nazwa",
+                "zh-cn": "附录"
+            }
+        },
+        "edgeCutDelay": {
+            "type": "number",
+            "label": {
+                "en": "Delay for Edgecut",
+                "de": "Verzögerung für Edgecut",
+                "ru": "Задержка для Edgecut",
+                "pt": "Delay para Edgecut",
+                "nl": "Vertraging voor Edgecut",
+                "fr": "Delay for Edgecut",
+                "it": "Delay per Edgecut",
+                "es": "Delay for Edgecut",
+                "pl": "Delay for Edgecut (ang.)",
+                "zh-cn": "A. 执法拖延"
+            },
+            "newLine": true,
+            "sm": 3
+        },
+        "metermin": {
+            "type": "checkbox",
+            "label": {
+                "en": "Distance and time in min and m",
+                "de": "Entfernung und Zeit in min und m",
+                "ru": "Расстояние и время в мин и м",
+                "pt": "Distância e tempo em min e m",
+                "nl": "Vertaling:",
+                "fr": "Distance et heure en min et m",
+                "it": "Distanza e tempo in min e m",
+                "es": "Distancia y hora en min y m",
+                "pl": "Odległość i czas w minu i minucie",
+                "zh-cn": "明示和时间"
+            },
+            "newLine": true,
+            "sm": 3
+        }
+    }
+}

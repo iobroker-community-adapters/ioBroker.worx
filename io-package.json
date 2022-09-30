@@ -1,193 +1,111 @@
 {
-  "common": {
-    "name": "worx",
-    "version": "1.7.0",
-    "news": {
-      "1.7.0": {
-        "en": "Login Fixed",
-        "de": "Anmeldung gefixt",
-        "ru": "Войти Fixed",
-        "pt": "Login Fixo",
-        "nl": "Login Fix",
-        "fr": "Se connecter Fixe",
-        "it": "Login Fisso",
-        "es": "Conexión fija",
-        "pl": "Login Fixed",
-        "zh-cn": "C. 损失"
-      },
-      "1.6.6": {
-        "en": "fix edgecut",
-        "de": "befestigungskantenschnitt",
-        "ru": "исправить edgecut",
-        "pt": "corrigir o corte de borda",
-        "nl": "vertaling:",
-        "fr": "fixation",
-        "it": "taglio del bordo",
-        "es": "corte de borde",
-        "pl": "ułożenie krawędzi",
-        "zh-cn": "f 执行优势"
-      },
-      "1.6.5": {
-        "en": "Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions also on second place",
-        "de": "Entfernen Sie die Logik, um eine 0/0/0 Ernährungsniveau zu setzen, wenn sie wieder deaktiviert wurde, wie es in pre 1.6 Versionen auch an zweiter Stelle war",
-        "ru": "Удалить логику, чтобы установить уровень питания 0/0/0 при деактивации снова, как это было в версиях до 1.6 также на втором месте",
-        "pt": "Remova a lógica para definir um nível de nutrição 0/0/0 quando desativado novamente como estava em versões pre 1.6 também em segundo lugar",
-        "nl": "Verwijder logica om een 0/0-0 voedingsniveau te plaatsen toen hij weer gedeactiveerd was in pre 1,6 versies ook op de tweede plaats",
-        "fr": "Retirer la logique pour définir un niveau nutritionnel 0/0/0 lorsqu'il est désactivé à nouveau comme il était dans les versions pré 1.6 également sur la deuxième place",
-        "it": "Rimuovere la logica per impostare un livello di nutrizione 0/0/0 quando disattivato di nuovo come era nelle versioni pre 1.6 anche al secondo posto",
-        "es": "Quitar la lógica para establecer un nivel de nutrición 0/0/0 cuando se desactiva de nuevo ya que estaba en versiones pre 1.6 también en segundo lugar",
-        "pl": "Technologia przesuwająca się do poziomu od 0/0, kiedy została ponownie uruchomiona, jako że była ona w wersjach przed 1.6",
-        "zh-cn": "取消逻辑,一旦再次发生,在1.6个前的版本中,就有0./0/0营养水平。"
-      },
-      "1.6.4": {
-        "en": "Remove logic to set a 0/0/0 nutrition level when deactivated again as it was in pre 1.6 versions\nfix error cases reported by Sentry",
-        "de": "Entfernen Sie die Logik, um ein 0/0/0 Ernährungsniveau einzustellen, wenn sie wieder deaktiviert wurde, wie es in pre 1.6 Versionen war\nfehlerfälle von Sentry behoben",
-        "ru": "Удалить логику, чтобы установить уровень питания 0/0/0 при деактивации снова, как это было в версиях до 1.6\nисправить случаи ошибок, описанные Sentry",
-        "pt": "Remova a lógica para definir um nível de nutrição 0/0/0 quando desativado novamente como estava em versões anteriores 1.6\ncorrigir casos de erro relatados por Sentry",
-        "nl": "Verwijder logica om een 0/0-0 voedingsniveau te plaatsen toen het weer werd gedeactiveerd in pre 1,6 versies\nvertaling:",
-        "fr": "Retirer la logique pour définir un niveau nutritionnel 0/0/0 lorsque désactivé à nouveau comme il était dans les versions pré 1.6\ncorriger les cas d'erreur signalés par Sentry",
-        "it": "Rimuovere la logica per impostare un livello di nutrizione 0/0/0 quando disattivato di nuovo come era nelle versioni pre 1.6\nrisolvere i casi di errore segnalati da Sentry",
-        "es": "Quitar la lógica para establecer un nivel de nutrición 0/0/0 cuando se desactiva de nuevo como en versiones anteriores a 1.6\ncasos de error de corrección reportados por Sentry",
-        "pl": "Zmienił logikę, aby ustawić poziom odżywiania 0/0, kiedy ponownie uruchomiono ją w wersji 1.6\nobserwacje błędów doniesione przez Sentry'a",
-        "zh-cn": "取消逻辑,在1.6个版本中再次发生时,将0./0/0营养水平定为0.。\nfix Sentry所报告的错误案件"
-      },
-      "1.6.3": {
-        "en": "fix some error cases reported by Sentry",
-        "de": "einige Fehlerfälle von Sentry melden",
-        "ru": "исправить некоторые случаи ошибок, описанные Sentry",
-        "pt": "corrigir alguns casos de erro relatados por Sentry",
-        "nl": "vertaling:",
-        "fr": "corriger certains cas d'erreur signalés par Sentry",
-        "it": "risolvere alcuni casi di errore segnalati da Sentry",
-        "es": "solucionar algunos casos de error reportados por Sentry",
-        "pl": "sentry case (ang.)",
-        "zh-cn": "fix Sentry所报告的一些错误案件"
-      },
-      "1.6.2": {
-        "en": "fix issues introduced in 1.6.0",
-        "de": "probleme in 1.6.0 behoben",
-        "ru": "исправление вопросов, введенных в 1.6.0",
-        "pt": "corrigir problemas introduzidos em 1.6.0",
-        "nl": "vertaling:",
-        "fr": "les problèmes de fixation introduits dans 1.6.0",
-        "it": "risolvere i problemi introdotti in 1.6.0",
-        "es": "solucionar problemas introducidos en 1.6.0",
-        "pl": "problemy naprawcze wprowadzone w 1.6.0",
-        "zh-cn": "f1.6.0所列的ix问题"
-      },
-      "1.6.1": {
-        "en": "fix some error cases reported by Sentry",
-        "de": "einige Fehlerfälle von Sentry melden",
-        "ru": "исправить некоторые случаи ошибок, описанные Sentry",
-        "pt": "corrigir alguns casos de erro relatados por Sentry",
-        "nl": "vertaling:",
-        "fr": "corriger certains cas d'erreur signalés par Sentry",
-        "it": "risolvere alcuni casi di errore segnalati da Sentry",
-        "es": "solucionar algunos casos de error reportados por Sentry",
-        "pl": "sentry case (ang.)",
-        "zh-cn": "fix Sentry所报告的一些错误案件"
-      },
-      "1.6.0": {
-        "en": "fix some error cases reported by Sentry",
-        "de": "einige Fehlerfälle von Sentry melden",
-        "ru": "исправить некоторые случаи ошибок, описанные Sentry",
-        "pt": "corrigir alguns casos de erro relatados por Sentry",
-        "nl": "vertaling:",
-        "fr": "corriger certains cas d'erreur signalés par Sentry",
-        "it": "risolvere alcuni casi di errore segnalati da Sentry",
-        "es": "solucionar algunos casos de error reportados por Sentry",
-        "pl": "sentry case (ang.)",
-        "zh-cn": "fix Sentry所报告的一些错误案件"
-      }
+    "common": {
+        "name": "worx",
+        "version": "2.0.0",
+        "news": {
+            "2.0.0": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "Worx",
+        "titleLang": {
+            "en": "Worx",
+            "de": "Worx",
+            "ru": "Воркс",
+            "pt": "Worx",
+            "nl": "Worx",
+            "fr": "Worx",
+            "it": "Peggio",
+            "es": "Worx",
+            "pl": "Worx",
+            "zh-cn": "沃克斯"
+        },
+        "desc": {
+            "en": "This adapter connects your ioBroker to the cloud of your  Worx, Kresss or Landxcape",
+            "de": "Dieser Adapter verbindet Ihren ioBroker mit der Cloud Ihres Worx, Kresss oder Landxcape",
+            "ru": "Этот адаптер подключает ваш ioBroker к облаку вашего Worx, Kress или Landxcape.",
+            "pt": "Este adaptador conecta seu ioBroker à nuvem do seu Worx, Kresss ou Landxcape",
+            "nl": "Deze adapter verbindt uw ioBroker met de cloud van uw Worx, Kresss of Landxcape",
+            "fr": "Cet adaptateur connecte votre ioBroker au cloud de votre Worx, Kresss ou Landxcape",
+            "it": "Questo adattatore collega il tuo ioBroker al cloud di Worx, Kresss o Landxcape",
+            "es": "Este adaptador conecta tu ioBroker a la nube de tu Worx, Kresss o Landxcape",
+            "pl": "Ten adapter łączy ioBroker z chmurą Worx, Kresss lub Landxcape",
+            "zh-cn": "此适配器将您的 ioBroker 连接到您的 Worx、Kresss 或 Landxcape 的云"
+        },
+        "authors": ["TA2k <tombox2020@gmail.com>"],
+        "keywords": ["mower", "Worx", "Kress", "Landxcape"],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "worx.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "garden",
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
+        "adminUI": {
+            "config": "json"
+        },
+        "plugins": {
+            "sentry": {
+                "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
+            }
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.22"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.1.13"
+            }
+        ]
     },
-    "title": "Worx Landroid Cloud",
-    "titleLang": {
-      "en": "Worx Landroid mower (cloud)",
-      "de": "Worx Landroid Mähroboter (Cloud)",
-      "ru": "Косилка Worx Landroid (облачная)",
-      "pt": "Segadeira Landroid Worx (nuvem)",
-      "fr": "Worx Landroid tondeuse (nuage)",
-      "nl": "Worx Landroid-maaier (cloud)",
-      "es": "Cortacésped Worx Landroid (nube)",
-      "it": "Worx Landroid mower (cloud)",
-      "pl": "Worx Kosiarka Landroid (chmura)",
-      "zh-cn": "Worx Landroid割草机（云）"
+    "encryptedNative": ["password"],
+    "protectedNative": ["password"],
+    "native": {
+        "mail": "",
+        "password": "",
+        "edgeCutDelay": 5000,
+        "server": "worx",
+        "meterMin": false
     },
-    "desc": {
-      "en": "This adapter connects your ioBroker to the cloud of your  Worx, Kresss pr Landxcape",
-      "ru": "Этот адаптер соединяет ваш ioBroker с облаком вашего  Worx, Kresss, Landxcape",
-      "de": "Dieser Adapter verbindet deinen ioBroker mit der Cloud deines Worx, Kresss oder Landxcape",
-      "pt": "Este adaptador conecta seu ioBroker à nuvem de seu Landroid Worx",
-      "fr": "Cet adaptateur connecte votre ioBroker au nuage de votre Worx Landroid",
-      "es": "Este adaptador conecta su ioBroker a la nube de su Worx Landroid",
-      "nl": "Deze adapter verbindt uw ioBroker met de cloud van uw Worx Landroid",
-      "it": "Questo adattatore collega ioBroker al cloud del tuo Worx Landroid",
-      "pl": "Ten adapter łączy urządzenie ioBroker z chmurą Worx Landroid",
-      "zh-cn": "此适配器将您的ioBroker连接到Worx Landroid的云"
-    },
-    "authors": ["MeisterTR <meistertr.smarthome@gmail.com>", "TA2k <tombox2020@gmail.com>"],
-    "keywords": ["ioBroker", "mower", "Landroid", "Worx", "Kress", "Landxcape", "Smart Home", "home automation"],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "main": "main.js",
-    "icon": "worx.png",
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
-    "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
-    "loglevel": "info",
-    "mode": "daemon",
-    "type": "garden",
-    "connectionType": "cloud",
-    "dataSource": "push",
-    "compact": true,
-    "materialize": true,
-    "globalDependencies": [
-      {
-        "admin": ">=4.0.9"
-      }
-    ],
-    "dependencies": [
-      {
-        "js-controller": ">=3.1.0"
-      }
-    ],
-    "plugins": {
-      "sentry": {
-        "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
-      }
-    }
-  },
-  "native": {
-    "mail": "",
-    "password": "",
-    "edgeCutDelay": 5000,
-    "server": "worx",
-    "enableJson": false,
-    "meterMin": false,
-    "weather": true
-  },
-  "objects": [],
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected to device or service",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "Device or service connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
 }

@@ -5,13 +5,18 @@ name: Test and Release
 on:
     push:
         branches:
-            - 'master'
+            - "master"
         tags:
             # normal versions
-            - 'v[0-9]+.[0-9]+.[0-9]+'
+            - "v[0-9]+.[0-9]+.[0-9]+"
             # pre-releases
-            - 'v[0-9]+.[0-9]+.[0-9]+-**'
+            - "v[0-9]+.[0-9]+.[0-9]+-**"
     pull_request: {}
+
+# Cancel previous PR/branch runs when a new commit is pushed
+concurrency:
+    group: ${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
     # Performs quick checks before the expensive test runs
@@ -23,7 +28,7 @@ jobs:
         steps:
             - uses: ioBroker/testing-action-check@v1
               with:
-                  node-version: '14.x'
+                  node-version: "16.x"
                   # Uncomment the following line if your adapter cannot be installed using 'npm ci'
                   # install-command: 'npm install'
                   lint: true
@@ -35,7 +40,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node-version: [18.x, 14.x, 16.x]
+                node-version: [14.x, 16.x, 18.x]
                 os: [ubuntu-latest, windows-latest, macos-latest]
 
         steps:
@@ -45,6 +50,7 @@ jobs:
                   os: ${{ matrix.os }}
                   # Uncomment the following line if your adapter cannot be installed using 'npm ci'
                   # install-command: 'npm install'
+
     # TODO: To enable automatic npm releases, create a token on npmjs.org
     # Enter this token as a GitHub secret (with name NPM_TOKEN) in the repository options
     # Then uncomment the following block:
@@ -61,10 +67,14 @@ jobs:
 
         runs-on: ubuntu-latest
 
+        # Write permissions are required to create Github releases
+        permissions:
+            contents: write
+
         steps:
             - uses: ioBroker/testing-action-deploy@v1
               with:
-                  node-version: '14.x'
+                  node-version: "16.x"
                   # Uncomment the following line if your adapter cannot be installed using 'npm ci'
                   # install-command: 'npm install'
                   npm-token: ${{ secrets.NPM_TOKEN }}
@@ -76,7 +86,7 @@ jobs:
                   # Then uncomment and customize the following block:
                   sentry: true
                   sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-                  sentry-project: 'iobroker-worx'
-                  sentry-version-prefix: 'iobroker.worx'
-    #          # If your sentry project is linked to a GitHub repository, you can enable the following option
-    #          # sentry-github-integration: true
+                  sentry-project: "iobroker-worx"
+                  sentry-version-prefix: "iobroker.worx"
+                  # If your sentry project is linked to a GitHub repository, you can enable the following option
+                  # sentry-github-integration: true
