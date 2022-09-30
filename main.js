@@ -716,7 +716,7 @@ class Worx extends utils.Adapter {
                         device = data;
                         await this.setStates(data);
                         await this.formatRawData(data);
-                        this.json2iob.parse(element.path, data, {
+                        this.json2iob.parse(`${mower.serial_number}.mower.${element.path}`, data, {
                             forceIndex: forceIndex,
                             preferedArrayName: preferedArrayName,
                             channelName: element.desc,
@@ -1337,7 +1337,7 @@ class Worx extends utils.Adapter {
                 mower.last_status.timestamp = new Date().toISOString().replace("T", " ").replace("Z", "");
                 await this.setStates(mower);
                 await this.formatRawData(data);
-                this.json2iob.parse("rawMqtt", mower, {
+                this.json2iob.parse(`${mower.serial_number}.mower.rawMqtt`, mower, {
                     forceIndex: true,
                     preferedArrayName: null,
                 });
