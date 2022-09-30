@@ -95,9 +95,7 @@ class Worx extends utils.Adapter {
             await this.getDeviceList();
             await this.updateDevices();
             this.log.info("Start MQTT connection");
-            for (const mower of this.deviceArray) {
-                await this.start_mqtt(mower);
-            }
+            await this.start_mqtt();
 
             this.updateInterval = setInterval(async () => {
                 await this.updateDevices();
@@ -420,31 +418,29 @@ class Worx extends utils.Adapter {
      * @param {object} mower Mower json response object
      */
 
-    async start_mqtt(mower) {
-        if (!mower) {
+    async start_mqtt() {
+        if (this.deviceArray.length === 0) {
             this.log.warn("No mower found to start mqtt");
             return;
         }
-        if (!mower.uuid) {
-            mower.uuid = uuidv4();
-        }
+
         this.userData = await this.getRequest("users/me");
         this.userCert = await this.getRequest("users/certificate");
         this.userCert.p12 = Buffer.from(this.userCert.pkcs12, "base64");
         if (this.userCert && this.userCert.active === true) {
-            this.connectMqtt(mower);
+            this.connectMqtt();
         } else {
             this.log.warn(
                 "maybe your connection is blocked from Worx, please test start button, if not working, try again in 24h",
             );
             this.log.warn("DON`T CONTACT THE OFFICIAL WORX SUPPORT BECAUSE THIS IS AN INOFFICAL APP !!!!!!!!!!!");
-            this.connectMqtt(mower);
+            this.connectMqtt();
         }
     }
-    connectMqtt(mower) {
+    connectMqtt() {
         const options = {
             pfx: this.userCert.p12,
-            clientId: "android-" + mower.uuid,
+            clientId: "android-" + this.deviceArray[0].uuid || uuidv4(),
             reconnectPeriod: 30000,
             clear: true,
         };
