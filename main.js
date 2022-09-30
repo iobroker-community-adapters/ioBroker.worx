@@ -242,9 +242,9 @@ class Worx extends utils.Adapter {
                 const fw_json = await this.getRequest(`product-items/${mower.serial_number}/firmwares`);
                 if (
                     fw_json &&
-                    Object.keys(fw_json).length > 0 && 
-                    fw_json[0] && 
-                    fw_json[0].version && 
+                    Object.keys(fw_json).length > 0 &&
+                    fw_json[0] &&
+                    fw_json[0].version &&
                     fw_json[0].updated_at
                 ) {
                     this.log.info(`Update Firmware ${mower.serial_number}`);
@@ -394,9 +394,9 @@ class Worx extends utils.Adapter {
         if (
             mower &&
             mower.fw_json &&
-            Object.keys(mower.fw_json).length > 0 && 
-            mower.fw_json[0] && 
-            mower.fw_json[0].version && 
+            Object.keys(mower.fw_json).length > 0 &&
+            mower.fw_json[0] &&
+            mower.fw_json[0].version &&
             mower.fw_json[0].updated_at
         ) {
             this.fw_available[mower.serial_number] = true;
