@@ -100,7 +100,7 @@ class Worx extends utils.Adapter {
 
             this.updateFW = setInterval(async () => {
                 await this.updateFirmware();
-            }, 60 * 1000 * 60); // 1 hour
+            }, 24 * 60 * 1000 * 60); // 24 hour
 
             this.updateInterval = setInterval(async () => {
                 await this.updateDevices();
