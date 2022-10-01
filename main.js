@@ -225,8 +225,7 @@ class Worx extends utils.Adapter {
                     this.deviceArray.push(device);
                     await this.createDevices(device);
                     const fw_id = await this.getRequest(`product-items/${id}/firmwares`);
-                    device["fw_json"] = fw_id;
-                    await this.createAdditionalDeviceStates(device);
+                    await this.createAdditionalDeviceStates(device, fw_id);
                     // this.json2iob.parse(id, device, { forceIndex: true });
                 }
             })
@@ -364,7 +363,7 @@ class Worx extends utils.Adapter {
             });
     }
 
-    async createAdditionalDeviceStates(mower) {
+    async createAdditionalDeviceStates(mower, fw_json) {
         if (!mower || !mower.last_status || !mower.last_status.payload) {
             this.log.debug("No payload found");
             return;
@@ -392,12 +391,11 @@ class Worx extends utils.Adapter {
         }
 
         if (
-            mower &&
-            mower.fw_json &&
-            Object.keys(mower.fw_json).length > 0 &&
-            mower.fw_json[0] &&
-            mower.fw_json[0].version &&
-            mower.fw_json[0].updated_at
+            fw_json &&
+            Object.keys(fw_json).length > 0 &&
+            fw_json[0] &&
+            fw_json[0].version &&
+            fw_json[0].updated_at
         ) {
             this.fw_available[mower.serial_number] = true;
             this.log.info("found available firmware, create states...");
@@ -405,15 +403,15 @@ class Worx extends utils.Adapter {
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
             }
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
-                val: mower.fw_json[0].version,
+                val: fw_json[0].version,
                 ack: true,
             });
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
-                val: mower.fw_json[0].updated_at,
+                val: fw_json[0].updated_at,
                 ack: true,
             });
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
-                val: JSON.stringify(mower.fw_json),
+                val: JSON.stringify(fw_json),
                 ack: true,
             });
         }
