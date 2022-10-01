@@ -241,21 +241,21 @@ class Worx extends utils.Adapter {
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0]._id) {
                 this.log.info('Create folder activityLog and set states.');
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
-                    type: 'channel',
+                    type: "channel",
                     common: {
-                        name: 'activity logs'
+                        name: "activity logs"
                     },
                         native: {}
-                    })
+                    });
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.payload`, {
                     type: "state",
                     common: {
-                        name: 'Activity Logs',
-                        type: 'string',
-                        role: 'json',
+                        name: "Activity Logs",
+                        type: "string",
+                        role: "json",
                         read: true,
                         write: false,
-                        desc: 'Activity Logs'
+                        desc: "Activity Logs"
                     },
                     native: {},
                 });
@@ -266,26 +266,26 @@ class Worx extends utils.Adapter {
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.manuell_update`, {
                     type: "state",
                     common: {
-                        name: 'Update Activity',
-                        type: 'boolean',
-                        role: 'button',
+                        name: "Update Activity",
+                        type: "boolean",
+                        role: "button",
                         read: true,
                         write: true,
                         def: false,
-                        desc: 'Manuell Update Activity Logs'
+                        desc: "Manuell Update Activity Logs"
                     },
                     native: {},
                 });
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.last_update`, {
                     type: "state",
                     common: {
-                        name: 'Last Update Activity-Log',
-                        type: 'number',
-                        role: 'meta.datetime',
+                        name: "Last Update Activity-Log",
+                        type: "number",
+                        role: "meta.datetime",
                         read: true,
                         write: false,
                         def: 0,
-                        desc: 'Last Update Activity-Log'
+                        desc: "Last Update Activity-Log"
                     },
                     native: {},
                 });
