@@ -245,7 +245,7 @@ class Worx extends utils.Adapter {
                     common: {
                         name: "activity logs"
                     },
-                        native: {}
+                        native: {},
                     });
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.payload`, {
                     type: "state",
