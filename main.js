@@ -226,6 +226,7 @@ class Worx extends utils.Adapter {
                     await this.createDevices(device);
                     const fw_id = await this.getRequest(`product-items/${id}/firmwares`);
                     await this.createAdditionalDeviceStates(device, fw_id);
+                    await this.createActivityLogStates(device);
                     // this.json2iob.parse(id, device, { forceIndex: true });
                 }
             })
@@ -233,6 +234,67 @@ class Worx extends utils.Adapter {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
+    }
+    async createActivityLogStates(mower) {
+        if (mower && mower.serial_number) {
+            const activity_log = await this.getRequest(`product-items/${mower.serial_number}/activity-log`);
+            if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0]._id) {
+                this.log.info('Create folder activityLog and set states.');
+                await this.setObjectNotExistsAsync(`${mower.serial}.activityLog`, {
+                    type: 'channel',
+                    common: {
+                        name: 'activity logs'
+                    },
+                        native: {}
+                    })
+                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.payload`, {
+                    type: "state",
+                    common: {
+                        name: 'Activity Logs',
+                        type: 'string',
+                        role: 'json',
+                        read: true,
+                        write: false,
+                        desc: 'Activity Logs'
+                    },
+                    native: {},
+                });
+                await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
+                    val: JSON.stringify(activity_log),
+                    ack: true,
+                });
+                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.manuell_update`, {
+                    type: "state",
+                    common: {
+                        name: 'Update Activity',
+                        type: 'boolean',
+                        role: 'button',
+                        read: true,
+                        write: true,
+                        def: false,
+                        desc: 'Manuell Update Activity Logs'
+                    },
+                    native: {},
+                });
+                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.last_update`, {
+                    type: "state",
+                    common: {
+                        name: 'Last Update Activity-Log',
+                        type: 'number',
+                        role: 'meta.datetime',
+                        read: true,
+                        write: false,
+                        def: 0,
+                        desc: 'Last Update Activity-Log'
+                    },
+                    native: {},
+                });
+                await this.setStateAsync(`${mower.serial_number}.activityLog.last_update`, {
+                    val: Date.now(),
+                    ack: true,
+                });
+            }
+        }
     }
 
     async updateFirmware() {
