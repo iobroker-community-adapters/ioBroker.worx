@@ -939,6 +939,20 @@ class Worx extends utils.Adapter {
         const sheduleSel = id.split(".")[4].search("2") === -1 ? "d" : "dd";
         let fail = false;
         // const idType = id.split(".")[4];
+        if (
+            !mower.last_status ||
+            !mower.last_status.payload ||
+            !mower.last_status.payload.cfg ||
+            !mower.last_status.payload.cfg.sc
+        ) {
+            // check if config exist
+            this.log.warn(
+                `Cant send command because cfg.sc is missing from cloud exist please try again later. last message: ${JSON.stringify(
+                    mower.last_status,
+                )}`,
+            );
+            return;
+        }
         const message = mower.last_status.payload.cfg.sc;
 
         message.ots && delete message.ots;
@@ -1177,18 +1191,22 @@ class Worx extends utils.Adapter {
     mowTimeEx(id, value, mower) {
         const val = value;
 
-        if (typeof mower.last_status.payload.cfg === "undefined") {
+        if (
+            !mower.last_status ||
+            !mower.last_status.payload ||
+            !mower.last_status.payload.cfg ||
+            !mower.last_status.payload.cfg.sc
+        ) {
             // check if config exist
             this.log.warn(
-                `Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(
-                    mower.last_status.payload,
+                `Cant send command because cfg.sc is missing from cloud exist please try again later. last message: ${JSON.stringify(
+                    mower.last_status,
                 )}`,
             );
             return;
         }
 
         const message = mower.last_status.payload.cfg.sc; // set aktual values
-
         this.log.debug(`MowerTimeExtend JSON : ${JSON.stringify(message)}`);
 
         //hotfix 030620
@@ -1211,11 +1229,16 @@ class Worx extends utils.Adapter {
     edgeCutting(id, value, mower) {
         const val = value;
 
-        if (typeof mower.last_status.payload.cfg === "undefined") {
+        if (
+            !mower.last_status ||
+            !mower.last_status.payload ||
+            !mower.last_status.payload.cfg ||
+            !mower.last_status.payload.cfg.sc
+        ) {
             // check if config exist
             this.log.warn(
-                `Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(
-                    mower.last_status.payload,
+                `Cant send command because cfg.sc is missing from cloud exist please try again later. last message: ${JSON.stringify(
+                    mower.last_status,
                 )}`,
             );
             return;
