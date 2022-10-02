@@ -239,70 +239,44 @@ class Worx extends utils.Adapter {
 
     async createProductStates(mower) {
         if (mower && mower.serial_number) {
-            const products = await this.getRequestWithoutToken("products");
+            const products = await this.getRequest("products", true);
             this.log.debug(JSON.stringify(products));
             const productID = mower && mower.product_id ? mower.product_id : 0;
             let boardID = 0;
-            if (
-                products &&
-                products[0] &&
-                products[0].id) {
-                    for (const sl of products) {
-                        if (sl && sl.id && sl.id === productID) {
-                            this.log.info(`Create product folder and states for ${sl.code}`);
-                            boardID = sl.board_id;
-                            this.json2iob.parse(`${mower.serial_number}.product`, sl, {
+            if (products && products[0] && products[0].id) {
+                for (const sl of products) {
+                    if (sl && sl.id && sl.id === productID) {
+                        this.log.info(`Create product folder and states for ${sl.code}`);
+                        boardID = sl.board_id;
+                        this.json2iob.parse(`${mower.serial_number}.product`, sl, {
+                            write: false,
+                            forceIndex: true,
+                            channelName: "Product and Board Info",
+                            autoCast: true,
+                        });
+                        break;
+                    }
+                }
+            }
+            if (boardID > 0) {
+                const boards = await this.getRequest("boards", true);
+                this.log.debug(JSON.stringify(boards));
+                if (boards && boards[0] && boards[0].id) {
+                    for (const sl of boards) {
+                        if (sl && sl.id && sl.id === boardID) {
+                            this.log.info(`Create board folder and states for ${sl.code} in product folder`);
+                            this.json2iob.parse(`${mower.serial_number}.product.board`, sl, {
                                 write: false,
                                 forceIndex: true,
-                                channelName: 'Product and Board Info',
+                                channelName: "Board Info",
                                 autoCast: true,
                             });
                             break;
                         }
                     }
-            }
-            if (boardID > 0) {
-                const boards = await this.getRequestWithoutToken("boards");
-                this.log.debug(JSON.stringify(boards));
-                if (
-                    boards &&
-                    boards[0] &&
-                    boards[0].id) {
-                        for (const sl of boards) {
-                            if (sl && sl.id && sl.id === boardID) {
-                                this.log.info(`Create board folder and states for ${sl.code} in product folder`);
-                                this.json2iob.parse(`${mower.serial_number}.product.board`, sl, {
-                                    write: false,
-                                    forceIndex: true,
-                                    channelName: 'Board Info',
-                                    autoCast: true,
-                                });
-                                break;
-                            }
-                        }
                 }
             }
         }
-    }
-
-    async getRequestWithoutToken(req) {
-        return await this.requestClient({
-            method: "get",
-            url: `https://${this.clouds[this.config.server].url}/api/v2/${req}`,
-            headers: {
-                accept: "application/json",
-                "content-type": "application/json",
-                "accept-language": "de-de",
-            },
-        })
-            .then(async (res) => {
-                this.log.debug(JSON.stringify(res.data));
-                return res.data;
-        })
-            .catch((error) => {
-                this.log.error(error);
-                error.response && this.log.error(`getRequestWithoutToken: ${JSON.stringify(error.response.data)}`);
-        });
     }
 
     async createActivityLogStates(mower) {
@@ -313,7 +287,7 @@ class Worx extends utils.Adapter {
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
                     type: "channel",
                     common: {
-                        name: "activity logs"
+                        name: "activity logs",
                     },
                     native: {},
                 });
@@ -325,7 +299,7 @@ class Worx extends utils.Adapter {
                         role: "json",
                         read: true,
                         write: false,
-                        desc: "Activity Logs"
+                        desc: "Activity Logs",
                     },
                     native: {},
                 });
@@ -342,7 +316,7 @@ class Worx extends utils.Adapter {
                         read: true,
                         write: true,
                         def: false,
-                        desc: "Manuell Update Activity Logs"
+                        desc: "Manuell Update Activity Logs",
                     },
                     native: {},
                 });
@@ -355,7 +329,7 @@ class Worx extends utils.Adapter {
                         read: true,
                         write: false,
                         def: 0,
-                        desc: "Last Update Activity-Log"
+                        desc: "Last Update Activity-Log",
                     },
                     native: {},
                 });
@@ -522,16 +496,11 @@ class Worx extends utils.Adapter {
             }
         }
 
-        if (
-            fw_json &&
-            Object.keys(fw_json).length > 0 &&
-            fw_json[0] &&
-            fw_json[0].version &&
-            fw_json[0].updated_at
-        ) {
+        if (fw_json && Object.keys(fw_json).length > 0 && fw_json[0] && fw_json[0].version && fw_json[0].updated_at) {
             this.fw_available[mower.serial_number] = true;
             this.log.info("found available firmware, create states...");
             for (const o of objects.firmware_available) {
+                // @ts-ignore
                 await this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
             }
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
@@ -576,17 +545,20 @@ class Worx extends utils.Adapter {
         this.log.debug(JSON.stringify(mower));
     }
 
-    async getRequest(path) {
+    async getRequest(path, withoutToken) {
+        const headers = {
+            accept: "application/json",
+            "content-type": "application/json",
+            "user-agent": this.userAgent,
+            "accept-language": "de-de",
+        };
+        if (!withoutToken) {
+            headers["authorization"] = "Bearer " + this.session.access_token;
+        }
         return await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/${path}`,
-            headers: {
-                accept: "application/json",
-                "content-type": "application/json",
-                "user-agent": this.userAgent,
-                authorization: "Bearer " + this.session.access_token,
-                "accept-language": "de-de",
-            },
+            headers: headers,
         })
             .then(async (res) => {
                 this.log.debug(JSON.stringify(res.data));
@@ -608,9 +580,6 @@ class Worx extends utils.Adapter {
                 }
             });
     }
-    /**
-     * @param {object} mower Mower json response object
-     */
 
     async start_mqtt() {
         if (this.deviceArray.length === 0) {
@@ -1296,6 +1265,7 @@ class Worx extends utils.Adapter {
             await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
                 type: "state",
                 common: {
+                    name: "Version < 2.0.0 cleaned",
                     type: "boolean",
                     role: "boolean",
                     write: false,
