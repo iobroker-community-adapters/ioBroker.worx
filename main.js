@@ -227,6 +227,7 @@ class Worx extends utils.Adapter {
                     const fw_id = await this.getRequest(`product-items/${id}/firmwares`);
                     await this.createAdditionalDeviceStates(device, fw_id);
                     await this.createActivityLogStates(device);
+                    await this.createProductStates(device);
                     // this.json2iob.parse(id, device, { forceIndex: true });
                 }
             })
@@ -235,6 +236,75 @@ class Worx extends utils.Adapter {
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
     }
+
+    async createProductStates(mower) {
+        if (mower && mower.serial_number) {
+            const products = await this.getRequestWithoutToken("products");
+            this.log.debug(JSON.stringify(products));
+            const productID = mower && mower.product_id ? mower.product_id : 0;
+            let boardID = 0;
+            if (
+                products &&
+                products[0] &&
+                products[0].id) {
+                    for (const sl of products) {
+                        if (sl && sl.id && sl.id === productID) {
+                            this.log.info(`Create product folder and states for ${sl.code}`);
+                            boardID = sl.board_id;
+                            this.json2iob.parse(`${mower.serial_number}.product`, sl, {
+                                write: false,
+                                forceIndex: true,
+                                channelName: 'Product and Board Info',
+                                autoCast: true,
+                            });
+                            break;
+                        }
+                    }
+            }
+            if (boardID > 0) {
+                const boards = await this.getRequestWithoutToken("boards");
+                this.log.debug(JSON.stringify(boards));
+                if (
+                    boards &&
+                    boards[0] &&
+                    boards[0].id) {
+                        for (const sl of boards) {
+                            if (sl && sl.id && sl.id === boardID) {
+                                this.log.info(`Create board folder and states for ${sl.code} in product folder`);
+                                this.json2iob.parse(`${mower.serial_number}.product.board`, sl, {
+                                    write: false,
+                                    forceIndex: true,
+                                    channelName: 'Board Info',
+                                    autoCast: true,
+                                });
+                                break;
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    async getRequestWithoutToken(req) {
+        return await this.requestClient({
+            method: "get",
+            url: `https://${this.clouds[this.config.server].url}/api/v2/${req}`,
+            headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "accept-language": "de-de",
+            },
+        })
+            .then(async (res) => {
+                this.log.debug(JSON.stringify(res.data));
+                return res.data;
+        })
+            .catch((error) => {
+                this.log.error(error);
+                error.response && this.log.error(`getRequestWithoutToken: ${JSON.stringify(error.response.data)}`);
+        });
+    }
+
     async createActivityLogStates(mower) {
         if (mower && mower.serial_number) {
             const activity_log = await this.getRequest(`product-items/${mower.serial_number}/activity-log`);
