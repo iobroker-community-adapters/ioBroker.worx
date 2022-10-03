@@ -98,7 +98,7 @@ class Worx extends utils.Adapter {
         await this.login();
         if (this.session.access_token) {
             await this.getDeviceList();
-            await this.updateDevices(false);
+            await this.updateDevices(true);
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
@@ -107,7 +107,7 @@ class Worx extends utils.Adapter {
             }, 24 * 60 * 1000 * 60); // 24 hour
 
             this.updateInterval = setInterval(async () => {
-                await this.updateDevices(true);
+                await this.updateDevices(false);
             }, 60 * 1000); // 60 seconds
 
             this.refreshTokenInterval = setInterval(() => {
@@ -390,7 +390,7 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async updateDevices(notFirstUpdate) {
+    async updateDevices(firstUpdate) {
         const statusArray = [
             {
                 path: "rawMqtt",
@@ -429,7 +429,7 @@ class Worx extends utils.Adapter {
                             preferedArrayName: preferedArrayName,
                             channelName: element.desc,
                         });
-                        if (notFirstUpdate) {
+                        if (!firstUpdate) {
                             if (
                                 data &&
                                 data.last_status &&
