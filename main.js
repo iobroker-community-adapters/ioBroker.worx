@@ -269,7 +269,7 @@ class Worx extends utils.Adapter {
                         this.json2iob.parse(`${mower.serial_number}.product`, sl, {
                             write: false,
                             forceIndex: true,
-                            channelName: "Product and Board Info",
+                            channelName: "Mower product and board Info",
                             autoCast: true,
                         });
                         break;
@@ -305,7 +305,7 @@ class Worx extends utils.Adapter {
                     await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
                         type: "channel",
                         common: {
-                            name: "activity logs",
+                            name: "Mower activity logs",
                         },
                         native: {},
                     });
