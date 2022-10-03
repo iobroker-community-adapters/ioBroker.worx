@@ -244,9 +244,9 @@ class Worx extends utils.Adapter {
                     }
                     await this.createActivityLogStates(device, true);
                     await this.createProductStates(device);
-                    this.json2iob.parse(`${id}.rawMqtt`, await this.cleanupRaw(device), {
-                        forceIndex: true,
-                    });
+                    // this.json2iob.parse(`${id}.rawMqtt`, await this.cleanupRaw(device), {
+                    //     forceIndex: true,
+                    // });
                 }
             })
             .catch((error) => {
