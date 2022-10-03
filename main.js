@@ -397,7 +397,7 @@ class Worx extends utils.Adapter {
             {
                 path: "rawMqtt",
                 url: `https://${this.clouds[this.config.server].url}/api/v2/product-items/$id/?status=1&gps_status=1`,
-                desc: "raw Mqtt response",
+                desc: "All raw data of the mower",
             },
         ];
         for (let device of this.deviceArray) {
