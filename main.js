@@ -31,8 +31,8 @@ class Worx extends utils.Adapter {
         this.on("unload", this.onUnload.bind(this));
         this.deviceArray = [];
         this.fw_available = {};
-        this.laststatus  = {};
-        this.lasterror  = {};
+        this.laststatus = {};
+        this.lasterror = {};
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         this.userAgent = "ioBroker 1.6.7";
         this.reLoginTimeout = null;
@@ -229,15 +229,16 @@ class Worx extends utils.Adapter {
                     await this.cleanOldVersion(id);
                     this.deviceArray.push(device);
                     await this.createDevices(device);
-                    const fw_id = await this.getRequest(`product-items/${id}/firmwares`, false);
+                    const fw_id = await this.apiRequest(`product-items/${id}/firmwares`, false);
                     await this.createAdditionalDeviceStates(device, fw_id);
                     if (
-                    device &&
-                    device.last_status &&
-                    device.last_status.payload &&
-                    device.last_status.payload.dat &&
-                    device.last_status.payload.dat.ls &&
-                    device.last_status.payload.dat.le) {
+                        device &&
+                        device.last_status &&
+                        device.last_status.payload &&
+                        device.last_status.payload.dat &&
+                        device.last_status.payload.dat.ls &&
+                        device.last_status.payload.dat.le
+                    ) {
                         this.laststatus[id] = device.last_status.payload.dat.ls;
                         this.lasterror[id] = device.last_status.payload.dat.le;
                     }
@@ -254,7 +255,7 @@ class Worx extends utils.Adapter {
 
     async createProductStates(mower) {
         if (mower && mower.serial_number) {
-            const products = await this.getRequest("products", true);
+            const products = await this.apiRequest("products", true);
             this.log.debug(JSON.stringify(products));
             const productID = mower && mower.product_id ? mower.product_id : 0;
             let boardID = 0;
@@ -274,7 +275,7 @@ class Worx extends utils.Adapter {
                 }
             }
             if (boardID > 0) {
-                const boards = await this.getRequest("boards", true);
+                const boards = await this.apiRequest("boards", true);
                 this.log.debug(JSON.stringify(boards));
                 if (boards && boards[0] && boards[0].id) {
                     for (const sl of boards) {
@@ -295,14 +296,14 @@ class Worx extends utils.Adapter {
     }
     async createActivityLogStates(mower, ref) {
         if (mower && mower.serial_number) {
-            const activity_log = await this.getRequest(`product-items/${mower.serial_number}/activity-log`, false);
+            const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
                 if (ref === 1) {
                     this.log.info("Create folder activityLog and set states.");
                     await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
                         type: "channel",
                         common: {
-                            name: "activity logs"
+                            name: "activity logs",
                         },
                         native: {},
                     });
@@ -314,7 +315,7 @@ class Worx extends utils.Adapter {
                             role: "json",
                             read: true,
                             write: false,
-                            desc: "Activity Logs"
+                            desc: "Activity Logs",
                         },
                         native: {},
                     });
@@ -327,7 +328,7 @@ class Worx extends utils.Adapter {
                             read: true,
                             write: true,
                             def: false,
-                            desc: "Manuell Update Activity Logs"
+                            desc: "Manuell Update Activity Logs",
                         },
                         native: {},
                     });
@@ -340,7 +341,7 @@ class Worx extends utils.Adapter {
                             read: true,
                             write: false,
                             def: 0,
-                            desc: "Last Update Activity-Log"
+                            desc: "Last Update Activity-Log",
                         },
                         native: {},
                     });
@@ -361,7 +362,7 @@ class Worx extends utils.Adapter {
     async updateFirmware() {
         for (const mower of this.deviceArray) {
             if (this.fw_available[mower.serial_number] === true) {
-                const fw_json = await this.getRequest(`product-items/${mower.serial_number}/firmwares`, false);
+                const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmwares`, false);
                 if (
                     fw_json &&
                     Object.keys(fw_json).length > 0 &&
@@ -428,14 +429,18 @@ class Worx extends utils.Adapter {
                         });
                         if (ref) {
                             if (
-                            data &&
-                            data.last_status &&
-                            data.last_status.payload &&
-                            data.last_status.payload.dat &&
-                            data.last_status.payload.dat.ls &&
-                            data.last_status.payload.dat.le) {
-                                if (this.laststatus[id] && this.lasterror[id] && 
-                                (this.lasterror[id] !== data.dat.le || this.laststatus[id] !== data.dat.ls)) {
+                                data &&
+                                data.last_status &&
+                                data.last_status.payload &&
+                                data.last_status.payload.dat &&
+                                data.last_status.payload.dat.ls &&
+                                data.last_status.payload.dat.le
+                            ) {
+                                if (
+                                    this.laststatus[id] &&
+                                    this.lasterror[id] &&
+                                    (this.lasterror[id] !== data.dat.le || this.laststatus[id] !== data.dat.ls)
+                                ) {
                                     this.laststatus[id] = data.last_status.payload.dat.ls;
                                     this.lasterror[id] = data.last_status.payload.dat.le;
                                     await this.createActivityLogStates(device, 2);
@@ -580,7 +585,7 @@ class Worx extends utils.Adapter {
         this.log.debug(JSON.stringify(mower));
     }
 
-    async getRequest(path, withoutToken) {
+    async apiRequest(path, withoutToken, method) {
         const headers = {
             accept: "application/json",
             "content-type": "application/json",
@@ -591,7 +596,7 @@ class Worx extends utils.Adapter {
             headers["authorization"] = "Bearer " + this.session.access_token;
         }
         return await this.requestClient({
-            method: "get",
+            method: method || "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/${path}`,
             headers: headers,
         })
@@ -622,8 +627,8 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        this.userData = await this.getRequest("users/me", false);
-        this.userCert = await this.getRequest("users/certificate", false);
+        this.userData = await this.apiRequest("users/me", false);
+        this.userCert = await this.apiRequest("users/certificate", false);
         this.userCert.p12 = Buffer.from(this.userCert.pkcs12, "base64");
         if (this.userCert && this.userCert.active === true) {
             this.connectMqtt();
@@ -669,7 +674,10 @@ class Worx extends utils.Adapter {
             if (mower) {
                 this.log.debug("Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")");
                 mower.last_status.payload = data;
-                mower.last_status.timestamp = new Date().toISOString().replace("T", " ").replace("Z", "");
+                mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                    .toISOString()
+                    .replace("T", " ")
+                    .replace("Z", "");
                 await this.setStates(mower);
                 const new_mower = await this.cleanupRaw(mower);
                 this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
@@ -761,7 +769,7 @@ class Worx extends utils.Adapter {
         return [result, hash];
     }
     /**
-     * @param {number} milliseconds
+     * @param {number} ms
      */
     sleep(ms) {
         return new Promise((resolve) => {
@@ -824,9 +832,9 @@ class Worx extends utils.Adapter {
                     this.changeMowerArea(id, parseInt(state.val), mower);
                 } else if (command === "startSequence") {
                     this.startSequences(id, state.val, mower);
-                } else if (command === 'manuell_update') {
+                } else if (command === "manuell_update") {
                     const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
-                    if (state.val && lastTime && lastTime.val && (Date.now() - lastTime.val) > not_allowed) {
+                    if (state.val && lastTime && lastTime.val && Date.now() - lastTime.val > not_allowed) {
                         this.createActivityLogStates(mower, 3);
                     } else {
                         const nextTime = not_allowed / 1000;
