@@ -348,7 +348,9 @@ class Worx extends utils.Adapter {
                         native: {},
                     });
                 }
-
+                if (!firstStart) {
+                    await this.sleep(10000); //Wait 10s because it takes some time for the last log item available at the API endpoint
+                }
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
                     ack: true,
