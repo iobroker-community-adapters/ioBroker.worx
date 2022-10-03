@@ -242,9 +242,11 @@ class Worx extends utils.Adapter {
                         this.laststatus[id] = device.last_status.payload.dat.ls;
                         this.lasterror[id] = device.last_status.payload.dat.le;
                     }
-                    await this.createActivityLogStates(device, 1);
+                    await this.createActivityLogStates(device, true);
                     await this.createProductStates(device);
-                    // this.json2iob.parse(id, device, { forceIndex: true });
+                    this.json2iob.parse(`${id}.rawMqtt`, await this.cleanupRaw(device), {
+                        forceIndex: true,
+                    });
                 }
             })
             .catch((error) => {
@@ -294,11 +296,11 @@ class Worx extends utils.Adapter {
             }
         }
     }
-    async createActivityLogStates(mower, ref) {
+    async createActivityLogStates(mower, firstStart) {
         if (mower && mower.serial_number) {
             const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
-                if (ref === 1) {
+                if (firstStart === 1) {
                     this.log.info("Create folder activityLog and set states.");
                     await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
                         type: "channel",
@@ -346,7 +348,7 @@ class Worx extends utils.Adapter {
                         native: {},
                     });
                 }
-                if (ref === 2) await this.sleep(10000); //wait 10 sec.
+
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
                     ack: true,
@@ -388,7 +390,7 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async updateDevices(ref) {
+    async updateDevices(notFirstUpdate) {
         const statusArray = [
             {
                 path: "rawMqtt",
@@ -427,7 +429,7 @@ class Worx extends utils.Adapter {
                             preferedArrayName: preferedArrayName,
                             channelName: element.desc,
                         });
-                        if (ref) {
+                        if (notFirstUpdate) {
                             if (
                                 data &&
                                 data.last_status &&
@@ -443,7 +445,7 @@ class Worx extends utils.Adapter {
                                 ) {
                                     this.laststatus[id] = data.last_status.payload.dat.ls;
                                     this.lasterror[id] = data.last_status.payload.dat.le;
-                                    await this.createActivityLogStates(device, 2);
+                                    await this.createActivityLogStates(device);
                                 }
                             }
                         }
@@ -835,7 +837,7 @@ class Worx extends utils.Adapter {
                 } else if (command === "manuell_update") {
                     const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
                     if (state.val && lastTime && lastTime.val && Date.now() - lastTime.val > not_allowed) {
-                        this.createActivityLogStates(mower, 3);
+                        this.createActivityLogStates(mower);
                     } else {
                         const nextTime = not_allowed / 1000;
                         this.log.info(`Manuell update < ${nextTime} sec. is not allowed`);
@@ -1025,7 +1027,8 @@ class Worx extends utils.Adapter {
                 this.log.error("CALJSON: Json length not correct must be 7 Days");
                 fail = true;
             }
-            msgJson.forEach((element) => {
+
+            for (const element of msgJson) {
                 this.log.debug(`CALJSON: ${JSON.stringify(element)}`);
                 if (element.length !== 3) {
                     this.log.error("CALJSON: Arguments missing!!");
@@ -1049,7 +1052,7 @@ class Worx extends utils.Adapter {
                     this.log.error("Time out of range 0 min < time < 1440 min.");
                     fail = true;
                 }
-            });
+            }
 
             this.log.debug(`CALJSON length: ${msgJson.length}`);
         } catch (error) {
