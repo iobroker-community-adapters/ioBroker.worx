@@ -15,6 +15,7 @@ const crypto = require("crypto");
 const mqtt = require("mqtt");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
+const not_allowed = 60000;
 
 class Worx extends utils.Adapter {
     /**
@@ -30,6 +31,8 @@ class Worx extends utils.Adapter {
         this.on("unload", this.onUnload.bind(this));
         this.deviceArray = [];
         this.fw_available = {};
+        this.laststatus  = {};
+        this.lasterror  = {};
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         this.userAgent = "ioBroker 1.6.7";
         this.reLoginTimeout = null;
@@ -38,6 +41,7 @@ class Worx extends utils.Adapter {
         this.mqttC = {};
         this.createDevices = helper.createDevices;
         this.setStates = helper.setStates;
+        this.cleanupRaw = helper.cleanupRaw;
         this.json2iob = new Json2iob(this);
         this.cookieJar = new tough.CookieJar();
         this.requestClient = axios.create({
@@ -94,7 +98,7 @@ class Worx extends utils.Adapter {
         await this.login();
         if (this.session.access_token) {
             await this.getDeviceList();
-            await this.updateDevices();
+            await this.updateDevices(false);
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
@@ -103,7 +107,7 @@ class Worx extends utils.Adapter {
             }, 24 * 60 * 1000 * 60); // 24 hour
 
             this.updateInterval = setInterval(async () => {
-                await this.updateDevices();
+                await this.updateDevices(true);
             }, 60 * 1000); // 60 seconds
         }
         this.refreshTokenInterval = setInterval(() => {
@@ -224,9 +228,19 @@ class Worx extends utils.Adapter {
                     await this.cleanOldVersion(id);
                     this.deviceArray.push(device);
                     await this.createDevices(device);
-                    const fw_id = await this.getRequest(`product-items/${id}/firmwares`);
+                    const fw_id = await this.getRequest(`product-items/${id}/firmwares`, false);
                     await this.createAdditionalDeviceStates(device, fw_id);
-                    await this.createActivityLogStates(device);
+                    if (
+                    device &&
+                    device.last_status &&
+                    device.last_status.payload &&
+                    device.last_status.payload.dat &&
+                    device.last_status.payload.dat.ls &&
+                    device.last_status.payload.dat.le) {
+                        this.laststatus[id] = device.last_status.payload.dat.ls;
+                        this.lasterror[id] = device.last_status.payload.dat.le;
+                    }
+                    await this.createActivityLogStates(device, 1);
                     await this.createProductStates(device);
                     // this.json2iob.parse(id, device, { forceIndex: true });
                 }
@@ -278,60 +292,62 @@ class Worx extends utils.Adapter {
             }
         }
     }
-
-    async createActivityLogStates(mower) {
+    async createActivityLogStates(mower, ref) {
         if (mower && mower.serial_number) {
-            const activity_log = await this.getRequest(`product-items/${mower.serial_number}/activity-log`);
-            if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0]._id) {
-                this.log.info("Create folder activityLog and set states.");
-                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
-                    type: "channel",
-                    common: {
-                        name: "activity logs",
-                    },
-                    native: {},
-                });
-                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.payload`, {
-                    type: "state",
-                    common: {
-                        name: "Activity Logs",
-                        type: "string",
-                        role: "json",
-                        read: true,
-                        write: false,
-                        desc: "Activity Logs",
-                    },
-                    native: {},
-                });
+            const activity_log = await this.getRequest(`product-items/${mower.serial_number}/activity-log`, false);
+            if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
+                if (ref === 1) {
+                    this.log.info("Create folder activityLog and set states.");
+                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
+                        type: "channel",
+                        common: {
+                            name: "activity logs"
+                        },
+                        native: {},
+                    });
+                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.payload`, {
+                        type: "state",
+                        common: {
+                            name: "Activity Logs",
+                            type: "string",
+                            role: "json",
+                            read: true,
+                            write: false,
+                            desc: "Activity Logs"
+                        },
+                        native: {},
+                    });
+                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.manuell_update`, {
+                        type: "state",
+                        common: {
+                            name: "Update Activity",
+                            type: "boolean",
+                            role: "button",
+                            read: true,
+                            write: true,
+                            def: false,
+                            desc: "Manuell Update Activity Logs"
+                        },
+                        native: {},
+                    });
+                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.last_update`, {
+                        type: "state",
+                        common: {
+                            name: "Last Update Activity-Log",
+                            type: "number",
+                            role: "meta.datetime",
+                            read: true,
+                            write: false,
+                            def: 0,
+                            desc: "Last Update Activity-Log"
+                        },
+                        native: {},
+                    });
+                }
+                if (ref === 2) await this.sleep(10000); //wait 10 sec.
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
                     ack: true,
-                });
-                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.manuell_update`, {
-                    type: "state",
-                    common: {
-                        name: "Update Activity",
-                        type: "boolean",
-                        role: "button",
-                        read: true,
-                        write: true,
-                        def: false,
-                        desc: "Manuell Update Activity Logs",
-                    },
-                    native: {},
-                });
-                await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.last_update`, {
-                    type: "state",
-                    common: {
-                        name: "Last Update Activity-Log",
-                        type: "number",
-                        role: "meta.datetime",
-                        read: true,
-                        write: false,
-                        def: 0,
-                        desc: "Last Update Activity-Log",
-                    },
-                    native: {},
                 });
                 await this.setStateAsync(`${mower.serial_number}.activityLog.last_update`, {
                     val: Date.now(),
@@ -344,7 +360,7 @@ class Worx extends utils.Adapter {
     async updateFirmware() {
         for (const mower of this.deviceArray) {
             if (this.fw_available[mower.serial_number] === true) {
-                const fw_json = await this.getRequest(`product-items/${mower.serial_number}/firmwares`);
+                const fw_json = await this.getRequest(`product-items/${mower.serial_number}/firmwares`, false);
                 if (
                     fw_json &&
                     Object.keys(fw_json).length > 0 &&
@@ -370,7 +386,7 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async updateDevices() {
+    async updateDevices(ref) {
         const statusArray = [
             {
                 path: "rawMqtt",
@@ -398,15 +414,33 @@ class Worx extends utils.Adapter {
                             return;
                         }
                         const data = res.data;
+                        const id = data.serial_number;
                         const forceIndex = true;
                         const preferedArrayName = null;
                         device = data;
                         await this.setStates(data);
-                        this.json2iob.parse(`${device.serial_number}.${element.path}`, data, {
+                        const new_data = await this.cleanupRaw(data);
+                        this.json2iob.parse(`${device.serial_number}.${element.path}`, new_data, {
                             forceIndex: forceIndex,
                             preferedArrayName: preferedArrayName,
                             channelName: element.desc,
                         });
+                        if (ref) {
+                            if (
+                            data &&
+                            data.last_status &&
+                            data.last_status.payload &&
+                            data.last_status.payload.dat &&
+                            data.last_status.payload.dat.ls &&
+                            data.last_status.payload.dat.le) {
+                                if (this.laststatus[id] && this.lasterror[id] && 
+                                (this.lasterror[id] !== data.dat.le || this.laststatus[id] !== data.dat.ls)) {
+                                    this.laststatus[id] = data.last_status.payload.dat.ls;
+                                    this.lasterror[id] = data.last_status.payload.dat.le;
+                                    await this.createActivityLogStates(device, 2);
+                                }
+                            }
+                        }
 
                         // await this.setObjectNotExistsAsync(element.path + ".json", {
                         //     type: "state",
@@ -587,8 +621,8 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        this.userData = await this.getRequest("users/me");
-        this.userCert = await this.getRequest("users/certificate");
+        this.userData = await this.getRequest("users/me", false);
+        this.userCert = await this.getRequest("users/certificate", false);
         this.userCert.p12 = Buffer.from(this.userCert.pkcs12, "base64");
         if (this.userCert && this.userCert.active === true) {
             this.connectMqtt();
@@ -636,7 +670,8 @@ class Worx extends utils.Adapter {
                 mower.last_status.payload = data;
                 mower.last_status.timestamp = new Date().toISOString().replace("T", " ").replace("Z", "");
                 await this.setStates(mower);
-                this.json2iob.parse(`${mower.serial_number}.rawMqtt`, mower, {
+                const new_mower = await this.cleanupRaw(mower);
+                this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
                     forceIndex: true,
                     preferedArrayName: null,
                 });
@@ -725,6 +760,14 @@ class Worx extends utils.Adapter {
         return [result, hash];
     }
     /**
+     * @param {number} milliseconds
+     */
+    sleep(ms) {
+        return new Promise((resolve) => {
+            this.sleepTimer = setTimeout(resolve, ms);
+        });
+    }
+    /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      * @param {() => void} callback
      */
@@ -734,6 +777,7 @@ class Worx extends utils.Adapter {
             this.mqttC.end();
             this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
             this.updateInterval && clearInterval(this.updateInterval);
+            this.sleepTimer && clearTimeout(this.sleepTimer);
             this.updateFW && clearInterval(this.updateFW);
             this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
             callback();
@@ -746,7 +790,7 @@ class Worx extends utils.Adapter {
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
      */
-    onStateChange(id, state) {
+    async onStateChange(id, state) {
         if (state && !state.ack && state.val !== null) {
             const command = id.split(".").pop();
             const mower_id = id.split(".")[2];
@@ -779,6 +823,14 @@ class Worx extends utils.Adapter {
                     this.changeMowerArea(id, parseInt(state.val), mower);
                 } else if (command === "startSequence") {
                     this.startSequences(id, state.val, mower);
+                } else if (command === 'manuell_update') {
+                    const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
+                    if (state.val && lastTime && lastTime.val && (Date.now() - lastTime.val) > not_allowed) {
+                        this.createActivityLogStates(mower, 3);
+                    } else {
+                        const nextTime = not_allowed / 1000;
+                        this.log.info(`Manuell update < ${nextTime} sec. is not allowed`);
+                    }
                 } else if (command === "pause") {
                     if (state.val === true) {
                         this.sendMessage('{"cmd":2}', mower.serial_number);
