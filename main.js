@@ -109,10 +109,11 @@ class Worx extends utils.Adapter {
             this.updateInterval = setInterval(async () => {
                 await this.updateDevices(true);
             }, 60 * 1000); // 60 seconds
+
+            this.refreshTokenInterval = setInterval(() => {
+                this.refreshToken();
+            }, (this.session.expires_in - 100) * 1000);
         }
-        this.refreshTokenInterval = setInterval(() => {
-            this.refreshToken();
-        }, (this.session.expires_in - 100) * 1000);
     }
     async login() {
         const [code_verifier, codeChallenge] = this.getCodeChallenge();
