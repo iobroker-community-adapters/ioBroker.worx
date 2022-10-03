@@ -300,7 +300,7 @@ class Worx extends utils.Adapter {
         if (mower && mower.serial_number) {
             const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
-                if (firstStart === 1) {
+                if (firstStart) {
                     this.log.info("Create folder activityLog and set states.");
                     await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
                         type: "channel",
