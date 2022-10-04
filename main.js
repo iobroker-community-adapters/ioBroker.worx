@@ -443,7 +443,7 @@ class Worx extends utils.Adapter {
                                 if (
                                     this.laststatus[id] !== "undefined" &&
                                     this.lasterror[id] !== "undefined" &&
-                                    (this.lasterror[id] !== data.dat.le || this.laststatus[id] !== data.dat.ls)
+                                    (this.lasterror[id] !== data.last_status.payload.dat.le || this.laststatus[id] !== data.last_status.payload.dat.ls)
                                 ) {
                                     this.laststatus[id] = data.last_status.payload.dat.ls;
                                     this.lasterror[id] = data.last_status.payload.dat.le;
