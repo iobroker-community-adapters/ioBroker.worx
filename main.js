@@ -236,8 +236,8 @@ class Worx extends utils.Adapter {
                         device.last_status &&
                         device.last_status.payload &&
                         device.last_status.payload.dat &&
-                        device.last_status.payload.dat.ls &&
-                        device.last_status.payload.dat.le
+                        device.last_status.payload.dat.ls !== "undefined"  &&
+                        device.last_status.payload.dat.le !== "undefined"
                     ) {
                         this.laststatus[id] = device.last_status.payload.dat.ls;
                         this.lasterror[id] = device.last_status.payload.dat.le;
@@ -437,17 +437,17 @@ class Worx extends utils.Adapter {
                                 data.last_status &&
                                 data.last_status.payload &&
                                 data.last_status.payload.dat &&
-                                data.last_status.payload.dat.ls &&
-                                data.last_status.payload.dat.le
+                                data.last_status.payload.dat.ls !== "undefined" &&
+                                data.last_status.payload.dat.le !== "undefined"
                             ) {
                                 if (
-                                    this.laststatus[id] &&
-                                    this.lasterror[id] &&
+                                    this.laststatus[id] !== "undefined" &&
+                                    this.lasterror[id] !== "undefined" &&
                                     (this.lasterror[id] !== data.dat.le || this.laststatus[id] !== data.dat.ls)
                                 ) {
                                     this.laststatus[id] = data.last_status.payload.dat.ls;
                                     this.lasterror[id] = data.last_status.payload.dat.le;
-                                    await this.createActivityLogStates(device);
+                                    this.createActivityLogStates(device, true);
                                 }
                             }
                         }
