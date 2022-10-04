@@ -72,6 +72,12 @@ class Worx extends utils.Adapter {
                 clientId: "4F1B89F0-230F-410A-8436-D9610103A2A4",
                 redirectUri: "com.landxcape-robotics.landxcape://oauth-callback/",
             },
+            ferrex: {
+                url: "api.watermelon.smartmower.cloud",
+                loginUrl: "https://id.watermelon.smartmower.cloud",
+                clientId: "10078D10-3840-474A-848A-5EED949AB0FC",
+                redirectUri: "cloud.smartmower.watermelon://oauth-callback/",
+            },
         };
     }
 

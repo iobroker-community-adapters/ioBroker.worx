@@ -28,7 +28,6 @@
                 "zh-cn": "C. 损失"
             }
         },
-        "title": "Worx",
         "titleLang": {
             "en": "Worx",
             "de": "Worx",
@@ -42,19 +41,19 @@
             "zh-cn": "沃克斯"
         },
         "desc": {
-            "en": "This adapter connects your ioBroker to the cloud of your  Worx, Kresss or Landxcape",
-            "de": "Dieser Adapter verbindet Ihren ioBroker mit der Cloud Ihres Worx, Kresss oder Landxcape",
-            "ru": "Этот адаптер подключает ваш ioBroker к облаку вашего Worx, Kress или Landxcape.",
-            "pt": "Este adaptador conecta seu ioBroker à nuvem do seu Worx, Kresss ou Landxcape",
-            "nl": "Deze adapter verbindt uw ioBroker met de cloud van uw Worx, Kresss of Landxcape",
-            "fr": "Cet adaptateur connecte votre ioBroker au cloud de votre Worx, Kresss ou Landxcape",
-            "it": "Questo adattatore collega il tuo ioBroker al cloud di Worx, Kresss o Landxcape",
-            "es": "Este adaptador conecta tu ioBroker a la nube de tu Worx, Kresss o Landxcape",
-            "pl": "Ten adapter łączy ioBroker z chmurą Worx, Kresss lub Landxcape",
-            "zh-cn": "此适配器将您的 ioBroker 连接到您的 Worx、Kresss 或 Landxcape 的云"
+            "en": "Adapter for Worx, Kresss, Landxcape or Ferrex mower via cloud",
+            "de": "Adapter für Worx, Kress, Landxcape oder Ferrex Mäher via Cloud",
+            "ru": "Адаптер для Worx, Kresss, Landxcape или Ferrex mower через облако",
+            "pt": "Adaptador para Worx, Kress, Landxcape ou Ferrex cortador via nuvem",
+            "nl": "Vertaling:",
+            "fr": "Adaptateur pour Worx, Kresss, Landxcape ou Ferrex par nuage",
+            "it": "Adattatore per tosaerba Worx, Kress, Landxcape o Ferrex tramite cloud",
+            "es": "Adaptador para Worx, Kress, Landxcape o Ferrex mower a través de la nube",
+            "pl": "Adapter for Worx, Kress, Landxcape lub Ferrex mower poprzez chmury",
+            "zh-cn": "Worx, Kress, Landxcap 或Ferrex模块wer"
         },
         "authors": ["TA2k <tombox2020@gmail.com>", "MeisterTR", "Lucky-ESA"],
-        "keywords": ["mower", "Worx", "Kress", "Landxcape"],
+        "keywords": ["mower", "Worx", "Kress", "Landxcape", "Ferrex"],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
