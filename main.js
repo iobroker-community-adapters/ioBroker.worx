@@ -74,7 +74,7 @@ class Worx extends utils.Adapter {
             },
             ferrex: {
                 url: "api.watermelon.smartmower.cloud",
-                loginUrl: "https://id.watermelon.smartmower.cloud",
+                loginUrl: "https://id.watermelon.smartmower.cloud/",
                 clientId: "10078D10-3840-474A-848A-5EED949AB0FC",
                 redirectUri: "cloud.smartmower.watermelon://oauth-callback/",
             },
