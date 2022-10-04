@@ -6,7 +6,7 @@
 
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
-const qs = require("qs");
+// const qs = require("qs");
 const Json2iob = require("./lib/json2iob");
 const tough = require("tough-cookie");
 const { HttpsCookieAgent } = require("http-cookie-agent/http");
