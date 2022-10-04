@@ -651,59 +651,65 @@ class Worx extends utils.Adapter {
             reconnectPeriod: 30000,
             clear: true,
         };
+        try {
+            this.mqttC = mqtt.connect("mqtts://" + this.userData.mqtt_endpoint, options);
 
-        this.mqttC = mqtt.connect("mqtts://" + this.userData.mqtt_endpoint, options);
+            this.mqttC.on("offline", () => {
+                this.log.debug("Worxcloud MQTT offline");
+            });
 
-        this.mqttC.on("offline", () => {
-            this.log.debug("Worxcloud MQTT offline");
-        });
+            this.mqttC.on("disconnect", (packet) => {
+                this.log.debug("MQTT disconnect" + packet);
+            });
 
-        this.mqttC.on("disconnect", (packet) => {
-            this.log.debug("MQTT disconnect" + packet);
-        });
+            this.mqttC.on("connect", () => {
+                this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
+                for (const mower of this.deviceArray) {
+                    this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
+                    this.mqttC.subscribe(mower.mqtt_topics.command_out);
+                    this.mqttC.publish(mower.mqtt_topics.command_in, "{}");
+                }
+            });
 
-        this.mqttC.on("connect", () => {
-            this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
-            for (const mower of this.deviceArray) {
-                this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
-                this.mqttC.subscribe(mower.mqtt_topics.command_out);
-                this.mqttC.publish(mower.mqtt_topics.command_in, "{}");
-            }
-        });
+            this.mqttC.on("message", async (topic, message) => {
+                const data = JSON.parse(message);
+                const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
 
-        this.mqttC.on("message", async (topic, message) => {
-            const data = JSON.parse(message);
-            const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
+                if (mower) {
+                    this.log.debug(
+                        "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
+                    );
+                    mower.last_status.payload = data;
+                    mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .replace("T", " ")
+                        .replace("Z", "");
+                    await this.setStates(mower);
+                    const new_mower = await this.cleanupRaw(mower);
+                    this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
+                        forceIndex: true,
+                        preferedArrayName: null,
+                    });
+                } else {
+                    this.log.debug("Worxcloud MQTT could not find mower topic in mowers");
+                }
+            });
 
-            if (mower) {
-                this.log.debug("Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")");
-                mower.last_status.payload = data;
-                mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                    .toISOString()
-                    .replace("T", " ")
-                    .replace("Z", "");
-                await this.setStates(mower);
-                const new_mower = await this.cleanupRaw(mower);
-                this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
-                    forceIndex: true,
-                    preferedArrayName: null,
-                });
-            } else {
-                this.log.debug("Worxcloud MQTT could not find mower topic in mowers");
-            }
-        });
+            // this.mqttC.on("packetsend", (packet) => {
+            //     //this.log.debug('Worxcloud MQTT packetsend: ' + JSON.stringify(packet));
+            // });
 
-        // this.mqttC.on("packetsend", (packet) => {
-        //     //this.log.debug('Worxcloud MQTT packetsend: ' + JSON.stringify(packet));
-        // });
+            // this.mqttC.on("packetreceive", (packet) => {
+            //     //this.log.debug('Worxcloud MQTT packetreceive: ' + JSON.stringify(packet));
+            // });
 
-        // this.mqttC.on("packetreceive", (packet) => {
-        //     //this.log.debug('Worxcloud MQTT packetreceive: ' + JSON.stringify(packet));
-        // });
-
-        this.mqttC.on("error", (error) => {
+            this.mqttC.on("error", (error) => {
+                this.log.error("MQTT ERROR: " + error);
+            });
+        } catch (error) {
             this.log.error("MQTT ERROR: " + error);
-        });
+            this.log.error("Receiving and sending commands via MQTT is only possible with Node <=16");
+        }
     }
     /**
      * @param {string} message JSON stringify example : '{"cmd":3}'
