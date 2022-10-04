@@ -703,7 +703,9 @@ class Worx extends utils.Adapter {
             });
         } catch (error) {
             this.log.error("MQTT ERROR: " + error);
-            this.log.error("Receiving and sending commands via MQTT is only possible with Node <=16");
+            this.log.error(
+                "Receiving and sending commands via MQTT is only possible with Node <=16. Status will update every 60s manually",
+            );
         }
     }
     /**
