@@ -236,8 +236,8 @@ class Worx extends utils.Adapter {
                         device.last_status &&
                         device.last_status.payload &&
                         device.last_status.payload.dat &&
-                        device.last_status.payload.dat.ls !== "undefined"  &&
-                        device.last_status.payload.dat.le !== "undefined"
+                        device.last_status.payload.dat.ls != null  &&
+                        device.last_status.payload.dat.le != null
                     ) {
                         this.laststatus[id] = device.last_status.payload.dat.ls;
                         this.lasterror[id] = device.last_status.payload.dat.le;
@@ -437,12 +437,12 @@ class Worx extends utils.Adapter {
                                 data.last_status &&
                                 data.last_status.payload &&
                                 data.last_status.payload.dat &&
-                                data.last_status.payload.dat.ls !== "undefined" &&
-                                data.last_status.payload.dat.le !== "undefined"
+                                data.last_status.payload.dat.ls != null &&
+                                data.last_status.payload.dat.le != null
                             ) {
                                 if (
-                                    this.laststatus[id] !== "undefined" &&
-                                    this.lasterror[id] !== "undefined" &&
+                                    this.laststatus[id] != null &&
+                                    this.lasterror[id] != null &&
                                     (this.lasterror[id] !== data.last_status.payload.dat.le || this.laststatus[id] !== data.last_status.payload.dat.ls)
                                 ) {
                                     this.laststatus[id] = data.last_status.payload.dat.ls;
