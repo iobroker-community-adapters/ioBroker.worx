@@ -236,7 +236,7 @@ class Worx extends utils.Adapter {
                         device.last_status &&
                         device.last_status.payload &&
                         device.last_status.payload.dat &&
-                        device.last_status.payload.dat.ls != null  &&
+                        device.last_status.payload.dat.ls != null &&
                         device.last_status.payload.dat.le != null
                     ) {
                         this.laststatus[id] = device.last_status.payload.dat.ls;
@@ -443,7 +443,8 @@ class Worx extends utils.Adapter {
                                 if (
                                     this.laststatus[id] != null &&
                                     this.lasterror[id] != null &&
-                                    (this.lasterror[id] !== data.last_status.payload.dat.le || this.laststatus[id] !== data.last_status.payload.dat.ls)
+                                    (this.lasterror[id] !== data.last_status.payload.dat.le ||
+                                        this.laststatus[id] !== data.last_status.payload.dat.ls)
                                 ) {
                                     this.laststatus[id] = data.last_status.payload.dat.ls;
                                     this.lasterror[id] = data.last_status.payload.dat.le;
@@ -530,7 +531,7 @@ class Worx extends utils.Adapter {
                 }
             }
         }
-        if (status && status.cfg && typeof status.cfg.sc !== "undefined" && typeof status.cfg.sc.ots !== "undefined") {
+        if (status && status.cfg && status.cfg.sc != null && status.cfg.sc.ots != null) {
             this.log.info("found OneTimeShedule, create states...");
 
             // create States
@@ -561,13 +562,7 @@ class Worx extends utils.Adapter {
             });
         }
 
-        if (
-            status &&
-            status.cfg &&
-            status.cfg.sc &&
-            typeof status.cfg.sc.distm !== "undefined" &&
-            typeof status.cfg.sc.m !== "undefined"
-        ) {
+        if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm != null && status.cfg.sc.m != null) {
             this.log.info("found PartyModus, create states...");
 
             // create States
@@ -717,7 +712,7 @@ class Worx extends utils.Adapter {
     sendMessage(message, serial) {
         this.log.debug("Worxcloud MQTT sendMessage to " + serial + " Message: " + message);
 
-        if (typeof serial === "undefined") {
+        if (serial == null) {
             this.log.error("please give a serial number!");
         }
 
@@ -986,7 +981,7 @@ class Worx extends utils.Adapter {
             try {
                 msgJson = JSON.parse(value);
 
-                if (typeof msgJson.bc === "undefined" || typeof msgJson.wtm === "undefined") {
+                if (msgJson.bc == null || msgJson.wtm == null) {
                     this.log.error('ONETIMESHEDULE: NO vailed format. must contain "bc" and "wtm"');
                     return;
                 }
@@ -1082,7 +1077,7 @@ class Worx extends utils.Adapter {
         const val = value;
         let sval, dayID;
 
-        if (!mower.last_status.payload || typeof mower.last_status.payload.cfg === "undefined") {
+        if (!mower.last_status.payload || mower.last_status.payload.cfg == null) {
             // check if config exist
             this.log.warn(
                 `Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(
@@ -1097,7 +1092,7 @@ class Worx extends utils.Adapter {
         const message = mower.last_status.payload.cfg.sc; // set actual values
         //let fullMessage = mower.last_status.payload.cfg.sc;
 
-        if (typeof message === "undefined") {
+        if (message == null) {
             this.log.warn("try again later!");
             return;
         }
@@ -1138,9 +1133,9 @@ class Worx extends utils.Adapter {
         }
         if (sval !== undefined) {
             if (
-                typeof message[sheduleSel] === "undefined" ||
-                typeof message[sheduleSel][dayID] === "undefined" ||
-                typeof message[sheduleSel][dayID][valID] === "undefined"
+                message[sheduleSel] == null ||
+                message[sheduleSel][dayID] == null ||
+                message[sheduleSel][dayID][valID] == null
             ) {
                 this.log.warn("Something went wrong, plese try again later");
                 return;
@@ -1159,10 +1154,7 @@ class Worx extends utils.Adapter {
     changeMowerArea(id, value, mower) {
         const val = value;
 
-        if (
-            (mower.last_status.payload && typeof mower.last_status.payload.cfg === "undefined") ||
-            typeof mower.last_status.payload === "undefined"
-        ) {
+        if ((mower.last_status.payload && mower.last_status.payload.cfg == null) || mower.last_status.payload == null) {
             // check if config exist
             this.log.warn(
                 `Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(
@@ -1214,7 +1206,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     startSequences(id, value, mower) {
-        if (typeof mower.last_status.payload.cfg === "undefined") {
+        if (mower.last_status.payload.cfg == null) {
             // check if config exist
             this.log.warn(
                 `Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(
@@ -1321,7 +1313,7 @@ class Worx extends utils.Adapter {
             mower.last_status.payload &&
             mower.last_status.payload.cfg &&
             mower.last_status.payload.cfg.sc &&
-            typeof mower.last_status.payload.cfg.sc.ots === "undefined"
+            mower.last_status.payload.cfg.sc.ots == null
         ) {
             mower.edgeCut = true;
             this.sendMessage('{"cmd":4}', mower.serial_number); // starte ZoneTraining
