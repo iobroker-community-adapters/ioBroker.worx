@@ -116,6 +116,37 @@ class Worx extends utils.Adapter {
         }
     }
     async login() {
+        //Simple login
+        const data = await this.requestClient({
+            url: this.clouds[this.config.server].loginUrl + "oauth/token",
+            method: "post",
+            headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "user-agent": this.userAgent,
+                "accept-language": "de-de",
+            },
+            data: JSON.stringify({
+                client_id: this.clouds[this.config.server].clientId,
+                username: this.config.mail,
+                password: this.config.password,
+                scope: "*",
+                grant_type: "password",
+            }),
+        })
+            .then((response) => {
+                this.log.debug(JSON.stringify(response.data));
+                this.session = response.data;
+                this.setState("info.connection", true, true);
+                this.log.info(`Connected to ${this.config.server} server`);
+            })
+            .catch((error) => {
+                this.log.error(error);
+                error.response && this.log.error(JSON.stringify(error.response.data));
+            });
+        return data;
+
+        /* App login simulation
         const [code_verifier, codeChallenge] = this.getCodeChallenge();
         const loginForm = await this.requestClient({
             method: "get",
@@ -129,7 +160,7 @@ class Worx extends utils.Adapter {
                 codeChallenge +
                 "&code_challenge_method=S256&suggested_authentication_flow=login",
             headers: {
-                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8",
                 "user-agent": this.userAgent,
                 "accept-language": "de-de",
             },
@@ -149,7 +180,7 @@ class Worx extends utils.Adapter {
             method: "post",
             url: this.clouds[this.config.server].loginUrl + "login",
             headers: {
-                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8",
                 "content-type": "application/x-www-form-urlencoded",
                 "accept-language": "de-de",
                 "user-agent": this.userAgent,
@@ -203,6 +234,7 @@ class Worx extends utils.Adapter {
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
         return data;
+        */
     }
 
     async getDeviceList() {
