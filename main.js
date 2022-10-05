@@ -622,7 +622,7 @@ class Worx extends utils.Adapter {
         this.log.debug(JSON.stringify(mower));
     }
 
-    async apiRequest(path, withoutToken, method) {
+    async apiRequest(path, withoutToken, method, data) {
         const headers = {
             accept: "application/json",
             "content-type": "application/json",
@@ -636,9 +636,13 @@ class Worx extends utils.Adapter {
             method: method || "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/${path}`,
             headers: headers,
+            data: data || null,
         })
             .then(async (res) => {
                 this.log.debug(JSON.stringify(res.data));
+                if (method === "PUT") {
+                    this.log.info(JSON.stringify(res.data));
+                }
                 return res.data;
             })
             .catch((error) => {
@@ -744,6 +748,7 @@ class Worx extends utils.Adapter {
             this.log.error(
                 "Receiving and sending commands via MQTT is only possible with Node <=16. Status will update every 60s manually",
             );
+            this.mqttC = undefined;
         }
     }
     /**
@@ -758,8 +763,13 @@ class Worx extends utils.Adapter {
 
         const mower = this.deviceArray.find((mower) => mower.serial_number === serial);
 
-        if (mower && this.mqttC) {
-            this.mqttC.publish(mower.mqtt_topics.command_in, message);
+        if (mower) {
+            if (this.mqttC) {
+                this.mqttC.publish(mower.mqtt_topics.command_in, message);
+            } else {
+                this.log.debug("Send via API");
+                this.apiRequest("product-items", false, "PUT", message);
+            }
         } else {
             this.log.error("Try to send a message but could not find the mower");
         }
