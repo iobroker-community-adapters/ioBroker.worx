@@ -6,6 +6,7 @@
 
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
+const awsIot = require("aws-iot-device-sdk");
 // const qs = require("qs");
 const Json2iob = require("./lib/json2iob");
 const tough = require("tough-cookie");
@@ -114,7 +115,7 @@ class Worx extends utils.Adapter {
 
             this.updateInterval = setInterval(async () => {
                 await this.updateDevices(false);
-            }, 60 * 1000); // 60 seconds
+            }, 10 * 60 * 1000); // 10 minutes
 
             this.refreshTokenInterval = setInterval(() => {
                 this.refreshToken();
@@ -669,27 +670,23 @@ class Worx extends utils.Adapter {
         }
 
         this.userData = await this.apiRequest("users/me", false);
-        this.userCert = await this.apiRequest("users/certificate", false);
-        this.userCert.p12 = Buffer.from(this.userCert.pkcs12, "base64");
-        if (this.userCert && this.userCert.active === true) {
-            this.connectMqtt();
-        } else {
-            this.log.warn(
-                "maybe your connection is blocked from Worx, please test start button, if not working, try again in 24h",
-            );
-            this.log.warn("DON`T CONTACT THE OFFICIAL WORX SUPPORT BECAUSE THIS IS AN INOFFICAL APP !!!!!!!!!!!");
-            this.connectMqtt();
-        }
+        this.connectMqtt();
     }
     connectMqtt() {
-        const options = {
-            pfx: this.userCert.p12,
-            clientId: "android-" + this.deviceArray[0].uuid || uuidv4(),
-            reconnectPeriod: 30000,
-            clear: true,
-        };
         try {
-            this.mqttC = mqtt.connect("mqtts://" + this.userData.mqtt_endpoint, options);
+            const uuid = this.deviceArray[0].uuid || uuidv4();
+            const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
+            this.mqttC = awsIot.device({
+                clientId: `WX/USER/${this.userData.id}/iobroker/${uuid}`,
+                username: "iobroker",
+                protocol: "wss-custom-auth",
+                host: this.userData.mqtt_endpoint,
+                customAuthHeaders: {
+                    "x-amz-customauthorizer-name": "com-worxlandroid-customer",
+                    "x-amz-customauthorizer-signature": accessTokenParts[2],
+                    jwt: `${accessTokenParts[0]}.${accessTokenParts[1]}`,
+                },
+            });
 
             this.mqttC.on("offline", () => {
                 this.log.debug("Worxcloud MQTT offline");
@@ -745,9 +742,6 @@ class Worx extends utils.Adapter {
             });
         } catch (error) {
             this.log.error("MQTT ERROR: " + error);
-            this.log.error(
-                "Receiving and sending commands via MQTT is only possible with Node <=16. Status will update every 60s manually and commands send via API",
-            );
             this.mqttC = undefined;
         }
     }
