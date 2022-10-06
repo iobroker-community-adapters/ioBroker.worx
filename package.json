@@ -36,7 +36,6 @@
     "axios": "^0.27.2",
     "http-cookie-agent": "^4.0.2",
     "json-bigint": "^1.0.0",
-    "mqtt": "^4.3.7",
     "qs": "^6.11.0",
     "tough-cookie": "^4.1.2",
     "uuid": "^9.0.0"

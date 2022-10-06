@@ -13,7 +13,6 @@ const tough = require("tough-cookie");
 const { HttpsCookieAgent } = require("http-cookie-agent/http");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
-const mqtt = require("mqtt");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
 const not_allowed = 60000;
