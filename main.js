@@ -675,26 +675,24 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
-            const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
+            const headers = this.createWebsocketHeader();
             this.mqttC = awsIot.device({
                 clientId: `WX/USER/${this.userData.id}/iobroker/${uuid}`,
                 username: "iobroker",
                 protocol: "wss-custom-auth",
                 host: "iot.eu-west-1.worxlandroid.com",
                 region: "eu-west-1",
-                customAuthHeaders: {
-                    "x-amz-customauthorizer-name": "com-worxlandroid-customer",
-                    "x-amz-customauthorizer-signature": accessTokenParts[2],
-                    jwt: `${accessTokenParts[0]}.${accessTokenParts[1]}`,
-                },
+                customAuthHeaders: headers,
             });
 
             this.mqttC.on("offline", () => {
                 this.log.debug("Worxcloud MQTT offline");
+                this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
             });
 
             this.mqttC.on("disconnect", (packet) => {
                 this.log.debug("MQTT disconnect" + packet);
+                this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
             });
 
             this.mqttC.on("connect", () => {
@@ -746,6 +744,16 @@ class Worx extends utils.Adapter {
             this.mqttC = undefined;
         }
     }
+    createWebsocketHeader() {
+        const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
+        const headers = {
+            "x-amz-customauthorizer-name": "com-worxlandroid-customer",
+            "x-amz-customauthorizer-signature": accessTokenParts[2],
+            jwt: `${accessTokenParts[0]}.${accessTokenParts[1]}`,
+        };
+        return headers;
+    }
+
     /**
      * @param {string} message JSON stringify example : '{"cmd":3}'
      */
