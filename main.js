@@ -36,6 +36,8 @@ class Worx extends utils.Adapter {
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         this.userAgent = "ioBroker ";
         this.reLoginTimeout = null;
+        this.refreshActivity = null;
+        this.loadActivity = {};
         this.refreshTokenTimeout = null;
         this.session = {};
         this.mqttC = {};
@@ -105,7 +107,7 @@ class Worx extends utils.Adapter {
         await this.login();
         if (this.session.access_token) {
             await this.getDeviceList();
-            await this.updateDevices(true);
+            await this.updateDevices();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
@@ -114,12 +116,16 @@ class Worx extends utils.Adapter {
             }, 24 * 60 * 1000 * 60); // 24 hour
 
             this.updateInterval = setInterval(async () => {
-                await this.updateDevices(false);
+                await this.updateDevices();
             }, 10 * 60 * 1000); // 10 minutes
 
             this.refreshTokenInterval = setInterval(() => {
                 this.refreshToken();
             }, (this.session.expires_in - 100) * 1000);
+
+            this.refreshActivity = setInterval(() => {
+                this.createActivityLogStates();
+            }, 60 * 1000); // 1 minutes
         }
     }
     async login() {
@@ -280,6 +286,7 @@ class Worx extends utils.Adapter {
                     ) {
                         this.laststatus[id] = device.last_status.payload.dat.ls;
                         this.lasterror[id] = device.last_status.payload.dat.le;
+                        this.loadActivity[id] = false;
                     }
                     await this.createActivityLogStates(device, true);
                     await this.createProductStates(device);
@@ -387,9 +394,6 @@ class Worx extends utils.Adapter {
                         native: {},
                     });
                 }
-                if (!firstStart) {
-                    await this.sleep(10000); //Wait 10s because it takes some time for the last log item available at the API endpoint
-                }
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
                     ack: true,
@@ -398,6 +402,32 @@ class Worx extends utils.Adapter {
                     val: Date.now(),
                     ack: true,
                 });
+            }
+            return;
+        }
+        for (const device of this.deviceArray) {
+            this.log.debug("UPDATE START");
+            if (device && device.serial_number &&
+                this.loadActivity[device.serial_number] != null &&
+                this.loadActivity[device.serial_number]
+            ) {
+                this.log.debug("START UPDATE CHANGE");
+                await this.sleep(10000); //Wait 10s because it takes some time for the last log item available at the API endpoint
+                const activity_log = await this.apiRequest(`product-items/${device.serial_number}/activity-log`, false);
+                if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
+                    this.log.debug("UPDATE CHANGE");
+                    await this.setStateAsync(`${device.serial_number}.activityLog.payload`, {
+                        val: JSON.stringify(activity_log),
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${device.serial_number}.activityLog.last_update`, {
+                        val: Date.now(),
+                        ack: true,
+                    });
+                }
+                this.loadActivity[device.serial_number] = false;
+            } else {
+                this.loadActivity[device.serial_number] = false;
             }
         }
     }
@@ -431,7 +461,7 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async updateDevices(firstUpdate) {
+    async updateDevices() {
         const statusArray = [
             {
                 path: "rawMqtt",
@@ -470,27 +500,6 @@ class Worx extends utils.Adapter {
                             preferedArrayName: preferedArrayName,
                             channelName: element.desc,
                         });
-                        if (!firstUpdate) {
-                            if (
-                                data &&
-                                data.last_status &&
-                                data.last_status.payload &&
-                                data.last_status.payload.dat &&
-                                data.last_status.payload.dat.ls != null &&
-                                data.last_status.payload.dat.le != null
-                            ) {
-                                if (
-                                    this.laststatus[id] != null &&
-                                    this.lasterror[id] != null &&
-                                    (this.lasterror[id] !== data.last_status.payload.dat.le ||
-                                        this.laststatus[id] !== data.last_status.payload.dat.ls)
-                                ) {
-                                    this.laststatus[id] = data.last_status.payload.dat.ls;
-                                    this.lasterror[id] = data.last_status.payload.dat.le;
-                                    this.createActivityLogStates(device, true);
-                                }
-                            }
-                        }
 
                         // await this.setObjectNotExistsAsync(element.path + ".json", {
                         //     type: "state",
@@ -703,6 +712,10 @@ class Worx extends utils.Adapter {
                 }
             });
 
+            this.mqttC.on('reconnect', () => {
+                this.log.debug("MQTT reconnect");
+            });
+
             this.mqttC.on("message", async (topic, message) => {
                 const data = JSON.parse(message);
                 const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
@@ -770,7 +783,7 @@ class Worx extends utils.Adapter {
                 this.mqttC.publish(mower.mqtt_topics.command_in, message);
             } else {
                 this.log.debug("Send via API");
-                this.apiRequest("product-items", false, "PUT", message);
+                //this.apiRequest("product-items", false, "PUT", message);
             }
         } else {
             this.log.error("Try to send a message but could not find the mower");
@@ -843,6 +856,7 @@ class Worx extends utils.Adapter {
             this.mqttC.end();
             this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
             this.updateInterval && clearInterval(this.updateInterval);
+            this.refreshActivity && clearTimeout(this.refreshActivity);
             this.sleepTimer && clearTimeout(this.sleepTimer);
             this.updateFW && clearInterval(this.updateFW);
             this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
