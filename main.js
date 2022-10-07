@@ -34,7 +34,7 @@ class Worx extends utils.Adapter {
         this.laststatus = {};
         this.lasterror = {};
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-        this.userAgent = "ioBroker 1.6.7";
+        this.userAgent = "ioBroker ";
         this.reLoginTimeout = null;
         this.refreshTokenTimeout = null;
         this.session = {};
@@ -87,6 +87,7 @@ class Worx extends utils.Adapter {
     async onReady() {
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
+        this.userAgent += this.version;
 
         if (!this.config.mail || !this.config.password) {
             this.log.error("Please set username and password in the instance settings");
@@ -679,7 +680,8 @@ class Worx extends utils.Adapter {
                 clientId: `WX/USER/${this.userData.id}/iobroker/${uuid}`,
                 username: "iobroker",
                 protocol: "wss-custom-auth",
-                host: this.userData.mqtt_endpoint,
+                host: "iot.eu-west-1.worxlandroid.com",
+                region: "eu-west-1",
                 customAuthHeaders: {
                     "x-amz-customauthorizer-name": "com-worxlandroid-customer",
                     "x-amz-customauthorizer-signature": accessTokenParts[2],
