@@ -15,7 +15,7 @@ const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
-const not_allowed = 60000 *10;
+const not_allowed = 60000 * 10;
 
 class Worx extends utils.Adapter {
     /**
@@ -344,6 +344,7 @@ class Worx extends utils.Adapter {
     }
     async createActivityLogStates(mower, firstStart) {
         if (mower && mower.serial_number) {
+            //first start while get devices
             const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
                 if (firstStart) {
@@ -407,7 +408,10 @@ class Worx extends utils.Adapter {
         }
         for (const device of this.deviceArray) {
             this.log.debug("UPDATE START");
-            if (device && device.serial_number &&
+            //check if setState set loadActivity on true because of changed lasterror or laststatus
+            if (
+                device &&
+                device.serial_number &&
                 this.loadActivity[device.serial_number] != null &&
                 this.loadActivity[device.serial_number]
             ) {
@@ -489,7 +493,6 @@ class Worx extends utils.Adapter {
                             return;
                         }
                         const data = res.data;
-                        const id = data.serial_number;
                         const forceIndex = true;
                         const preferedArrayName = null;
                         device = data;
@@ -712,7 +715,7 @@ class Worx extends utils.Adapter {
                 }
             });
 
-            this.mqttC.on('reconnect', () => {
+            this.mqttC.on("reconnect", () => {
                 this.log.debug("MQTT reconnect");
             });
 
@@ -782,7 +785,7 @@ class Worx extends utils.Adapter {
             if (this.mqttC) {
                 this.mqttC.publish(mower.mqtt_topics.command_in, message);
             } else {
-                this.log.debug("Send via API");
+                //  this.log.debug("Send via API");
                 //this.apiRequest("product-items", false, "PUT", message);
             }
         } else {
