@@ -15,7 +15,7 @@ const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
-const not_allowed = 60000;
+const not_allowed = 60000 *10;
 
 class Worx extends utils.Adapter {
     /**
