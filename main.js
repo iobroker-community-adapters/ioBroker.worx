@@ -546,6 +546,7 @@ class Worx extends utils.Adapter {
             .then((response) => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
+                this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
             })
             .catch((error) => {
                 this.log.error(error);
@@ -686,13 +687,11 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("offline", () => {
-                this.log.debug("Worxcloud MQTT offline");
-                this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                this.log.info("Worxcloud MQTT offline");
             });
 
             this.mqttC.on("disconnect", (packet) => {
                 this.log.debug("MQTT disconnect" + packet);
-                this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
             });
 
             this.mqttC.on("connect", () => {
