@@ -498,6 +498,8 @@ class Worx extends utils.Adapter {
                         device = data;
                         await this.setStates(data);
                         const new_data = await this.cleanupRaw(data);
+                        if (new_data.last_status && new_data.last_status.timestamp != null)
+                            delete new_data.last_status.timestamp;
                         this.json2iob.parse(`${device.serial_number}.${element.path}`, new_data, {
                             forceIndex: forceIndex,
                             preferedArrayName: preferedArrayName,
@@ -688,13 +690,24 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
+            const mqttEndpoint = this.deviceArray[0].mqtt_endpoint || "";
+            if (mqttEndpoint === "") {
+                this.log.warn(`Cannot read mqtt_endpoint`);
+                return;
+            }
             const headers = this.createWebsocketHeader();
+            const split_mqtt = mqttEndpoint.split(".");
+            if (split_mqtt[1] == null || split_mqtt[2] == null) {
+                this.log.error(`Cannot split region from ${mqttEndpoint}`);
+                return;
+            }
+            this.userData["mqtt_endpoint"] = mqttEndpoint;
             this.mqttC = awsIot.device({
                 clientId: `WX/USER/${this.userData.id}/iobroker/${uuid}`,
                 username: "iobroker",
                 protocol: "wss-custom-auth",
-                host: "iot.eu-west-1.worxlandroid.com",
-                region: "eu-west-1",
+                host: mqttEndpoint,
+                region: split_mqtt[2],
                 customAuthHeaders: headers,
             });
 
