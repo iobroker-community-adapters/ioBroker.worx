@@ -688,13 +688,24 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
+            const mqttEndpoint = this.deviceArray[0].mqtt_endpoint || "";
+            if (mqttEndpoint === "") {
+                this.log.warn(`Cannot read mqtt_endpoint`);
+                return;
+            }
             const headers = this.createWebsocketHeader();
+            const split_mqtt = mqttEndpoint.split(".");
+            if (split_mqtt[1] == null || split_mqtt[2] == null) {
+                this.log.error(`Cannot split region from ${mqttEndpoint}`);
+                return;
+            }
+            this.userData["mqtt_endpoint"] = mqttEndpoint;
             this.mqttC = awsIot.device({
                 clientId: `WX/USER/${this.userData.id}/iobroker/${uuid}`,
                 username: "iobroker",
                 protocol: "wss-custom-auth",
-                host: "iot.eu-west-1.worxlandroid.com",
-                region: "eu-west-1",
+                host: mqttEndpoint,
+                region: split_mqtt[2],
                 customAuthHeaders: headers,
             });
 
