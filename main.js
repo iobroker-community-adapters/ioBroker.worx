@@ -498,6 +498,8 @@ class Worx extends utils.Adapter {
                         device = data;
                         await this.setStates(data);
                         const new_data = await this.cleanupRaw(data);
+                        if (new_data.last_status && new_data.last_status.timestamp != null)
+                            delete new_data.last_status.timestamp;
                         this.json2iob.parse(`${device.serial_number}.${element.path}`, new_data, {
                             forceIndex: forceIndex,
                             preferedArrayName: preferedArrayName,
