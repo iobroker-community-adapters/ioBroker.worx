@@ -5,7 +5,7 @@
         "news": {
             "2.0.1": {
                 "en": "Adapter rewritten. Added product info and activity log. rawMqtt values improved and compatible with Node v18. ",
-                "de": "Adapter neu geschrieben. Produktinfo und Aktivitätsprotokoll hinzugefügt. rawMqtt Werte verbessert und mit Node v18 kompatibel.",
+                "de": "Adapter neu geschrieben. Passwort muss erneut eingegeben werden. Produktinfo und Aktivitätsprotokoll hinzugefügt. rawMqtt Werte verbessert und mit Node v18 kompatibel.",
                 "ru": "Адаптер переписан. Добавлена информация о продукте и журнал активности. сырье Значения Mqtt улучшены и совместимы с Node v18.",
                 "pt": "Adapter reescrito. Adicionada informação do produto e log de atividade. em bruto Valores Mqtt melhorados e compatíveis com Node v18.",
                 "nl": "Adapter herschreven. Voegde product info en activiteitslogboek toe. Rauw Mqt waarden verbeterd en compatibel met Node V18.",
