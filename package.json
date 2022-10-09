@@ -28,7 +28,7 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.worx.git"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 14.18.0"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.7",
