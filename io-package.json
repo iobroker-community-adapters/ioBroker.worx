@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "news": {
+            "2.0.2": {
+                "en": "Fix MQTT connection for Kress, Landxcape and Ferrex",
+                "de": "MQTT Verbindung für Kress, Landxcape und Ferrex gefixt."
+            },
             "2.0.1": {
                 "en": "Adapter rewritten. Added product info and activity log. rawMqtt values improved and compatible with Node v18. ",
                 "de": "Adapter neu geschrieben. Passwort muss erneut eingegeben werden. Produktinfo und Aktivitätsprotokoll hinzugefügt. rawMqtt Werte verbessert und mit Node v18 kompatibel.",
