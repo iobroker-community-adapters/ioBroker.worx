@@ -691,7 +691,7 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
-            const mqttEndpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
+            const mqttEndpoint = "iot.eu-west-1.worxlandroid.com"; //this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
             }
