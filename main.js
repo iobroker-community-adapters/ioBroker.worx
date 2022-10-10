@@ -61,24 +61,28 @@ class Worx extends utils.Adapter {
                 loginUrl: "https://id.eu.worx.com/",
                 clientId: "013132A8-DB34-4101-B993-3C8348EA0EBC",
                 redirectUri: "com.worxlandroid.landroid://oauth-callback/",
+                mqttPrefix: "WX",
             },
             kress: {
                 url: "api.kress-robotik.com",
                 loginUrl: "https://id.eu.kress.com/",
                 clientId: "62FA25FB-3509-4778-A835-D5C50F4E5D88",
                 redirectUri: "com.kress-robotik.mission://oauth-callback/",
+                mqttPrefix: "KR",
             },
             landxcape: {
                 url: "api.landxcape-services.com",
                 loginUrl: "https://id.landxcape-services.com/",
                 clientId: "4F1B89F0-230F-410A-8436-D9610103A2A4",
                 redirectUri: "com.landxcape-robotics.landxcape://oauth-callback/",
+                mqttPrefix: "LX",
             },
             ferrex: {
                 url: "api.watermelon.smartmower.cloud",
                 loginUrl: "https://id.watermelon.smartmower.cloud/",
                 clientId: "10078D10-3840-474A-848A-5EED949AB0FC",
                 redirectUri: "cloud.smartmower.watermelon://oauth-callback/",
+                mqttPrefix: "FE",
             },
         };
     }
@@ -691,7 +695,7 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
-            const mqttEndpoint = "iot.eu-west-1.worxlandroid.com"; //this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
+            const mqttEndpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
             }
@@ -704,7 +708,7 @@ class Worx extends utils.Adapter {
             }
             this.userData["mqtt_endpoint"] = mqttEndpoint;
             this.mqttC = awsIot.device({
-                clientId: `WX/USER/${this.userData.id}/iobroker/${uuid}`,
+                clientId: `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/iobroker/${uuid}`,
                 username: "iobroker",
                 protocol: "wss-custom-auth",
                 host: mqttEndpoint,
