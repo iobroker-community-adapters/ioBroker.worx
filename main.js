@@ -411,7 +411,6 @@ class Worx extends utils.Adapter {
             return;
         }
         for (const device of this.deviceArray) {
-            this.log.debug("UPDATE START");
             //check if setState set loadActivity on true because of changed lasterror or laststatus
             if (
                 device &&
