@@ -39,6 +39,7 @@ class Worx extends utils.Adapter {
         this.refreshActivity = null;
         this.loadActivity = {};
         this.refreshTokenTimeout = null;
+        this.pingInterval = null;
         this.session = {};
         this.mqttC = {};
         this.createDevices = helper.createDevices;
@@ -729,6 +730,24 @@ class Worx extends utils.Adapter {
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
                     this.mqttC.subscribe(mower.mqtt_topics.command_out);
                     this.mqttC.publish(mower.mqtt_topics.command_in, "{}");
+                    this.pingInterval && clearInterval(this.pingInterval);
+                    this.pingInterval = setInterval(() => {
+                        this.log.debug("Worxcloud MQTT ping");
+                        const now = new Date();
+                        const message = {
+                            id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
+                            cmd: 0,
+                            sn: mower.serial_number,
+                            // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
+                            tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
+                                "0" + now.getSeconds()
+                            ).slice(-2)}`,
+                            dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
+                                -2,
+                            )}/${now.getFullYear()}`,
+                        };
+                        this.sendMessage(JSON.stringify(message), mower.serial_number);
+                    }, 1000 * 60 * 5);
                 }
             });
 
@@ -879,6 +898,7 @@ class Worx extends utils.Adapter {
             this.refreshActivity && clearTimeout(this.refreshActivity);
             this.sleepTimer && clearTimeout(this.sleepTimer);
             this.updateFW && clearInterval(this.updateFW);
+            this.pingInterval && clearInterval(this.pingInterval);
             this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
             callback();
         } catch (e) {
