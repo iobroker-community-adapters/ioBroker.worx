@@ -16,6 +16,8 @@ const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
 const not_allowed = 60000 * 10;
+const ping_interval = 1000 * 60 * 10; //10 Minutes
+const pingMqtt = true;
 
 class Worx extends utils.Adapter {
     /**
@@ -39,7 +41,7 @@ class Worx extends utils.Adapter {
         this.refreshActivity = null;
         this.loadActivity = {};
         this.refreshTokenTimeout = null;
-        this.pingInterval = null;
+        this.pingInterval = {};
         this.session = {};
         this.mqttC = {};
         this.createDevices = helper.createDevices;
@@ -730,24 +732,9 @@ class Worx extends utils.Adapter {
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
                     this.mqttC.subscribe(mower.mqtt_topics.command_out, { qos: 1 });
                     this.mqttC.publish(mower.mqtt_topics.command_in, "{}", { qos: 1 });
-                    this.pingInterval && clearInterval(this.pingInterval);
-                    this.pingInterval = setInterval(() => {
-                        this.log.debug("Worxcloud MQTT ping");
-                        const now = new Date();
-                        const message = {
-                            id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
-                            cmd: 0,
-                            sn: mower.serial_number,
-                            // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
-                            tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
-                                "0" + now.getSeconds()
-                            ).slice(-2)}`,
-                            dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
-                                -2,
-                            )}/${now.getFullYear()}`,
-                        };
-                        this.sendMessage(JSON.stringify(message), mower.serial_number);
-                    }, 1000 * 60 * 5);
+                    if (pingMqtt) {
+                        this.pingToMqtt(mower);
+                    }
                 }
             });
 
@@ -768,6 +755,9 @@ class Worx extends utils.Adapter {
                         .toISOString()
                         .replace("T", " ")
                         .replace("Z", "");
+                    if (pingMqtt) {
+                        this.pingToMqtt(mower);
+                    }
                     await this.setStates(mower);
                     const new_mower = await this.cleanupRaw(mower);
                     this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
@@ -795,6 +785,41 @@ class Worx extends utils.Adapter {
             this.mqttC = undefined;
         }
     }
+
+    /**
+     * @param {object} actual mower
+     */
+    pingToMqtt(mower) {
+        const language = (
+            mower.last_status &&
+            mower.last_status.payload &&
+            mower.last_status.payload.cfg &&
+            mower.last_status.payload.cfg.lg
+        ) ? mower.last_status.payload.cfg.lg : "de";
+        const mowerSN = mower.serial_number ? mower.serial_number : "";
+        this.pingInterval[mowerSN] && clearTimeout(this.pingInterval[mowerSN]);
+        this.log.info("Reset ping");
+        this.pingInterval[mowerSN] = setInterval(() => {
+            this.log.debug("Worxcloud MQTT ping");
+            const now = new Date();
+            const message = {
+                id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
+                cmd: 0,
+                lg: language,
+                sn: mowerSN,
+                // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
+                tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
+                    "0" + now.getSeconds()
+                ).slice(-2)}`,
+                dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
+                    -2,
+                )}/${now.getFullYear()}`,
+            };
+            this.log.debug("Worxcloud MQTT ping: " + JSON.stringify(message));
+            this.sendMessage(JSON.stringify(message), mowerSN);
+        }, ping_interval);
+    }
+
     createWebsocketHeader() {
         const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
         const headers = {
@@ -898,7 +923,9 @@ class Worx extends utils.Adapter {
             this.refreshActivity && clearTimeout(this.refreshActivity);
             this.sleepTimer && clearTimeout(this.sleepTimer);
             this.updateFW && clearInterval(this.updateFW);
-            this.pingInterval && clearInterval(this.pingInterval);
+            for (const mower of this.deviceArray) {
+                this.pingInterval[mower.serial_number] && clearTimeout(this.pingInterval[mower.serial_number]);
+            }
             this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
             callback();
         } catch (e) {
