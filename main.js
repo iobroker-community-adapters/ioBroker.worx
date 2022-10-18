@@ -728,8 +728,8 @@ class Worx extends utils.Adapter {
                 this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
                 for (const mower of this.deviceArray) {
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
-                    this.mqttC.subscribe(mower.mqtt_topics.command_out);
-                    this.mqttC.publish(mower.mqtt_topics.command_in, "{}");
+                    this.mqttC.subscribe(mower.mqtt_topics.command_out, { qos: 1 });
+                    this.mqttC.publish(mower.mqtt_topics.command_in, "{}", { qos: 1 });
                     this.pingInterval && clearInterval(this.pingInterval);
                     this.pingInterval = setInterval(() => {
                         this.log.debug("Worxcloud MQTT ping");
@@ -819,7 +819,7 @@ class Worx extends utils.Adapter {
 
         if (mower) {
             if (this.mqttC) {
-                this.mqttC.publish(mower.mqtt_topics.command_in, message);
+                this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
             } else {
                 //  this.log.debug("Send via API");
                 //this.apiRequest("product-items", false, "PUT", message);
