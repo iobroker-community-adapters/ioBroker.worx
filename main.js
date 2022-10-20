@@ -503,6 +503,15 @@ class Worx extends utils.Adapter {
                         const preferedArrayName = null;
                         device = data;
                         await this.setStates(data);
+                        try{
+                            if (!data || !data.last_status || !data.last_status.payload) {
+                                this.log.debug("No last_status found");
+                                delete data.last_status
+                                this.log.debug("Delete last_status");
+                            }
+                        } catch (error) {
+                            this.log.debug("Delete last_status: " + error);
+                        }
                         const new_data = await this.cleanupRaw(data);
                         if (new_data.last_status && new_data.last_status.timestamp != null) {
                             delete new_data.last_status.timestamp;
@@ -750,11 +759,21 @@ class Worx extends utils.Adapter {
                     this.log.debug(
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
-                    mower.last_status.payload = data;
-                    mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                        .toISOString()
-                        .replace("T", " ")
-                        .replace("Z", "");
+                    try{
+                        if (!new_mower || !new_mower.last_status || !new_mower.last_status.payload) {
+                            this.log.debug("No last_status found");
+                            delete new_mower.last_status
+                            this.log.info("Delete last_status");
+                        } else {
+                            mower.last_status.payload = data;
+                            mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                                .toISOString()
+                                .replace("T", " ")
+                                .replace("Z", "");
+                        }
+                    } catch (error) {
+                        this.log.info("Mqtt Delete last_status: " + error);
+                    }
                     if (pingMqtt) {
                         this.pingToMqtt(mower);
                     }
