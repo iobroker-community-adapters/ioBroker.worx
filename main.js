@@ -1473,6 +1473,7 @@ class Worx extends utils.Adapter {
         const cleanOldVersion = await this.getObjectAsync(
             this.name + "." + this.instance + "." + serial + ".oldVersionCleaned",
         );
+
         if (!cleanOldVersion) {
             this.log.info("Please wait a few minutes.... clean old version");
             await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".rawMqtt", {
@@ -1485,9 +1486,9 @@ class Worx extends utils.Adapter {
             await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
                 type: "state",
                 common: {
-                    name: "Version < 2.0.0 cleaned",
-                    type: "boolean",
-                    role: "boolean",
+                    name: "Version check",
+                    type: "string",
+                    role: "meta.version",
                     write: false,
                     read: true,
                 },
@@ -1495,7 +1496,40 @@ class Worx extends utils.Adapter {
             });
 
             this.log.info("Done with cleaning");
+        } else {
+            try {
+                //Preparation for next Version
+                let oldVer = {"val":"2.0.1"};
+                if (cleanOldVersion.common && cleanOldVersion.common.type && cleanOldVersion.common.type !== "string") {
+                    cleanOldVersion.common.type = "string";
+                    cleanOldVersion.common.name = "Version check";
+                    cleanOldVersion.common.role = "meta.version";
+                    await this.setForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", cleanOldVersion);
+                    this.log.debug(`Object ${serial}.oldVersionCleaned change boolean to number`);
+                } else {
+                    oldVer = await this.getStateAsync(serial + ".oldVersionCleaned");
+                }
+                if (this.version > oldVer.val && oldVer.val <= "2.0.2") {
+                    const obj_fw = await this.getObjectAsync(this.name + "." + this.instance + "." + serial + ".mower.firmware");
+                    if (obj_fw) {
+                        if (obj_fw.common && obj_fw.common.type && obj_fw.common.type === "string") {
+                            obj_fw.common.type = "number";
+                            obj_fw.common.role = "meta.version";
+                            obj_fw.common['def'] = 0;
+                            await this.setForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".mower.firmware", obj_fw);
+                            this.log.debug(`Object ${serial}.mower.firmware change string to number`);
+                        }
+                    }
+                }
+            }
+            catch (e) {
+                this.log.info("cleanOldVersion: " + e);
+            }
         }
+        await this.setStateAsync(serial + ".oldVersionCleaned", {
+            val: this.version,
+            ack: true,
+        });
     }
 }
 
