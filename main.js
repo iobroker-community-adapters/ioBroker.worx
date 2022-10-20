@@ -16,6 +16,8 @@ const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
 const not_allowed = 60000 * 10;
+const ping_interval = 1000 * 60 * 10; //10 Minutes
+const pingMqtt = false;
 
 class Worx extends utils.Adapter {
     /**
@@ -39,7 +41,7 @@ class Worx extends utils.Adapter {
         this.refreshActivity = null;
         this.loadActivity = {};
         this.refreshTokenTimeout = null;
-        this.pingInterval = null;
+        this.pingInterval = {};
         this.session = {};
         this.mqttC = {};
         this.createDevices = helper.createDevices;
@@ -501,6 +503,15 @@ class Worx extends utils.Adapter {
                         const preferedArrayName = null;
                         device = data;
                         await this.setStates(data);
+                        try{
+                            if (!data || !data.last_status || !data.last_status.payload) {
+                                this.log.debug("No last_status found");
+                                delete data.last_status
+                                this.log.debug("Delete last_status");
+                            }
+                        } catch (error) {
+                            this.log.debug("Delete last_status: " + error);
+                        }
                         const new_data = await this.cleanupRaw(data);
                         if (new_data.last_status && new_data.last_status.timestamp != null) {
                             delete new_data.last_status.timestamp;
@@ -730,24 +741,9 @@ class Worx extends utils.Adapter {
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
                     this.mqttC.subscribe(mower.mqtt_topics.command_out, { qos: 1 });
                     this.mqttC.publish(mower.mqtt_topics.command_in, "{}", { qos: 1 });
-                    this.pingInterval && clearInterval(this.pingInterval);
-                    this.pingInterval = setInterval(() => {
-                        this.log.debug("Worxcloud MQTT ping");
-                        const now = new Date();
-                        const message = {
-                            id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
-                            cmd: 0,
-                            sn: mower.serial_number,
-                            // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
-                            tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
-                                "0" + now.getSeconds()
-                            ).slice(-2)}`,
-                            dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
-                                -2,
-                            )}/${now.getFullYear()}`,
-                        };
-                        this.sendMessage(JSON.stringify(message), mower.serial_number);
-                    }, 1000 * 60 * 5);
+                    if (pingMqtt) {
+                        this.pingToMqtt(mower);
+                    }
                 }
             });
 
@@ -763,11 +759,24 @@ class Worx extends utils.Adapter {
                     this.log.debug(
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
-                    mower.last_status.payload = data;
-                    mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                        .toISOString()
-                        .replace("T", " ")
-                        .replace("Z", "");
+                    try{
+                        if (!new_mower || !new_mower.last_status || !new_mower.last_status.payload) {
+                            this.log.debug("No last_status found");
+                            delete new_mower.last_status
+                            this.log.info("Delete last_status");
+                        } else {
+                            mower.last_status.payload = data;
+                            mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                                .toISOString()
+                                .replace("T", " ")
+                                .replace("Z", "");
+                        }
+                    } catch (error) {
+                        this.log.info("Mqtt Delete last_status: " + error);
+                    }
+                    if (pingMqtt) {
+                        this.pingToMqtt(mower);
+                    }
                     await this.setStates(mower);
                     const new_mower = await this.cleanupRaw(mower);
                     this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
@@ -795,6 +804,41 @@ class Worx extends utils.Adapter {
             this.mqttC = undefined;
         }
     }
+
+    /**
+     * @param {object} actual mower
+     */
+    pingToMqtt(mower) {
+        const language = (
+            mower.last_status &&
+            mower.last_status.payload &&
+            mower.last_status.payload.cfg &&
+            mower.last_status.payload.cfg.lg
+        ) ? mower.last_status.payload.cfg.lg : "de";
+        const mowerSN = mower.serial_number ? mower.serial_number : "";
+        this.pingInterval[mowerSN] && clearTimeout(this.pingInterval[mowerSN]);
+        this.log.info("Reset ping");
+        this.pingInterval[mowerSN] = setInterval(() => {
+            this.log.debug("Worxcloud MQTT ping");
+            const now = new Date();
+            const message = {
+                id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
+                cmd: 0,
+                lg: language,
+                sn: mowerSN,
+                // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
+                tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
+                    "0" + now.getSeconds()
+                ).slice(-2)}`,
+                dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
+                    -2,
+                )}/${now.getFullYear()}`,
+            };
+            this.log.debug("Worxcloud MQTT ping: " + JSON.stringify(message));
+            this.sendMessage(JSON.stringify(message), mowerSN);
+        }, ping_interval);
+    }
+
     createWebsocketHeader() {
         const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
         const headers = {
@@ -898,7 +942,9 @@ class Worx extends utils.Adapter {
             this.refreshActivity && clearTimeout(this.refreshActivity);
             this.sleepTimer && clearTimeout(this.sleepTimer);
             this.updateFW && clearInterval(this.updateFW);
-            this.pingInterval && clearInterval(this.pingInterval);
+            for (const mower of this.deviceArray) {
+                this.pingInterval[mower.serial_number] && clearTimeout(this.pingInterval[mower.serial_number]);
+            }
             this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
             callback();
         } catch (e) {
@@ -1446,6 +1492,7 @@ class Worx extends utils.Adapter {
         const cleanOldVersion = await this.getObjectAsync(
             this.name + "." + this.instance + "." + serial + ".oldVersionCleaned",
         );
+
         if (!cleanOldVersion) {
             this.log.info("Please wait a few minutes.... clean old version");
             await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".rawMqtt", {
@@ -1458,9 +1505,9 @@ class Worx extends utils.Adapter {
             await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
                 type: "state",
                 common: {
-                    name: "Version < 2.0.0 cleaned",
-                    type: "boolean",
-                    role: "boolean",
+                    name: "Version check",
+                    type: "string",
+                    role: "meta.version",
                     write: false,
                     read: true,
                 },
@@ -1468,7 +1515,40 @@ class Worx extends utils.Adapter {
             });
 
             this.log.info("Done with cleaning");
+        } else {
+            try {
+                //Preparation for next Version
+                let oldVer = {"val":"2.0.1"};
+                if (cleanOldVersion.common && cleanOldVersion.common.type && cleanOldVersion.common.type !== "string") {
+                    cleanOldVersion.common.type = "string";
+                    cleanOldVersion.common.name = "Version check";
+                    cleanOldVersion.common.role = "meta.version";
+                    await this.setForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", cleanOldVersion);
+                    this.log.debug(`Object ${serial}.oldVersionCleaned change boolean to number`);
+                } else {
+                    oldVer = await this.getStateAsync(serial + ".oldVersionCleaned");
+                }
+                if (this.version > oldVer.val && oldVer.val <= "2.0.2") {
+                    const obj_fw = await this.getObjectAsync(this.name + "." + this.instance + "." + serial + ".mower.firmware");
+                    if (obj_fw) {
+                        if (obj_fw.common && obj_fw.common.type && obj_fw.common.type === "string") {
+                            obj_fw.common.type = "number";
+                            obj_fw.common.role = "meta.version";
+                            obj_fw.common['def'] = 0;
+                            await this.setForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".mower.firmware", obj_fw);
+                            this.log.debug(`Object ${serial}.mower.firmware change string to number`);
+                        }
+                    }
+                }
+            }
+            catch (e) {
+                this.log.info("cleanOldVersion: " + e);
+            }
         }
+        await this.setStateAsync(serial + ".oldVersionCleaned", {
+            val: this.version,
+            ack: true,
+        });
     }
 }
 
