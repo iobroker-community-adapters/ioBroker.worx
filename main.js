@@ -760,11 +760,12 @@ class Worx extends utils.Adapter {
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
                     try{
-                        if (!new_mower || !new_mower.last_status || !new_mower.last_status.payload) {
+                        if (!mower || !mower.last_status || !mower.last_status.payload) {
                             this.log.debug("No last_status found");
-                            delete new_mower.last_status
-                            this.log.info("Delete last_status");
+                            delete mower.last_status
+                            this.log.debug("Delete last_status");
                         } else {
+                            this.log.debug("Set new timestamp");
                             mower.last_status.payload = data;
                             mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
                                 .toISOString()
