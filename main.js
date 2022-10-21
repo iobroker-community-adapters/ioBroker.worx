@@ -576,7 +576,11 @@ class Worx extends utils.Adapter {
             .then((response) => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
-                this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                if (this.mqttC) {
+                    this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                } else {
+                    this.log.debug("Cannot update token for MQTT connection. MQTT Offline!");
+                }
             })
             .catch((error) => {
                 this.log.error(error);
