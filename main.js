@@ -503,10 +503,10 @@ class Worx extends utils.Adapter {
                         const preferedArrayName = null;
                         device = data;
                         await this.setStates(data);
-                        try{
+                        try {
                             if (!data || !data.last_status || !data.last_status.payload) {
                                 this.log.debug("No last_status found");
-                                delete data.last_status
+                                delete data.last_status;
                                 this.log.debug("Delete last_status");
                             }
                         } catch (error) {
@@ -759,10 +759,10 @@ class Worx extends utils.Adapter {
                     this.log.debug(
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
-                    try{
+                    try {
                         if (!mower || !mower.last_status || !mower.last_status.payload) {
                             this.log.debug("No last_status found");
-                            delete mower.last_status
+                            delete mower.last_status;
                             this.log.debug("Delete last_status");
                         } else {
                             this.log.debug("Set new timestamp");
@@ -810,12 +810,13 @@ class Worx extends utils.Adapter {
      * @param {object} actual mower
      */
     pingToMqtt(mower) {
-        const language = (
+        const language =
             mower.last_status &&
             mower.last_status.payload &&
             mower.last_status.payload.cfg &&
             mower.last_status.payload.cfg.lg
-        ) ? mower.last_status.payload.cfg.lg : "de";
+                ? mower.last_status.payload.cfg.lg
+                : "de";
         const mowerSN = mower.serial_number ? mower.serial_number : "";
         this.pingInterval[mowerSN] && clearTimeout(this.pingInterval[mowerSN]);
         this.log.info("Reset ping");
@@ -831,9 +832,7 @@ class Worx extends utils.Adapter {
                 tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
                     "0" + now.getSeconds()
                 ).slice(-2)}`,
-                dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
-                    -2,
-                )}/${now.getFullYear()}`,
+                dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()}`,
             };
             this.log.debug("Worxcloud MQTT ping: " + JSON.stringify(message));
             this.sendMessage(JSON.stringify(message), mowerSN);
@@ -1519,30 +1518,41 @@ class Worx extends utils.Adapter {
         } else {
             try {
                 //Preparation for next Version
-                let oldVer = {"val":"2.0.1"};
-                if (cleanOldVersion.common && cleanOldVersion.common.type && cleanOldVersion.common.type !== "string") {
-                    cleanOldVersion.common.type = "string";
-                    cleanOldVersion.common.name = "Version check";
-                    cleanOldVersion.common.role = "meta.version";
-                    await this.setForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", cleanOldVersion);
-                    this.log.debug(`Object ${serial}.oldVersionCleaned change boolean to number`);
-                } else {
-                    oldVer = await this.getStateAsync(serial + ".oldVersionCleaned");
+                let oldVersion = "2.0.1";
+                await this.extendObjectAsync(serial + ".oldVersionCleaned", {
+                    type: "state",
+                    common: {
+                        name: "Version check",
+                        type: "string",
+                        role: "meta.version",
+                        write: false,
+                        read: true,
+                    },
+                    native: {},
+                });
+
+                const oldVerState = await this.getStateAsync(serial + ".oldVersionCleaned");
+                if (oldVerState && oldVerState.val) {
+                    oldVersion = oldVerState.val;
                 }
-                if (this.version > oldVer.val && oldVer.val <= "2.0.2") {
-                    const obj_fw = await this.getObjectAsync(this.name + "." + this.instance + "." + serial + ".mower.firmware");
-                    if (obj_fw) {
-                        if (obj_fw.common && obj_fw.common.type && obj_fw.common.type === "string") {
-                            obj_fw.common.type = "number";
-                            obj_fw.common.role = "meta.version";
-                            obj_fw.common['def'] = 0;
-                            await this.setForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".mower.firmware", obj_fw);
-                            this.log.debug(`Object ${serial}.mower.firmware change string to number`);
-                        }
-                    }
+
+                if (this.version > oldVersion && oldVersion <= "2.0.2") {
+                    this.extendObjectAsync(serial + ".mower.firmware", {
+                        type: "state",
+                        common: {
+                            name: "Firmware Version",
+                            type: "number",
+                            role: "meta.version",
+                            read: true,
+                            write: false,
+                            desc: "Firmware Version",
+                        },
+                        native: {},
+                    });
+
+                    this.log.debug(`Object ${serial}.mower.firmware change string to number`);
                 }
-            }
-            catch (e) {
+            } catch (e) {
                 this.log.info("cleanOldVersion: " + e);
             }
         }
