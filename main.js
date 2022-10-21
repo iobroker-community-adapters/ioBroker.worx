@@ -815,32 +815,11 @@ class Worx extends utils.Adapter {
      * @param {object} actual mower
      */
     pingToMqtt(mower) {
-        const language =
-            mower.last_status &&
-            mower.last_status.payload &&
-            mower.last_status.payload.cfg &&
-            mower.last_status.payload.cfg.lg
-                ? mower.last_status.payload.cfg.lg
-                : "de";
         const mowerSN = mower.serial_number ? mower.serial_number : "";
         this.pingInterval[mowerSN] && clearTimeout(this.pingInterval[mowerSN]);
         this.log.info("Reset ping");
         this.pingInterval[mowerSN] = setInterval(() => {
-            this.log.debug("Worxcloud MQTT ping");
-            const now = new Date();
-            const message = {
-                id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
-                cmd: 0,
-                lg: language,
-                sn: mowerSN,
-                // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
-                tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
-                    "0" + now.getSeconds()
-                ).slice(-2)}`,
-                dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()}`,
-            };
-            this.log.debug("Worxcloud MQTT ping: " + JSON.stringify(message));
-            this.sendMessage(JSON.stringify(message), mowerSN);
+            this.sendPing(mower);
         }, ping_interval);
     }
 
@@ -1082,64 +1061,80 @@ class Worx extends utils.Adapter {
         }
         try {
             const actual_ts = Date.now();
-            const value_check = await this.getObjectAsync(this.namespace + "." + mower.serial_number + ".mower.mqtt_update_count");
-            if (actual_ts - 86400000 > value_check.native.NEXT) {
-                value_check.native.NEXT = actual_ts;
-                value_check.native.MIN = 0;
-                value_check.native.TIMES = 0;
-                this.log.debug("Start new counter");
+            const value_check = await this.getObjectAsync(
+                this.namespace + "." + mower.serial_number + ".mower.mqtt_update_count",
+            );
+            if (value_check) {
+                if (actual_ts - 86400000 > value_check.native.NEXT) {
+                    // every 10min 1000*60*10*144 = 86400000
+                    value_check.native.NEXT = actual_ts;
+                    value_check.native.MIN = 0;
+                    value_check.native.TIMES = 0;
+                    this.log.debug("Start new counter");
+                }
+                const date = new Date(value_check.native.NEXT + 86400000);
+                const next_start =
+                    date.getDate() +
+                    "/" +
+                    (date.getMonth() + 1) +
+                    "/" +
+                    date.getFullYear() +
+                    " " +
+                    date.getHours() +
+                    ":" +
+                    date.getMinutes() +
+                    ":" +
+                    date.getSeconds();
+                if (value_check.native.MAX > 200 || value_check.native.MAX < 200) value_check.native.MAX = 200;
+                if (value_check.native.NEXT === 0) value_check.native.NEXT = actual_ts;
+                if (actual_ts - value_check.native.TIMES < mqtt_poll_max) {
+                    this.log.info("Updating less than 1 minute is not allowed.");
+                    return;
+                }
+                ++value_check.native.MIN;
+                if (value_check.native.MIN > value_check.native.MAX) {
+                    this.log.info("Max. 200 updates for today have been used. Next refresh possible: " + next_start);
+                    return;
+                }
+                value_check.native.TIMES = actual_ts;
+                await this.setForeignObjectAsync(
+                    this.namespace + "." + mower.serial_number + ".mower.mqtt_update_count",
+                    value_check,
+                );
+                this.setStateAsync(`${mower.serial_number}.mower.mqtt_update_count`, {
+                    val: value_check.native.MIN,
+                    ack: true,
+                });
             }
-            const date = new Date(value_check.native.NEXT + 86400000);
-            const next_start =
-                date.getDate()+
-                "/"+(date.getMonth()+1)+
-                "/"+date.getFullYear()+
-                " "+date.getHours()+
-                ":"+date.getMinutes()+
-                ":"+date.getSeconds();
-            if (value_check.native.MAX > 200 || value_check.native.MAX < 200) value_check.native.MAX = 200;
-            if (value_check.native.NEXT === 0) value_check.native.NEXT = actual_ts;
-            if (actual_ts - value_check.native.TIMES < mqtt_poll_max) {
-                this.log.info("Updating less than 1 minute is not allowed.");
-                return;
-            }
-            ++value_check.native.MIN;
-            if (value_check.native.MIN > value_check.native.MAX) {
-                this.log.info("Max. 200 updates for today have been used. Next refresh possible: " + next_start);
-                return;
-            }
-            value_check.native.TIMES = actual_ts;
-            await this.setForeignObjectAsync(this.namespace + "." + mower.serial_number + ".mower.mqtt_update_count", value_check);
-            this.setStateAsync(`${mower.serial_number}.mower.mqtt_update_count`, {
-                val: value_check.native.MIN,
-                ack: true,
-            });
-            const language = (
-                mower.last_status &&
-                mower.last_status.payload &&
-                mower.last_status.payload.cfg &&
-                mower.last_status.payload.cfg.lg
-            ) ? mower.last_status.payload.cfg.lg : "de";
-            const mowerSN = mower.serial_number;
-            const now = new Date();
-            const message = {
-                id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
-                cmd: 0,
-                lg: language,
-                sn: mowerSN,
-                // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
-                tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
-                    "0" + now.getSeconds()
-                ).slice(-2)}`,
-                dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(
-                    -2,
-                )}/${now.getFullYear()}`,
-            };
-            this.log.debug("Start MQTT ping: " + JSON.stringify(message));
-            this.sendMessage(JSON.stringify(message), mowerSN);
+            this.sendPing(mower);
         } catch (e) {
             this.log.error("refreshMqttData: " + e);
         }
+    }
+
+    sendPing(mower) {
+        const language =
+            mower.last_status &&
+            mower.last_status.payload &&
+            mower.last_status.payload.cfg &&
+            mower.last_status.payload.cfg.lg
+                ? mower.last_status.payload.cfg.lg
+                : "de";
+        const mowerSN = mower.serial_number;
+        const now = new Date();
+        const message = {
+            id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
+            cmd: 0,
+            lg: language,
+            sn: mowerSN,
+            // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
+            tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
+                "0" + now.getSeconds()
+            ).slice(-2)}`,
+            dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()}`,
+        };
+        this.log.debug("Start MQTT ping: " + JSON.stringify(message));
+        this.sendMessage(JSON.stringify(message), mowerSN);
     }
 
     /**
