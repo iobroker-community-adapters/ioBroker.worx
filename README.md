@@ -32,6 +32,10 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ## Changelog
 
+### 2.0.3
+
+Add manual refresh. Fix empty status and firmware format. Reduce info logs.
+
 ### 2.0.1
 
 Adapter rewritten. Added product info and activity log. rawMqtt values improved and compatible with Node v18.

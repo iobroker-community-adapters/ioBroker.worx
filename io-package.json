@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.0.2",
+        "version": "2.0.3",
         "news": {
+            "2.0.3": {
+                "en": "Add manual refresh. Fix empty status and firmware format. Reduce info logs.",
+                "de": "Manueller Refresh hinzugefügt. Fix für leeren Status und firmware format. Info logs reduziert."
+            },
             "2.0.2": {
                 "en": "Fix MQTT connection for Kress, Landxcape and Ferrex",
                 "de": "MQTT Verbindung für Kress, Landxcape und Ferrex gefixt."
