@@ -730,6 +730,7 @@ class Worx extends utils.Adapter {
                 host: mqttEndpoint,
                 region: region,
                 customAuthHeaders: headers,
+                baseReconnectTimeMs: 5000,
             });
 
             this.mqttC.on("offline", () => {
