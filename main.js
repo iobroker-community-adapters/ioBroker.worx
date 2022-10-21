@@ -728,7 +728,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("offline", () => {
-                this.log.info("Worxcloud MQTT offline");
+                this.log.debug("Worxcloud MQTT offline");
             });
 
             this.mqttC.on("disconnect", (packet) => {
@@ -736,7 +736,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("connect", () => {
-                this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
+                this.log.debug("MQTT connected to: " + this.userData.mqtt_endpoint);
                 for (const mower of this.deviceArray) {
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
                     this.mqttC.subscribe(mower.mqtt_topics.command_out, { qos: 1 });
@@ -1501,7 +1501,6 @@ class Worx extends utils.Adapter {
             await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".weather", {
                 recursive: true,
             });
-
             await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
                 type: "state",
                 common: {
@@ -1549,17 +1548,13 @@ class Worx extends utils.Adapter {
                         },
                         native: {},
                     });
-
                     this.log.debug(`Object ${serial}.mower.firmware change string to number`);
                 }
             } catch (e) {
                 this.log.info("cleanOldVersion: " + e);
             }
         }
-        await this.setStateAsync(serial + ".oldVersionCleaned", {
-            val: this.version,
-            ack: true,
-        });
+        await this.setStateAsync(serial + ".oldVersionCleaned", this.version, true);
     }
 }
 
