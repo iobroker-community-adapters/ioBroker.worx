@@ -19,6 +19,8 @@ This adapter connects IoBroker with your Landroid Kress or Landxcape mower via C
 Temperatures, mowing times, battery level and various other data are read out from the mower.
 The adapter can control the mower and you can change config params like mowtimes.
 
+Minimum Node version 14.18
+
 ## Settings
 
 -   to connect to the mower type in email and password from your worx account in the Config.
