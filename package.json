@@ -41,7 +41,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@iobroker/adapter-dev": "^1.1.0",
+    "@iobroker/adapter-dev": "^1.2.0",
     "@iobroker/testing": "^4.1.0",
     "@tsconfig/node14": "^1.0.3",
     "@types/chai": "^4.3.3",
