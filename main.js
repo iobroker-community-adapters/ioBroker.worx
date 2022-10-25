@@ -1585,6 +1585,19 @@ class Worx extends utils.Adapter {
                 },
                 native: {},
             });
+            this.extendObjectAsync(serial + ".mower.firmware", {
+                type: "state",
+                common: {
+                    name: "Firmware Version",
+                    type: "number",
+                    role: "meta.version",
+                    read: true,
+                    write: false,
+                    desc: "Firmware Version",
+                },
+                native: {},
+            });
+            this.log.debug(`Object ${serial}.mower.firmware change string to number`);
 
             this.log.info("Done with cleaning");
         } else {
