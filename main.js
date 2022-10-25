@@ -1621,7 +1621,7 @@ class Worx extends utils.Adapter {
                     oldVersion = oldVerState.val;
                 }
 
-                if (this.version > oldVersion && oldVersion <= "2.0.2") {
+                if (this.version > oldVersion && oldVersion <= "2.0.3") {
                     this.extendObjectAsync(serial + ".mower.firmware", {
                         type: "state",
                         common: {
