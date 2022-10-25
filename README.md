@@ -11,20 +11,41 @@
 
 **Tests:** ![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.worx/workflows/Test%20and%20Release/badge.svg)
 
-## Worx (Kress and Landxcape) adapter for ioBroker
+## Worx (Kress, Landxcape and Ferrex) adapter for ioBroker
 
 control via cloud and mqtt
 
-This adapter connects IoBroker with your Landroid Kress or Landxcape mower via Cloud.
+This adapter connects IoBroker with your Landroid Kress Landxcape or Ferrex mower via Cloud.
 Temperatures, mowing times, battery level and various other data are read out from the mower.
 The adapter can control the mower and you can change config params like mowtimes.
 
 Minimum Node version 14.18
 
+activityLog das Aktivitätenprotokoll aus der App
+areas Die Areas des Mähers
+calendar Der Mähkalender des Mähers
+modules Die verbauten Modules des Mähers
+mower Aufbereite Informationen des Mähers sowie Steuerung des Mähers
+product Produktinformationen zum Mäher
+rawMqtt dieRohaten die via MQTT vom Mäher kommen
+worx.0.xx.mower.firmware_available -> Verfügbare Firmware
+worx.0.xx.mower.firmware_available_date -> Datum Update der letzten Firmware
+worx.0.xx.mower.firmware_available_all -> History der Firmware als JSON
+Update der Daten 24H
+worx.0.xx.product -> Informationen von eurem Mower welche Features, Board und Accessories er hat.
+Update der Daten einmalig nach einem Neustart/Restart
+worx.0.xx.activityLog.last_update -> Letzte Aktualisierung
+worx.0.xx.activityLog.payload -> Alle Aktivitäten der letzten 8 Tage als JSON
+
 ## Settings
 
 -   to connect to the mower type in email and password from your worx account in the Config.
 -   Delay for Edgecut : If the edgecut starts in a curve or bend, the lawnmower may lose the wire and stop with a fault, or the blades may not rotate. For this purpose, the starting point at which the blades start to rotate can be set.
+-   
+Mäher ab eine Zone oder Meterzahl starten lassen:
+Setze areas.area_0 auf die Meterzahl des gewünschten Startpunktes
+Setze areas.area_1, areas.area_2 und areas.area_3 jeweils auf 0
+Setze areas.startSequence auf [0,0,0,0,0,0,0,0,0,0]
 
 ## Disscussion und Questions
 
