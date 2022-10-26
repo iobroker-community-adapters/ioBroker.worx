@@ -45,6 +45,7 @@ class Worx extends utils.Adapter {
         this.pingInterval = {};
         this.session = {};
         this.mqttC = {};
+        this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
         this.setStates = helper.setStates;
         this.cleanupRaw = helper.cleanupRaw;
@@ -766,6 +767,19 @@ class Worx extends utils.Adapter {
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
                     try {
+                        if (
+                            this.mqtt_response_check &&
+                            this.mqtt_response_check.request &&
+                            this.mqtt_response_check.id === data.cfg.id
+                         ) {
+                                this.log.debug(`Request ID ${data.cfg.id} has been passed to the mower`);
+                                this.mqtt_response_check = {};
+                        }
+                    } catch (error) {
+                        this.mqtt_response_check = {};
+                        this.log.debug(`this.mqttC.on: ${error}`);
+                    }
+                    try {
                         if (!mower || !mower.last_status || !mower.last_status.payload) {
                             this.log.debug("No last_status found");
                             delete mower.last_status;
@@ -848,7 +862,38 @@ class Worx extends utils.Adapter {
 
         if (mower) {
             if (this.mqttC) {
-                this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
+                try {
+                    const language =
+                        mower.last_status &&
+                        mower.last_status.payload &&
+                        mower.last_status.payload.cfg &&
+                        mower.last_status.payload.cfg.lg
+                            ? mower.last_status.payload.cfg.lg
+                            : "de";
+                    const mowerSN = mower.serial_number;
+                    const now = new Date();
+                    const id = 1024 + Math.floor(Math.random() * (65535 - 1025));
+                    this.log.info(`MES:  ${JSON.stringify(message)}`);
+                    let data = JSON.stringify({
+                        id: id,
+                        cmd: 0,
+                        lg: language,
+                        sn: mowerSN,
+                        // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
+                        tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
+                            "0" + now.getSeconds()
+                        ).slice(-2)}`,
+                        dt: `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()}`,
+                        ...JSON.parse(message),
+                    });
+                    this.log.debug(`Sent to MQTT:  ${data}`);
+                    this.mqtt_response_check["id"] = id;
+                    this.mqtt_response_check["request"] = data;
+                    this.mqttC.publish(mower.mqtt_topics.command_in, data, { qos: 1 });
+                } catch (error) {
+                    this.log.debug(`sendMessage normal:  ${error}`);
+                    this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
+                }
             } else {
                 //  this.log.debug("Send via API");
                 //this.apiRequest("product-items", false, "PUT", message);
