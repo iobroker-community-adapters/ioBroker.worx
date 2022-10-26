@@ -1017,7 +1017,7 @@ class Worx extends utils.Adapter {
                 } else if (command === "AutoLock") {
                     const msg = this.modules.al;
                     // @ts-ignore
-                    msg.lvl = state.val | 0;
+                    msg.lvl = state.val ? 1 : 0;
                     this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number);
                 } else if (command === "AutoLockTimer") {
                     if (state.val < 0 || state.val > 600) {
@@ -1030,11 +1030,11 @@ class Worx extends utils.Adapter {
                     this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number);
                 } else if (command === "OLMSwitch_Cutting" && this.modules.DF) {
                     const msg = this.modules.DF;
-                    msg.cut = state.val || 0;
+                    msg.cut = state.val ? 1 : 0;
                     this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number);
                 } else if (command === "OLMSwitch_FastHoming" && this.modules.DF) {
                     const msg = this.modules.DF;
-                    msg.fh = state.val || 0;
+                    msg.fh = state.val ? 1 : 0;
                     this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number);
                 } else if (command === "ACS" && this.modules.US) {
                     const msg = this.modules.US;
