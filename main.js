@@ -482,6 +482,9 @@ class Worx extends utils.Adapter {
             },
         ];
         for (let device of this.deviceArray) {
+            if (!this.mqtt_response_check[device.serial_number]) {
+                this.mqtt_response_check[device.serial_number] = {};
+            }
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
                 await this.requestClient({
@@ -768,15 +771,14 @@ class Worx extends utils.Adapter {
                     );
                     try {
                         if (
-                            this.mqtt_response_check &&
-                            this.mqtt_response_check.request &&
-                            this.mqtt_response_check.id === data.cfg.id
+                            this.mqtt_response_check[mower.serial_number] &&
+                            this.mqtt_response_check[mower.serial_number]["id"] === data.cfg.id
                          ) {
                                 this.log.debug(`Request ID ${data.cfg.id} has been passed to the mower`);
-                                this.mqtt_response_check = {};
+                                this.mqtt_response_check[mower.serial_number] = {};
                         }
                     } catch (error) {
-                        this.mqtt_response_check = {};
+                        this.mqtt_response_check[mower.serial_number] = {};
                         this.log.debug(`this.mqttC.on: ${error}`);
                     }
                     try {
@@ -863,6 +865,15 @@ class Worx extends utils.Adapter {
         if (mower) {
             if (this.mqttC) {
                 try {
+                    if (
+                        this.mqtt_response_check &&
+                        this.mqtt_response_check[serial] != null &&
+                        this.mqtt_response_check[serial]["id"] != null &&
+                        this.mqtt_response_check[serial]["id"] > 1
+                    ) {
+                            this.log.info(`Your mower ${serial} is offline or too many commands have been sent. Please pause 1 second between commands.`);
+                            this.mqtt_response_check[serial] = {};
+                    }
                     const language =
                         mower.last_status &&
                         mower.last_status.payload &&
@@ -887,12 +898,12 @@ class Worx extends utils.Adapter {
                         ...JSON.parse(message),
                     });
                     this.log.debug(`Sent to MQTT:  ${data}`);
-                    this.mqtt_response_check["id"] = id;
-                    this.mqtt_response_check["request"] = data;
+                    this.mqtt_response_check[mowerSN] = JSON.parse(data);
                     this.mqttC.publish(mower.mqtt_topics.command_in, data, { qos: 1 });
                 } catch (error) {
                     this.log.debug(`sendMessage normal:  ${error}`);
                     this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
+                    this.mqtt_response_check[serial] = {};
                 }
             } else {
                 //  this.log.debug("Send via API");
