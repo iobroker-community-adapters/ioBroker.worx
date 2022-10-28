@@ -885,7 +885,7 @@ class Worx extends utils.Adapter {
             if (this.mqttC) {
                 try {
                     this.log.debug(`length:  ${Object.keys(this.mqtt_response_check).length}`);
-                    if (Object.keys(this.mqtt_response_check).length > 3) {
+                    if (Object.keys(this.mqtt_response_check).length > 50) {
                         this.cleanup_json();
                     }
                     const data = await this.sendPing(mower, true, JSON.parse(message));
