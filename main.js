@@ -279,6 +279,7 @@ class Worx extends utils.Adapter {
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
                     const id = device.serial_number;
+                    this.modules[device.serial_number] = {};
                     this.modules[device.serial_number]["edgeCut"] = false;
                     const name = device.name;
                     this.fw_available[device.serial_number] = false;
@@ -1057,7 +1058,7 @@ class Worx extends utils.Adapter {
             const command = id.split(".").pop();
             const mower_id = id.split(".")[2];
             const mower = this.deviceArray.find((device) => device.serial_number === mower_id);
-
+            this.log.debug(`this.modules!  ${JSON.stringify(this.modules)}`);
             this.log.debug(
                 `state change: id_____ ${id} Mower ${mower_id}_____${command}______${JSON.stringify(mower)}`,
             );
@@ -1126,7 +1127,7 @@ class Worx extends utils.Adapter {
                 } else if (command === "calJson" || command === "calJson2") {
                     this.changeWeekJson(id, state.val, mower);
                 } else if (command === "AutoLock") {
-                    const msg = this.modules.al;
+                    const msg = this.modules[mower.serial_number].al;
                     // @ts-ignore
                     msg.lvl = state.val ? 1 : 0;
                     this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number);
@@ -1135,20 +1136,20 @@ class Worx extends utils.Adapter {
                         this.log.warn("Please use value between 0 and 600 for Autolocktimer");
                         return;
                     }
-                    const msg = this.modules.al;
+                    const msg = this.modules[mower.serial_number].al;
                     // @ts-ignore
                     msg.t = parseInt(state.val);
                     this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number);
-                } else if (command === "OLMSwitch_Cutting" && this.modules.DF) {
-                    const msg = this.modules.DF;
+                } else if (command === "OLMSwitch_Cutting" && this.modules[mower.serial_number].DF) {
+                    const msg = this.modules[mower.serial_number].DF;
                     msg.cut = state.val ? 1 : 0;
                     this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number);
-                } else if (command === "OLMSwitch_FastHoming" && this.modules.DF) {
-                    const msg = this.modules.DF;
+                } else if (command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF) {
+                    const msg = this.modules[mower.serial_number].DF;
                     msg.fh = state.val ? 1 : 0;
                     this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number);
-                } else if (command === "ACS" && this.modules.US) {
-                    const msg = this.modules.US;
+                } else if (command === "ACS" && this.modules[mower.serial_number].US) {
+                    const msg = this.modules[mower.serial_number].US;
                     msg.enabled = state.val || 0;
                     this.sendMessage('{"modules":{"US":' + JSON.stringify(msg) + "}}", mower.serial_number);
                 } else if (command === "mqtt_update") {
