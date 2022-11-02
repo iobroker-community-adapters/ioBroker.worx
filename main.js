@@ -486,6 +486,7 @@ class Worx extends utils.Adapter {
                 desc: "All raw data of the mower",
             },
         ];
+        let count_array = 0;
         for (let device of this.deviceArray) {
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
@@ -504,6 +505,10 @@ class Worx extends utils.Adapter {
                         this.log.debug(JSON.stringify(res.data));
                         if (!res.data) {
                             return;
+                        }
+                        if (element.path === "rawMqtt") {
+                            this.deviceArray[count_array] = res.data;
+                            ++count_array;
                         }
                         const data = res.data;
                         const forceIndex = true;
@@ -785,6 +790,7 @@ class Worx extends utils.Adapter {
                 const data = JSON.parse(message);
                 this.mqtt_blocking = 0;
                 const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
+                const merge = this.deviceArray.findIndex((merge) => merge.mqtt_topics.command_out === topic);
 
                 if (mower) {
                     this.log.debug(
@@ -809,6 +815,13 @@ class Worx extends utils.Adapter {
                             this.log.debug("Delete last_status");
                         } else {
                             this.log.debug("Set new timestamp");
+                            try {
+                                if (merge) {
+                                    this.deviceArray[merge].last_status.payload = data;
+                                }
+                            } catch (error) {
+                                this.log.info("Update deviceArray: " + error);
+                            }
                             mower.last_status.payload = data;
                             mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
                                 .toISOString()
