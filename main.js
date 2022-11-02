@@ -279,6 +279,7 @@ class Worx extends utils.Adapter {
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
                     const id = device.serial_number;
+                    this.modules[device.serial_number]["edgeCut"] = false;
                     const name = device.name;
                     this.fw_available[device.serial_number] = false;
                     this.log.info(`Found device ${name} with id ${id}`);
@@ -1655,7 +1656,7 @@ class Worx extends utils.Adapter {
             mower.last_status.payload.cfg.sc &&
             mower.last_status.payload.cfg.sc.ots == null
         ) {
-            mower.edgeCut = true;
+            this.modules[mower.serial_number].edgeCut = true;
             this.sendMessage('{"cmd":4}', mower.serial_number); // starte ZoneTraining
         } else if (
             val === true &&
