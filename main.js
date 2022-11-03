@@ -1692,7 +1692,10 @@ class Worx extends utils.Adapter {
 
     async sendCommand(value, mower, id) {
         const val = value;
-
+        if (val < 0 || val > 9) {
+            this.log.info(`Sending cmd:${val} is not allowed.`);
+            return;
+        }
         this.log.debug(`Send cmd:${val}`);
         this.sendMessage(`{"cmd":${val}}`, mower.serial_number, id);
     }
