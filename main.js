@@ -1361,6 +1361,10 @@ class Worx extends utils.Adapter {
      * @param {any} value string of Json
      */
     async changeWeekJson(id, value, mower) {
+        if (mower && mower.auto_schedule) {
+            this.log.info(`Automatic mowing plan active! Times cannot be changed.`);
+            return;
+        }
         let msgJson;
         const sheduleSel = id.split(".")[4].search("2") === -1 ? "d" : "dd";
         let fail = false;
@@ -1446,7 +1450,10 @@ class Worx extends utils.Adapter {
             );
             return;
         }
-
+        if (mower && mower.auto_schedule) {
+            this.log.info(`Automatic mowing plan active! Times cannot be changed.`);
+            return;
+        }
         //find number 2 for second shedule
         const sheduleSel = id.split(".")[4].search("2") === -1 ? "d" : "dd";
         const message = mower.last_status.payload.cfg.sc; // set actual values
