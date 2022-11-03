@@ -17,6 +17,7 @@ const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
 const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
+const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
 const pingMqtt = false;
 const max_request = 20;
@@ -46,6 +47,7 @@ class Worx extends utils.Adapter {
         this.pingInterval = {};
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
+        this.poll_check_time = 0;
         this.session = {};
         this.mqttC = {};
         this.mqtt_response_check = {};
@@ -1073,6 +1075,12 @@ class Worx extends utils.Adapter {
      */
     async onStateChange(id, state) {
         if (state && !state.ack && state.val !== null) {
+            const check_time = Date.now() - this.poll_check_time;
+            if (check_time < poll_check) {
+                this.log.info(`Time between requests within ${check_time} ms is not allowed. STOP Request ${id} with value ${state.val}`);
+                return;
+            }
+            this.poll_check_time = Date.now();
             const command = id.split(".").pop();
             const mower_id = id.split(".")[2];
             const mower = this.deviceArray.find((device) => device.serial_number === mower_id);
