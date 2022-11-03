@@ -1690,7 +1690,7 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async sendCommand(value, mower) {
+    async sendCommand(value, mower, id) {
         const val = value;
 
         this.log.debug(`Send cmd:${val}`);
