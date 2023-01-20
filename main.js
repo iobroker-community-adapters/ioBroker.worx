@@ -780,7 +780,9 @@ class Worx extends utils.Adapter {
                 this.log.debug("MQTT reconnect");
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 10) {
-                    this.log.warn('Maybe your connection is blocked from Worx or your worx is offline. Restart Mqtt connection automatic in 24h');
+                    this.log.warn(
+                        "Maybe your connection is blocked from Worx or your worx is offline. Restart Mqtt connection automatic in 24h",
+                    );
                     this.mqttC.end();
                     this.mqtt_restart = setInterval(async () => {
                         this.log.info("Restart Mqtt after 24h");
@@ -814,8 +816,8 @@ class Worx extends utils.Adapter {
                     try {
                         if (!mower || !mower.last_status || !mower.last_status.payload) {
                             this.log.debug("No last_status found");
-                            delete mower.last_status;
-                            this.log.debug("Delete last_status");
+                            mower.last_status = {};
+                            this.log.debug("Reset last_status");
                         } else {
                             this.log.debug("Set new timestamp");
                             try {
@@ -927,7 +929,7 @@ class Worx extends utils.Adapter {
     cleanup_json() {
         try {
             const delete_time = Date.now() - 24 * 60 * 1000 * 60;
-            Object.keys(this.mqtt_response_check).forEach( async (key) => {
+            Object.keys(this.mqtt_response_check).forEach(async (key) => {
                 if (
                     this.mqtt_response_check[key].request &&
                     this.mqtt_response_check[key].request > 0 &&
@@ -968,9 +970,9 @@ class Worx extends utils.Adapter {
             } else if (send === "request") {
                 data_json[ids][send] = Date.now();
                 data_json[ids]["response"] = 0;
-               data_json[ids]["action"] = command;
+                data_json[ids]["action"] = command;
                 data_json[ids]["user"] = "iobroker";
-                new_merge.push(data_json[ids] );
+                new_merge.push(data_json[ids]);
             } else {
                 const merge = new_merge.findIndex((request) => request.id === ids);
                 if (merge && new_merge[merge] && new_merge[merge][send] != null) {
@@ -1077,7 +1079,9 @@ class Worx extends utils.Adapter {
         if (state && !state.ack && state.val !== null) {
             const check_time = Date.now() - this.poll_check_time;
             if (check_time < poll_check) {
-                this.log.info(`Time between requests within ${check_time} ms is not allowed. STOP Request ${id} with value ${state.val}`);
+                this.log.info(
+                    `Time between requests within ${check_time} ms is not allowed. STOP Request ${id} with value ${state.val}`,
+                );
                 return;
             }
             this.poll_check_time = Date.now();
@@ -1170,7 +1174,7 @@ class Worx extends utils.Adapter {
                     const msg = this.modules[mower.serial_number].DF;
                     msg.cut = state.val ? 1 : 0;
                     this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
-                } else if (command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF, id) {
+                } else if ((command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF, id)) {
                     const msg = this.modules[mower.serial_number].DF;
                     msg.fh = state.val ? 1 : 0;
                     this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
