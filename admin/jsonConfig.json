@@ -89,7 +89,7 @@
             "newLine": true,
             "sm": 3
         },
-        "metermin": {
+        "meterMin": {
             "type": "checkbox",
             "label": {
                 "en": "Distance and time in min and m",
