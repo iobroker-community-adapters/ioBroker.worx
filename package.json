@@ -36,7 +36,7 @@
     "axios": "^1.2.6",
     "http-cookie-agent": "^5.0.2",
     "json-bigint": "^1.0.0",
-    "qs": "^6.11.0",
+    "qs": "^6.11.1",
     "tough-cookie": "^4.1.2",
     "uuid": "^9.0.0"
   },
