@@ -884,7 +884,7 @@ class Worx extends utils.Adapter {
     pingToMqtt(mower) {
         const mowerSN = mower.serial_number ? mower.serial_number : "";
         this.pingInterval[mowerSN] && this.clearTimeout(this.pingInterval[mowerSN]);
-        this.log.info("Reset ping");
+        this.log.debug("Reset ping");
         this.pingInterval[mowerSN] = this.setInterval(() => {
             this.sendPing(mower);
         }, ping_interval);
