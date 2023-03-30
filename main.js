@@ -19,7 +19,7 @@ const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
-const pingMqtt = false;
+const pingMqtt = true;
 const max_request = 20;
 
 class Worx extends utils.Adapter {
@@ -1094,101 +1094,106 @@ class Worx extends utils.Adapter {
             );
 
             if (mower) {
-                if (command == "state") {
-                    if (state.val === true) {
-                        this.startMower(mower, id);
-                    } else {
-                        this.stopMower(mower, id);
-                    }
-                } else if (command == "waitRain") {
-                    // @ts-ignore
-                    const val = isNaN(state.val) || state.val < 0 ? 100 : parseInt(state.val);
-                    this.sendMessage(`{"rd":${val}}`, mower.serial_number, id);
-                    this.log.debug(`Changed time wait after rain to:${val}`);
-                } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
-                    this.changeMowerCfg(id, state.val, mower);
-                } else if (
-                    command === "area_0" ||
-                    command === "area_1" ||
-                    command === "area_2" ||
-                    command === "area_3"
-                ) {
-                    this.changeMowerArea(id, parseInt(state.val), mower);
-                } else if (command === "startSequence") {
-                    this.startSequences(id, state.val, mower);
-                } else if (command === "manuell_update") {
-                    const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
-                    if (state.val && lastTime && lastTime.val && Date.now() - lastTime.val > not_allowed) {
-                        this.createActivityLogStates(mower);
-                    } else {
-                        const nextTime = not_allowed / 1000;
-                        this.log.info(`Manuell update < ${nextTime} sec. is not allowed`);
-                    }
-                } else if (command === "pause") {
-                    if (state.val === true) {
-                        this.sendMessage('{"cmd":2}', mower.serial_number, id);
-                    }
-                } else if (command === "mowTimeExtend") {
-                    this.mowTimeEx(id, parseInt(state.val), mower);
-                } else if (
-                    command === "mowerActive" &&
-                    mower.last_status.payload &&
-                    mower.last_status.payload.cfg &&
-                    mower.last_status.payload.cfg.sc
-                ) {
-                    const val = state.val ? 1 : 0;
-                    const message = mower.last_status.payload.cfg.sc;
+                try {
+                    if (command == "state") {
+                        if (state.val === true) {
+                            this.startMower(mower, id);
+                        } else {
+                            this.stopMower(mower, id);
+                        }
+                    } else if (command == "waitRain") {
+                        // @ts-ignore
+                        const val = isNaN(state.val) || state.val < 0 ? 100 : parseInt(state.val);
+                        this.sendMessage(`{"rd":${val}}`, mower.serial_number, id);
+                        this.log.debug(`Changed time wait after rain to:${val}`);
+                    } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
+                        this.changeMowerCfg(id, state.val, mower);
+                    } else if (
+                        command === "area_0" ||
+                        command === "area_1" ||
+                        command === "area_2" ||
+                        command === "area_3"
+                    ) {
+                        this.changeMowerArea(id, parseInt(state.val), mower);
+                    } else if (command === "startSequence") {
+                        this.startSequences(id, state.val, mower);
+                    } else if (command === "manuell_update") {
+                        const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
+                        if (state.val && lastTime && lastTime.val && Date.now() - lastTime.val > not_allowed) {
+                            this.createActivityLogStates(mower);
+                        } else {
+                            const nextTime = not_allowed / 1000;
+                            this.log.info(`Manuell update < ${nextTime} sec. is not allowed`);
+                        }
+                    } else if (command === "pause") {
+                        if (state.val === true) {
+                            this.sendMessage('{"cmd":2}', mower.serial_number, id);
+                        }
+                    } else if (command === "mowTimeExtend") {
+                        this.mowTimeEx(id, parseInt(state.val), mower);
+                    } else if (
+                        command === "mowerActive" &&
+                        mower.last_status.payload &&
+                        mower.last_status.payload.cfg &&
+                        mower.last_status.payload.cfg.sc
+                    ) {
+                        const val = state.val ? 1 : 0;
+                        const message = mower.last_status.payload.cfg.sc;
 
-                    //hotfix 030620
-                    delete message.ots;
-                    delete message.distm;
+                        //hotfix 030620
+                        delete message.ots;
+                        delete message.distm;
 
-                    message.m = val;
-                    this.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial_number, id);
-                    this.log.debug(`Mow times disabled: ${message.m}`);
-                } else if (command === "edgecut") {
-                    this.edgeCutting(id, state.val, mower);
-                } else if (command === "sendCommand") {
-                    this.sendCommand(state.val, mower, id);
-                } else if (command === "oneTimeStart" || command === "oneTimeJson") {
-                    this.startOneShedule(id, state.val, mower);
-                } else if (command === "partyModus") {
-                    this.sendPartyModus(id, state.val, mower);
-                } else if (command === "calJson" || command === "calJson2") {
-                    this.changeWeekJson(id, state.val, mower);
-                } else if (command === "AutoLock") {
-                    const msg = this.modules[mower.serial_number].al;
-                    // @ts-ignore
-                    msg.lvl = state.val ? 1 : 0;
-                    this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
-                } else if (command === "AutoLockTimer") {
-                    if (state.val < 0 || state.val > 600) {
-                        this.log.warn("Please use value between 0 and 600 for Autolocktimer");
-                        return;
+                        message.m = val;
+                        this.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial_number, id);
+                        this.log.debug(`Mow times disabled: ${message.m}`);
+                    } else if (command === "edgecut") {
+                        this.edgeCutting(id, state.val, mower);
+                    } else if (command === "sendCommand") {
+                        this.sendCommand(state.val, mower, id);
+                    } else if (command === "oneTimeStart" || command === "oneTimeJson") {
+                        this.startOneShedule(id, state.val, mower);
+                    } else if (command === "partyModus") {
+                        this.sendPartyModus(id, state.val, mower);
+                    } else if (command === "calJson" || command === "calJson2") {
+                        this.changeWeekJson(id, state.val, mower);
+                    } else if (command === "AutoLock") {
+                        const msg = this.modules[mower.serial_number].al;
+                        // @ts-ignore
+                        msg.lvl = state.val ? 1 : 0;
+                        this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
+                    } else if (command === "AutoLockTimer") {
+                        if (state.val < 0 || state.val > 600) {
+                            this.log.warn("Please use value between 0 and 600 for Autolocktimer");
+                            return;
+                        }
+                        const msg = this.modules[mower.serial_number].al;
+                        // @ts-ignore
+                        msg.t = parseInt(state.val);
+                        this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
+                    } else if (command === "OLMSwitch_Cutting" && this.modules[mower.serial_number].DF) {
+                        const msg = this.modules[mower.serial_number].DF;
+                        msg.cut = state.val ? 1 : 0;
+                        this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
+                    } else if ((command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF, id)) {
+                        const msg = this.modules[mower.serial_number].DF;
+                        msg.fh = state.val ? 1 : 0;
+                        this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
+                    } else if (command === "ACS" && this.modules[mower.serial_number].US) {
+                        const msg = this.modules[mower.serial_number].US;
+                        msg.enabled = state.val || 0;
+                        this.sendMessage('{"modules":{"US":' + JSON.stringify(msg) + "}}", mower.serial_number, id);
+                    } else if (command === "mqtt_update") {
+                        this.refreshMqttData(mower, id);
+                    } else if (command === "torque") {
+                        if (state.val < -50 || state.val > 50) return;
+                        // @ts-ignore
+                        const tqval = parseInt(state.val);
+                        this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
                     }
-                    const msg = this.modules[mower.serial_number].al;
-                    // @ts-ignore
-                    msg.t = parseInt(state.val);
-                    this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
-                } else if (command === "OLMSwitch_Cutting" && this.modules[mower.serial_number].DF) {
-                    const msg = this.modules[mower.serial_number].DF;
-                    msg.cut = state.val ? 1 : 0;
-                    this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
-                } else if ((command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF, id)) {
-                    const msg = this.modules[mower.serial_number].DF;
-                    msg.fh = state.val ? 1 : 0;
-                    this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
-                } else if (command === "ACS" && this.modules[mower.serial_number].US) {
-                    const msg = this.modules[mower.serial_number].US;
-                    msg.enabled = state.val || 0;
-                    this.sendMessage('{"modules":{"US":' + JSON.stringify(msg) + "}}", mower.serial_number, id);
-                } else if (command === "mqtt_update") {
-                    this.refreshMqttData(mower, id);
-                } else if (command === "torque") {
-                    if (state.val < -50 || state.val > 50) return;
-                    // @ts-ignore
-                    const tqval = parseInt(state.val);
-                    this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
+                } catch (error) {
+                    this.log.error(`Error in change ${id} ${error}`);
+                    this.log.error(error.stack);
                 }
             } else this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
         }
