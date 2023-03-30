@@ -8,7 +8,7 @@ const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
 const awsIot = require("aws-iot-device-sdk").device;
 // const qs = require("qs");
-const Json2iob = require("./lib/json2iob");
+const Json2iob = require("json2iob");
 const tough = require("tough-cookie");
 const { HttpsCookieAgent } = require("http-cookie-agent/http");
 const { v4: uuidv4 } = require("uuid");
@@ -19,7 +19,7 @@ const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
-const pingMqtt = false;
+const pingMqtt = true;
 const max_request = 20;
 
 class Worx extends utils.Adapter {
@@ -1117,6 +1117,7 @@ class Worx extends utils.Adapter {
             );
 
             if (mower) {
+
                 if (command == "state") {
                     if (state.val === true) {
                         this.startMower(mower, id);
@@ -1213,6 +1214,7 @@ class Worx extends utils.Adapter {
                     if (state.val < -50 || state.val > 50) return;
                     const tqval = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                     this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
+
                 }
             } else this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
         }
