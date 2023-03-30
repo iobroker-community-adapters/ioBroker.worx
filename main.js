@@ -1009,6 +1009,7 @@ class Worx extends utils.Adapter {
             await this.setStateAsync(`${sn}.mower.last_command`, JSON.stringify(new_merge), true);
         } catch (e) {
             this.log.info("lastCommand: " + e);
+            this.log.debug(e.stack);
         }
     }
 
