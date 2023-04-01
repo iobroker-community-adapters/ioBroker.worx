@@ -1191,7 +1191,8 @@ class Worx extends utils.Adapter {
                         msg.lvl = state.val ? 1 : 0;
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "AutoLockTimer") {
-                        if (state.val < 0 || state.val > 600) {
+                        const lock = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
+                        if (lock < 0 || lock > 600) {
                             this.log.warn("Please use value between 0 and 600 for Autolocktimer");
                             return;
                         }
@@ -1202,7 +1203,7 @@ class Worx extends utils.Adapter {
                         const msg = this.modules[mower.serial_number].DF;
                         msg.cut = state.val ? 1 : 0;
                         this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
-                    } else if ((command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF, id)) {
+                    } else if (command === "OLMSwitch_FastHoming" && this.modules[mower.serial_number].DF) {
                         const msg = this.modules[mower.serial_number].DF;
                         msg.fh = state.val ? 1 : 0;
                         this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
@@ -1213,7 +1214,8 @@ class Worx extends utils.Adapter {
                     } else if (command === "mqtt_update") {
                         this.refreshMqttData(mower, id);
                     } else if (command === "torque") {
-                        if (state.val < -50 || state.val > 50) return;
+                        const torque = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
+                        if (torque < -50 || torque > 50) return;
                         const tqval = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
                     }
