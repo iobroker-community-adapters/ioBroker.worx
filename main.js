@@ -1184,6 +1184,11 @@ class Worx extends utils.Adapter {
                     } else if (command === "AutoLock") {
                         const msg = this.modules[mower.serial_number].al;
                         msg.lvl = state.val ? 1 : 0;
+                        if ((msg.t < 0 || msg.t > 600) && msg.lvl === 1) {
+                            msg.t = 300;
+                        } else if (msg.lvl === 0) {
+                            msg.t = 0;
+                        }
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "AutoLockTimer") {
                         const lock = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
@@ -1193,6 +1198,7 @@ class Worx extends utils.Adapter {
                         }
                         const msg = this.modules[mower.serial_number].al;
                         msg.t = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
+                        if (msg.lvl === 0) msg.lvl = 1;
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "OLMSwitch_Cutting" && this.modules[mower.serial_number].DF) {
                         const msg = this.modules[mower.serial_number].DF;
