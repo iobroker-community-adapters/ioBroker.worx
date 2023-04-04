@@ -523,11 +523,6 @@ class Worx extends utils.Adapter {
                                 delete data.last_status;
                                 this.log.debug("Delete last_status");
                             }
-                            if (!data || !data.auto_schedule_settings) {
-                                this.log.debug("No auto_schedule_settings found");
-                                delete data.auto_schedule_settings;
-                                this.log.debug("Delete auto_schedule_settings");
-                            }
                         } catch (error) {
                             this.log.debug("Delete last_status: " + error);
                         }
