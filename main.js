@@ -146,7 +146,7 @@ class Worx extends utils.Adapter {
         }
         if (this.session.access_token) {
             await this.getDeviceList();
-            await this.updateDevices();
+            //await this.updateDevices();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
