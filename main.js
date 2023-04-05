@@ -50,6 +50,8 @@ class Worx extends utils.Adapter {
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
         this.poll_check_time = 0;
+        this.requestCounter = 0;
+        this.requestCounterStart = Date.now();
         this.session = {};
         this.mqttC = null;
         this.instanceFile = path_ad.join(__dirname, `session.json`);
@@ -827,6 +829,8 @@ class Worx extends utils.Adapter {
                     this.log.warn(
                         "Maybe your connection is blocked from Worx or your worx is offline. Restart Mqtt connection automatic in 24h",
                     );
+                    this.log.warn(`Request counter since adapter start: ${this.requestCounter}`);
+                    this.log.warn(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
                     this.mqttC.end();
                     this.mqtt_restart = this.setInterval(async () => {
                         this.log.info("Restart Mqtt after 24h");
@@ -947,6 +951,8 @@ class Worx extends utils.Adapter {
 
         if (mower) {
             if (this.mqttC) {
+                this.requestCounter++;
+                this.log.info(`Request Counter: ${this.requestCounter}`);
                 try {
                     this.log.debug(`length:  ${Object.keys(this.mqtt_response_check).length}`);
                     if (Object.keys(this.mqtt_response_check).length > 50) {
