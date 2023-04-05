@@ -12,6 +12,8 @@ const Json2iob = require("json2iob");
 const tough = require("tough-cookie");
 const { HttpsCookieAgent } = require("http-cookie-agent/http");
 const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+const path_ad = require("path");
 const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
@@ -50,6 +52,7 @@ class Worx extends utils.Adapter {
         this.poll_check_time = 0;
         this.session = {};
         this.mqttC = null;
+        this.instanceFile = path_ad.join(__dirname, `session.json`);
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
         this.setStates = helper.setStates;
@@ -116,9 +119,29 @@ class Worx extends utils.Adapter {
         }
 
         this.subscribeStates("*");
-
-        this.log.info("Login to " + this.config.server);
-        await this.login();
+        let is_session = true;
+        try {
+            if (fs.existsSync(this.instanceFile)) {
+                const last_save = fs.statSync(this.instanceFile);
+                const last_session = JSON.parse(fs.readFileSync(this.instanceFile, "utf8"));
+                if (last_save.mtime.getTime() + last_session.expires_in * 1000 > Date.now()) {
+                    last_session.expires_in = Math.round(
+                        (last_save.mtime.getTime() + last_session.expires_in * 1000 - Date.now()) / 1000,
+                    );
+                    this.session = last_session;
+                    this.log.info("Use old session: " + this.config.server);
+                    this.setState("info.connection", true, true);
+                    is_session = false;
+                }
+            }
+        } catch (error) {
+            this.log.debug("Error read session.json: " + error);
+        }
+        if (is_session) {
+            this.log.info("New Login to " + this.config.server);
+            await this.login();
+            fs.writeFileSync(this.instanceFile, JSON.stringify(this.session));
+        }
         if (this.session.access_token) {
             await this.getDeviceList();
             await this.updateDevices();
@@ -306,9 +329,23 @@ class Worx extends utils.Adapter {
                     }
                     await this.createActivityLogStates(device, true);
                     await this.createProductStates(device);
-                    // this.json2iob.parse(`${id}.rawMqtt`, await this.cleanupRaw(device), {
-                    //     forceIndex: true,
-                    // });
+                    const data = device;
+                    await this.setStates(data);
+                    try {
+                        if (!data || !data.last_status || !data.last_status.payload) {
+                            this.log.debug("No last_status found");
+                            delete data.last_status;
+                            this.log.debug("Delete last_status");
+                        }
+                    } catch (error) {
+                        this.log.debug("Delete last_status: " + error);
+                    }
+                    const new_data = await this.cleanupRaw(data);
+                    this.json2iob.parse(`${device.serial_number}.rawMqtt`, new_data, {
+                        forceIndex: true,
+                        preferedArrayName: null,
+                        channelName: "All raw data of the mower",
+                    });
                 }
             })
             .catch((error) => {
@@ -590,6 +627,7 @@ class Worx extends utils.Adapter {
             .then((response) => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
+                fs.writeFileSync(this.instanceFile, JSON.stringify(this.session));
                 if (this.mqttC) {
                     this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
                 } else {
@@ -753,23 +791,23 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("offline", () => {
-                this.log.debug("Worxcloud MQTT offline");
+                this.log.info("Worxcloud MQTT offline");
             });
 
             this.mqttC.on("end", () => {
-                this.log.debug("mqtt end");
+                this.log.info("mqtt end");
             });
 
             this.mqttC.on("close", () => {
-                this.log.debug("mqtt closed");
+                this.log.info("mqtt closed");
             });
 
             this.mqttC.on("disconnect", (packet) => {
-                this.log.debug("MQTT disconnect" + packet);
+                this.log.info("MQTT disconnect" + packet);
             });
 
             this.mqttC.on("connect", () => {
-                this.log.debug("MQTT connected to: " + this.userData.mqtt_endpoint);
+                this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
                 this.mqtt_blocking = 0;
                 this.mqtt_restart && this.clearInterval(this.mqtt_restart);
                 for (const mower of this.deviceArray) {
@@ -783,7 +821,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("reconnect", () => {
-                this.log.debug("MQTT reconnect");
+                this.log.info("MQTT reconnect");
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 10) {
                     this.log.warn(
@@ -804,7 +842,7 @@ class Worx extends utils.Adapter {
                 const merge = this.deviceArray.findIndex((merge) => merge.mqtt_topics.command_out === topic);
 
                 if (mower) {
-                    this.log.debug(
+                    this.log.info(
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
                     try {
