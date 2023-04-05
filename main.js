@@ -793,23 +793,23 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("offline", () => {
-                this.log.info("Worxcloud MQTT offline");
+                this.log.debug("Worxcloud MQTT offline");
             });
 
             this.mqttC.on("end", () => {
-                this.log.info("mqtt end");
+                this.log.debug("mqtt end");
             });
 
             this.mqttC.on("close", () => {
-                this.log.info("mqtt closed");
+                this.log.debug("mqtt closed");
             });
 
             this.mqttC.on("disconnect", (packet) => {
-                this.log.info("MQTT disconnect" + packet);
+                this.log.debug("MQTT disconnect" + packet);
             });
 
             this.mqttC.on("connect", () => {
-                this.log.info("MQTT connected to: " + this.userData.mqtt_endpoint);
+                this.log.debug("MQTT connected to: " + this.userData.mqtt_endpoint);
                 this.mqtt_blocking = 0;
                 this.mqtt_restart && this.clearInterval(this.mqtt_restart);
                 for (const mower of this.deviceArray) {
@@ -823,7 +823,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("reconnect", () => {
-                this.log.info("MQTT reconnect");
+                this.log.debug("MQTT reconnect");
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 10) {
                     this.log.warn(
@@ -846,7 +846,7 @@ class Worx extends utils.Adapter {
                 const merge = this.deviceArray.findIndex((merge) => merge.mqtt_topics.command_out === topic);
 
                 if (mower) {
-                    this.log.info(
+                    this.log.debug(
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
                     try {
