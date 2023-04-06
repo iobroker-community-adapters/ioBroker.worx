@@ -19,7 +19,7 @@ const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
-const pingMqtt = true;
+const pingMqtt = false;
 const max_request = 20;
 
 class Worx extends utils.Adapter {
