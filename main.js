@@ -1140,15 +1140,17 @@ class Worx extends utils.Adapter {
      */
     async onStateChange(id, state) {
         if (state && !state.ack && state.val !== null) {
+            const no_verification = ["borderCut", "startTime", "workTime", "oneTimeWithBorder", "oneTimeWorkTime"];
+            const command = id.split(".").pop();
+            if (command == null) return;
             const check_time = Date.now() - this.poll_check_time;
-            if (check_time < poll_check) {
+            if (check_time < poll_check && !no_verification.includes(command)) {
                 this.log.info(
                     `Time between requests within ${check_time} ms is not allowed. STOP Request ${id} with value ${state.val}`,
                 );
                 return;
             }
             this.poll_check_time = Date.now();
-            const command = id.split(".").pop();
             const mower_id = id.split(".")[2];
             const mower = this.deviceArray.find((device) => device.serial_number === mower_id);
             this.log.debug(`this.modules!  ${JSON.stringify(this.modules)}`);
@@ -1171,7 +1173,7 @@ class Worx extends utils.Adapter {
                         this.log.debug(`Changed time wait after rain to:${val}`);
                     } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
                         this.changeMowerCfg(id, state.val, mower, false);
-                    } else if (command == "calJson_sendto" && state.val) {
+                    } else if (command === "calJson_sendto" && state.val) {
                         this.changeMowerCfg(id, state.val, mower, true);
                     } else if (
                         command === "area_0" ||
@@ -1551,7 +1553,7 @@ class Worx extends utils.Adapter {
             const message = await this.getStateAsync(`${mower.serial_number}.calendar.calJson_tosend`);
             if (message != null && message.val != "") {
                 try {
-                    this.sendMessage(`{"sc":${JSON.stringify(message.val)}}`, mower.serial_number, id);
+                    this.sendMessage(`{"sc":${message.val}}`, mower.serial_number, id);
                     this.setStateAsync(`${mower.serial_number}.calendar.calJson_sendto`, {
                         val: false,
                         ack: true,
