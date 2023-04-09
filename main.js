@@ -1108,7 +1108,7 @@ class Worx extends utils.Adapter {
             const check_time = Date.now() - this.poll_check_time;
             if (check_time < poll_check && !no_verification.includes(command)) {
                 this.log.info(
-                    `Min Time between requests are 1000ms this commands was ${check_time} ms is not allowed. Request ${id} with value ${state.val} was not sended`,
+                    `Min Time between requests is 1000ms. The time between commands was ${check_time} ms. Request ${id} with value ${state.val} was not sended`,
                 );
                 return;
             }
