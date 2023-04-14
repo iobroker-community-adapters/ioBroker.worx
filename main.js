@@ -785,9 +785,9 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("reconnect", () => {
-                this.log.debug("MQTT reconnect");
+                this.log.debug("MQTT reconnect: " + this.mqtt_blocking);
                 ++this.mqtt_blocking;
-                if (this.mqtt_blocking > 10) {
+                if (this.mqtt_blocking > 15) {
                     this.log.warn(
                         "No Connection to Worx for 1 minute. Please check your internet connection or in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 24h",
                     );
