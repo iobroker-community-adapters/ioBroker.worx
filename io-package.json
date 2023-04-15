@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.1.0",
+        "version": "2.1.1",
         "news": {
+            "2.1.1": {
+                "en": "Change reconnection times",
+                "de": "Änderung der Wiederverbindungszeiten"
+            },
             "2.1.0": {
                 "en": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many sending requests",
                 "de": "Verschieben des Calendar in eine Json und andere Verbesserung, um ein 24h Block zu verhindern, der passiert wenn zu viele Anfragen gesendet werden."

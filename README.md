@@ -54,6 +54,10 @@ worx.0.xx.activityLog.payload -> Alle Aktivitäten der letzten 8 Tage als JSON
 
 ## Changelog
 
+### 2.1.1
+
+Change reconnection times
+
 ### 2.1.0
 
 Move Calendar setState to one Json and other fixes to prevent blocking because of too many sending requests
