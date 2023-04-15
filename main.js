@@ -137,7 +137,7 @@ class Worx extends utils.Adapter {
 
             this.refreshTokenInterval = this.setInterval(() => {
                 this.refreshToken();
-            }, (this.session.expires_in - 100) * 1000);
+            }, (this.session.expires_in - 200) * 1000);
 
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
@@ -750,7 +750,7 @@ class Worx extends utils.Adapter {
                 host: mqttEndpoint,
                 region: region,
                 customAuthHeaders: headers,
-                baseReconnectTimeMs: 5000,
+                baseReconnectTimeMs: 8000,
                 debug: !!this.log.debug,
             });
 
@@ -789,15 +789,15 @@ class Worx extends utils.Adapter {
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 15) {
                     this.log.warn(
-                        "No Connection to Worx for 1 minute. Please check your internet connection or in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 24h",
+                        "No Connection to Worx for 1 minute. Please check your internet connection or in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 1h",
                     );
                     this.log.info(`Request counter since adapter start: ${this.requestCounter}`);
                     this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
                     this.mqttC.end();
                     this.mqtt_restart = this.setInterval(async () => {
-                        this.log.info("Restart Mqtt after 24h");
+                        this.log.info("Restart Mqtt after 1h");
                         this.start_mqtt();
-                    }, 24 * 60 * 1000 * 60); // 24 hour
+                    }, 1 * 60 * 1000 * 60); // 1 hour
                 }
             });
 
