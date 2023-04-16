@@ -696,6 +696,7 @@ class Worx extends utils.Adapter {
             data: data || null,
         })
             .then(async (res) => {
+                this.log.debug(path);
                 this.log.debug(JSON.stringify(res.data));
                 if (method === "PUT") {
                     this.log.info(JSON.stringify(res.data));
@@ -731,6 +732,7 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
+
             const mqttEndpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
@@ -789,10 +791,18 @@ class Worx extends utils.Adapter {
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 15) {
                     this.log.warn(
-                        "No Connection to Worx for 1 minute. Please check your internet connection or in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 1h",
+                        "No Connection to Worx for 1 minute. Please check your internet connection or check in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 1h",
                     );
                     this.log.info(`Request counter since adapter start: ${this.requestCounter}`);
                     this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
+                    if (this.deviceArray.length > 1) {
+                        this.log.info(`More than one mower found. for user id ${this.userData.id}`);
+                        for (const mower of this.deviceArray) {
+                            this.log.info(
+                                `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
+                            );
+                        }
+                    }
                     this.mqttC.end();
                     this.mqtt_restart = this.setInterval(async () => {
                         this.log.info("Restart Mqtt after 1h");
