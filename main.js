@@ -732,7 +732,14 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             const uuid = this.deviceArray[0].uuid || uuidv4();
-
+            if (this.deviceArray.length > 1) {
+                this.log.debug(`More than one mower found. for user id ${this.userData.id}`);
+                for (const mower of this.deviceArray) {
+                    this.log.debug(
+                        `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
+                    );
+                }
+            }
             const mqttEndpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
