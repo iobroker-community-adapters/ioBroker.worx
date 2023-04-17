@@ -49,6 +49,7 @@ class Worx extends utils.Adapter {
         this.mqtt_restart = null;
         this.poll_check_time = 0;
         this.requestCounter = 0;
+        this.reconnectCounter = 0;
         this.requestCounterStart = Date.now();
         this.session = {};
         this.mqttC = null;
@@ -731,6 +732,7 @@ class Worx extends utils.Adapter {
     }
     connectMqtt() {
         try {
+            this.initConnection = true;
             const uuid = this.deviceArray[0].uuid || uuidv4();
             if (this.deviceArray.length > 1) {
                 this.log.debug(`More than one mower found. for user id ${this.userData.id}`);
@@ -782,36 +784,45 @@ class Worx extends utils.Adapter {
             this.mqttC.on("connect", () => {
                 this.log.debug("MQTT connected to: " + this.userData.mqtt_endpoint);
                 this.mqtt_blocking = 0;
-                this.mqtt_restart && this.clearInterval(this.mqtt_restart);
+                this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                 for (const mower of this.deviceArray) {
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
                     this.mqttC.subscribe(mower.mqtt_topics.command_out, { qos: 1 });
-                    this.mqttC.publish(mower.mqtt_topics.command_in, "{}", { qos: 1 });
+                    if (this.initConnection) {
+                        this.requestCounter++;
+                        this.mqttC.publish(mower.mqtt_topics.command_in, "{}", { qos: 1 });
+                    }
                     if (pingMqtt) {
                         this.pingToMqtt(mower);
                     }
                 }
+                this.initConnection = false;
             });
 
             this.mqttC.on("reconnect", () => {
                 this.log.debug("MQTT reconnect: " + this.mqtt_blocking);
+                this.log.debug(`Reconnect since adapter start: ${this.reconnectCounter}`);
+                ++this.reconnectCounter;
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 15) {
                     this.log.warn(
                         "No Connection to Worx for 1 minute. Please check your internet connection or check in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 1h",
                     );
                     this.log.info(`Request counter since adapter start: ${this.requestCounter}`);
+                    this.log.info(`Reconnects since adapter start: ${this.reconnectCounter}`);
                     this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
                     if (this.deviceArray.length > 1) {
-                        this.log.info(`More than one mower found. for user id ${this.userData.id}`);
+                        this.log.info(`More than one mower found.`);
                         for (const mower of this.deviceArray) {
                             this.log.info(
-                                `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
+                                `Mower Endpoint : ${mower.mqtt_endpoint}  mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
                             );
                         }
                     }
                     this.mqttC.end();
-                    this.mqtt_restart = this.setInterval(async () => {
+
+                    this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
+                    this.mqtt_restart = this.setTimeout(async () => {
                         this.log.info("Restart Mqtt after 1h");
                         this.start_mqtt();
                     }, 1 * 60 * 1000 * 60); // 1 hour
@@ -1100,7 +1111,7 @@ class Worx extends utils.Adapter {
             this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
             this.updateInterval && this.clearInterval(this.updateInterval);
             this.refreshActivity && this.clearInterval(this.refreshActivity);
-            this.mqtt_restart && this.clearInterval(this.mqtt_restart);
+            this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
             this.sleepTimer && this.clearTimeout(this.sleepTimer);
             this.updateFW && this.clearInterval(this.updateFW);
             for (const mower of this.deviceArray) {
