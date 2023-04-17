@@ -786,6 +786,10 @@ class Worx extends utils.Adapter {
                 this.mqtt_blocking = 0;
                 this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                 for (const mower of this.deviceArray) {
+                    if (!mower.mqtt_topics) {
+                        this.log.warn("No mqtt topics found for mower " + mower.serial_number);
+                        continue;
+                    }
                     this.log.debug("Worxcloud MQTT subscribe to " + mower.mqtt_topics.command_out);
                     this.mqttC.subscribe(mower.mqtt_topics.command_out, { qos: 1 });
                     if (this.initConnection) {
@@ -819,7 +823,7 @@ class Worx extends utils.Adapter {
                             );
                         }
                     }
-                    this.mqttC.end();
+                    this.mqttC && this.mqttC.end();
 
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                     this.mqtt_restart = this.setTimeout(async () => {
@@ -1526,6 +1530,11 @@ class Worx extends utils.Adapter {
         const val = value;
         let sval, dayID;
 
+        if (!mower.last_status) {
+            // check if config exist
+            this.log.warn(`Missing last_status from mower ${mower.serial_number} cannot send command`);
+            return;
+        }
         if (!mower.last_status.payload || mower.last_status.payload.cfg == null) {
             // check if config exist
             this.log.warn(
