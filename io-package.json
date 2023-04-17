@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.1.1",
+        "version": "2.1.2",
         "news": {
+            "2.1.2": {
+                "en": "Improve reconnection for multiple mower",
+                "de": "Verbesserung der Wiederverbindung für mehrere Mäher"
+            },
             "2.1.1": {
                 "en": "Change reconnection times",
                 "de": "Änderung der Wiederverbindungszeiten"
