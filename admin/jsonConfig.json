@@ -105,6 +105,24 @@
             },
             "newLine": true,
             "sm": 3
+        },
+        "pingMqtt": {
+            "type": "checkbox",
+            "label": {
+                "en": "Ping MQTT Connection every 10 minutes.",
+                "de": "MQTT Verbindung alle 10 Minuten anpingen.",
+                "ru": "Пинг МКТ Подключение каждые 10 минут.",
+                "pt": "Ping MQTT Ligação a cada 10 minutos.",
+                "nl": "Ping MQT Connectie om de 10 minuten.",
+                "fr": "Ping MQTT Connexion toutes les 10 minutes.",
+                "it": "Ping MQTT Collegamento ogni 10 minuti.",
+                "es": "Ping MQTT Conexión cada 10 minutos.",
+                "pl": "Ping MQTT Połączenie co 10 minut.",
+                "uk": "Пінг MQTT Підключення кожні 10 хвилин.",
+                "zh-cn": "P. MQTT 发言每10分钟。."
+            },
+            "newLine": true,
+            "sm": 3
         }
     }
 }

@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.1.2",
+        "version": "2.1.3",
         "news": {
+            "2.1.3": {
+                "en": "Add ping option in the instance settings",
+                "de": "Ping Option in den Instanz-Einstellungen hinzugefügt"
+            },
             "2.1.2": {
                 "en": "Improve reconnection for multiple mower",
                 "de": "Verbesserung der Wiederverbindung für mehrere Mäher"
@@ -146,7 +150,8 @@
         "password": "",
         "edgeCutDelay": 5000,
         "server": "worx",
-        "meterMin": false
+        "meterMin": false,
+        "pingMqtt": false
     },
     "objects": [],
     "instanceObjects": [

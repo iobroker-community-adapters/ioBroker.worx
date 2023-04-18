@@ -19,7 +19,6 @@ const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
-const pingMqtt = false;
 const max_request = 20;
 
 class Worx extends utils.Adapter {
@@ -796,7 +795,7 @@ class Worx extends utils.Adapter {
                         this.requestCounter++;
                         this.mqttC.publish(mower.mqtt_topics.command_in, "{}", { qos: 1 });
                     }
-                    if (pingMqtt) {
+                    if (this.config.pingMqtt) {
                         this.pingToMqtt(mower);
                     }
                 }
@@ -815,14 +814,7 @@ class Worx extends utils.Adapter {
                     this.log.info(`Request counter since adapter start: ${this.requestCounter}`);
                     this.log.info(`Reconnects since adapter start: ${this.reconnectCounter}`);
                     this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
-                    if (this.deviceArray.length > 1) {
-                        this.log.info(`More than one mower found.`);
-                        for (const mower of this.deviceArray) {
-                            this.log.info(
-                                `Mower Endpoint : ${mower.mqtt_endpoint}  mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
-                            );
-                        }
-                    }
+
                     this.mqttC && this.mqttC.end();
 
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
@@ -878,7 +870,7 @@ class Worx extends utils.Adapter {
                     } catch (error) {
                         this.log.info("Mqtt Delete last_status: " + error);
                     }
-                    if (pingMqtt) {
+                    if (this.config.pingMqtt) {
                         this.pingToMqtt(mower);
                     }
                     await this.setStates(mower);
@@ -914,7 +906,7 @@ class Worx extends utils.Adapter {
      */
     pingToMqtt(mower) {
         const mowerSN = mower.serial_number ? mower.serial_number : "";
-        this.pingInterval[mowerSN] && this.clearTimeout(this.pingInterval[mowerSN]);
+        this.pingInterval[mowerSN] && this.clearInterval(this.pingInterval[mowerSN]);
         this.log.debug("Reset ping");
         this.pingInterval[mowerSN] = this.setInterval(() => {
             this.sendPing(mower);
@@ -1119,7 +1111,7 @@ class Worx extends utils.Adapter {
             this.sleepTimer && this.clearTimeout(this.sleepTimer);
             this.updateFW && this.clearInterval(this.updateFW);
             for (const mower of this.deviceArray) {
-                this.pingInterval[mower.serial_number] && this.clearTimeout(this.pingInterval[mower.serial_number]);
+                this.pingInterval[mower.serial_number] && this.clearInterval(this.pingInterval[mower.serial_number]);
             }
             this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
             callback();
