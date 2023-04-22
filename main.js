@@ -826,7 +826,13 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("message", async (topic, message) => {
-                const data = JSON.parse(message);
+                let data;
+                try {
+                    data = JSON.parse(message);
+                } catch (error) {
+                    this.log.warn(`Cannot parse mqtt message ${message} for topic ${topic}`);
+                    return;
+                }
                 this.mqtt_blocking = 0;
                 const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
                 const merge = this.deviceArray.findIndex((merge) => merge.mqtt_topics.command_out === topic);
