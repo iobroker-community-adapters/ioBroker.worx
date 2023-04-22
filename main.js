@@ -1265,7 +1265,7 @@ class Worx extends utils.Adapter {
                 }
             } else {
                 this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
-                this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`
+                this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`);
             }
         }
     }
