@@ -887,6 +887,7 @@ class Worx extends utils.Adapter {
                     });
                 } else {
                     this.log.debug("Worxcloud MQTT could not find mower topic in mowers");
+                    this.log.info(`Mower List : ${JSON.stringify(this.deviceArray)}`);
                 }
             });
 
@@ -1262,7 +1263,10 @@ class Worx extends utils.Adapter {
                     this.log.error(`Error in ${id} ${error}`);
                     this.log.error(error.stack);
                 }
-            } else this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
+            } else {
+                this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
+                this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`
+            }
         }
     }
 
