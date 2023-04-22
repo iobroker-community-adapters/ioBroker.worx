@@ -886,7 +886,7 @@ class Worx extends utils.Adapter {
                         preferedArrayName: null,
                     });
                 } else {
-                    this.log.debug("Worxcloud MQTT could not find mower topic in mowers");
+                    this.log.info(`Worxcloud MQTT could not find mower topic - ${topic} in mowers`);
                     this.log.info(`Mower List : ${JSON.stringify(this.deviceArray)}`);
                 }
             });
