@@ -490,7 +490,6 @@ class Worx extends utils.Adapter {
                 desc: "All raw data of the mower",
             },
         ];
-        let count_array = 0;
         for (let device of this.deviceArray) {
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
@@ -510,10 +509,7 @@ class Worx extends utils.Adapter {
                         if (!res.data) {
                             return;
                         }
-                        if (element.path === "rawMqtt") {
-                            this.deviceArray[count_array] = res.data;
-                            ++count_array;
-                        }
+                        device = res.data;
                         const data = res.data;
                         const forceIndex = true;
                         const preferedArrayName = null;
