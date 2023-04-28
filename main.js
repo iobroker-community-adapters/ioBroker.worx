@@ -135,9 +135,12 @@ class Worx extends utils.Adapter {
                 await this.updateDevices();
             }, 10 * 60 * 1000); // 10 minutes
 
+            if (this.session.expires_in < 200) {
+                this.session.expires_in = 3600;
+            }
             this.refreshTokenInterval = this.setInterval(() => {
                 this.refreshToken();
-            }, this.session.expires_in - 200 || 3600 * 1000);
+            }, (this.session.expires_in - 200) * 1000);
 
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
