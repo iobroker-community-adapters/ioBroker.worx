@@ -899,10 +899,10 @@ class Worx extends utils.Adapter {
             // });
 
             this.mqttC.on("error", (error) => {
-                this.log.error("MQTT ERROR: " + error);
+                this.log.info("MQTT ERROR: " + error);
             });
         } catch (error) {
-            this.log.error("MQTT ERROR: " + error);
+            this.log.info("MQTT ERROR: " + error);
             this.mqttC = null;
         }
     }
