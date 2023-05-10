@@ -135,6 +135,9 @@ class Worx extends utils.Adapter {
                 await this.updateDevices();
             }, 10 * 60 * 1000); // 10 minutes
 
+            if (!this.session.expires_in || this.session.expires_in < 200) {
+                this.session.expires_in = 3600;
+            }
             this.refreshTokenInterval = this.setInterval(() => {
                 this.refreshToken();
             }, (this.session.expires_in - 200) * 1000);
@@ -490,7 +493,6 @@ class Worx extends utils.Adapter {
                 desc: "All raw data of the mower",
             },
         ];
-        let count_array = 0;
         for (let device of this.deviceArray) {
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
@@ -510,10 +512,7 @@ class Worx extends utils.Adapter {
                         if (!res.data) {
                             return;
                         }
-                        if (element.path === "rawMqtt") {
-                            this.deviceArray[count_array] = res.data;
-                            ++count_array;
-                        }
+                        device = res.data;
                         const data = res.data;
                         const forceIndex = true;
                         const preferedArrayName = null;
@@ -900,10 +899,10 @@ class Worx extends utils.Adapter {
             // });
 
             this.mqttC.on("error", (error) => {
-                this.log.error("MQTT ERROR: " + error);
+                this.log.info("MQTT ERROR: " + error);
             });
         } catch (error) {
-            this.log.error("MQTT ERROR: " + error);
+            this.log.info("MQTT ERROR: " + error);
             this.mqttC = null;
         }
     }
