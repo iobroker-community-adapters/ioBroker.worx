@@ -1257,6 +1257,26 @@ class Worx extends utils.Adapter {
                         if (torque < -50 || torque > 50) return;
                         const tqval = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
+                    } else if (command === "zoneKeeper") {
+                        const keeper = state.val ? 1 : 0;
+                        if (
+                            mower.last_status != null &&
+                            mower.last_status.payload != null &&
+                            mower.last_status.payload.cfg != null &&
+                            mower.last_status.payload.cfg.mz != null
+                        ) {
+                            const area = mower.last_status.payload.cfg.mz;
+                            const sum = area.reduce((pv, cv) => {
+                                return Number(pv) + Number(cv);
+                            }, 0);
+                            if (keeper && sum === 0) {
+                                this.log.info("Areas are disable! At least one area must be activated!");
+                                return;
+                            }
+                            this.sendMessage(`{"mzk":${keeper}}`, mower.serial_number, id);
+                        } else {
+                            this.log.debug("Area array not found!");
+                        }
                     }
                 } catch (error) {
                     this.log.error(`Error in ${id} ${error}`);
