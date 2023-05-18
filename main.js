@@ -56,6 +56,7 @@ class Worx extends utils.Adapter {
         this.createDevices = helper.createDevices;
         this.setStates = helper.setStates;
         this.cleanupRaw = helper.cleanupRaw;
+        this.createDataPoint = helper.createDataPoint;
         this.json2iob = new Json2iob(this);
         this.cookieJar = new tough.CookieJar();
         this.requestClient = axios.create({
