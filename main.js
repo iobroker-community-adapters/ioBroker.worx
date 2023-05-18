@@ -1442,6 +1442,10 @@ class Worx extends utils.Adapter {
             const bc = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeWithBorder`);
             const wtm = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeWorkTime`);
             if (bc && wtm) {
+                if (wtm.val === 0) {
+                    this.log.info("Datapoint oneTimeWorkTime with value 0 is not allowed!");
+                    return;
+                }
                 msgJson = {
                     bc: bc.val ? 1 : 0,
                     wtm: wtm.val,
@@ -1453,6 +1457,10 @@ class Worx extends utils.Adapter {
 
                 if (msgJson.bc == null || msgJson.wtm == null) {
                     this.log.error('ONETIMESHEDULE: NO vailed format. must contain "bc" and "wtm"');
+                    return;
+                }
+                if (msgJson.wtm === 0) {
+                    this.log.info("Datapoint oneTimeJson (wtm) with value 0 is not allowed!");
                     return;
                 }
             } catch (error) {
