@@ -56,6 +56,7 @@ class Worx extends utils.Adapter {
         this.createDevices = helper.createDevices;
         this.setStates = helper.setStates;
         this.cleanupRaw = helper.cleanupRaw;
+        this.createDataPoint = helper.createDataPoint;
         this.json2iob = new Json2iob(this);
         this.cookieJar = new tough.CookieJar();
         this.requestClient = axios.create({
@@ -285,6 +286,9 @@ class Worx extends utils.Adapter {
                 this.log.debug(JSON.stringify(res.data));
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
+                    if (device.capabilities != null && device.capabilities.includes("vision")) {
+                        this.log.info(`Vision is currently not implemented!`);
+                    }
                     const id = device.serial_number;
                     this.modules[device.serial_number] = {};
                     this.modules[device.serial_number]["edgeCut"] = false;
@@ -1442,6 +1446,10 @@ class Worx extends utils.Adapter {
             const bc = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeWithBorder`);
             const wtm = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeWorkTime`);
             if (bc && wtm) {
+                if (wtm.val === 0) {
+                    this.log.info("Datapoint oneTimeWorkTime with value 0 is not allowed!");
+                    return;
+                }
                 msgJson = {
                     bc: bc.val ? 1 : 0,
                     wtm: wtm.val,
@@ -1453,6 +1461,10 @@ class Worx extends utils.Adapter {
 
                 if (msgJson.bc == null || msgJson.wtm == null) {
                     this.log.error('ONETIMESHEDULE: NO vailed format. must contain "bc" and "wtm"');
+                    return;
+                }
+                if (msgJson.wtm === 0) {
+                    this.log.info("Datapoint oneTimeJson (wtm) with value 0 is not allowed!");
                     return;
                 }
             } catch (error) {
