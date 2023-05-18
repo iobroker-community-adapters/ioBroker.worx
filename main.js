@@ -286,6 +286,9 @@ class Worx extends utils.Adapter {
                 this.log.debug(JSON.stringify(res.data));
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
+                    if (device.capabilities != null && device.capabilities.includes("vision")) {
+                        this.log.info(`Vision is currently not implemented!`);
+                    }
                     const id = device.serial_number;
                     this.modules[device.serial_number] = {};
                     this.modules[device.serial_number]["edgeCut"] = false;
