@@ -494,7 +494,6 @@ class Worx extends utils.Adapter {
                 desc: "All raw data of the mower",
             },
         ];
-        let count_array = 0;
         for (const device of this.deviceArray) {
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
@@ -518,8 +517,11 @@ class Worx extends utils.Adapter {
                         const forceIndex = true;
                         const preferedArrayName = null;
                         await this.setStates(data);
-                        if (element.path === "rawMqtt") {
-                            this.deviceArray[count_array] = data;
+                        const index = this.deviceArray.findIndex((index) => index.serial_number === data.serial_number);
+                        this.log.debug(`Index Update: ${index}`);
+                        if (index != null && this.deviceArray[index] != null) {
+                            this.log.debug(`Update this.deviceArray: ${index}`);
+                            this.deviceArray[index] = data;
                         }
                         try {
                             if (!data || !data.last_status || !data.last_status.payload) {
@@ -570,7 +572,6 @@ class Worx extends utils.Adapter {
                         error.response && this.log.error(JSON.stringify(error.response.data));
                     });
             }
-            ++count_array;
         }
     }
 
@@ -1319,12 +1320,24 @@ class Worx extends utils.Adapter {
                         const message = mower.last_status.payload.cfg.sc;
 
                         //hotfix 030620
-                        delete message.ots;
-                        delete message.distm;
-
-                        message.m = val;
+                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                            delete message.once;
+                            message.enabled = val;
+                            const schedule_new = [];
+                            for (const slot of message.slots) {
+                                if (slot.s !== 0 && slot.t !== 0) {
+                                    schedule_new.push(slot);
+                                }
+                            }
+                            message.slots = schedule_new;
+                            this.log.debug(`Mow times disabled: ${message.enabled}`);
+                        } else {
+                            delete message.ots;
+                            delete message.distm;
+                            message.m = val;
+                            this.log.debug(`Mow times disabled: ${message.m}`);
+                        }
                         this.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial_number, id);
-                        this.log.debug(`Mow times disabled: ${message.m}`);
                     } else if (command === "edgecut") {
                         this.edgeCutting(id, state.val, mower);
                     } else if (command === "sendCommand") {
