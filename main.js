@@ -1344,6 +1344,26 @@ class Worx extends utils.Adapter {
                             msg.t = 0;
                         }
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
+                    } else if (
+                        command === "log_improvement" &&
+                        mower.last_status.payload &&
+                        mower.last_status.payload.cfg &&
+                        mower.last_status.payload.cfg.log &&
+                        mower.last_status.payload.cfg.log.imp != null
+                    ) {
+                        const msg = mower.last_status.payload.cfg.log;
+                        msg.imp = state.val ? 1 : 0;
+                        this.sendMessage(`{"log":${JSON.stringify(msg)}}`, mower.serial_number, id);
+                    } else if (
+                        command === "log_troubleshooting" &&
+                        mower.last_status.payload &&
+                        mower.last_status.payload.cfg &&
+                        mower.last_status.payload.cfg.log &&
+                        mower.last_status.payload.cfg.log.diag != null
+                    ) {
+                        const msg = mower.last_status.payload.cfg.log;
+                        msg.diag = state.val ? 1 : 0;
+                        this.sendMessage(`{"log":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "AutoLockTimer") {
                         const lock = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         if (lock < 0 || lock > 600) {
@@ -1562,21 +1582,48 @@ class Worx extends utils.Adapter {
                     this.log.info("Datapoint oneTimeWorkTime with value 0 is not allowed!");
                     return;
                 }
-                msgJson = {
-                    bc: bc.val ? 1 : 0,
-                    wtm: wtm.val,
-                };
+                if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                    msgJson = {
+                        once: {
+                            time: wtm.val,
+                            cfg: {
+                                cut: {
+                                    b: bc.val ? 1 : 0,
+                                    z: [],
+                                },
+                            },
+                        },
+                    };
+                } else {
+                    msgJson = {
+                        ots: {
+                            bc: bc.val ? 1 : 0,
+                            wtm: wtm.val,
+                        },
+                    };
+                }
             }
         } else if (idType === "oneTimeJson") {
             try {
-                msgJson = JSON.parse(value);
-
-                if (msgJson.bc == null || msgJson.wtm == null) {
-                    this.log.error('ONETIMESHEDULE: NO vailed format. must contain "bc" and "wtm"');
+                let time_check = null;
+                let border_check = null;
+                if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                    msgJson = JSON.parse(value);
+                    msgJson = { once: { ...msgJson } };
+                    time_check = msgJson.once.time;
+                    border_check = msgJson.once.cfg.cut.b;
+                } else {
+                    msgJson = JSON.parse(value);
+                    msgJson = { ots: { ...msgJson } };
+                    time_check = msgJson.ots.wtm;
+                    border_check = msgJson.ots.bc;
+                }
+                if (time_check == null || border_check == null) {
+                    this.log.error('ONETIMESHEDULE: NO vailed format. Must contain "bc" and "wtm" or "time" and "b"');
                     return;
                 }
-                if (msgJson.wtm === 0) {
-                    this.log.info("Datapoint oneTimeJson (wtm) with value 0 is not allowed!");
+                if (time_check === 0) {
+                    this.log.info("Datapoint oneTimeJson (wtm or time) with value 0 is not allowed!");
                     return;
                 }
             } catch (error) {
@@ -1586,7 +1633,7 @@ class Worx extends utils.Adapter {
         }
 
         this.log.debug(`ONETIMESCHEDULE: ${JSON.stringify(msgJson)}`);
-        this.sendMessage(`{"sc":{"ots":${JSON.stringify(msgJson)}}}`, mower.serial_number, id);
+        this.sendMessage(`{"sc":${JSON.stringify(msgJson)}}`, mower.serial_number, id);
     }
 
     /**
