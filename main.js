@@ -296,6 +296,7 @@ class Worx extends utils.Adapter {
                     await this.cleanOldVersion(id);
                     await this.createDevices(device);
                     const fw_id = await this.apiRequest(`product-items/${id}/firmwares`, false);
+                    this.log.debug("fw_id: " + JSON.stringify(fw_id));
                     await this.createAdditionalDeviceStates(device, fw_id);
                     this.deviceArray.push(device);
                     if (
@@ -673,14 +674,21 @@ class Worx extends utils.Adapter {
 
         if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm != null && status.cfg.sc.m != null) {
             this.log.info("PartyModus found, create states...");
-
             // create States
             for (const o of objects.partyModus) {
                 // @ts-ignore
                 this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
             }
         }
-
+        // Vision PartyMode - not active yet
+        if (status && status.cfg && status.cfg.sc && status.cfg.sc.paused != null) {
+            //this.log.info("PartyModus found, create states...");
+            // create States
+            //for (const o of objects.partyModus) {
+            //     @ts-ignore
+            //    this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+            //}
+        }
         if (mower.capabilities != null && !mower.capabilities.includes("vision")) {
             this.setObjectNotExistsAsync(
                 `${mower.serial_number}.calendar.${objects.calJson[0]._id}`,
@@ -983,10 +991,12 @@ class Worx extends utils.Adapter {
                         this.cleanup_json();
                     }
                     const data = await this.sendPing(mower, true, JSON.parse(message));
+                    message = JSON.stringify(data);
                     this.mqtt_response_check[data.id] = data;
                     await this.lastCommand(this.mqtt_response_check, "request", data.id, command);
                     this.log.debug(`this.mqtt_response_check:  ${JSON.stringify(this.mqtt_response_check)}`);
-                    this.mqttC.publish(mower.mqtt_topics.command_in, JSON.stringify(data), { qos: 1 });
+                    this.log.debug(`sendData:  ${message}`);
+                    this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
                 } catch (error) {
                     this.log.info(`sendMessage normal:  ${error}`);
                     this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
@@ -1981,7 +1991,10 @@ class Worx extends utils.Adapter {
      * @param {any} mower
      */
     sendPartyModus(id, value, mower) {
-        if (value) {
+        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+            const val = value ? 1 : 0;
+            this.sendMessage(`{"sc":{ "paused":${val}}}`, mower.serial_number, id);
+        } else if (value) {
             this.sendMessage('{"sc":{ "m":2, "distm": 0}}', mower.serial_number, id);
         } else {
             this.sendMessage('{"sc":{ "m":1, "distm": 0}}', mower.serial_number, id);
