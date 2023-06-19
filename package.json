@@ -35,7 +35,7 @@
     "@iobroker/adapter-core": "^2.6.8",
     "aws-iot-device-sdk": "^2.2.12",
     "axios": "^1.4.0",
-    "http-cookie-agent": "^5.0.2",
+    "http-cookie-agent": "^5.0.4",
     "json2iob": "^2.4.4",
     "qs": "^6.11.2",
     "tough-cookie": "^4.1.3",
