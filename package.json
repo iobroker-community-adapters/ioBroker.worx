@@ -31,6 +31,10 @@
     "node": ">= 14.18.0"
   },
   "dependencies": {
+    "@alcalzone/release-script": "^3.5.9",
+    "@alcalzone/release-script-plugin-iobroker": "^3.5.9",
+    "@alcalzone/release-script-plugin-license": "^3.5.9",
+    "@alcalzone/release-script-plugin-manual-review": "^3.5.9",
     "@iobroker/adapter-core": "^2.6.8",
     "aws-iot-device-sdk": "^2.2.12",
     "axios": "^1.4.0",
@@ -80,7 +84,8 @@
     "test": "npm run test:js && npm run test:package",
     "check": "tsc --noEmit -p tsconfig.check.json",
     "lint": "eslint .",
-    "translate": "translate-adapter"
+    "translate": "translate-adapter",
+    "release": "release-script"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.worx/issues"
