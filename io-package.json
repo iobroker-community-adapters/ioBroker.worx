@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.1.3",
+        "version": "2.2.0",
         "news": {
+            "2.2.0": {
+                "en": "Removed mowerActive for Vision\nAdd Vision paused schedule\nAdd Vision partyModus\nFix ping request Vision\nFix send message inheritance\nFix #684\nFix deviceArray inheritance\nAdd Vision mowers w/o Status & Error message\nAdd ZoneKeeper for previous mowers",
+                "de": "mowerActive für Visionentfernt\nVision Zeitplan Pausierung hinzugefügt\nVision partymodus hinzugefügt\nping Anfrage Vision gefixed\nSende-Nachricht-Erinnerung Problem behoben\n#684 gefixed\ndeviceArray Vererbung gefixed\nVision Mähers w/o Status & Fehlermeldung werden ohne Fehlermeldung hinzugefügt\nZoneKeeper für frühere Mäher hinzugefügt",
+                "ru": "Удаленная моверАктивна для видения\nДобавьте график работы с Vision paused\nДобавить видение partyModus\nFix ping запрос Видение\nFix отправить сообщение наследство\nФиксация #684\nFix устройствоArray наследство\nДобавить видение mowers w/o Статус и сообщение об ошибке\nДобавить ZoneKeeper за предыдущие косилки",
+                "pt": "Cortador removidoAtivo para Visão\nAdicionar Visão cronograma pausado\nAdicionar Vision partyModus\nFix ping request Visão\nCorrigir herança de mensagem de envio\nFixar #684\nCorrigir herança dispositivoArray\nAdicionar cortadores de visão w/o Status & Mensagem de erro\nAdicionar ZoneKeeper para cortadores anteriores",
+                "nl": "Verwijdering voor Vision\nVertaling:\nAdd Vision PartModus\nFix ping verzoek Vision\nVertaling:\nVertaling:\nVertaling:\nVertaling:\nAdd ZoneKeper voor eerdere masten",
+                "fr": "Débardeur enlevéActive for Vision\nAjouter Vision pause programme\nAjouter Vision partyModus\nFix ping request Vision\nEnvoyer un message\nFix #684\nDistributeur Array\nAjouter les tondeuses Vision w/o Statut & Message d'erreur\nAjouter ZoneKeeper pour les tondeuses précédentes",
+                "it": "Rimozione della falciatriceActive per Vision\nAggiungi Visione programma sospeso\nAggiungi Vision partyModus\nFissare la richiesta di ping\nRisolvi l'eredità del messaggio\nFissare #684\nFissare l'eredità di dispositivoArray\nAggiungi tosaerba Vision w/o Stato & messaggio di errore\nAggiungere ZoneKeeper per falciatrici precedenti",
+                "es": "Retire la cortadoraActiva para la visión\nAdd Vision paused schedule\nAgregar partido VisiónModus\nSolicitud de fijación Visión\nCorrección enviar la herencia del mensaje\nCorrección #684\nDispositivo fijoArray inheritance\nAgregar las cortadoras Visión w/o Status > Mensaje de error\nAñadir ZoneKeeper para cortacéspedes anteriores",
+                "pl": "Removed mowerActive for Vision (ang.)\nAddd Vision wstrzymał harmonogram\nStrona Addd Vision\nVision (ang.)\nFix wysyła wiadomość do dziedziczenia\n684\nFix-Array dziedziczenie\nVision mowers w/o Status & Error (ang.)\nOficjalna strona Add ZoneKeeper",
+                "uk": "Вилучена косаркаАктива для зору\nДодати графік вибачення\nДодати вечірку зоруModus\nВиправлення запиту ping Vision\nВиправлення надсилання спадщини повідомлення\nВиправлення #684\nФіксований пристрій\nДодати косарки Vision w/o Статус і повідомлення про помилку\nДодати ZoneKeeper для попередніх косарки",
+                "zh-cn": "取消对《愿景》的反应\n增加设想时间表\n加入《政党领导》\n固定请求书\nFix发出讯息\nFix #684\nFix装置Array继承\n添加《远景》:妻子/地位和电子信息\n前一轮答复的增区"
+            },
             "2.1.3": {
                 "en": "Add ping option in the instance settings",
                 "de": "Ping Option in den Instanz-Einstellungen hinzugefügt"
@@ -26,30 +39,6 @@
             "2.0.2": {
                 "en": "Fix MQTT connection for Kress, Landxcape and Ferrex",
                 "de": "MQTT Verbindung für Kress, Landxcape und Ferrex gefixt."
-            },
-            "2.0.1": {
-                "en": "Adapter rewritten. Added product info and activity log. rawMqtt values improved and compatible with Node v18. ",
-                "de": "Adapter neu geschrieben. Passwort muss erneut eingegeben werden. Produktinfo und Aktivitätsprotokoll hinzugefügt. rawMqtt Werte verbessert und mit Node v18 kompatibel.",
-                "ru": "Адаптер переписан. Добавлена информация о продукте и журнал активности. сырье Значения Mqtt улучшены и совместимы с Node v18.",
-                "pt": "Adapter reescrito. Adicionada informação do produto e log de atividade. em bruto Valores Mqtt melhorados e compatíveis com Node v18.",
-                "nl": "Adapter herschreven. Voegde product info en activiteitslogboek toe. Rauw Mqt waarden verbeterd en compatibel met Node V18.",
-                "fr": "Adaptateur réécrit. Ajout de l'info produit et du journal d'activité. brut Les valeurs Mqtt sont améliorées et compatibles avec Node v18.",
-                "it": "Adattatore riscritto. Aggiunto informazioni prodotto e registro attività. crudo Valori Mqtt migliorati e compatibili con Node v18.",
-                "es": "Adaptador reescrito. Información del producto y registro de actividad. crudo Valores Mqtt mejorados y compatibles con Node v18.",
-                "pl": "Adapter rewrite (ang.). Dodany info i log aktywności. surowy Wartości Mqtt poprawiły i kompatybilne z Node v18.",
-                "zh-cn": "写道。 添加成泡沫和活动逻辑的产品。 原料 Mqt数值有所改善,符合Node v18。."
-            },
-            "1.7.0": {
-                "en": "Login Fixed",
-                "de": "Anmeldung gefixt",
-                "ru": "Войти Fixed",
-                "pt": "Login Fixo",
-                "nl": "Login Fix",
-                "fr": "Se connecter Fixe",
-                "it": "Login Fisso",
-                "es": "Conexión fija",
-                "pl": "Login Fixed",
-                "zh-cn": "C. 损失"
             }
         },
         "titleLang": {

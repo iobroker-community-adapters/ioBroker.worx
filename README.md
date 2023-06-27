@@ -70,8 +70,7 @@ Und dann nach 1,1 Sek. worx.0.xxx.mower.oneTimeStart setzen
 <https://forum.iobroker.net/topic/4834/adapter-worx-landroid/>0
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 2.2.0 (2023-06-27)
 
 -   (Lucky-ESA) Removed mowerActive for Vision
 -   (Lucky-ESA) Add Vision paused schedule
