@@ -11,6 +11,10 @@
 
 **Tests:** ![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.worx/workflows/Test%20and%20Release/badge.svg)
 
+## Sentry
+
+**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
+
 ## Worx (Kress, Landxcape and Ferrex) adapter for ioBroker
 
 control via cloud and mqtt
@@ -63,9 +67,7 @@ Und dann nach 1,1 Sek. worx.0.xxx.mower.oneTimeStart setzen
 
 ## Disscussion und Questions
 
-<https://forum.iobroker.net/topic/4834/adapter-worx-landroid/>
-
-**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
+<https://forum.iobroker.net/topic/4834/adapter-worx-landroid/>0
 
 ## Changelog
 
@@ -230,7 +232,7 @@ Adapter rewritten. Added product info and activity log. rawMqtt values improved 
 
 MIT License
 
-Copyright (c) 2022 TA2k <tombox2020@gmail.com>
+Copyright (c) 2023 TA2k <tombox2020@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
