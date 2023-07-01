@@ -774,7 +774,7 @@ class Worx extends utils.Adapter {
     connectMqtt() {
         try {
             this.initConnection = true;
-            const uuid = this.deviceArray[0].uuid || uuidv4();
+            const uuid = this.randomClientid(8, 64) || uuidv4();
             if (this.deviceArray.length > 1) {
                 this.log.debug(`More than one mower found. for user id ${this.userData.id}`);
                 for (const mower of this.deviceArray) {
@@ -1221,6 +1221,16 @@ class Worx extends utils.Adapter {
         hash = hash.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 
         return [result, hash];
+    }
+    randomClientid(min, max) {
+        const length = Math.floor(Math.random() * (max - min + 1) + min);
+        let result = "";
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
     /**
      * @param {number} ms
