@@ -75,14 +75,14 @@ class Worx extends utils.Adapter {
         this.clouds = {
             worx: {
                 url: "api.worxlandroid.com",
-                loginUrl: "https://id.eu.worx.com/",
+                loginUrl: "https://id.worx.com/",
                 clientId: "150da4d2-bb44-433b-9429-3773adc70a2a",
                 redirectUri: "com.worxlandroid.landroid://oauth-callback/",
                 mqttPrefix: "WX",
             },
             kress: {
                 url: "api.kress-robotik.com",
-                loginUrl: "https://id.eu.kress.com/",
+                loginUrl: "https://id.kress.com/",
                 clientId: "931d4bc4-3192-405a-be78-98e43486dc59",
                 redirectUri: "com.kress-robotik.mission://oauth-callback/",
                 mqttPrefix: "KR",
