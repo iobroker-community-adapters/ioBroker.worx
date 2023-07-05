@@ -1,20 +1,9 @@
 {
-    "i18n": false,
+    "i18n": true,
     "items": {
         "mail": {
             "type": "text",
-            "label": {
-                "en": "App Email",
-                "de": "App-E-Mail",
-                "ru": "Электронная почта приложения",
-                "pt": "Email do aplicativo",
-                "nl": "App-e-mail",
-                "fr": "Courriel de l'application",
-                "it": "E-mail dell'app",
-                "es": "Correo electrónico de la aplicación",
-                "pl": "E-mail aplikacji",
-                "zh-cn": "应用电子邮件"
-            },
+            "label": "APP username (eMail)",
             "newLine": true,
             "sm": 3
         },
@@ -24,18 +13,7 @@
             "repeat": false,
             "visible": true,
             "sm": 3,
-            "label": {
-                "en": "App Password",
-                "de": "App-Passwort",
-                "ru": "Пароль приложения",
-                "pt": "Senha de app",
-                "nl": "App-wachtwoord",
-                "fr": "Mot de passe de l'application",
-                "it": "Password dell'app",
-                "es": "Contraseña de la aplicación",
-                "pl": "Hasło do aplikacji",
-                "zh-cn": "应用密码"
-            }
+            "label": "App Password"
         },
         "server": {
             "type": "select",
@@ -59,68 +37,23 @@
                     "value": "ferrex"
                 }
             ],
-            "label": {
-                "en": "App Name",
-                "de": "App Name",
-                "ru": "Имя приложения",
-                "pt": "Nome do aplicativo",
-                "nl": "App Naam",
-                "fr": "App Name",
-                "it": "Nome dell'app",
-                "es": "Nombre de la aplicación",
-                "pl": "Nazwa",
-                "zh-cn": "附录"
-            }
+            "label": "App Name"
         },
         "edgeCutDelay": {
             "type": "number",
-            "label": {
-                "en": "Delay for Edgecut",
-                "de": "Verzögerung für Edgecut",
-                "ru": "Задержка для Edgecut",
-                "pt": "Delay para Edgecut",
-                "nl": "Vertraging voor Edgecut",
-                "fr": "Delay for Edgecut",
-                "it": "Delay per Edgecut",
-                "es": "Delay for Edgecut",
-                "pl": "Delay for Edgecut (ang.)",
-                "zh-cn": "A. 执法拖延"
-            },
+            "label": "delay for edge cut",
             "newLine": true,
             "sm": 3
         },
         "meterMin": {
             "type": "checkbox",
-            "label": {
-                "en": "Distance and time in min and m",
-                "de": "Entfernung und Zeit in min und m",
-                "ru": "Расстояние и время в мин и м",
-                "pt": "Distância e tempo em min e m",
-                "nl": "Vertaling:",
-                "fr": "Distance et heure en min et m",
-                "it": "Distanza e tempo in min e m",
-                "es": "Distancia y hora en min y m",
-                "pl": "Odległość i czas w minu i minucie",
-                "zh-cn": "明示和时间"
-            },
+            "label": "Distance and time in min and m",
             "newLine": true,
             "sm": 3
         },
         "pingMqtt": {
             "type": "checkbox",
-            "label": {
-                "en": "Ping MQTT Connection every 10 minutes.",
-                "de": "MQTT Verbindung alle 10 Minuten anpingen.",
-                "ru": "Пинг МКТ Подключение каждые 10 минут.",
-                "pt": "Ping MQTT Ligação a cada 10 minutos.",
-                "nl": "Ping MQT Connectie om de 10 minuten.",
-                "fr": "Ping MQTT Connexion toutes les 10 minutes.",
-                "it": "Ping MQTT Collegamento ogni 10 minuti.",
-                "es": "Ping MQTT Conexión cada 10 minutos.",
-                "pl": "Ping MQTT Połączenie co 10 minut.",
-                "uk": "Пінг MQTT Підключення кожні 10 хвилин.",
-                "zh-cn": "P. MQTT 发言每10分钟。."
-            },
+            "label": "Ping MQTT Connection every 10 minutes.",
             "newLine": true,
             "sm": 3
         }

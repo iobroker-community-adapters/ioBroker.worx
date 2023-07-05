@@ -1,0 +1,8 @@
+{
+    "APP username (eMail)": "Nom d'utilisateur APP (eMail)",
+    "App Password": "Mot de passe de l'application",
+    "App Name": "Nom de l'application",
+    "delay for edge cut": "retard pour la coupe des bords",
+    "Distance and time in min and m": "Distance et temps en min et m",
+    "Ping MQTT Connection every 10 minutes.": "Connexion Ping MQTT toutes les 10 minutes"
+}

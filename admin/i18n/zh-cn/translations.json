@@ -1,0 +1,8 @@
+{
+    "APP username (eMail)": "APP用户名（电子邮箱）",
+    "App Password": "应用程序密码",
+    "App Name": "应用程序名称",
+    "delay for edge cut": "边缘切割延迟",
+    "Distance and time in min and m": "距离和时间（分钟和米）",
+    "Ping MQTT Connection every 10 minutes.": "每 10 分钟 Ping 一次 MQTT 连接"
+}
