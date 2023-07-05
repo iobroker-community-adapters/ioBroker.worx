@@ -973,7 +973,6 @@ class Worx extends utils.Adapter {
                     );
                     if (this.initConnection) {
                         this.requestCounter++;
-                        await this.mqttC.publish(mower.mqtt_topics.command_in, "{}", mqtt.QoS.AtLeastOnce);
                         this.sendPing(mower, false, "", "startPing");
                     }
                     if (this.config.pingMqtt) {
