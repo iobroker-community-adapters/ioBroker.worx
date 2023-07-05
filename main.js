@@ -6,7 +6,8 @@
 
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
-const awsIot = require("aws-iot-device-sdk").device;
+//const awsIot = require("aws-iot-device-sdk").device;
+const { mqtt, iot } = require("aws-iot-device-sdk-v2");
 // const qs = require("qs");
 const Json2iob = require("json2iob");
 const tough = require("tough-cookie");
@@ -20,6 +21,7 @@ const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
 const max_request = 20;
+const category = "iobroker";
 
 class Worx extends utils.Adapter {
     /**
@@ -46,6 +48,7 @@ class Worx extends utils.Adapter {
         this.pingInterval = {};
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
+        this.vision = {};
         this.poll_check_time = 0;
         this.requestCounter = 0;
         this.reconnectCounter = 0;
@@ -57,6 +60,7 @@ class Worx extends utils.Adapter {
         this.setStates = helper.setStates;
         this.cleanupRaw = helper.cleanupRaw;
         this.createDataPoint = helper.createDataPoint;
+        this.createMqttData = helper.createMqttData;
         this.json2iob = new Json2iob(this);
         this.cookieJar = new tough.CookieJar();
         this.requestClient = axios.create({
@@ -125,6 +129,7 @@ class Worx extends utils.Adapter {
         if (this.session.access_token) {
             await this.getDeviceList();
             await this.updateDevices();
+            await this.createMqttData();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
@@ -139,6 +144,7 @@ class Worx extends utils.Adapter {
             if (!this.session.expires_in || this.session.expires_in < 200) {
                 this.session.expires_in = 3600;
             }
+            this.updateMqttData(true);
             this.refreshTokenInterval = this.setInterval(() => {
                 this.refreshToken();
             }, (this.session.expires_in - 200) * 1000);
@@ -287,6 +293,7 @@ class Worx extends utils.Adapter {
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
                     const id = device.serial_number;
+                    this.vision[device.uuid] = device.serial_number;
                     this.modules[device.serial_number] = {};
                     this.modules[device.serial_number]["edgeCut"] = false;
                     const name = device.name;
@@ -372,51 +379,88 @@ class Worx extends utils.Adapter {
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
                 if (firstStart) {
                     this.log.info("Create folder activityLog and set states.");
-                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog`, {
-                        type: "channel",
-                        common: {
-                            name: "Mower activity logs",
+                    let common = {};
+                    common = {
+                        name: {
+                            en: "Mower activity logs",
+                            de: "Mäher Aktivitätsprotokolle",
+                            ru: "Переключение логов активности",
+                            pt: "Registos de atividade do cortador",
+                            nl: "Meerdere activiteiten",
+                            fr: "Les registres d'activité de la tondeuse",
+                            it: "Tronchi di attività del tosaerba",
+                            es: "Registros de actividad de alcantarillado",
+                            pl: "Mower activity logs",
+                            uk: "Моверизаторні колодки",
+                            "zh-cn": "反应活动逻辑。",
                         },
-                        native: {},
-                    });
-                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.payload`, {
-                        type: "state",
-                        common: {
-                            name: "Activity Logs",
-                            type: "string",
-                            role: "json",
-                            read: true,
-                            write: false,
-                            desc: "Activity Logs",
+                    };
+                    await this.createDataPoint(`${mower.serial_number}.activityLog`, common, "channel");
+                    common = {
+                        name: {
+                            en: "Activity log as array.",
+                            de: "Aktivitätsprotokoll als Array.",
+                            ru: "Журнал активности как массив.",
+                            pt: "Registo de atividade como array.",
+                            nl: "Activiteitslog als array.",
+                            fr: "Journal d'activité comme tableau.",
+                            it: "Diario di attività come array.",
+                            es: "Registro de actividad como array.",
+                            pl: "Logika aktywna jako tablica.",
+                            uk: "Журнал активності в масиві.",
+                            "zh-cn": "2. 活动逻辑作为范围。.",
                         },
-                        native: {},
-                    });
-                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.manuell_update`, {
-                        type: "state",
-                        common: {
-                            name: "Update Activity",
-                            type: "boolean",
-                            role: "button",
-                            read: true,
-                            write: true,
-                            def: false,
-                            desc: "Manuell Update Activity Logs",
+                        type: "string",
+                        role: "json",
+                        read: true,
+                        write: false,
+                        desc: "Activity Logs",
+                    };
+                    await this.createDataPoint(`${mower.serial_number}.activityLog.payload`, common, "state");
+                    common = {
+                        name: {
+                            en: "Update Activity logs",
+                            de: "Aktualisieren von Aktivitätsprotokollen",
+                            ru: "Обновление Журналов Активности",
+                            pt: "Atualizar registros de atividades",
+                            nl: "Update Activity logboeken",
+                            fr: "Mise à jour des registres des activités",
+                            it: "Log di attività di aggiornamento",
+                            es: "Registros de actividad de actualización",
+                            pl: "Logika aktualności",
+                            uk: "Оновлення журналів активності",
+                            "zh-cn": "最新活动逻辑",
                         },
-                        native: {},
-                    });
-                    await this.setObjectNotExistsAsync(`${mower.serial_number}.activityLog.last_update`, {
-                        type: "state",
-                        common: {
-                            name: "Last Update Activity-Log",
-                            type: "number",
-                            role: "meta.datetime",
-                            read: true,
-                            write: false,
-                            def: 0,
-                            desc: "Last Update Activity-Log",
+                        type: "boolean",
+                        role: "button",
+                        read: true,
+                        write: true,
+                        def: false,
+                        desc: "Manuell Update Activity Logs",
+                    };
+                    await this.createDataPoint(`${mower.serial_number}.activityLog.manuell_update`, common, "state");
+                    common = {
+                        name: {
+                            en: "Last update from Activity logs",
+                            de: "Letzte Aktualisierung von Aktivitätsprotokollen",
+                            ru: "Последнее обновление от Activity logs",
+                            pt: "Última atualização de registros de atividades",
+                            nl: "Laatste update van Activity logboeken",
+                            fr: "Dernière mise à jour des registres d'activité",
+                            it: "Ultimo aggiornamento dai registri delle attività",
+                            es: "Última actualización de los registros de actividad",
+                            pl: "Ostatnia aktualizacja z logiki Activity",
+                            uk: "Останнє оновлення з журналів активності",
+                            "zh-cn": "活动逻辑的最后更新",
                         },
-                        native: {},
-                    });
+                        type: "number",
+                        role: "date",
+                        read: true,
+                        write: false,
+                        def: 0,
+                        desc: "Last Update Activity-Log",
+                    };
+                    await this.createDataPoint(`${mower.serial_number}.activityLog.last_update`, common, "state");
                 }
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
@@ -597,11 +641,16 @@ class Worx extends utils.Adapter {
             .then((response) => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
+                this.log.info("Refresh token for MQTT-Connection"); //later on debug
+                this.updateMqttData(false);
+                this.start_mqtt();
+                /**
                 if (this.mqttC) {
                     this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
                 } else {
                     this.log.debug("Cannot update token for MQTT connection. MQTT Offline!");
                 }
+                */
             })
             .catch((error) => {
                 this.log.error(error);
@@ -619,17 +668,20 @@ class Worx extends utils.Adapter {
             this.log.info("DoubleShedule found, create states...");
 
             // create States
+            let week_count = 0;
             for (const day of this.week) {
-                await this.setObjectNotExistsAsync(`${mower.serial_number}.calendar.${day}2`, {
-                    type: "channel",
-                    common: {
-                        name: `${day} 2`,
-                    },
-                    native: {},
-                });
+                const common = {
+                    name: objects.weekname2[week_count],
+                };
+                ++week_count;
+                await this.createDataPoint(`${mower.serial_number}.calendar.${day}2`, common, "channel");
                 for (const o of objects.calendar) {
-                    // @ts-ignore
-                    await this.setObjectNotExistsAsync(`${mower.serial_number}.calendar.${day}2.${o._id}`, o);
+                    await this.createDataPoint(
+                        `${mower.serial_number}.calendar.${day}2.${o._id}`,
+                        o.common,
+                        o.type,
+                        o.native,
+                    );
                 }
             }
         }
@@ -646,8 +698,7 @@ class Worx extends utils.Adapter {
 
             // create States
             for (const o of objects.oneTimeShedule) {
-                // @ts-ignore
-                this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
 
@@ -655,8 +706,7 @@ class Worx extends utils.Adapter {
             this.fw_available[mower.serial_number] = true;
             this.log.info("Firmware found, create states...");
             for (const o of objects.firmware_available) {
-                // @ts-ignore
-                await this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
                 val: fw_json[0].version,
@@ -676,8 +726,7 @@ class Worx extends utils.Adapter {
             this.log.info("PartyModus found, create states...");
             // create States
             for (const o of objects.partyModus) {
-                // @ts-ignore
-                this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
         // Vision PartyMode
@@ -685,8 +734,7 @@ class Worx extends utils.Adapter {
             this.log.info("PartyModus found, create states...");
             // create States
             for (const o of objects.partyModus) {
-                // @ts-ignore
-                this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
         // Vision Paused
@@ -694,27 +742,36 @@ class Worx extends utils.Adapter {
             this.log.info("Paused found, create states...");
             // create States
             for (const o of objects.paused) {
-                // @ts-ignore
-                this.setObjectNotExistsAsync(`${mower.serial_number}.mower.${o._id}`, o);
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
         if (mower.capabilities != null && !mower.capabilities.includes("vision")) {
-            this.setObjectNotExistsAsync(
+            await this.createDataPoint(
                 `${mower.serial_number}.calendar.${objects.calJson[0]._id}`,
-                // @ts-ignore
-                objects.calJson[0],
+                objects.calJson[0].common,
+                objects.calJson[0].type,
+                objects.calJson[0].native,
             );
         }
 
-        // @ts-ignore
-        this.setObjectNotExistsAsync(`${mower.serial_number}.calendar.${objects.calJson[1]._id}`, objects.calJson[1]);
-        // @ts-ignore
-        this.setObjectNotExistsAsync(`${mower.serial_number}.calendar.${objects.calJson[2]._id}`, objects.calJson[2]);
+        await this.createDataPoint(
+            `${mower.serial_number}.calendar.${objects.calJson[1]._id}`,
+            objects.calJson[1].common,
+            objects.calJson[1].type,
+            objects.calJson[1].native,
+        );
+        await this.createDataPoint(
+            `${mower.serial_number}.calendar.${objects.calJson[2]._id}`,
+            objects.calJson[2].common,
+            objects.calJson[2].type,
+            objects.calJson[2].native,
+        );
         if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
-            this.setObjectNotExistsAsync(
+            await this.createDataPoint(
                 `${mower.serial_number}.calendar.${objects.calJson[0]._id}2`,
-                // @ts-ignore
-                objects.calJson[0],
+                objects.calJson[0].common,
+                objects.calJson[0].type,
+                objects.calJson[0].native,
             );
         }
 
@@ -768,9 +825,254 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        this.userData = await this.apiRequest("users/me", false);
-        this.connectMqtt();
+        if (!this.userData) {
+            this.userData = await this.apiRequest("users/me", false);
+        }
+        try {
+            this.connectMqtt();
+        } catch (e) {
+            this.log.info(`connectMqtt: ${e}`);
+        }
     }
+
+    async awsMqtt() {
+        try {
+            this.mqttC && (await this.mqttC.disconnect());
+            const uuid = this.randomClientid(8, 64) || uuidv4();
+            const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
+            this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
+            if (this.deviceArray[0].mqtt_endpoint == null) {
+                this.log.warn(`Cannot read mqtt_endpoint use default`);
+            }
+            const config_builder = iot.AwsIotMqttConnectionConfigBuilder.new_default_builder();
+            config_builder.with_clean_session(false);
+            config_builder.with_client_id(
+                `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/${category}/${uuid}`,
+            );
+            config_builder.with_endpoint(this.userData.mqtt_newendpoint);
+            //config_builder.with_port(443);
+            //config_builder.with_reconnect_max_sec(1000);
+            //config_builder.with_reconnect_min_sec(10000);
+            //config_builder.with_keep_alive_seconds(30);
+            config_builder.with_custom_authorizer(
+                `${category}?jwt=${encodeURIComponent(accessTokenParts[0])}.${encodeURIComponent(accessTokenParts[1])}`,
+                "",
+                encodeURIComponent(accessTokenParts[2]),
+                "",
+                category,
+                category,
+            ); // Port is default 443
+            const config = config_builder.build();
+            const client = new mqtt.MqttClient();
+            return client.new_connection(config);
+        } catch (e) {
+            this.log.info(`awsMqtt: ${e}`);
+            return null;
+        }
+    }
+
+    async connectMqtt() {
+        try {
+            this.initConnection = true;
+            this.mqttC = await this.awsMqtt();
+            if (this.mqttC == null) {
+                this.log.warn("Error mqtt connection!");
+                return;
+            }
+
+            this.mqttC.on("message", async (topic, message, dup, qos, retain) => {
+                let data;
+                try {
+                    const json = Buffer.from(message);
+                    data = JSON.parse(json.toString("utf-8"));
+                    this.log.debug(`Mower MQTT: ${JSON.stringify(data)}`);
+                    this.log.debug(`topic: ${topic} - dup: ${dup} - qos: ${qos} - retain: ${retain}`);
+                } catch (error) {
+                    this.log.warn(`Cannot parse mqtt message ${message} for topic ${topic}`);
+                    return;
+                }
+                this.updateMqttData(false);
+                this.mqtt_blocking = 0;
+                const mower = this.deviceArray.find((mower) => mower.mqtt_topics.command_out === topic);
+                const merge = this.deviceArray.findIndex((merge) => merge.mqtt_topics.command_out === topic);
+                if (mower) {
+                    this.log.debug(
+                        "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
+                    );
+                    try {
+                        if (!data.cfg.sn) {
+                            data.cfg.sn = mower.serial_number;
+                        }
+                        if (this.mqtt_response_check[data.cfg.id]) {
+                            this.log.debug(`Request ID ${data.cfg.id} has been passed to the mower`);
+                            this.lastCommand(this.mqtt_response_check, "response", data.cfg.id);
+                            delete this.mqtt_response_check[data.cfg.id];
+                        } else if (data.cfg.id > 1) {
+                            this.log.debug(`Response ID ${data.cfg.id} from mower`);
+                            this.lastCommand(data, "other", "cfg");
+                        }
+                    } catch (error) {
+                        this.log.debug(`this.mqttC.on: ${error}`);
+                    }
+                    try {
+                        if (!mower || !mower.last_status || !mower.last_status.payload) {
+                            this.log.debug("No last_status found");
+                            mower.last_status = {};
+                            this.log.debug("Reset last_status");
+                        } else {
+                            this.log.debug("Set new timestamp");
+                            try {
+                                if (merge) {
+                                    this.deviceArray[merge].last_status.payload = data;
+                                }
+                            } catch (error) {
+                                this.log.info("Update deviceArray: " + error);
+                            }
+                            mower.last_status.payload = data;
+                            mower.last_status.timestamp = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                                .toISOString()
+                                .replace("T", " ")
+                                .replace("Z", "");
+                        }
+                    } catch (error) {
+                        this.log.info("Mqtt Delete last_status: " + error);
+                    }
+                    if (this.config.pingMqtt) {
+                        this.pingToMqtt(mower);
+                    }
+                    await this.setStates(mower);
+                    const new_mower = await this.cleanupRaw(mower);
+                    this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
+                        forceIndex: true,
+                        preferedArrayName: null,
+                    });
+                } else {
+                    this.log.info(`Worxcloud MQTT could not find mower topic - ${topic} in mowers`);
+                    this.log.info(`Mower List : ${JSON.stringify(this.deviceArray)}`);
+                }
+            });
+
+            this.mqttC.on("connect", async (session_present) => {
+                this.setMqttOnline(true);
+                this.log.debug(`MQTT connection: ${session_present}`);
+                this.log.info("MQTT connected to: " + this.userData.mqtt_newendpoint);
+                this.mqtt_blocking = 0;
+                this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
+                for (const mower of this.deviceArray) {
+                    if (!mower.mqtt_topics) {
+                        this.log.warn("No mqtt topics found for mower " + mower.serial_number);
+                        continue;
+                    }
+                    if (this.mqttC == null) {
+                        this.log.info(`Connection interrupted!`);
+                        return;
+                    }
+                    await this.mqttC.subscribe(mower.mqtt_topics.command_out, mqtt.QoS.AtLeastOnce);
+                    this.log.debug(
+                        `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
+                    );
+                    if (this.initConnection) {
+                        this.requestCounter++;
+                        await this.mqttC.publish(mower.mqtt_topics.command_in, "{}", mqtt.QoS.AtLeastOnce);
+                        this.sendPing(mower, false, "", "startPing");
+                    }
+                    if (this.config.pingMqtt) {
+                        this.pingToMqtt(mower);
+                    }
+                }
+                this.initConnection = false;
+            });
+
+            this.mqttC.on("interrupt", async (error) => {
+                this.log.info(`Connection interrupted: ${error}`);
+                this.setMqttOnline(false);
+            });
+
+            this.mqttC.on("resume", async (return_code, session_present) => {
+                this.setMqttOnline(false);
+                this.log.info(`Resumed: rc: ${return_code} existing session: ${session_present}`);
+                this.log.info("MQTT reconnect: " + this.mqtt_blocking);
+                this.log.info(`Reconnect since adapter start: ${this.reconnectCounter}`);
+                ++this.reconnectCounter;
+                ++this.mqtt_blocking;
+                if (this.mqtt_blocking > 15) {
+                    this.log.warn(
+                        "No Connection to Worx for 1 minute. Please check your internet connection or check in your App if Worx blocked you for 24h. Mqtt connection will restart automatic in 1h",
+                    );
+                    this.log.info(`Request counter since adapter start: ${this.requestCounter}`);
+                    this.log.info(`Reconnects since adapter start: ${this.reconnectCounter}`);
+                    this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
+
+                    this.mqttC && (await this.mqttC.disconnect());
+                    this.mqttC = null;
+                    this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
+                    this.mqtt_restart = null;
+                    this.mqtt_restart = this.setTimeout(async () => {
+                        this.log.info("Restart Mqtt after 1h");
+                        this.start_mqtt();
+                    }, 1 * 60 * 1000 * 60); // 1 hour
+                }
+            });
+
+            this.mqttC.on("disconnect", () => {
+                this.log.info("Disconnected");
+                this.setMqttOnline(false);
+            });
+
+            this.mqttC.on("error", (error) => {
+                this.log.info(`MQTT ERROR: ${error}`);
+                this.setMqttOnline(false);
+            });
+            await this.mqttC.connect();
+        } catch (e) {
+            this.log.info(`connectMqtt: ${e}`);
+            this.setMqttOnline(false);
+        }
+    }
+
+    setMqttOnline(state) {
+        this.setState(`info_mqtt.online`, state, true);
+    }
+
+    updateMqttData(newToken) {
+        if (this.mqttC != null && !newToken) {
+            const statistic = this.mqttC.getQueueStatistics();
+            if (statistic) {
+                this.log.debug(`getQueueStatistics: ${JSON.stringify(statistic)}`);
+                this.setState(`info_mqtt.incompleteOperationCount`, {
+                    val: statistic.incompleteOperationCount != null ? statistic.incompleteOperationCount : 0,
+                    ack: true,
+                });
+                this.setState(`info_mqtt.incompleteOperationSize`, {
+                    val: statistic.incompleteOperationSize != null ? statistic.incompleteOperationSize : 0,
+                    ack: true,
+                });
+                this.setState(`info_mqtt.unackedOperationCount`, {
+                    val: statistic.unackedOperationCount != null ? statistic.unackedOperationCount : 0,
+                    ack: true,
+                });
+                this.setState(`info_mqtt.unackedOperationSize`, {
+                    val: statistic.unackedOperationSize != null ? statistic.unackedOperationSize : 0,
+                    ack: true,
+                });
+            }
+        }
+
+        if (newToken) {
+            const current_timestamp = Date.now();
+            const next_timestamp = current_timestamp + (this.session.expires_in - 200) * 1000;
+            this.setState(`info_mqtt.last_update`, {
+                val: current_timestamp,
+                ack: true,
+            });
+            this.setState(`info_mqtt.next_update`, {
+                val: next_timestamp,
+                ack: true,
+            });
+        }
+    }
+
+    /**
     connectMqtt() {
         try {
             this.initConnection = true;
@@ -957,6 +1259,7 @@ class Worx extends utils.Adapter {
             this.mqttC = null;
         }
     }
+    */
 
     /**
      * @param {object} mower
@@ -966,10 +1269,11 @@ class Worx extends utils.Adapter {
         this.pingInterval[mowerSN] && this.clearInterval(this.pingInterval[mowerSN]);
         this.log.debug("Reset ping");
         this.pingInterval[mowerSN] = this.setInterval(() => {
-            this.sendPing(mower);
+            this.sendPing(mower, false, "", "pingToMqtt");
         }, ping_interval);
     }
 
+    /**
     createWebsocketHeader() {
         const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
         const headers = {
@@ -979,6 +1283,7 @@ class Worx extends utils.Adapter {
         };
         return headers;
     }
+    */
 
     /**
      * @param {string} message JSON stringify example : '{"cmd":3}'
@@ -1007,14 +1312,14 @@ class Worx extends utils.Adapter {
                     await this.lastCommand(this.mqtt_response_check, "request", data.id, command);
                     this.log.debug(`this.mqtt_response_check:  ${JSON.stringify(this.mqtt_response_check)}`);
                     this.log.debug(`sendData:  ${message}`);
-                    this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
+                    this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
                 } catch (error) {
                     this.log.info(`sendMessage normal:  ${error}`);
-                    this.mqttC.publish(mower.mqtt_topics.command_in, message, { qos: 1 });
+                    this.log.debug(`sendData:  ${JSON.stringify(message)}`);
+                    this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
                 }
             } else {
-                //  this.log.debug("Send via API");
-                //this.apiRequest("product-items", false, "PUT", message);
+                this.log.warn(`No mqtt connection found!!`);
             }
         } else {
             this.log.error("Try to send a message but could not find the mower");
@@ -1055,7 +1360,15 @@ class Worx extends utils.Adapter {
             const data_json = data;
             const ids = dataid;
             const send = sent;
-            const sn = data_json[ids]["sn"];
+            let sn = "";
+            if (data_json[ids]["sn"]) {
+                sn = data_json[ids]["sn"];
+            } else if (data_json[ids]["uuid"]) {
+                sn = this.vision[data_json[ids]["uuid"]];
+            } else {
+                this.log.debug("No found sn!");
+                return;
+            }
             this.log.debug(`lastCommand_start:  ${JSON.stringify(data)}`);
             const lastcommand = await this.getStateAsync(`${sn}.mower.last_command`);
             let new_merge = [];
@@ -1099,6 +1412,7 @@ class Worx extends utils.Adapter {
 
     //Calendar
     /**
+     * @param {object} mower
      * @param {Array} arr
      * @param {boolean} sec if sec is true, use second mowtime
      */
@@ -1122,6 +1436,11 @@ class Worx extends utils.Adapter {
             }
         }
     }
+
+    /**
+     * @param {object} mower
+     * @param {Array} arr
+     */
     async evaluateVisionCalendar(mower, arr) {
         if (arr) {
             this.log.debug("COUNTER: " + arr.length);
@@ -1199,6 +1518,7 @@ class Worx extends utils.Adapter {
             return arr;
         }
     }
+
     extractHidden(body) {
         const returnObject = {};
         if (body) {
@@ -1209,6 +1529,7 @@ class Worx extends utils.Adapter {
         }
         return returnObject;
     }
+
     getCodeChallenge() {
         let hash = "";
         let result = "";
@@ -1222,6 +1543,7 @@ class Worx extends utils.Adapter {
 
         return [result, hash];
     }
+
     randomClientid(min, max) {
         const length = Math.floor(Math.random() * (max - min + 1) + min);
         let result = "";
@@ -1232,6 +1554,7 @@ class Worx extends utils.Adapter {
         }
         return result;
     }
+
     /**
      * @param {number} ms
      */
@@ -1242,6 +1565,7 @@ class Worx extends utils.Adapter {
             }, ms);
         });
     }
+
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      * @param {() => void} callback
@@ -1249,7 +1573,8 @@ class Worx extends utils.Adapter {
     onUnload(callback) {
         try {
             this.setState("info.connection", false, true);
-            this.mqttC.end();
+            this.setState("info_mqtt.online", false, true);
+            this.mqttC && this.mqttC.disconnect();
             this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
             this.updateInterval && this.clearInterval(this.updateInterval);
             this.refreshActivity && this.clearInterval(this.refreshActivity);
@@ -1265,6 +1590,7 @@ class Worx extends utils.Adapter {
             callback();
         }
     }
+
     /**
      * Is called if a subscribed state changes
      * @param {string} id
@@ -1549,6 +1875,7 @@ class Worx extends utils.Adapter {
             };
         } else {
             vision = {
+                sn: mowerSN,
                 // Important: Send the time in your local timezone, otherwise mowers clock will be wrong.
                 tm: `${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}:${(
                     "0" + now.getSeconds()
@@ -1560,7 +1887,6 @@ class Worx extends utils.Adapter {
             id: 1024 + Math.floor(Math.random() * (65535 - 1025)),
             cmd: 0,
             lg: language,
-            sn: mowerSN,
             ...vision,
             ...merge_message,
         };
@@ -1767,6 +2093,7 @@ class Worx extends utils.Adapter {
         message[sheduleSel] = msgJson;
         if (!fail) this.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial_number, id);
     }
+
     /**
      * @param {string} id id of state
      * @param {any} value value that changed
@@ -1870,6 +2197,7 @@ class Worx extends utils.Adapter {
             ack: true,
         });
     }
+
     /**
      * @param {string} id id of state
      * @param {any} value value that changed
@@ -1976,6 +2304,7 @@ class Worx extends utils.Adapter {
         }
         this.log.debug(`test cfg: ${dayID} valID: ${valID} val: ${val} sval: ${sval}`);
     }
+
     /**
      * @param {string} id
      * @param {any} value
@@ -2182,6 +2511,7 @@ class Worx extends utils.Adapter {
         this.log.debug(`Send cmd:${val}`);
         this.sendMessage(`{"cmd":${val}}`, mower.serial_number, id);
     }
+
     async cleanOldVersion(serial) {
         const cleanOldVersion = await this.getObjectAsync(
             this.name + "." + this.instance + "." + serial + ".oldVersionCleaned",
@@ -2198,9 +2528,21 @@ class Worx extends utils.Adapter {
             await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
                 type: "state",
                 common: {
-                    name: "Version check",
+                    name: {
+                        en: "Version check",
+                        de: "Versionskontrolle",
+                        ru: "Проверка версии",
+                        pt: "Verificação da versão",
+                        nl: "Versie controle",
+                        fr: "Vérification de la version",
+                        it: "Controllo della versione",
+                        es: "Verificación de la versión",
+                        pl: "Kontrola",
+                        uk: "Перевірка версій",
+                        "zh-cn": "检查",
+                    },
                     type: "string",
-                    role: "meta.version",
+                    role: "info.firmware",
                     write: false,
                     read: true,
                 },
@@ -2209,9 +2551,21 @@ class Worx extends utils.Adapter {
             this.extendObjectAsync(serial + ".mower.firmware", {
                 type: "state",
                 common: {
-                    name: "Firmware Version",
+                    name: {
+                        en: "Firmware Version",
+                        de: "Firmware Version",
+                        ru: "Версия прошивки",
+                        pt: "Versão de firmware",
+                        nl: "Firmware Version",
+                        fr: "Firmware Version",
+                        it: "Versione firmware",
+                        es: "Versión de firmware",
+                        pl: "Strona oficjalna",
+                        uk: "Версія прошивки",
+                        "zh-cn": "Frmware Version",
+                    },
                     type: "number",
-                    role: "meta.version",
+                    role: "info.firmware",
                     read: true,
                     write: false,
                     desc: "Firmware Version",
@@ -2228,9 +2582,21 @@ class Worx extends utils.Adapter {
                 await this.extendObjectAsync(serial + ".oldVersionCleaned", {
                     type: "state",
                     common: {
-                        name: "Version check",
+                        name: {
+                            en: "Version check",
+                            de: "Versionskontrolle",
+                            ru: "Проверка версии",
+                            pt: "Verificação da versão",
+                            nl: "Versie controle",
+                            fr: "Vérification de la version",
+                            it: "Controllo della versione",
+                            es: "Verificación de la versión",
+                            pl: "Kontrola",
+                            uk: "Перевірка версій",
+                            "zh-cn": "检查",
+                        },
                         type: "string",
-                        role: "meta.version",
+                        role: "info.firmware",
                         write: false,
                         read: true,
                     },
@@ -2246,9 +2612,21 @@ class Worx extends utils.Adapter {
                     this.extendObjectAsync(serial + ".mower.firmware", {
                         type: "state",
                         common: {
-                            name: "Firmware Version",
+                            name: {
+                                en: "Firmware Version",
+                                de: "Firmware Version",
+                                ru: "Версия прошивки",
+                                pt: "Versão de firmware",
+                                nl: "Firmware Version",
+                                fr: "Firmware Version",
+                                it: "Versione firmware",
+                                es: "Versión de firmware",
+                                pl: "Strona oficjalna",
+                                uk: "Версія прошивки",
+                                "zh-cn": "Frmware Version",
+                            },
                             type: "number",
-                            role: "meta.version",
+                            role: "info.firmware",
                             read: true,
                             write: false,
                             desc: "Firmware Version",
