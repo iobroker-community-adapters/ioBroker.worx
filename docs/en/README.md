@@ -225,3 +225,15 @@
     -   `paused`: Paused schedule in minutes (changeable)
 
 ![Vision img/paused_vision.png](img/paused_vision.png)
+
+### info_mqtt (Wire and Vision)
+
+-   `incompleteOperationCount`: Total number of operations submitted to the connection that have not yet been completed. Unacked operations are a subset of this.
+-   `incompleteOperationSize`: Total packet size of operations submitted to the connection that have not yet been completed. Unacked operations are a subset of this.
+-   `unackedOperationCount`: Total number of operations that have been sent to the server and are waiting for a corresponding ACK before they can be completed.
+-   `unackedOperationSize`: Total packet size of operations that have been sent to the server and are waiting for a corresponding ACK before they can be completed.
+-   `last_update`: Last update from token
+-   `next_update`: Next update from token
+-   `online`: Status MQTT Connection (false=offline/true=online)
+
+![Vision img/mqtt_info.png](img/mqtt_info.png)
