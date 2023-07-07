@@ -133,21 +133,30 @@ class Worx extends utils.Adapter {
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
-            this.updateFW = this.setInterval(async () => {
-                await this.updateFirmware();
-            }, 24 * 60 * 1000 * 60); // 24 hour
+            this.updateFW = this.setInterval(
+                async () => {
+                    await this.updateFirmware();
+                },
+                24 * 60 * 1000 * 60,
+            ); // 24 hour
 
-            this.updateInterval = this.setInterval(async () => {
-                await this.updateDevices();
-            }, 10 * 60 * 1000); // 10 minutes
+            this.updateInterval = this.setInterval(
+                async () => {
+                    await this.updateDevices();
+                },
+                10 * 60 * 1000,
+            ); // 10 minutes
 
             if (!this.session.expires_in || this.session.expires_in < 200) {
                 this.session.expires_in = 3600;
             }
             this.updateMqttData(true);
-            this.refreshTokenInterval = this.setInterval(() => {
-                this.refreshToken();
-            }, (this.session.expires_in - 200) * 1000);
+            this.refreshTokenInterval = this.setInterval(
+                () => {
+                    this.refreshToken();
+                },
+                (this.session.expires_in - 200) * 1000,
+            );
 
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
@@ -302,7 +311,7 @@ class Worx extends utils.Adapter {
 
                     await this.cleanOldVersion(id);
                     await this.createDevices(device);
-                    const fw_id = await this.apiRequest(`product-items/${id}/firmwares`, false);
+                    const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
                     this.log.debug("fw_id: " + JSON.stringify(fw_id));
                     await this.createAdditionalDeviceStates(device, fw_id);
                     this.deviceArray.push(device);
@@ -505,7 +514,7 @@ class Worx extends utils.Adapter {
     async updateFirmware() {
         for (const mower of this.deviceArray) {
             if (this.fw_available[mower.serial_number] === true) {
-                const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmwares`, false);
+                const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmware-upgrade`, false);
                 if (
                     fw_json &&
                     Object.keys(fw_json).length > 0 &&
@@ -1006,10 +1015,13 @@ class Worx extends utils.Adapter {
                     this.mqttC = null;
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                     this.mqtt_restart = null;
-                    this.mqtt_restart = this.setTimeout(async () => {
-                        this.log.info("Restart Mqtt after 1h");
-                        this.start_mqtt();
-                    }, 1 * 60 * 1000 * 60); // 1 hour
+                    this.mqtt_restart = this.setTimeout(
+                        async () => {
+                            this.log.info("Restart Mqtt after 1h");
+                            this.start_mqtt();
+                        },
+                        1 * 60 * 1000 * 60,
+                    ); // 1 hour
                 }
             });
 
