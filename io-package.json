@@ -121,18 +121,8 @@
             "uk": "Адаптер для Worx, Kresss, Landxcape або Ferrex косарка через хмару.",
             "zh-cn": "Worx, Kress, Landxcape or Ferrex mower through云。."
         },
-        "authors": [
-            "TA2k <tombox2020@gmail.com>",
-            "MeisterTR",
-            "Lucky-ESA"
-        ],
-        "keywords": [
-            "mower",
-            "Worx",
-            "Kress",
-            "Landxcape",
-            "Ferrex"
-        ],
+        "authors": ["TA2k <tombox2020@gmail.com>", "MeisterTR", "Lucky-ESA"],
+        "keywords": ["mower", "Worx", "Kress", "Landxcape", "Ferrex"],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
@@ -147,18 +137,13 @@
         "connectionType": "cloud",
         "dataSource": "push",
         "docs": {
-            "en": [
-                "docs/en/README.md"
-            ]
+            "en": ["docs/en/README.md"]
         },
         "messages": [
             {
                 "condition": {
                     "operand": "and",
-                    "rules": [
-                        "oldVersion<2.0.0",
-                        "newVersion>=2.0.0"
-                    ]
+                    "rules": ["oldVersion<2.0.0", "newVersion>=2.0.0"]
                 },
                 "title": {
                     "en": "Important notice!",
@@ -186,10 +171,7 @@
                     "uk": "З v2.0.0 пароля зберігається зашифровано. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Текстовий сирМктт перебудовується, будь ласка, налаштуйте сценарії.",
                     "zh-cn": "自第2.0.0号密码被加密。 请更正在最新资料后在环境中的密码。 编审后,请调整你的文字。."
                 },
-                "buttons": [
-                    "agree",
-                    "cancel"
-                ]
+                "buttons": ["agree", "cancel"]
             }
         ],
         "adminUI": {
@@ -211,19 +193,16 @@
             }
         ]
     },
-    "encryptedNative": [
-        "password"
-    ],
-    "protectedNative": [
-        "password"
-    ],
+    "encryptedNative": ["password"],
+    "protectedNative": ["password"],
     "native": {
         "mail": "",
         "password": "",
         "edgeCutDelay": 5000,
         "server": "worx",
         "meterMin": false,
-        "pingMqtt": false
+        "pingMqtt": false,
+        "updateMqtt": false
     },
     "objects": [],
     "instanceObjects": [

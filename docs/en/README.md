@@ -15,6 +15,7 @@
 
 -   `Distance and time in min and m`: Default h and km
 -   `Ping MQTT Connection every 10 minutes.`: Just to test. Please no longer than 1 hour!
+-   `Updating MQTT data after token update.`: Loads the Worx data after the refresh token. 24 additional queries per day/devices.
 
 ![Instance Settings img/instance_2.png](img/instance_2.png)
 

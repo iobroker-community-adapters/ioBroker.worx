@@ -43,18 +43,28 @@
             "type": "number",
             "label": "delay for edge cut",
             "newLine": true,
+            "default": 5000,
             "sm": 3
         },
         "meterMin": {
             "type": "checkbox",
             "label": "Distance and time in min and m",
             "newLine": true,
+            "default": false,
             "sm": 3
         },
         "pingMqtt": {
             "type": "checkbox",
             "label": "Ping MQTT Connection every 10 minutes.",
             "newLine": true,
+            "default": false,
+            "sm": 3
+        },
+        "updateMqtt": {
+            "type": "checkbox",
+            "label": "Updating MQTT data after token update.",
+            "newLine": true,
+            "default": false,
             "sm": 3
         }
     }

@@ -54,6 +54,7 @@ class Worx extends utils.Adapter {
         this.reconnectCounter = 0;
         this.requestCounterStart = Date.now();
         this.session = {};
+        this.initConnection = true;
         this.mqttC = null;
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
@@ -133,30 +134,21 @@ class Worx extends utils.Adapter {
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
-            this.updateFW = this.setInterval(
-                async () => {
-                    await this.updateFirmware();
-                },
-                24 * 60 * 1000 * 60,
-            ); // 24 hour
+            this.updateFW = this.setInterval(async () => {
+                await this.updateFirmware();
+            }, 24 * 60 * 1000 * 60); // 24 hour
 
-            this.updateInterval = this.setInterval(
-                async () => {
-                    await this.updateDevices();
-                },
-                10 * 60 * 1000,
-            ); // 10 minutes
+            this.updateInterval = this.setInterval(async () => {
+                await this.updateDevices();
+            }, 10 * 60 * 1000); // 10 minutes
 
             if (!this.session.expires_in || this.session.expires_in < 200) {
                 this.session.expires_in = 3600;
             }
             this.updateMqttData(true);
-            this.refreshTokenInterval = this.setInterval(
-                () => {
-                    this.refreshToken();
-                },
-                (this.session.expires_in - 200) * 1000,
-            );
+            this.refreshTokenInterval = this.setInterval(() => {
+                this.refreshToken();
+            }, (this.session.expires_in - 200) * 1000);
 
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
@@ -812,7 +804,14 @@ class Worx extends utils.Adapter {
                 return res.data;
             })
             .catch((error) => {
-                this.log.error(error);
+                // Temporary until the bug is found.
+                if (path.includes("firmware-upgrade") && error.response.status === 404) {
+                    this.log.warn("Updating firmware information is currently not possible!");
+                    return;
+                } else {
+                    this.log.error(error);
+                    error.response && this.log.error(JSON.stringify(error.response.data));
+                }
                 if (error.response) {
                     if (error.response.status === 401) {
                         error.response && this.log.debug(JSON.stringify(error.response.data));
@@ -823,7 +822,6 @@ class Worx extends utils.Adapter {
                         }, 1000 * 30);
                         return;
                     }
-                    this.log.error(JSON.stringify(error.response.data));
                 }
             });
     }
@@ -882,7 +880,6 @@ class Worx extends utils.Adapter {
 
     async connectMqtt() {
         try {
-            this.initConnection = true;
             this.mqttC = await this.awsMqtt();
             if (this.mqttC == null) {
                 this.log.warn("Error mqtt connection!");
@@ -980,8 +977,8 @@ class Worx extends utils.Adapter {
                     this.log.debug(
                         `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
                     );
-                    if (this.initConnection) {
-                        this.requestCounter++;
+                    if (this.initConnection || this.config.updateMqtt) {
+                        //this.requestCounter++;
                         this.sendPing(mower, false, "", "startPing");
                     }
                     if (this.config.pingMqtt) {
@@ -1015,13 +1012,10 @@ class Worx extends utils.Adapter {
                     this.mqttC = null;
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                     this.mqtt_restart = null;
-                    this.mqtt_restart = this.setTimeout(
-                        async () => {
-                            this.log.info("Restart Mqtt after 1h");
-                            this.start_mqtt();
-                        },
-                        1 * 60 * 1000 * 60,
-                    ); // 1 hour
+                    this.mqtt_restart = this.setTimeout(async () => {
+                        this.log.info("Restart Mqtt after 1h");
+                        this.start_mqtt();
+                    }, 1 * 60 * 1000 * 60); // 1 hour
                 }
             });
 

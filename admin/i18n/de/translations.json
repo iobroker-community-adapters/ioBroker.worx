@@ -4,5 +4,6 @@
     "App Name": "App Name",
     "delay for edge cut": "Verzögerung für Kantenschnitt",
     "Distance and time in min and m": "Entfernung und Zeit in Minuten und Metern",
-    "Ping MQTT Connection every 10 minutes.": "MQTT-Verbindung alle 10 Minuten anpingen"
+    "Ping MQTT Connection every 10 minutes.": "MQTT-Verbindung alle 10 Minuten anpingen",
+    "Updating MQTT data after token update.": "Aktualisieren der MQTT-Daten nach der Token-Aktualisierung."
 }

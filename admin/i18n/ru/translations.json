@@ -4,5 +4,6 @@
     "App Name": "Имя приложения",
     "delay for edge cut": "задержка для обрезки кромки",
     "Distance and time in min and m": "Расстояние и время в мин и м",
-    "Ping MQTT Connection every 10 minutes.": "Пинг MQTT-соединения каждые 10 минут"
+    "Ping MQTT Connection every 10 minutes.": "Пинг MQTT-соединения каждые 10 минут",
+    "Updating MQTT data after token update.": "Обновление данных MQTT после обновления токена."
 }
