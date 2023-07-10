@@ -6,7 +6,7 @@
 
 ### Instance settings
 
--   `App Email`: Your APP Username
+-   `App Email`: Your APP Username (eMail)
 -   `App Password`: Your APP Password
 -   `App Name`: Choose your device
 -   `Delay for EdgeCut`: When should EdgeCut start (example 5 seconds to lawn)
@@ -34,7 +34,7 @@
 ### activityLog (Wire and Vision)
 
 -   `last_update`: Last update as timestamp
--   `manuell_update`: Loads the current activity log
+-   `manuell_update`: Loads the current activity log (automatically after status changes)
 -   `payload`: Activity log as JSON Table (for VIS or Blockly)
 
 ![Activity img/activity.png](img/activity.png)
@@ -43,12 +43,12 @@
 
 -   `actualArea`: Current
 -   `actualAreaIndicator`: Next array zone start
--   `area_0`: Start of zone 1 in meters (changeable)
--   `area_1`: Start of zone 2 in meters (changeable)
--   `area_2`: Start of zone 3 in meters (changeable)
--   `area_3`: Start of zone 4 in meters (changeable)
--   `startSequence`: Array zone start (0-9 events) e.g. Start in Zone 2 only [2,2,2,2,2,2,2,2,2,2] (changeable)
--   `zoneKeeper`: Safe driving in narrow zone crossings (as of Firmware 3.30) (changeable)
+-   `area_0`: Start of zone 1 in meters (array=0) (changeable)
+-   `area_1`: Start of zone 2 in meters (array=1) (changeable)
+-   `area_2`: Start of zone 3 in meters (array=2) (changeable)
+-   `area_3`: Start of zone 4 in meters (array=3) (changeable)
+-   `startSequence`: Array zone start (0-9 events) e.g. Start in Zone 3 only [2,2,2,2,2,2,2,2,2,2] (changeable)
+-   `zoneKeeper`: Safe driving in narrow zone crossings (Areas must be created) (as of Firmware 3.30) (changeable)
 
 ![Area img/areas.png](img/areas.png)
 
@@ -56,13 +56,13 @@
 
 -   E.g. time setting for wednesday
 
-    -   `wednesday.borderCut`: With or without bordercut (Change value without delay)
-    -   `wednesday.startTime`: Starttime hh:mm (0-23/0-59) e.g. 09:00 (Change value without delay)
-    -   `wednesday.workTime`: Working time in minutes (180 min = 3h) e.g. 30 (Change value without delay)
-    -   `calJson_sendto`: If all datapoints are set, then press button to send (with a 1,1 second delay). The mower will now mow for 30 minutes
-    -   `calJson_tosend`: This data is sent to Mqtt (Both mowing schedule/is set automatically). You can also create this JSON yourself.
-    -   `calendar.calJson`: Mowing schedule weekday name w/o number (mowing schedule 1/is set automatically - for wire only)
-    -   `calendar.calJson2`: Mowing schedule weekday name with number (mowing schedule 2/is set automatically - for wire only)
+    -   `wednesday.borderCut`: With or without bordercut (Change value without delay) (changeable)
+    -   `wednesday.startTime`: Starttime hh:mm (0-23/0-59) e.g. 09:00 (Change value without delay) (changeable)
+    -   `wednesday.workTime`: Working time in minutes (180 min = 3h) e.g. 30 = Endzeit 09:30 (Change value without delay) (changeable)
+    -   `calJson_sendto`: If all datapoints are set, then press button to send (with a 1,1 second delay). The mower will now mow for 30 minutes (changeable)
+    -   `calJson_tosend`: This data is sent to Mqtt (Both mowing schedule/is set automatically). You can also create this JSON yourself. (changeable)
+    -   `calendar.calJson`: Array for the weekly mowing plan. You can also create this ARRAY yourself. (mowing schedule 1/is set automatically - for wire only) (changeable)
+    -   `calendar.calJson2`: Array for the weekly mowing plan. You can also create this ARRAY yourself. (mowing schedule 2/is set automatically - for wire only) (changeable)
 
 ![Folder img/calendar.png](img/calendar.png)
 
@@ -70,11 +70,11 @@
 
 -   Off Limit Module (Wire and Vision)
 
-    -   `DF.OLMSwitch_Cutting`: Forbidden Zones true-on/false-off
-    -   `DF.OLMSwitch_FastHoming`: Fast return to the charging station true-on/false-off
+    -   `DF.OLMSwitch_Cutting`: Prevents magnetic tape from being run over - true-on/false-off
+    -   `DF.OLMSwitch_FastHoming`: Fast return to the charging station - true-on/false-off
 
 -   ACS Module (Wire only)
-    -   `US.ACS`: 1-on/0-off
+    -   `US.ACS`: Enable or disable ACS - 1-on/0-off
 
 ![Module img/module.png](img/module.png)
 
@@ -124,7 +124,7 @@
 
 -   `firmware`: Current installed firmware (wire & Vision/readonly)
 -   `firmware_available`: Available firmware (wire/readonly)
--   `firmware_available_all`: All available firmware (wire/readonly)
+-   `firmware_available_all`: All available firmware as JSON (wire/readonly)
 -   `firmware_available_date`: Date available firmware (wire/readonly)
 -   `gradient`: Gradient in grad (wire & Vision/readonly)
 -   `inclination`: Inclination in grad (wire & Vision/readonly)
@@ -136,7 +136,7 @@
 
 ![Mower img/mower_2.png](img/mower_2.png)
 
--   `oneTimeJson`: One-time mowing as JSON
+-   `oneTimeJson`: One-time mowing as JSON (wire & Vision/changeable)
 
 ```json
 {
@@ -147,7 +147,7 @@
 
 -   `oneTimeStart`: One-time mowing start "first fill oneTimeWithBorder and oneTimeWorkTime" - with a 1,1 second delay (wire & Vision/changeable)
 -   `oneTimeWithBorder`: With bordercut - Change value without delay (wire & Vision/changeable)
--   `oneTimeWorkTime`: Worktimemax. 8h in 30 minute steps - Change value without delay (wire & Vision/changeable)
+-   `oneTimeWorkTime`: Worktime max. 8h in 30 minute steps - Change value without delay (wire & Vision/changeable)
 -   `online`: Mower online (wire & Vision/readonly)
 -   `partyModus`: Partymodus turn on/off (wire & Vision/changeable)
 -   `pause`: Mower break turn on/off (wire & Vision/changeable)

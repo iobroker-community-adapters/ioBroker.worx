@@ -25,7 +25,8 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ## Description
 
-🇬🇧 [Description](/docs/en/README.md)
+🇬🇧 [Description](/docs/en/README.md)</br>
+🇩🇪 [Beschreibung](/docs/de/README.md)
 
 ## Disscussion und Questions
 
@@ -40,12 +41,15 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ### **WORK IN PROGRESS**
 
+-   (Lucky-ESA) Added ping after refresh token
+-   (Lucky-ESA) Added german description
+-   (TA2k) Changed firmware request
 -   (Lucky-ESA) Changed auth-endpoint
 -   (Lucky-ESA) Some bug fixes
 -   (Lucky-ESA) Fix unique mqtt clientid
 -   (Lucky-ESA) Fix [#704](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/704)
 -   (Lucky-ESA) readme.md translated [#703](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/703)
--   (Lucky-ESA) Preparation new Mqtt connection Fix [#590](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/590)
+-   (Lucky-ESA) New Mqtt connection Fix [#590](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/590)
 
 ### 2.2.0 (2023-06-27)
 
