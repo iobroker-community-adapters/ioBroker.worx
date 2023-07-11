@@ -1603,7 +1603,15 @@ class Worx extends utils.Adapter {
      */
     async onStateChange(id, state) {
         if (state && !state.ack && state.val !== null) {
-            const no_verification = ["borderCut", "startTime", "workTime", "oneTimeWithBorder", "oneTimeWorkTime"];
+            const no_verification = [
+                "borderCut",
+                "startTime",
+                "workTime",
+                "oneTimeWithBorder",
+                "oneTimeWorkTime",
+                "reset_battery_time",
+                "reset_blade_time",
+            ];
             const command = id.split(".").pop();
             if (command == null) return;
             const check_time = Date.now() - this.poll_check_time;
@@ -1741,7 +1749,7 @@ class Worx extends utils.Adapter {
                         msg.t = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         if (msg.lvl === 0) msg.lvl = 1;
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
-                    } else if (command === "HL") {
+                    } else if (command === "hl") {
                         const msg = {};
                         msg.enabled = state.val;
                         this.sendMessage(`{"modules":{"HL":${JSON.stringify(msg)}}}`, mower.serial_number, id);
@@ -1768,6 +1776,19 @@ class Worx extends utils.Adapter {
                         if (torque < -50 || torque > 50) return;
                         const tqval = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
+                    } else if (command === "reset_battery_time" && state.val) {
+                        await this.setStateAsync(`${mower.serial_number}.mower.reset_battery_time`, {
+                            ack: true,
+                        });
+                    } else if (command === "reset_blade_time" && state.val) {
+                        await this.setStateAsync(`${mower.serial_number}.mower.reset_blade_time`, {
+                            ack: true,
+                        });
+                    } else if (
+                        (command === "reset_blade_time_approved" || command === "reset_battery_time_approved") &&
+                        state.val
+                    ) {
+                        this.reset_times(command, mower.serial_number);
                     } else if (command === "zoneKeeper") {
                         const keeper = state.val ? 1 : 0;
                         if (
@@ -1796,6 +1817,56 @@ class Worx extends utils.Adapter {
             } else {
                 this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
                 this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`);
+            }
+        }
+    }
+
+    /**
+     * @param {string} command
+     */
+    async reset_times(command, device) {
+        let status = null;
+        if (command === "reset_blade_time_approved") {
+            status = await this.getStateAsync(`${device}.mower.reset_blade_time`);
+            if (status != null && status.val) {
+                this.log.info(`Reset blade time!`);
+                const check_blade = await this.apiRequest(
+                    `product-items/${device}/counters/blade/reset`,
+                    false,
+                    "post",
+                );
+                this.log.info(`Answer reset blade time! ${JSON.stringify(check_blade)}`);
+                //if (check_blade) {
+                await this.setStateAsync(`${device}.mower.reset_blade_time`, {
+                    val: false,
+                    ack: true,
+                });
+                await this.setStateAsync(`${device}.mower.reset_blade_time_approved`, {
+                    val: false,
+                    ack: true,
+                });
+                //}
+            }
+        } else if (command === "reset_battery_time_approved") {
+            status = await this.getStateAsync(`${device}.mower.reset_battery_time_approved`);
+            if (status != null && status.val) {
+                this.log.info(`Reset battery time!`);
+                const check_battery = await this.apiRequest(
+                    `product-items/${device}/counters/battery/reset`,
+                    false,
+                    "post",
+                );
+                this.log.info(`Answer reset battery time! ${JSON.stringify(check_battery)}`);
+                //if (check_battery) {
+                await this.setStateAsync(`${device}.mower.reset_battery_time`, {
+                    val: false,
+                    ack: true,
+                });
+                await this.setStateAsync(`${device}.mower.reset_battery_time_approved`, {
+                    val: false,
+                    ack: true,
+                });
+                //}
             }
         }
     }

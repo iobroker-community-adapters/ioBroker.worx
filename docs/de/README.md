@@ -151,6 +151,13 @@
 -   `online`: Mäher Online (Draht & Vision/nur lesen)
 -   `partyModus`: Party-Modus schalten an/aus (Draht & Vision/änderbar)
 -   `pause`: Mähpause schalten an/aus (Draht & Vision/änderbar)
+-   `reset_battery_time`: Batterieladungen in 2 Schritten zurücksetzen (Draht & Vision/änderbar)
+-   `reset_battery_time_approved`: Batterieladungen zurücksetzen bestätigen - `reset_battery_time` muss auf true gesetzt sein (Draht & Vision/änderbar)
+-   `reset_blade_time`: Klingenarbeitszeit in 2 Schritten zurücksetzen (Draht & Vision/änderbar)
+-   `reset_blade_time_approved`: Klingenarbeitszeit zurücksetzen bestätigen - `reset_battery_time` muss auf true gesetzt sein (Draht & Vision/änderbar)
+
+![Mower img/mower_3.png](../en/img/mower_3.png)
+
 -   `sendCommand`: Ein Befehl versenden (Draht & Vision/änderbar)
 
 ```json
@@ -197,8 +204,6 @@
     }
 }
 ```
-
-![Mower img/mower_3.png](../en/img/mower_3.png)
 
 -   `torque`: Raddrehmoment Bereich -50->50 (Draht & Vision/änderbar)
 -   `totalBladeTime`: Gesamte Klingen-Arbeitszeit (Draht & Vision/nur lesen)

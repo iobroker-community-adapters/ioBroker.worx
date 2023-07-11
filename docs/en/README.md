@@ -151,6 +151,13 @@
 -   `online`: Mower online (wire & Vision/readonly)
 -   `partyModus`: Partymodus turn on/off (wire & Vision/changeable)
 -   `pause`: Mower break turn on/off (wire & Vision/changeable)
+-   `reset_battery_time`: reset battery charges in 2 steps (wire & vision/changeable)
+-   `reset_battery_time_approved`: Confirm reset battery charges - `reset_battery_time` must be set to true (wire & vision/modifiable)
+-   `reset_blade_time`: reset blade working time in 2 steps (wire & vision/changeable)
+-   `reset_blade_time_approved`: confirm reset blade working time - `reset_battery_time` must be set to true (wire & vision/changeable)
+
+![Mower img/mower_3.png](img/mower_3.png)
+
 -   `sendCommand`: Send cmd command (wire & Vision/changeable)
 
 ```json
@@ -197,8 +204,6 @@
     }
 }
 ```
-
-![Mower img/mower_3.png](img/mower_3.png)
 
 -   `torque`: Wheel torque Range -50->50 (wire & Vision/changeable)
 -   `totalBladeTime`: Total blade time (wire & Vision/readonly)
