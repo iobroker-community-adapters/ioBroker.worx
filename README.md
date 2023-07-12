@@ -41,6 +41,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ### **WORK IN PROGRESS**
 
+-   (Lucky-ESA) Added reset blade time and battery time
 -   (Lucky-ESA) Added ping after refresh token
 -   (Lucky-ESA) Added german description
 -   (TA2k) Changed firmware request

@@ -1823,51 +1823,54 @@ class Worx extends utils.Adapter {
 
     /**
      * @param {string} command
+     * @param {string} device
      */
     async reset_times(command, device) {
         let status = null;
+        let check = null;
         if (command === "reset_blade_time_approved") {
             status = await this.getStateAsync(`${device}.mower.reset_blade_time`);
             if (status != null && status.val) {
-                this.log.info(`Reset blade time!`);
-                const check_blade = await this.apiRequest(
-                    `product-items/${device}/counters/blade/reset`,
-                    false,
-                    "post",
-                );
-                this.log.info(`Answer reset blade time! ${JSON.stringify(check_blade)}`);
-                //if (check_blade) {
-                await this.setStateAsync(`${device}.mower.reset_blade_time`, {
-                    val: false,
-                    ack: true,
-                });
-                await this.setStateAsync(`${device}.mower.reset_blade_time_approved`, {
-                    val: false,
-                    ack: true,
-                });
-                //}
+                this.log.debug(`Reset blade time!`);
+                check = await this.apiRequest(`product-items/${device}/counters/blade/reset`, false, "post");
+                this.log.debug(`Receive: Reset blade time - ${JSON.stringify(check)}`);
+                if (check) {
+                    await this.setStateAsync(`${device}.mower.reset_blade_time`, {
+                        val: false,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${device}.mower.reset_blade_time_approved`, {
+                        val: false,
+                        ack: true,
+                    });
+                }
             }
         } else if (command === "reset_battery_time_approved") {
             status = await this.getStateAsync(`${device}.mower.reset_battery_time_approved`);
             if (status != null && status.val) {
-                this.log.info(`Reset battery time!`);
-                const check_battery = await this.apiRequest(
-                    `product-items/${device}/counters/battery/reset`,
-                    false,
-                    "post",
-                );
-                this.log.info(`Answer reset battery time! ${JSON.stringify(check_battery)}`);
-                //if (check_battery) {
-                await this.setStateAsync(`${device}.mower.reset_battery_time`, {
-                    val: false,
-                    ack: true,
-                });
-                await this.setStateAsync(`${device}.mower.reset_battery_time_approved`, {
-                    val: false,
-                    ack: true,
-                });
-                //}
+                this.log.debug(`Reset battery time!`);
+                check = await this.apiRequest(`product-items/${device}/counters/battery/reset`, false, "post");
+                this.log.debug(`Receive: Reset battery time - ${JSON.stringify(check)}`);
+                if (check) {
+                    await this.setStateAsync(`${device}.mower.reset_battery_time`, {
+                        val: false,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${device}.mower.reset_battery_time_approved`, {
+                        val: false,
+                        ack: true,
+                    });
+                }
             }
+        }
+        if (check && check["serial_number"] != null) {
+            const new_data = await this.cleanupRaw(check);
+            this.json2iob.parse(`${check["serial_number"]}.rawMqtt`, new_data, {
+                forceIndex: true,
+                preferedArrayName: null,
+            });
+        } else {
+            this.log.info(`The reset didn't work.`);
         }
     }
 
