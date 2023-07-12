@@ -123,9 +123,22 @@
 ![Mower img/mower_1.png](img/mower_1.png)
 
 -   `firmware`: Current installed firmware (wire & Vision/readonly)
--   `firmware_available`: Available firmware (wire/readonly)
--   `firmware_available_all`: All available firmware as JSON (wire/readonly)
--   `firmware_available_date`: Date available firmware (wire/readonly)
+-   `firmware_available`: Available firmware (wire & Vision/readonly)
+-   `firmware_available_all`: Last available firmware as JSON - This JSON will be updated when a new update is available (wire & Vision/readonly)
+
+```json
+{
+    "mandatory": false,
+    "product": {
+        "uuid": "1236ll8d-0000-0000-9999-07ff6690003f",
+        "version": "3.30.0+1",
+        "released_at": "2023-05-24",
+        "changelog": "•\tSupport for new models \tWR166E and WR184E\n•\tImproved Grass cutting coverage\n•\tImproved ACS\n•\tAdded Zone Keeper function (need to be enabled by app)\n•\tImproved wheel torque algorithm\n• \tNew FML firmware\n•\tFixed \"FML\" and \"Radiolink\" Activation problem\n•\tFixed some translations error\n•\tRain delay can now be cleared pressing START / HOME button, (1 minute after countdown has started)\n•\tImproved PRO Battery management\n• \tImproved boundary wire recognition\n• \tFixed border cut when zones are active\n• \tNew wifi firmware for board HW REV > 7\n\nThe Worx Landroid team would like to thank our amazing beta testers, with hundreds of hours of their own free time to make this firmware possible."
+    }
+}
+```
+
+-   `firmware_available_date`: Date available firmware - Dummy 1970-01-01 when the adapter is reinstalled and no update is available (wire & Vision/readonly)
 -   `gradient`: Gradient in grad (wire & Vision/readonly)
 -   `inclination`: Inclination in grad (wire & Vision/readonly)
 -   `last_command`: Last Request from iobroker or APP as JSON Table (wire & Vision/readonly)

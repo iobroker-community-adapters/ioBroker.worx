@@ -487,27 +487,43 @@ class Worx extends utils.Adapter {
         for (const mower of this.deviceArray) {
             if (this.fw_available[mower.serial_number] === true) {
                 const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmware-upgrade`, false);
-                if (
-                    fw_json &&
-                    Object.keys(fw_json).length > 0 &&
-                    fw_json[0] &&
-                    fw_json[0].version &&
-                    fw_json[0].updated_at
-                ) {
-                    this.log.info(`Update Firmware ${mower.serial_number}`);
-                    await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
-                        val: fw_json[0].version,
-                        ack: true,
-                    });
-                    await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
-                        val: fw_json[0].updated_at,
-                        ack: true,
-                    });
-                    await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
-                        val: JSON.stringify(fw_json),
-                        ack: true,
+                let version = 0;
+                let released_at = "";
+                let json;
+                if (Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
+                    version = parseFloat(fw_json.product.version.toFixed(2));
+                    released_at = fw_json.product.version;
+                    json = JSON.stringify(fw_json);
+                } else {
+                    const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
+                    if (is_set && is_set.val != null && typeof is_set.val === "number" && is_set.val > 0) {
+                        this.log.debug(`Update not needed!`);
+                        return;
+                    }
+                    version = parseFloat(mower.firmware_version.toFixed(2));
+                    released_at = "1970-01-01";
+                    json = JSON.stringify({
+                        mandatory: false,
+                        product: {
+                            uuid: mower.uuid,
+                            version: parseFloat(mower.firmware_version),
+                            released_at: "1970-01-01",
+                            changelog: "Update only when new firmware is available.",
+                        },
                     });
                 }
+                await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+                    val: version,
+                    ack: true,
+                });
+                await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+                    val: released_at,
+                    ack: true,
+                });
+                await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+                    val: json,
+                    ack: true,
+                });
             }
         }
     }
@@ -683,22 +699,47 @@ class Worx extends utils.Adapter {
             }
         }
 
-        if (fw_json && Object.keys(fw_json).length > 0 && fw_json[0] && fw_json[0].version && fw_json[0].updated_at) {
+        if (fw_json) {
             this.fw_available[mower.serial_number] = true;
             this.log.info("Firmware found, create states...");
             for (const o of objects.firmware_available) {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
+            let version = 0;
+            let released_at = "";
+            let json;
+            if (Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
+                version = parseFloat(fw_json.product.version.toFixed(2));
+                released_at = fw_json.product.version;
+                json = JSON.stringify(fw_json);
+            } else {
+                const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
+                if (is_set && is_set.val != null && typeof is_set.val === "number" && is_set.val > 0) {
+                    this.log.debug(`Update not needed!`);
+                    return;
+                }
+                version = parseFloat(mower.firmware_version.toFixed(2));
+                released_at = "1970-01-01";
+                json = JSON.stringify({
+                    mandatory: false,
+                    product: {
+                        uuid: mower.uuid,
+                        version: parseFloat(mower.firmware_version),
+                        released_at: "1970-01-01",
+                        changelog: "Update only when new firmware is available.",
+                    },
+                });
+            }
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
-                val: fw_json[0].version,
+                val: version,
                 ack: true,
             });
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
-                val: fw_json[0].updated_at,
+                val: released_at,
                 ack: true,
             });
             await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
-                val: JSON.stringify(fw_json),
+                val: json,
                 ack: true,
             });
         }
@@ -784,10 +825,9 @@ class Worx extends utils.Adapter {
                 return res.data;
             })
             .catch((error) => {
-                // Temporary until the bug is found.
                 if (path.includes("firmware-upgrade") && error.response.status === 404) {
                     this.log.warn("Updating firmware information is currently not possible!");
-                    return;
+                    return error.response.status;
                 } else {
                     this.log.error(error);
                     error.response && this.log.error(JSON.stringify(error.response.data));
