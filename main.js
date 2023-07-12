@@ -337,12 +337,10 @@ class Worx extends utils.Adapter {
             const products = await this.apiRequest("products", true);
             this.log.debug(JSON.stringify(products));
             const productID = mower && mower.product_id ? mower.product_id : 0;
-            let boardID = 0;
             if (products && products[0] && products[0].id) {
                 for (const sl of products) {
                     if (sl && sl.id && sl.id === productID) {
                         this.log.info(`Create product folder and states for ${sl.code}`);
-                        boardID = sl.board_id;
                         this.json2iob.parse(`${mower.serial_number}.product`, sl, {
                             write: false,
                             forceIndex: true,
@@ -350,24 +348,6 @@ class Worx extends utils.Adapter {
                             autoCast: true,
                         });
                         break;
-                    }
-                }
-            }
-            if (boardID > 0) {
-                const boards = await this.apiRequest("boards", true);
-                this.log.debug(JSON.stringify(boards));
-                if (boards && boards[0] && boards[0].id) {
-                    for (const sl of boards) {
-                        if (sl && sl.id && sl.id === boardID) {
-                            this.log.info(`Create board folder and states for ${sl.code} in product folder`);
-                            this.json2iob.parse(`${mower.serial_number}.product.board`, sl, {
-                                write: false,
-                                forceIndex: true,
-                                channelName: "Board Info",
-                                autoCast: true,
-                            });
-                            break;
-                        }
                     }
                 }
             }
