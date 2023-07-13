@@ -491,8 +491,8 @@ class Worx extends utils.Adapter {
                 let released_at = "";
                 let json;
                 if (Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
-                    version = parseFloat(fw_json.product.version.toFixed(2));
-                    released_at = fw_json.product.version;
+                    version = parseFloat(fw_json.product.version);
+                    released_at = fw_json.product.released_at;
                     json = JSON.stringify(fw_json);
                 } else {
                     const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
@@ -500,7 +500,7 @@ class Worx extends utils.Adapter {
                         this.log.debug(`Update not needed!`);
                         return;
                     }
-                    version = parseFloat(mower.firmware_version.toFixed(2));
+                    version = parseFloat(mower.firmware_version);
                     released_at = "1970-01-01";
                     json = JSON.stringify({
                         mandatory: false,
@@ -709,7 +709,7 @@ class Worx extends utils.Adapter {
             let released_at = "";
             let json;
             if (Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
-                version = parseFloat(fw_json.product.version.toFixed(2));
+                version = parseFloat(fw_json.product.version);
                 released_at = fw_json.product.version;
                 json = JSON.stringify(fw_json);
             } else {
@@ -718,7 +718,7 @@ class Worx extends utils.Adapter {
                     this.log.debug(`Update not needed!`);
                     return;
                 }
-                version = parseFloat(mower.firmware_version.toFixed(2));
+                version = parseFloat(mower.firmware_version);
                 released_at = "1970-01-01";
                 json = JSON.stringify({
                     mandatory: false,
@@ -826,7 +826,7 @@ class Worx extends utils.Adapter {
             })
             .catch((error) => {
                 if (path.includes("firmware-upgrade") && error.response.status === 404) {
-                    this.log.warn("Updating firmware information is currently not possible!");
+                    this.log.debug("Updating firmware information is currently not possible!");
                     return error.response.status;
                 } else {
                     this.log.error(error);
