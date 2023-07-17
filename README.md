@@ -41,6 +41,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ### **WORK IN PROGRESS**
 
+-   (Lucky-ESA) Added Firmware Update
 -   (Lucky-ESA) Deleted board info request - Worx disabled endpoint
 -   (Lucky-ESA) Added reset blade time and battery time
 -   (Lucky-ESA) Added ping after refresh token

@@ -1631,6 +1631,7 @@ class Worx extends utils.Adapter {
                 "oneTimeWorkTime",
                 "reset_battery_time",
                 "reset_blade_time",
+                "firmware_update_start",
             ];
             const command = id.split(".").pop();
             if (command == null) return;
@@ -1804,11 +1805,15 @@ class Worx extends utils.Adapter {
                         await this.setStateAsync(`${mower.serial_number}.mower.reset_blade_time`, {
                             ack: true,
                         });
+                    } else if (command === "firmware_update_start" && state.val) {
+                        this.checkfirmware(mower);
                     } else if (
-                        (command === "reset_blade_time_approved" || command === "reset_battery_time_approved") &&
+                        (command === "reset_blade_time_approved" ||
+                            command === "reset_battery_time_approved" ||
+                            command === "firmware_update_start_approved") &&
                         state.val
                     ) {
-                        this.reset_times(command, mower.serial_number);
+                        this.postRequest(command, mower.serial_number);
                     } else if (command === "zoneKeeper") {
                         const keeper = state.val ? 1 : 0;
                         if (
@@ -1842,10 +1847,30 @@ class Worx extends utils.Adapter {
     }
 
     /**
+     * @param {object} mower
+     */
+    async checkfirmware(mower) {
+        const fw = await this.getStateAsync(`${mower.serial_number}.mower.firmware`);
+        const fw_ava = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
+        if (!fw || !fw_ava || fw == fw_ava) {
+            this.log.debug(`No update found. Start request to Worx.`);
+            this.updateFirmware();
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+                val: false,
+                ack: true,
+            });
+            return;
+        }
+        await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+            ack: true,
+        });
+    }
+
+    /**
      * @param {string} command
      * @param {string} device
      */
-    async reset_times(command, device) {
+    async postRequest(command, device) {
         let status = null;
         let check = null;
         if (command === "reset_blade_time_approved") {
@@ -1866,7 +1891,7 @@ class Worx extends utils.Adapter {
                 }
             }
         } else if (command === "reset_battery_time_approved") {
-            status = await this.getStateAsync(`${device}.mower.reset_battery_time_approved`);
+            status = await this.getStateAsync(`${device}.mower.reset_battery_time`);
             if (status != null && status.val) {
                 this.log.debug(`Reset battery time!`);
                 check = await this.apiRequest(`product-items/${device}/counters/battery/reset`, false, "post");
@@ -1877,6 +1902,23 @@ class Worx extends utils.Adapter {
                         ack: true,
                     });
                     await this.setStateAsync(`${device}.mower.reset_battery_time_approved`, {
+                        val: false,
+                        ack: true,
+                    });
+                }
+            }
+        } else if (command === "firmware_update_start_approved") {
+            status = await this.getStateAsync(`${device}.mower.firmware_update_start`);
+            if (status != null && status.val) {
+                this.log.debug(`Start Firmware Update!`);
+                check = await this.apiRequest(`product-items/${device}/firmware-upgrade`, false, "post");
+                this.log.debug(`Receive: Start Firmware Update - ${JSON.stringify(check)}`);
+                if (check) {
+                    await this.setStateAsync(`${device}.mower.firmware_update_start`, {
+                        val: false,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${device}.mower.firmware_update_start_approved`, {
                         val: false,
                         ack: true,
                     });
