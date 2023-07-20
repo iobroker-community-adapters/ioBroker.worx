@@ -2776,6 +2776,24 @@ class Worx extends utils.Adapter {
                     });
                     this.log.debug(`Object ${serial}.mower.firmware change string to number`);
                 }
+                if (this.version > oldVersion && oldVersion <= "2.3.1") {
+                    let checking;
+                    checking = await this.getObjectAsync(serial + ".mower.actualArea");
+                    if (checking) {
+                        await this.delObjectAsync(serial + ".mower.actualArea");
+                        this.log.info(`Delete object ${serial}.mower.actualArea`);
+                    }
+                    checking = await this.getObjectAsync(serial + ".mower.actualAreaIndicator");
+                    if (checking) {
+                        await this.delObjectAsync(serial + ".mower.actualAreaIndicator");
+                        this.log.info(`Delete object ${serial}.mower.actualAreaIndicator`);
+                    }
+                    checking = await this.getObjectAsync(serial + ".mower.zoneKeeper");
+                    if (checking) {
+                        await this.delObjectAsync(serial + ".mower.zoneKeeper");
+                        this.log.info(`Delete object ${serial}.mower.zoneKeeper`);
+                    }
+                }
             } catch (e) {
                 this.log.info("cleanOldVersion: " + e);
             }
