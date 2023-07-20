@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "worx",
-        "version": "2.2.0",
+        "version": "2.3.1",
         "news": {
+            "2.3.1": {
+                "en": "New MQTT Client and Reset Blade, Batterytime and Firmware Update added",
+                "de": "Neuer MQTT Client und Messer Rücksetzung, Batteryzeit und Firmware Update hinzugefügt"
+            },
             "2.2.0": {
                 "en": "Removed mowerActive for Vision\nAdd Vision paused schedule\nAdd Vision partyModus\nFix ping request Vision\nFix send message inheritance\nFix #684\nFix deviceArray inheritance\nAdd Vision mowers w/o Status & Error message\nAdd ZoneKeeper for previous mowers",
                 "de": "mowerActive für Visionentfernt\nVision Zeitplan Pausierung hinzugefügt\nVision partymodus hinzugefügt\nping Anfrage Vision gefixed\nSende-Nachricht-Erinnerung Problem behoben\n#684 gefixed\ndeviceArray Vererbung gefixed\nVision Mähers w/o Status & Fehlermeldung werden ohne Fehlermeldung hinzugefügt\nZoneKeeper für frühere Mäher hinzugefügt",
