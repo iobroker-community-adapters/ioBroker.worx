@@ -39,7 +39,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ## Changelog
 
-### **WORK IN PROGRESS**
+### 2.3.1 (2023-07-20)
 
 -   (Lucky-ESA) Added Firmware Update
 -   (Lucky-ESA) Deleted board info request - Worx disabled endpoint
