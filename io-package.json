@@ -1,269 +1,280 @@
 {
-    "common": {
-        "name": "worx",
-        "version": "2.3.1",
-        "news": {
-            "2.3.1": {
-                "en": "Added Firmware Update\nDeleted board info request - Worx disabled endpoint\nAdded reset blade time and battery time\nAdded ping after refresh token\nAdded german description\nChanged firmware request\nChanged auth-endpoint\nSome bug fixes\nFix unique mqtt clientid\nreadme.md translated\nNew Mqtt connection\n",
-                "de": "Firmware Update hinzugefügt\nGelöschte Board-Info-Anfrage - Worx deaktiviert Endpoint\nHinzugefügt Reset Klinge Zeit und Batteriezeit\nHinzugefügt ping nach erfrischen Token\nDeutsche Beschreibung\nGeänderte Firmware-Anforderung\nAuth-endpoint geändert\nEinige Fehlerbehebungen\nFix einzigartige mqtt clientid\nlasme.md übersetzt\nNeue Mqtt-Verbindung\n",
-                "ru": "Добавленное обновление прошивки\nУдаленный запрос информации - Worx disabled endpoint\nДобавлено время сброса лезвия и время батареи\nДобавлен пинг после обновления токена\nДобавлено немецкое описание\nИзмененный запрос прошивки\nИзмененный auth-endpoint\nНекоторые исправления ошибок\nFix уникальный mqtt клиенти\nreadme.md перевод\nНовое соединение Mqtt\n",
-                "pt": "Adicionada atualização de firmware\nPedido de informações do conselho excluído - Worx desativado endpoint\nAdicionado tempo da lâmina de reset e tempo da bateria\nAdicionado ping após refrescante token\nDescrição alemã adicionada\nPedido de firmware alterado\nPonto de vista alterado\nAlgumas correções de bugs\nCorrigir cliente único mqtt\ntraduzido do english\nNova conexão Mqtt\n",
-                "nl": "Voegde Firmware Update toe\nVerwijder de info verzoek, Worx gehandicapt\nVoegde resettijd en batterij tijd\nPing toegevoegd na verfrissende token\nVertaling:\nVeranderde firmaware verzoek\nVerandering van auth-endpoint\nSommige insecten repareren\nVertaling:\nvertaald\nNieuw Mqt\n",
-                "fr": "Mise à jour du firmware\nDemande d'information de planche supprimée - Worx point d'extrémité désactivé\nTemps de réinitialisation et temps de batterie\nAjouté ping après rafraîchissement\nAjout de la description allemande\nDemande de firmware modifiée\nChanged auth-endpoint\nQuelques corrections de bug\nFix unique mqtt clientid\nreadme.md translated\nNouvelle connexion Mqt\n",
-                "it": "Aggiornamento firmware aggiunto\nRichiesta informazioni scheda cancellata - Worx disabilitato endpoint\nAggiunta di reset lama tempo e batteria tempo\nAggiunto ping dopo aggiornamento token\nAggiunto tedesco descrizione\nRichiesta firmware modificata\nCambiato punto di arrivo\nAlcune correzioni di bug\nFissare unico mqtt clienti\nreadme.md tradotto\nNuovo collegamento Mqtt\n",
-                "es": "Añadido actualización de firmware\nSolicitud de información de la tabla suprimida - Worx punto final deshabilitado\nTiempo de reajuste y tiempo de batería\nAñadido ping después de token refrescante\nDescripción alemana\nSolicitud de firmware modificada\nCambio de punto de referencia\nAlgunas correcciones de errores\nFijar un mqtt clienteid único\nreadme.md translated\nNueva conexión Mqtt\n",
-                "pl": "Oficjalna strona\nWykorzystywana info na żądanie - Worx niepełnosprawny punkt końcowy\nZresetowany czas ostrza i baterię\nDodać ping po odświeżeniu tokenu\nAdding german description (ang.)\nZmienić oprogramowanie\nChanged authendpoint (ang.)\nCzęść błędów naprawia\nKliencki klientid mqtt\nprzetłumaczyć\nNew Mqtt connection\n",
-                "uk": "Додано оновлення прошивки\nЗапит на дошку - Worx відключений кінцевий пункт\nДодано час скидання леза і час батареї\nДодано пінг після оновленого токен\nДодано німецький опис\nЗмінений запит про прошивку\nЗмінено auth-endpoint\nДеякі виправлення помилок\nФіксувати унікальний клієнт mqtt\njavascript licenses api веб-сайт\nНовий Mqtt підключення\n",
-                "zh-cn": "添加的“Frmware最新情况”\n删除以要求为主的委员会—— 残疾终点\n增加时间和电池时间\n装修后\n附加说明\n改变警觉要求\n改编\n一些布格瓦特\nFix独特的 mqt客户\n阅读摘要\nNew Mqt联系\n"
-            },
-            "2.2.0": {
-                "en": "Removed mowerActive for Vision\nAdd Vision paused schedule\nAdd Vision partyModus\nFix ping request Vision\nFix send message inheritance\nFix #684\nFix deviceArray inheritance\nAdd Vision mowers w/o Status & Error message\nAdd ZoneKeeper for previous mowers",
-                "de": "mowerActive für Visionentfernt\nVision Zeitplan Pausierung hinzugefügt\nVision partymodus hinzugefügt\nping Anfrage Vision gefixed\nSende-Nachricht-Erinnerung Problem behoben\n#684 gefixed\ndeviceArray Vererbung gefixed\nVision Mähers w/o Status & Fehlermeldung werden ohne Fehlermeldung hinzugefügt\nZoneKeeper für frühere Mäher hinzugefügt",
-                "ru": "Удаленная моверАктивна для видения\nДобавьте график работы с Vision paused\nДобавить видение partyModus\nFix ping запрос Видение\nFix отправить сообщение наследство\nФиксация #684\nFix устройствоArray наследство\nДобавить видение mowers w/o Статус и сообщение об ошибке\nДобавить ZoneKeeper за предыдущие косилки",
-                "pt": "Cortador removidoAtivo para Visão\nAdicionar Visão cronograma pausado\nAdicionar Vision partyModus\nFix ping request Visão\nCorrigir herança de mensagem de envio\nFixar #684\nCorrigir herança dispositivoArray\nAdicionar cortadores de visão w/o Status & Mensagem de erro\nAdicionar ZoneKeeper para cortadores anteriores",
-                "nl": "Verwijdering voor Vision\nVertaling:\nAdd Vision PartModus\nFix ping verzoek Vision\nVertaling:\nVertaling:\nVertaling:\nVertaling:\nAdd ZoneKeper voor eerdere masten",
-                "fr": "Débardeur enlevéActive for Vision\nAjouter Vision pause programme\nAjouter Vision partyModus\nFix ping request Vision\nEnvoyer un message\nFix #684\nDistributeur Array\nAjouter les tondeuses Vision w/o Statut & Message d'erreur\nAjouter ZoneKeeper pour les tondeuses précédentes",
-                "it": "Rimozione della falciatriceActive per Vision\nAggiungi Visione programma sospeso\nAggiungi Vision partyModus\nFissare la richiesta di ping\nRisolvi l'eredità del messaggio\nFissare #684\nFissare l'eredità di dispositivoArray\nAggiungi tosaerba Vision w/o Stato & messaggio di errore\nAggiungere ZoneKeeper per falciatrici precedenti",
-                "es": "Retire la cortadoraActiva para la visión\nAdd Vision paused schedule\nAgregar partido VisiónModus\nSolicitud de fijación Visión\nCorrección enviar la herencia del mensaje\nCorrección #684\nDispositivo fijoArray inheritance\nAgregar las cortadoras Visión w/o Status > Mensaje de error\nAñadir ZoneKeeper para cortacéspedes anteriores",
-                "pl": "Removed mowerActive for Vision (ang.)\nAddd Vision wstrzymał harmonogram\nStrona Addd Vision\nVision (ang.)\nFix wysyła wiadomość do dziedziczenia\n684\nFix-Array dziedziczenie\nVision mowers w/o Status & Error (ang.)\nOficjalna strona Add ZoneKeeper",
-                "uk": "Вилучена косаркаАктива для зору\nДодати графік вибачення\nДодати вечірку зоруModus\nВиправлення запиту ping Vision\nВиправлення надсилання спадщини повідомлення\nВиправлення #684\nФіксований пристрій\nДодати косарки Vision w/o Статус і повідомлення про помилку\nДодати ZoneKeeper для попередніх косарки",
-                "zh-cn": "取消对《愿景》的反应\n增加设想时间表\n加入《政党领导》\n固定请求书\nFix发出讯息\nFix #684\nFix装置Array继承\n添加《远景》:妻子/地位和电子信息\n前一轮答复的增区"
-            },
-            "2.1.3": {
-                "en": "Added ping option in the instance settings.",
-                "de": "In den Instanzeinstellungen wurde die Ping-Option hinzugefügt.",
-                "ru": "Добавлена опция ping в настройках примера.",
-                "pt": "Adicionado ping opção nas configurações de instância.",
-                "nl": "Toegevoegd pingoptie in de voorstellingen.",
-                "fr": "Ajout de l'option ping dans les paramètres de l'instance.",
-                "it": "Aggiunta opzione ping nelle impostazioni di istanza.",
-                "es": "Opción de ping agregada en la configuración de instancia.",
-                "pl": "Wykorzystywana opcja pingowa w ustawieniach.",
-                "uk": "Додано параметр ping в налаштуваннях екземпляра.",
-                "zh-cn": "在这种环境中增加选择。."
-            },
-            "2.1.2": {
-                "en": "Improved reconnection for multiple mower.",
-                "de": "Verbesserte Wiederverbindung für mehrere Mäher.",
-                "ru": "Улучшена переподключение для нескольких косил.",
-                "pt": "Reconexão melhorada para vários cortadores.",
-                "nl": "Vernieuwde verbinding voor meerdere maaien.",
-                "fr": "Reconnection améliorée pour la tondeuse multiple.",
-                "it": "Riconnessione migliorata per più tosaerba.",
-                "es": "Mejoramiento de la reconexión para varias cortadoras.",
-                "pl": "Pozwoliło to na ponowne połączenie wielu szewców.",
-                "uk": "Покращено відключення для багаторазової косарки.",
-                "zh-cn": "改善对多种反应的重新连接。."
-            },
-            "2.1.1": {
-                "en": "Changed reconnection times.",
-                "de": "Geänderte Wiederverbindungszeiten.",
-                "ru": "Изменены времена повторного подключения.",
-                "pt": "Tempos de reconexão alterados.",
-                "nl": "Veranderde verbindingstijden.",
-                "fr": "Changement de temps de reconnection.",
-                "it": "Cambiati tempi di riconnessione.",
-                "es": "Cambio de tiempos de reconexión.",
-                "pl": "Zmienił czas ponownego połączenia.",
-                "uk": "Змінено час відключення.",
-                "zh-cn": "变化的重新连接时间。."
-            },
-            "2.1.0": {
-                "en": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many sending requests.",
-                "de": "Verschieben Kalender setState zu einem Json und anderen Fixes, um Blockierung wegen zu vielen Senden-Anfragen zu verhindern.",
-                "ru": "Move Calendar setState to one Json и другие исправления, чтобы предотвратить блокировку из-за слишком много отправляющих запросов.",
-                "pt": "Mover Calendário setState para um Json e outras correções para evitar bloqueio por causa de muitos pedidos de envio.",
-                "nl": "Beweeg Calendar naar ene Json en andere fixes om te voorkomen dat ze blokkeren vanwege teveel verzoeken.",
-                "fr": "Move Calendar setState to one Json and other corrections to prevent blocking because of too many sending requests.",
-                "it": "Move Calendar setState a una Json e altre correzioni per evitare il blocco a causa di troppe richieste di invio.",
-                "es": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many send requests.",
-                "pl": "Move Calendar powołał State do jednego Jsona i innych napraw, aby zapobiec blokowaniu przez zbyt wiele żądań.",
-                "uk": "Перемістити календар setState до одного Json та інших виправлень, щоб запобігти блокування через занадто багато запитів на відправлення.",
-                "zh-cn": "Move Calendar将国家带到一个Json和其他装置,以防阻挡,因为过多的派遣请求。."
-            },
-            "2.0.3": {
-                "en": "Added manual refresh. Fixed empty status and firmware format. Reduced info logs.",
-                "de": "Hinzugefügt manuelle Erfrischung. Behoben leeren Status und Firmware-Format. Reduzierte Info-Logs.",
-                "ru": "Добавлено ручное обновление. Исправлено пустое состояние и формат прошивки. Уменьшенные логы информации.",
-                "pt": "Adicionada atualização manual. Corrigido o status vazio e o formato de firmware. Registos de informação reduzidos.",
-                "nl": "Voeg handmatige verfrissing toe. Gerepareerde lege status en stevigware formaat. Verminderde infologs.",
-                "fr": "Ajout de rafraîchissement manuel. État vide fixe et format de firmware. Réduction des relevés.",
-                "it": "Aggiunta aggiornamento manuale. Risolto stato vuoto e formato firmware. Tronchi di informazioni ridotti.",
-                "es": "Se agregó un refresco manual. Estatus vacío fijo y formato de firmware. Registros de información reducidos.",
-                "pl": "Wręcznik odświeżony. Zwarty status i format oprogramowania. Zredukowane logi informacyjne.",
-                "uk": "Додано ручне оновлення. Виправлено порожній статус і формат прошивки. Зменшені інформаційні колоди.",
-                "zh-cn": "添加了工匠。 固定的空洞状况和警觉形式。 排入量减少。."
-            },
-            "2.0.2": {
-                "en": "Fix MQTT connection for Kress, Landxcape and Ferrex",
-                "de": "Fix MQTT-Verbindung für Kress, Landxcape und Ferrex",
-                "ru": "Fix MQTT соединение для Kress, Landxcape и Ferrex",
-                "pt": "Corrigir conexão MQTT para Kress, Landxcape e Ferrex",
-                "nl": "Fix MQTT verbinding met Kress, Landxcape en Ferrex",
-                "fr": "Fixer la connexion MQTT pour Kress, Landxcape et Ferrex",
-                "it": "Fissare la connessione MQTT per Kress, Landxcape e Ferrex",
-                "es": "Fijar conexión MQTT para Kress, Landxcape y Ferrex",
-                "pl": "Fix MQTT łączą się z Kressem, Landxcape i Ferrexem",
-                "uk": "Кріплення MQTT для Kress, Landxcape і Ferrex",
-                "zh-cn": "Fix MQTT的联系 for Kress, Landxcap and Ferrex"
-            }
+  "common": {
+    "name": "worx",
+    "version": "2.3.2",
+    "news": {
+      "2.3.2": {
+        "en": "Wrong folder for areas\nNew data points can only be read",
+        "de": "Falscher Ordner für Bereiche\nNeue Datenpunkte können nur gelesen werden",
+        "ru": "Неправильная папка для областей\nНовые точки данных можно прочитать только",
+        "pt": "Pasta errada para áreas\nNovos pontos de dados só podem ser lidos",
+        "nl": "Verkeerde map voor gebieden\nNieuwe datapunten kunnen alleen gelezen worden",
+        "fr": "Wrong dossier pour les zones\nDe nouveaux points de données ne peuvent être lus que",
+        "it": "Cartella sbagliato per le aree\nNuovi punti di dati possono essere letti solo",
+        "es": "Carpeta incorrecta para áreas\nNuevos puntos de datos solo se pueden leer",
+        "pl": "Wrong folder (ang.)\nMożna odczytać tylko nowe punkty danych",
+        "uk": "Папка wrong для зон\nНові дані можна прочитати лише",
+        "zh-cn": "环境领域\n新的数据点只能阅读。"
+      },
+      "2.3.1": {
+        "en": "Added Firmware Update\nDeleted board info request - Worx disabled endpoint\nAdded reset blade time and battery time\nAdded ping after refresh token\nAdded german description\nChanged firmware request\nChanged auth-endpoint\nSome bug fixes\nFix unique mqtt clientid\nreadme.md translated\nNew Mqtt connection\n",
+        "de": "Firmware Update hinzugefügt\nGelöschte Board-Info-Anfrage - Worx deaktiviert Endpoint\nHinzugefügt Reset Klinge Zeit und Batteriezeit\nHinzugefügt ping nach erfrischen Token\nDeutsche Beschreibung\nGeänderte Firmware-Anforderung\nAuth-endpoint geändert\nEinige Fehlerbehebungen\nFix einzigartige mqtt clientid\nlasme.md übersetzt\nNeue Mqtt-Verbindung\n",
+        "ru": "Добавленное обновление прошивки\nУдаленный запрос информации - Worx disabled endpoint\nДобавлено время сброса лезвия и время батареи\nДобавлен пинг после обновления токена\nДобавлено немецкое описание\nИзмененный запрос прошивки\nИзмененный auth-endpoint\nНекоторые исправления ошибок\nFix уникальный mqtt клиенти\nreadme.md перевод\nНовое соединение Mqtt\n",
+        "pt": "Adicionada atualização de firmware\nPedido de informações do conselho excluído - Worx desativado endpoint\nAdicionado tempo da lâmina de reset e tempo da bateria\nAdicionado ping após refrescante token\nDescrição alemã adicionada\nPedido de firmware alterado\nPonto de vista alterado\nAlgumas correções de bugs\nCorrigir cliente único mqtt\ntraduzido do english\nNova conexão Mqtt\n",
+        "nl": "Voegde Firmware Update toe\nVerwijder de info verzoek, Worx gehandicapt\nVoegde resettijd en batterij tijd\nPing toegevoegd na verfrissende token\nVertaling:\nVeranderde firmaware verzoek\nVerandering van auth-endpoint\nSommige insecten repareren\nVertaling:\nvertaald\nNieuw Mqt\n",
+        "fr": "Mise à jour du firmware\nDemande d'information de planche supprimée - Worx point d'extrémité désactivé\nTemps de réinitialisation et temps de batterie\nAjouté ping après rafraîchissement\nAjout de la description allemande\nDemande de firmware modifiée\nChanged auth-endpoint\nQuelques corrections de bug\nFix unique mqtt clientid\nreadme.md translated\nNouvelle connexion Mqt\n",
+        "it": "Aggiornamento firmware aggiunto\nRichiesta informazioni scheda cancellata - Worx disabilitato endpoint\nAggiunta di reset lama tempo e batteria tempo\nAggiunto ping dopo aggiornamento token\nAggiunto tedesco descrizione\nRichiesta firmware modificata\nCambiato punto di arrivo\nAlcune correzioni di bug\nFissare unico mqtt clienti\nreadme.md tradotto\nNuovo collegamento Mqtt\n",
+        "es": "Añadido actualización de firmware\nSolicitud de información de la tabla suprimida - Worx punto final deshabilitado\nTiempo de reajuste y tiempo de batería\nAñadido ping después de token refrescante\nDescripción alemana\nSolicitud de firmware modificada\nCambio de punto de referencia\nAlgunas correcciones de errores\nFijar un mqtt clienteid único\nreadme.md translated\nNueva conexión Mqtt\n",
+        "pl": "Oficjalna strona\nWykorzystywana info na żądanie - Worx niepełnosprawny punkt końcowy\nZresetowany czas ostrza i baterię\nDodać ping po odświeżeniu tokenu\nAdding german description (ang.)\nZmienić oprogramowanie\nChanged authendpoint (ang.)\nCzęść błędów naprawia\nKliencki klientid mqtt\nprzetłumaczyć\nNew Mqtt connection\n",
+        "uk": "Додано оновлення прошивки\nЗапит на дошку - Worx відключений кінцевий пункт\nДодано час скидання леза і час батареї\nДодано пінг після оновленого токен\nДодано німецький опис\nЗмінений запит про прошивку\nЗмінено auth-endpoint\nДеякі виправлення помилок\nФіксувати унікальний клієнт mqtt\njavascript licenses api веб-сайт\nНовий Mqtt підключення\n",
+        "zh-cn": "添加的“Frmware最新情况”\n删除以要求为主的委员会—— 残疾终点\n增加时间和电池时间\n装修后\n附加说明\n改变警觉要求\n改编\n一些布格瓦特\nFix独特的 mqt客户\n阅读摘要\nNew Mqt联系\n"
+      },
+      "2.2.0": {
+        "en": "Removed mowerActive for Vision\nAdd Vision paused schedule\nAdd Vision partyModus\nFix ping request Vision\nFix send message inheritance\nFix #684\nFix deviceArray inheritance\nAdd Vision mowers w/o Status & Error message\nAdd ZoneKeeper for previous mowers",
+        "de": "mowerActive für Visionentfernt\nVision Zeitplan Pausierung hinzugefügt\nVision partymodus hinzugefügt\nping Anfrage Vision gefixed\nSende-Nachricht-Erinnerung Problem behoben\n#684 gefixed\ndeviceArray Vererbung gefixed\nVision Mähers w/o Status & Fehlermeldung werden ohne Fehlermeldung hinzugefügt\nZoneKeeper für frühere Mäher hinzugefügt",
+        "ru": "Удаленная моверАктивна для видения\nДобавьте график работы с Vision paused\nДобавить видение partyModus\nFix ping запрос Видение\nFix отправить сообщение наследство\nФиксация #684\nFix устройствоArray наследство\nДобавить видение mowers w/o Статус и сообщение об ошибке\nДобавить ZoneKeeper за предыдущие косилки",
+        "pt": "Cortador removidoAtivo para Visão\nAdicionar Visão cronograma pausado\nAdicionar Vision partyModus\nFix ping request Visão\nCorrigir herança de mensagem de envio\nFixar #684\nCorrigir herança dispositivoArray\nAdicionar cortadores de visão w/o Status & Mensagem de erro\nAdicionar ZoneKeeper para cortadores anteriores",
+        "nl": "Verwijdering voor Vision\nVertaling:\nAdd Vision PartModus\nFix ping verzoek Vision\nVertaling:\nVertaling:\nVertaling:\nVertaling:\nAdd ZoneKeper voor eerdere masten",
+        "fr": "Débardeur enlevéActive for Vision\nAjouter Vision pause programme\nAjouter Vision partyModus\nFix ping request Vision\nEnvoyer un message\nFix #684\nDistributeur Array\nAjouter les tondeuses Vision w/o Statut & Message d'erreur\nAjouter ZoneKeeper pour les tondeuses précédentes",
+        "it": "Rimozione della falciatriceActive per Vision\nAggiungi Visione programma sospeso\nAggiungi Vision partyModus\nFissare la richiesta di ping\nRisolvi l'eredità del messaggio\nFissare #684\nFissare l'eredità di dispositivoArray\nAggiungi tosaerba Vision w/o Stato & messaggio di errore\nAggiungere ZoneKeeper per falciatrici precedenti",
+        "es": "Retire la cortadoraActiva para la visión\nAdd Vision paused schedule\nAgregar partido VisiónModus\nSolicitud de fijación Visión\nCorrección enviar la herencia del mensaje\nCorrección #684\nDispositivo fijoArray inheritance\nAgregar las cortadoras Visión w/o Status > Mensaje de error\nAñadir ZoneKeeper para cortacéspedes anteriores",
+        "pl": "Removed mowerActive for Vision (ang.)\nAddd Vision wstrzymał harmonogram\nStrona Addd Vision\nVision (ang.)\nFix wysyła wiadomość do dziedziczenia\n684\nFix-Array dziedziczenie\nVision mowers w/o Status & Error (ang.)\nOficjalna strona Add ZoneKeeper",
+        "uk": "Вилучена косаркаАктива для зору\nДодати графік вибачення\nДодати вечірку зоруModus\nВиправлення запиту ping Vision\nВиправлення надсилання спадщини повідомлення\nВиправлення #684\nФіксований пристрій\nДодати косарки Vision w/o Статус і повідомлення про помилку\nДодати ZoneKeeper для попередніх косарки",
+        "zh-cn": "取消对《愿景》的反应\n增加设想时间表\n加入《政党领导》\n固定请求书\nFix发出讯息\nFix #684\nFix装置Array继承\n添加《远景》:妻子/地位和电子信息\n前一轮答复的增区"
+      },
+      "2.1.3": {
+        "en": "Added ping option in the instance settings.",
+        "de": "In den Instanzeinstellungen wurde die Ping-Option hinzugefügt.",
+        "ru": "Добавлена опция ping в настройках примера.",
+        "pt": "Adicionado ping opção nas configurações de instância.",
+        "nl": "Toegevoegd pingoptie in de voorstellingen.",
+        "fr": "Ajout de l'option ping dans les paramètres de l'instance.",
+        "it": "Aggiunta opzione ping nelle impostazioni di istanza.",
+        "es": "Opción de ping agregada en la configuración de instancia.",
+        "pl": "Wykorzystywana opcja pingowa w ustawieniach.",
+        "uk": "Додано параметр ping в налаштуваннях екземпляра.",
+        "zh-cn": "在这种环境中增加选择。."
+      },
+      "2.1.2": {
+        "en": "Improved reconnection for multiple mower.",
+        "de": "Verbesserte Wiederverbindung für mehrere Mäher.",
+        "ru": "Улучшена переподключение для нескольких косил.",
+        "pt": "Reconexão melhorada para vários cortadores.",
+        "nl": "Vernieuwde verbinding voor meerdere maaien.",
+        "fr": "Reconnection améliorée pour la tondeuse multiple.",
+        "it": "Riconnessione migliorata per più tosaerba.",
+        "es": "Mejoramiento de la reconexión para varias cortadoras.",
+        "pl": "Pozwoliło to na ponowne połączenie wielu szewców.",
+        "uk": "Покращено відключення для багаторазової косарки.",
+        "zh-cn": "改善对多种反应的重新连接。."
+      },
+      "2.1.1": {
+        "en": "Changed reconnection times.",
+        "de": "Geänderte Wiederverbindungszeiten.",
+        "ru": "Изменены времена повторного подключения.",
+        "pt": "Tempos de reconexão alterados.",
+        "nl": "Veranderde verbindingstijden.",
+        "fr": "Changement de temps de reconnection.",
+        "it": "Cambiati tempi di riconnessione.",
+        "es": "Cambio de tiempos de reconexión.",
+        "pl": "Zmienił czas ponownego połączenia.",
+        "uk": "Змінено час відключення.",
+        "zh-cn": "变化的重新连接时间。."
+      },
+      "2.1.0": {
+        "en": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many sending requests.",
+        "de": "Verschieben Kalender setState zu einem Json und anderen Fixes, um Blockierung wegen zu vielen Senden-Anfragen zu verhindern.",
+        "ru": "Move Calendar setState to one Json и другие исправления, чтобы предотвратить блокировку из-за слишком много отправляющих запросов.",
+        "pt": "Mover Calendário setState para um Json e outras correções para evitar bloqueio por causa de muitos pedidos de envio.",
+        "nl": "Beweeg Calendar naar ene Json en andere fixes om te voorkomen dat ze blokkeren vanwege teveel verzoeken.",
+        "fr": "Move Calendar setState to one Json and other corrections to prevent blocking because of too many sending requests.",
+        "it": "Move Calendar setState a una Json e altre correzioni per evitare il blocco a causa di troppe richieste di invio.",
+        "es": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many send requests.",
+        "pl": "Move Calendar powołał State do jednego Jsona i innych napraw, aby zapobiec blokowaniu przez zbyt wiele żądań.",
+        "uk": "Перемістити календар setState до одного Json та інших виправлень, щоб запобігти блокування через занадто багато запитів на відправлення.",
+        "zh-cn": "Move Calendar将国家带到一个Json和其他装置,以防阻挡,因为过多的派遣请求。."
+      }
+    },
+    "titleLang": {
+      "en": "Worx",
+      "de": "Worx",
+      "ru": "Воркс",
+      "pt": "Worx",
+      "nl": "Worx",
+      "fr": "Worx",
+      "it": "Peggio",
+      "es": "Worx",
+      "pl": "Worx",
+      "uk": "Worx",
+      "zh-cn": "沃克斯"
+    },
+    "desc": {
+      "en": "Adapter for Worx, Kresss, Landxcape or Ferrex mower via cloud.",
+      "de": "Adapter für Worx, Kress, Landxcape oder Ferrex Mäher über Cloud.",
+      "ru": "Адаптер для мошенников Worx, Kresss, Landxcape или Ferrex через облако.",
+      "pt": "Adaptador para Worx, Kress, Landxcape ou Ferrex cortador via nuvem.",
+      "nl": "Adapter voor Worx, Kress, Landxcape of Ferrex Mower via wolk.",
+      "fr": "Adaptateur pour la tondeuse Worx, Kresss, Landxcape ou Ferrex via le cloud.",
+      "it": "Adattatore per tosaerba Worx, Kress, Landxcape o Ferrex tramite cloud.",
+      "es": "Adaptador para Worx, Kress, Landxcape o Ferrex mower a través de la nube.",
+      "pl": "Adapter for Worx, Kress, Landxcape lub Ferrex mower poprzez chmurę.",
+      "uk": "Адаптер для Worx, Kresss, Landxcape або Ferrex косарка через хмару.",
+      "zh-cn": "Worx, Kress, Landxcape or Ferrex mower through云。."
+    },
+    "authors": [
+      "TA2k <tombox2020@gmail.com>",
+      "MeisterTR",
+      "Lucky-ESA"
+    ],
+    "keywords": [
+      "mower",
+      "Worx",
+      "Kress",
+      "Landxcape",
+      "Ferrex"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "worx.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "garden",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "push",
+    "docs": {
+      "en": [
+        "docs/en/README.md"
+      ],
+      "de": [
+        "docs/de/README.md"
+      ]
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<2.0.0",
+            "newVersion>=2.0.0"
+          ]
         },
-        "titleLang": {
-            "en": "Worx",
-            "de": "Worx",
-            "ru": "Воркс",
-            "pt": "Worx",
-            "nl": "Worx",
-            "fr": "Worx",
-            "it": "Peggio",
-            "es": "Worx",
-            "pl": "Worx",
-            "uk": "Worx",
-            "zh-cn": "沃克斯"
+        "title": {
+          "en": "Important notice!",
+          "de": "Wichtiger Hinweis!",
+          "ru": "Важное замечание!",
+          "pt": "Notícia importante!",
+          "nl": "Belangrijke mededeling!",
+          "fr": "Avis important!",
+          "it": "Avviso IMPORTANTE!",
+          "es": "Noticia importante!",
+          "pl": "Ważna uwaga!",
+          "uk": "Погода!",
+          "zh-cn": "重要通知!"
         },
-        "desc": {
-            "en": "Adapter for Worx, Kresss, Landxcape or Ferrex mower via cloud.",
-            "de": "Adapter für Worx, Kress, Landxcape oder Ferrex Mäher über Cloud.",
-            "ru": "Адаптер для мошенников Worx, Kresss, Landxcape или Ferrex через облако.",
-            "pt": "Adaptador para Worx, Kress, Landxcape ou Ferrex cortador via nuvem.",
-            "nl": "Adapter voor Worx, Kress, Landxcape of Ferrex Mower via wolk.",
-            "fr": "Adaptateur pour la tondeuse Worx, Kresss, Landxcape ou Ferrex via le cloud.",
-            "it": "Adattatore per tosaerba Worx, Kress, Landxcape o Ferrex tramite cloud.",
-            "es": "Adaptador para Worx, Kress, Landxcape o Ferrex mower a través de la nube.",
-            "pl": "Adapter for Worx, Kress, Landxcape lub Ferrex mower poprzez chmurę.",
-            "uk": "Адаптер для Worx, Kresss, Landxcape або Ferrex косарка через хмару.",
-            "zh-cn": "Worx, Kress, Landxcape or Ferrex mower through云。."
+        "text": {
+          "en": "Since v2.0.0 the password is saved encrypted. Please reenter your password in the settings after update.\n The folder rawMqtt is restructured please adjust your scripts.",
+          "de": "Seit v2.0.0 wird das Passwort verschlüsselt gespeichert. Bitte geben Sie Ihr Passwort erneut in den Einstellungen nach dem Update ein.\n Der Ordner rawMqtt wurde umstrukturiert, bitte passen Sie Ihre Skripte an.",
+          "ru": "С v2.0.0 пароль сохранен зашифрован. Пожалуйста, повторите пароль в настройках после обновления.\n Перестроена папка rawMqtt, пожалуйста, скорректируйте ваши скрипты.",
+          "pt": "Desde v2.0.0 a senha é salva criptografada. Por favor, digite sua senha nas configurações após a atualização.\n A pasta rawMqtt é reestruturada, ajuste seus scripts.",
+          "nl": "Aangezien het wachtwoord versleuteld is. Steun uw wachtwoord in de setting na update. De folder RawMqtt is herstructureerd.",
+          "fr": "Depuis v2.0.0 le mot de passe est enregistré crypté. Veuillez entrer votre mot de passe dans les paramètres après la mise à jour.\n Le dossier rawMqtt est restructuré s'il vous plaît ajuster vos scripts.",
+          "it": "Dal v2.0.0 la password viene salvata crittografata. Si prega di reinserire la password nelle impostazioni dopo l'aggiornamento.\n La cartella rawMqtt è ristrutturata si prega di regolare gli script.",
+          "es": "Desde v2.0.0 la contraseña se guarda encriptada. Por favor vuelva a introducir su contraseña en la configuración después de la actualización.\n La carpeta rawMqtt es reestructurada por favor ajuste sus scripts.",
+          "pl": "Od wersji v2.0.0 zapisywane jest hasłem. Powracaj do wasze hasło w ustawieniach po aktualizacji. Scenarzysta surMqtt jest zrestrukturyzowany do poprawy swoich scenariuszy.",
+          "uk": "З v2.0.0 пароля зберігається зашифровано. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Текстовий сирМктт перебудовується, будь ласка, налаштуйте сценарії.",
+          "zh-cn": "自第2.0.0号密码被加密。 请更正在最新资料后在环境中的密码。 编审后,请调整你的文字。."
         },
-        "authors": ["TA2k <tombox2020@gmail.com>", "MeisterTR", "Lucky-ESA"],
-        "keywords": ["mower", "Worx", "Kress", "Landxcape", "Ferrex"],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "worx.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "garden",
-        "compact": true,
-        "connectionType": "cloud",
-        "dataSource": "push",
-        "docs": {
-            "en": ["docs/en/README.md"],
-            "de": ["docs/de/README.md"]
-        },
-        "messages": [
-            {
-                "condition": {
-                    "operand": "and",
-                    "rules": ["oldVersion<2.0.0", "newVersion>=2.0.0"]
-                },
-                "title": {
-                    "en": "Important notice!",
-                    "de": "Wichtiger Hinweis!",
-                    "ru": "Важное замечание!",
-                    "pt": "Notícia importante!",
-                    "nl": "Belangrijke mededeling!",
-                    "fr": "Avis important!",
-                    "it": "Avviso IMPORTANTE!",
-                    "es": "Noticia importante!",
-                    "pl": "Ważna uwaga!",
-                    "uk": "Погода!",
-                    "zh-cn": "重要通知!"
-                },
-                "text": {
-                    "en": "Since v2.0.0 the password is saved encrypted. Please reenter your password in the settings after update.\n The folder rawMqtt is restructured please adjust your scripts.",
-                    "de": "Seit v2.0.0 wird das Passwort verschlüsselt gespeichert. Bitte geben Sie Ihr Passwort erneut in den Einstellungen nach dem Update ein.\n Der Ordner rawMqtt wurde umstrukturiert, bitte passen Sie Ihre Skripte an.",
-                    "ru": "С v2.0.0 пароль сохранен зашифрован. Пожалуйста, повторите пароль в настройках после обновления.\n Перестроена папка rawMqtt, пожалуйста, скорректируйте ваши скрипты.",
-                    "pt": "Desde v2.0.0 a senha é salva criptografada. Por favor, digite sua senha nas configurações após a atualização.\n A pasta rawMqtt é reestruturada, ajuste seus scripts.",
-                    "nl": "Aangezien het wachtwoord versleuteld is. Steun uw wachtwoord in de setting na update. De folder RawMqtt is herstructureerd.",
-                    "fr": "Depuis v2.0.0 le mot de passe est enregistré crypté. Veuillez entrer votre mot de passe dans les paramètres après la mise à jour.\n Le dossier rawMqtt est restructuré s'il vous plaît ajuster vos scripts.",
-                    "it": "Dal v2.0.0 la password viene salvata crittografata. Si prega di reinserire la password nelle impostazioni dopo l'aggiornamento.\n La cartella rawMqtt è ristrutturata si prega di regolare gli script.",
-                    "es": "Desde v2.0.0 la contraseña se guarda encriptada. Por favor vuelva a introducir su contraseña en la configuración después de la actualización.\n La carpeta rawMqtt es reestructurada por favor ajuste sus scripts.",
-                    "pl": "Od wersji v2.0.0 zapisywane jest hasłem. Powracaj do wasze hasło w ustawieniach po aktualizacji. Scenarzysta surMqtt jest zrestrukturyzowany do poprawy swoich scenariuszy.",
-                    "uk": "З v2.0.0 пароля зберігається зашифровано. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Текстовий сирМктт перебудовується, будь ласка, налаштуйте сценарії.",
-                    "zh-cn": "自第2.0.0号密码被加密。 请更正在最新资料后在环境中的密码。 编审后,请调整你的文字。."
-                },
-                "buttons": ["agree", "cancel"]
-            }
-        ],
-        "adminUI": {
-            "config": "json"
-        },
-        "plugins": {
-            "sentry": {
-                "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
-            }
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=3.3.22"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=5.1.13"
-            }
+        "buttons": [
+          "agree",
+          "cancel"
         ]
+      }
+    ],
+    "adminUI": {
+      "config": "json"
     },
-    "encryptedNative": ["password"],
-    "protectedNative": ["password"],
-    "native": {
-        "mail": "",
-        "password": "",
-        "edgeCutDelay": 5000,
-        "server": "worx",
-        "meterMin": false,
-        "pingMqtt": false,
-        "updateMqtt": false
+    "plugins": {
+      "sentry": {
+        "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
+      }
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": {
-                    "en": "Information",
-                    "de": "Informationen",
-                    "ru": "Информация",
-                    "pt": "Informação",
-                    "nl": "Informatie",
-                    "fr": "Information",
-                    "it": "Informazioni",
-                    "es": "Información",
-                    "pl": "Informacja",
-                    "uk": "Інформація",
-                    "zh-cn": "信息"
-                }
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": {
-                    "en": "Device or service connected",
-                    "de": "Geräte- oder Serviceanschluss",
-                    "ru": "Устройство или сервис подключены",
-                    "pt": "Dispositivo ou serviço conectado",
-                    "nl": "Device of dienst verbonden",
-                    "fr": "Appareil ou service connecté",
-                    "it": "Dispositivo o servizio collegato",
-                    "es": "Dispositivo o servicio conectado",
-                    "pl": "Urządzenie lub usługa połączona",
-                    "uk": "Пристрої або послуги підключені",
-                    "zh-cn": "证人或有关服务"
-                },
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
+    "dependencies": [
+      {
+        "js-controller": ">=3.3.22"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.1.13"
+      }
     ]
+  },
+  "encryptedNative": [
+    "password"
+  ],
+  "protectedNative": [
+    "password"
+  ],
+  "native": {
+    "mail": "",
+    "password": "",
+    "edgeCutDelay": 5000,
+    "server": "worx",
+    "meterMin": false,
+    "pingMqtt": false,
+    "updateMqtt": false
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Information",
+          "de": "Informationen",
+          "ru": "Информация",
+          "pt": "Informação",
+          "nl": "Informatie",
+          "fr": "Information",
+          "it": "Informazioni",
+          "es": "Información",
+          "pl": "Informacja",
+          "uk": "Інформація",
+          "zh-cn": "信息"
+        }
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": {
+          "en": "Device or service connected",
+          "de": "Geräte- oder Serviceanschluss",
+          "ru": "Устройство или сервис подключены",
+          "pt": "Dispositivo ou serviço conectado",
+          "nl": "Device of dienst verbonden",
+          "fr": "Appareil ou service connecté",
+          "it": "Dispositivo o servizio collegato",
+          "es": "Dispositivo o servicio conectado",
+          "pl": "Urządzenie lub usługa połączona",
+          "uk": "Пристрої або послуги підключені",
+          "zh-cn": "证人或有关服务"
+        },
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
