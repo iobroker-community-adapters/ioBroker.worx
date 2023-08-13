@@ -134,21 +134,30 @@ class Worx extends utils.Adapter {
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
 
-            this.updateFW = this.setInterval(async () => {
-                await this.updateFirmware();
-            }, 24 * 60 * 1000 * 60); // 24 hour
+            this.updateFW = this.setInterval(
+                async () => {
+                    await this.updateFirmware();
+                },
+                24 * 60 * 1000 * 60,
+            ); // 24 hour
 
-            this.updateInterval = this.setInterval(async () => {
-                await this.updateDevices();
-            }, 10 * 60 * 1000); // 10 minutes
+            this.updateInterval = this.setInterval(
+                async () => {
+                    await this.updateDevices();
+                },
+                10 * 60 * 1000,
+            ); // 10 minutes
 
             if (!this.session.expires_in || this.session.expires_in < 200) {
                 this.session.expires_in = 3600;
             }
             this.updateMqttData(true);
-            this.refreshTokenInterval = this.setInterval(() => {
-                this.refreshToken();
-            }, (this.session.expires_in - 200) * 1000);
+            this.refreshTokenInterval = this.setInterval(
+                () => {
+                    this.refreshToken();
+                },
+                (this.session.expires_in - 200) * 1000,
+            );
 
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
@@ -690,6 +699,14 @@ class Worx extends utils.Adapter {
             for (const o of objects.oneTimeShedule) {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+                val: false,
+                ack: true,
+            });
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
+                val: false,
+                ack: true,
+            });
         }
 
         if (fw_json) {
@@ -848,6 +865,7 @@ class Worx extends utils.Adapter {
         if (!this.userData) {
             this.userData = await this.apiRequest("users/me", false);
         }
+
         try {
             this.connectMqtt();
         } catch (e) {
@@ -1024,10 +1042,13 @@ class Worx extends utils.Adapter {
                     this.mqttC = null;
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                     this.mqtt_restart = null;
-                    this.mqtt_restart = this.setTimeout(async () => {
-                        this.log.info("Restart Mqtt after 1h");
-                        this.start_mqtt();
-                    }, 1 * 60 * 1000 * 60); // 1 hour
+                    this.mqtt_restart = this.setTimeout(
+                        async () => {
+                            this.log.info("Restart Mqtt after 1h");
+                            this.start_mqtt();
+                        },
+                        1 * 60 * 1000 * 60,
+                    ); // 1 hour
                 }
             });
 
@@ -1708,17 +1729,21 @@ class Worx extends utils.Adapter {
                 this.log.debug(`Start Firmware Update!`);
                 check = await this.apiRequest(`product-items/${device}/firmware-upgrade`, false, "post");
                 this.log.debug(`Receive: Start Firmware Update - ${JSON.stringify(check)}`);
-                if (check) {
-                    await this.setStateAsync(`${device}.mower.firmware_update_start`, {
-                        val: false,
-                        ack: true,
-                    });
-                    await this.setStateAsync(`${device}.mower.firmware_update_start_approved`, {
-                        val: false,
-                        ack: true,
-                    });
+                if (check != null) {
+                    this.log.debug(`Start firmware update has been sent.`);
+                } else {
+                    this.log.debug(`Unknown error during update!`);
                 }
             }
+            await this.setStateAsync(`${device}.mower.firmware_update_start`, {
+                val: false,
+                ack: true,
+            });
+            await this.setStateAsync(`${device}.mower.firmware_update_start_approved`, {
+                val: false,
+                ack: true,
+            });
+            return;
         }
         if (check && check["serial_number"] != null) {
             const new_data = await this.cleanupRaw(check);
