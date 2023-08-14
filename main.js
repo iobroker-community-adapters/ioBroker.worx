@@ -58,6 +58,7 @@ class Worx extends utils.Adapter {
         this.mqttC = null;
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
+        this.createActivity = helper.createActivity;
         this.setStates = helper.setStates;
         this.cleanupRaw = helper.cleanupRaw;
         this.createDataPoint = helper.createDataPoint;
@@ -369,88 +370,7 @@ class Worx extends utils.Adapter {
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
                 if (firstStart) {
                     this.log.info("Create folder activityLog and set states.");
-                    let common = {};
-                    common = {
-                        name: {
-                            en: "Mower activity logs",
-                            de: "Mäher Aktivitätsprotokolle",
-                            ru: "Переключение логов активности",
-                            pt: "Registos de atividade do cortador",
-                            nl: "Meerdere activiteiten",
-                            fr: "Les registres d'activité de la tondeuse",
-                            it: "Tronchi di attività del tosaerba",
-                            es: "Registros de actividad de alcantarillado",
-                            pl: "Mower activity logs",
-                            uk: "Моверизаторні колодки",
-                            "zh-cn": "反应活动逻辑。",
-                        },
-                    };
-                    await this.createDataPoint(`${mower.serial_number}.activityLog`, common, "channel");
-                    common = {
-                        name: {
-                            en: "Activity log as array.",
-                            de: "Aktivitätsprotokoll als Array.",
-                            ru: "Журнал активности как массив.",
-                            pt: "Registo de atividade como array.",
-                            nl: "Activiteitslog als array.",
-                            fr: "Journal d'activité comme tableau.",
-                            it: "Diario di attività come array.",
-                            es: "Registro de actividad como array.",
-                            pl: "Logika aktywna jako tablica.",
-                            uk: "Журнал активності в масиві.",
-                            "zh-cn": "2. 活动逻辑作为范围。.",
-                        },
-                        type: "string",
-                        role: "json",
-                        read: true,
-                        write: false,
-                        desc: "Activity Logs",
-                    };
-                    await this.createDataPoint(`${mower.serial_number}.activityLog.payload`, common, "state");
-                    common = {
-                        name: {
-                            en: "Update Activity logs",
-                            de: "Aktualisieren von Aktivitätsprotokollen",
-                            ru: "Обновление Журналов Активности",
-                            pt: "Atualizar registros de atividades",
-                            nl: "Update Activity logboeken",
-                            fr: "Mise à jour des registres des activités",
-                            it: "Log di attività di aggiornamento",
-                            es: "Registros de actividad de actualización",
-                            pl: "Logika aktualności",
-                            uk: "Оновлення журналів активності",
-                            "zh-cn": "最新活动逻辑",
-                        },
-                        type: "boolean",
-                        role: "button",
-                        read: true,
-                        write: true,
-                        def: false,
-                        desc: "Manuell Update Activity Logs",
-                    };
-                    await this.createDataPoint(`${mower.serial_number}.activityLog.manuell_update`, common, "state");
-                    common = {
-                        name: {
-                            en: "Last update from Activity logs",
-                            de: "Letzte Aktualisierung von Aktivitätsprotokollen",
-                            ru: "Последнее обновление от Activity logs",
-                            pt: "Última atualização de registros de atividades",
-                            nl: "Laatste update van Activity logboeken",
-                            fr: "Dernière mise à jour des registres d'activité",
-                            it: "Ultimo aggiornamento dai registri delle attività",
-                            es: "Última actualización de los registros de actividad",
-                            pl: "Ostatnia aktualizacja z logiki Activity",
-                            uk: "Останнє оновлення з журналів активності",
-                            "zh-cn": "活动逻辑的最后更新",
-                        },
-                        type: "number",
-                        role: "date",
-                        read: true,
-                        write: false,
-                        def: 0,
-                        desc: "Last Update Activity-Log",
-                    };
-                    await this.createDataPoint(`${mower.serial_number}.activityLog.last_update`, common, "state");
+                    await this.createActivity(mower);
                 }
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
