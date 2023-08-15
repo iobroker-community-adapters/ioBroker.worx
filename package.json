@@ -28,7 +28,7 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.worx.git"
   },
   "engines": {
-    "node": ">= 14.18.0"
+    "node": ">= 16"
   },
   "dependencies": {
     "@alcalzone/release-script": "^3.6.0",
