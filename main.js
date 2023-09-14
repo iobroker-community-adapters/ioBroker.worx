@@ -1072,7 +1072,7 @@ class Worx extends utils.Adapter {
                     this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
                 } catch (error) {
                     this.log.info(`sendMessage normal:  ${error}`);
-                    this.log.debug(`sendData:  ${JSON.stringify(message)}`);
+                    this.log.debug(`sendData normal:  ${JSON.stringify(message)}`);
                     this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
                 }
             } else {
@@ -1397,7 +1397,15 @@ class Worx extends utils.Adapter {
                         }
                     } else if (command == "waitRain") {
                         const rain = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
-                        const val = rain < 0 ? 100 : rain;
+                        const val = rain < 0 ? 90 : rain;
+                        if (val % 30 != 0) {
+                            this.log.warn(`Wait Time: Time only in 30 second increments!`);
+                            return;
+                        }
+                        if (typeof val == "number" && val > 720) {
+                            this.log.warn("Rain time more than 12 hours is not allowed!");
+                            return;
+                        }
                         this.sendMessage(`{"rd":${val}}`, mower.serial_number, id);
                         this.log.debug(`Changed time wait after rain to:${val}`);
                     } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
@@ -1470,6 +1478,10 @@ class Worx extends utils.Adapter {
                     } else if (command === "AutoLock") {
                         const msg = this.modules[mower.serial_number].al;
                         msg.lvl = state.val ? 1 : 0;
+                        if (msg.t % 30 != 0) {
+                            this.log.warn(`Lock Time: Time only in 30 second increments!`);
+                            return;
+                        }
                         if ((msg.t < 0 || msg.t > 600) && msg.lvl === 1) {
                             msg.t = 300;
                         } else if (msg.lvl === 0) {
@@ -1505,6 +1517,10 @@ class Worx extends utils.Adapter {
                         const msg = this.modules[mower.serial_number].al;
                         msg.t = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         if (msg.lvl === 0) msg.lvl = 1;
+                        if (msg.t % 30 != 0) {
+                            this.log.warn(`Lock Time: Time only in 30 second increments!`);
+                            return;
+                        }
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "hl") {
                         const msg = {};
@@ -1850,6 +1866,14 @@ class Worx extends utils.Adapter {
                     this.log.info("Datapoint oneTimeWorkTime with value 0 is not allowed!");
                     return;
                 }
+                if (typeof wtm.val == "number" && wtm.val % 30 != 0) {
+                    this.log.warn(`Work Time: Time only in 30 second increments!`);
+                    return;
+                }
+                if (typeof wtm.val == "number" && wtm.val > 480) {
+                    this.log.warn("Working time more than 8 hours is not allowed!");
+                    return;
+                }
                 if (mower.capabilities != null && mower.capabilities.includes("vision")) {
                     msgJson = {
                         once: {
@@ -1892,6 +1916,14 @@ class Worx extends utils.Adapter {
                 }
                 if (time_check === 0) {
                     this.log.info("Datapoint oneTimeJson (wtm or time) with value 0 is not allowed!");
+                    return;
+                }
+                if (typeof time_check == "number" && time_check % 30 != 0) {
+                    this.log.warn(`Work Time: Time only in 30 second increments!`);
+                    return;
+                }
+                if (typeof time_check == "number" && time_check > 480) {
+                    this.log.warn("Working time more than 8 hours is not allowed!");
                     return;
                 }
             } catch (error) {

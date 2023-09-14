@@ -37,7 +37,13 @@ The adapter can control the mower and you can change config params like mowtimes
     ### **WORK IN PROGRESS**
 -->
 
+### **WORK IN PROGRESS**
+
+-   (Lucky-ESA) Checking working hours and locktime
+-   (Lucky-ESA) Fixed incorrect log message for firmware update
+
 ## Changelog
+
 ### 2.3.2 (2023-07-21)
 
 -   (Lucky-ESA) Wrong folder for areas
