@@ -115,7 +115,8 @@
         "18": "dummy model", //(wire & Vision)
         "19": "Battery trunk open timeout", //(wire & Vision)
         "20": "wire sync", //(wire & Vision unknown)
-        "21": "msg num" //(wire & Vision)
+        "21": "msg num", //(wire & Vision)
+        "110": "Camera error" //(Vision)
     }
 }
 ```
@@ -233,6 +234,70 @@
 
 -   Area
     -   `rfid`: Total Areas (readonly)
+    -   `startSequence`: Multizone JSON (Vision/changeable)
+
+Example:
+
+```json
+{
+    "mz": {
+        "p": [
+            // Passages between zones
+            {
+                "z1": 1, // Zone from (must z1 < z2)
+                "z2": 2, // Zone to (must z2 > z1)
+                "t1": "E000000000000000", // RFID id from z1
+                "t2": "E0000000KKKKKKKK" // RFID id from z2
+            }
+        ],
+        "s": [
+            // The zones themselves
+            {
+                "id": 1, // Numbering - Start with 1
+                "c": 1, // 1 if the charging station is in this zone. 0 for no charging station.
+                "cfg": {
+                    "cut": {
+                        "bd": 100, // bordercut in mm
+                        "ob": 0 // 1 for driving over slabs if they are detected, otherwise 0.
+                    }
+                }
+            },
+            {
+                "id": 2, // Numbering
+                "c": 0, // 1 if the charging station is in this zone. 0 for no charging station.
+                "cfg": {
+                    "cut": {
+                        "bd": 100, // bordercut in mm
+                        "ob": 0 // 1 for driving over slabs if they are detected, otherwise 0.
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+Default without zone:
+
+```json
+{
+    "mz": {
+        "p": [],
+        "s": [
+            {
+                "id": 1,
+                "c": 1,
+                "cfg": {
+                    "cut": {
+                        "bd": 150,
+                        "ob": 0
+                    }
+                }
+            }
+        ]
+    }
+}
+```
 
 ![Vision img/areas_vision.png](img/areas_vision.png)
 

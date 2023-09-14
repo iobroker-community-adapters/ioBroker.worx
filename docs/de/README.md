@@ -115,7 +115,8 @@
         "18": "dummy model", //(Draht & Vision)
         "19": "Battery trunk open timeout", //(Draht & Vision)
         "20": "wire sync", //(Draht & Vision unbekannt)
-        "21": "msg num" //(Draht & Vision)
+        "21": "msg num", //(Draht & Vision)
+        "110": "Camera error" //(Vision)
     }
 }
 ```
@@ -229,10 +230,74 @@
 
 ![Mower img/mower_4.png](../en/img/mower_4.png)
 
-### Additionally for vision
+### Zusätzlich Vision Infos
 
 -   Area
     -   `rfid`: Anzahl Zonen (nur lesen)
+    -   `startSequence`: Multizone JSON (Vision/änderbar)
+
+Beispiel:
+
+```json
+{
+    "mz": {
+        "p": [
+            // Durchgang zwischen den Zonen
+            {
+                "z1": 1, // Zone von (muss z1 < z2)
+                "z2": 2, // Zone zu (muss z2 > z1)
+                "t1": "E000000000000000", // RFID id von z1
+                "t2": "E0000000KKKKKKKK" // RFID id von z2
+            }
+        ],
+        "s": [
+            // Die Zonen selbst
+            {
+                "id": 1, // Nummerierung - Start mit 1
+                "c": 1, // 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation.
+                "cfg": {
+                    "cut": {
+                        "bd": 100, // Kantenschnitt in mm
+                        "ob": 0 // 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.
+                    }
+                }
+            },
+            {
+                "id": 2, // Nummerierung fortlaufend
+                "c": 0, // 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation.
+                "cfg": {
+                    "cut": {
+                        "bd": 100, // Kantenschnitt in mm
+                        "ob": 0 // 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+Standard ohne Zonen:
+
+```json
+{
+    "mz": {
+        "p": [],
+        "s": [
+            {
+                "id": 1,
+                "c": 1,
+                "cfg": {
+                    "cut": {
+                        "bd": 150,
+                        "ob": 0
+                    }
+                }
+            }
+        ]
+    }
+}
+```
 
 ![Vision img/areas_vision.png](../en/img/areas_vision.png)
 
@@ -247,7 +312,7 @@
 
 ![Vision img/paused_vision.png](../en/img/paused_vision.png)
 
-### info_mqtt (Wire and Vision)
+### info_mqtt (Draht und Vision)
 
 -   `incompleteOperationCount`: Gesamtzahl der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht gepackte Operationen sind eine Teilmenge davon.
 -   `incompleteOperationSize`: Gesamtpaketgröße der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht gepackte Operationen sind eine Teilmenge davon.
