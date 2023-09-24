@@ -184,8 +184,8 @@
         "3": "Home", //(wire & Vision)
         "4": "Start Zone Taining", //(wire & Vision unknown)
         "5": "Lock", //(wire & Vision unknown)
-        "6": "Unlock", //(wire & Vision unknown)
-        "7": "Restart Robot", //(wire & Vision unknown)
+        "6": "Unlock", //(wire & Vision)
+        "7": "Restart Robot", //(wire & Vision)
         "8": "pause when follow wire", //(wire & Vision unknown)
         "9": "safe homing" //(wire & Vision unknown)
     }
