@@ -2339,7 +2339,7 @@ class Worx extends utils.Adapter {
      */
     sendPartyModus(id, value, mower) {
         if (mower.capabilities != null && mower.capabilities.includes("vision")) {
-            const val = value ? 1 : 0;
+            const val = value ? 0 : 1;
             this.sendMessage(`{"sc":{ "enabled":${val}}}`, mower.serial_number, id);
         } else if (value) {
             this.sendMessage('{"sc":{ "m":2, "distm": 0}}', mower.serial_number, id);

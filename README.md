@@ -39,6 +39,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ### **WORK IN PROGRESS**
 
+-   (Lucky-ESA) Fixed [#761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)
 -   (Lucky-ESA) Added sequence for Vision
 -   (Lucky-ESA) Checking working hours and locktime
 -   (Lucky-ESA) Fixed incorrect log message for firmware update
