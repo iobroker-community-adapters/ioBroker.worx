@@ -802,7 +802,13 @@ class Worx extends utils.Adapter {
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
             }
-            const config_builder = iot.AwsIotMqttConnectionConfigBuilder.new_default_builder();
+            let config_builder;
+            try {
+                config_builder = iot.AwsIotMqttConnectionConfigBuilder.new_default_builder();
+            } catch (e) {
+                this.log.warn(`error builder: ${e}`);
+                return null;
+            }
             config_builder.with_clean_session(false);
             config_builder.with_client_id(
                 `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/${category}/${uuid}`,
@@ -820,9 +826,20 @@ class Worx extends utils.Adapter {
                 category,
                 category,
             ); // Port is default 443
-            const config = config_builder.build();
+            let config;
+            try {
+                config = config_builder.build();
+            } catch (e) {
+                this.log.warn(`error build: ${e}`);
+                return null;
+            }
             const client = new mqtt.MqttClient();
-            return client.new_connection(config);
+            try {
+                return client.new_connection(config);
+            } catch (e) {
+                this.log.warn(`error connection: ${e}`);
+                return null;
+            }
         } catch (e) {
             this.log.info(`awsMqtt: ${e}`);
             return null;
