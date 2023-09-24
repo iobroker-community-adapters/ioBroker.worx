@@ -1429,7 +1429,11 @@ class Worx extends utils.Adapter {
                         const area = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.changeMowerArea(id, area, mower);
                     } else if (command === "startSequence") {
-                        this.startSequences(id, state.val, mower);
+                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                            this.startSequencesVision(id, state.val, mower);
+                        } else {
+                            this.startSequences(id, state.val, mower);
+                        }
                     } else if (command === "manuell_update") {
                         const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
                         if (state.val && lastTime && lastTime.val && Date.now() - Number(lastTime.val) > not_allowed) {
@@ -1595,6 +1599,69 @@ class Worx extends utils.Adapter {
                 this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
                 this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`);
             }
+        }
+    }
+
+    /**
+     * @param {string} id
+     * @param {object} state
+     * @param {object} mower
+     */
+    startSequencesVision(id, state, mower) {
+        let mz = {};
+        try {
+            mz = JSON.parse(state);
+        } catch (e) {
+            this.log.warn(`Cannot parse json startSequencesVision: ${JSON.stringify(state)}`);
+            return;
+        }
+        let isOK = true;
+        let isCS = 0;
+        let check_id = 1;
+        if (mz) {
+            if (mz.p && Array.isArray(mz.p)) {
+                if (mz.s && Array.isArray(mz.s)) {
+                    for (const id of mz.s) {
+                        if (!id.id || !id.c || !id.cfg || !id.cfg.cut || !id.cfg.cut.bd || !id.cfg.cut.ob) {
+                            isOK = false;
+                            this.log.warn(`startsequenceVision: Missing key - ${JSON.stringify(state)}`);
+                        }
+                        if (id.id > check_id) {
+                            isOK = false;
+                            this.log.warn(
+                                `startsequenceVision: Key s is sorted incorrectly - ${JSON.stringify(state)}`,
+                            );
+                        }
+                        if (id.cfg.ob == 1 && isCS == 0) {
+                            isCS = 1;
+                        } else if (id.cfg.ob > 0 && isCS == 1) {
+                            isOK = false;
+                            this.log.warn(
+                                `startsequenceVision: Charging station only possible in one zone - ${JSON.stringify(
+                                    state,
+                                )}`,
+                            );
+                        }
+                        ++check_id;
+                        if (!isOK) {
+                            break;
+                        }
+                    }
+                } else {
+                    this.log.warn(`startsequenceVision: Missing key s - ${JSON.stringify(state)}`);
+                    isOK = false;
+                }
+            } else {
+                this.log.warn(`startsequenceVision: Missing key p - ${JSON.stringify(state)}`);
+                isOK = false;
+            }
+        } else {
+            this.log.warn(`startsequenceVision: Missing key mz - ${JSON.stringify(state)}`);
+            isOK = false;
+        }
+        if (isOK) {
+            this.log.debug(`startsequenceVision send: - ${JSON.stringify(state)}`);
+            this.sendMessage(`{"mz":${JSON.stringify(mz)}}`, mower.serial_number, id);
         }
     }
 
