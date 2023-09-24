@@ -234,7 +234,7 @@
 
 -   Area
     -   `rfid`: Total Areas (readonly)
-    -   `startSequence`: Multizone JSON (Vision/changeable)
+    -   `startSequence`: Multizone JSON (Vision/changeable) [Example](#example-blockly-startsequence-vison)
 
 Example:
 
@@ -323,3 +323,229 @@ Default without zone:
 -   `online`: Status MQTT Connection (false=offline/true=online)
 
 ![Vision img/mqtt_info.png](img/mqtt_info.png)
+
+### Example Blockly startsequence Vison
+
+```
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="${]4s$w?n24Az}=7iAIY">mz</variable>
+    <variable id="o.FQ]_Xa!tHn2T7Ak{Pt">value</variable>
+    <variable id="/@E4iFRMr:x+u?{7yFlB">test</variable>
+    <variable id="jxTInS{}mk_)WJa[:,fA">i</variable>
+  </variables>
+  <block type="procedures_defcustomnoreturn" id="u:w*aBH!92nydG0Mu.1-" x="-87" y="-87">
+    <mutation statements="false">
+      <arg name="mz" varid="${]4s$w?n24Az}=7iAIY"></arg>
+      <arg name="value" varid="o.FQ]_Xa!tHn2T7Ak{Pt"></arg>
+    </mutation>
+    <field name="NAME">set_bd</field>
+    <field name="SCRIPT">bXouY2ZnLmN1dC5iZCA9IDE1MA==</field>
+    <comment pinned="false" h="80" w="160">Beschreibe diese Funktion …</comment>
+  </block>
+  <block type="variables_set" id="jiP0218}2,Y]B]RdKD~`" x="-87" y="-35">
+    <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+    <value name="VALUE">
+      <block type="convert_json2object" id=";Ef{FHk_~heeozyHFxci">
+        <value name="VALUE">
+          <block type="get_value" id="LMfldD:[D4%}yWE8,N0y">
+            <field name="ATTR">val</field>
+            <field name="OID">worx.0.xxxxxxxxxxxxxxxxxxxx.areas.startSequence</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <next>
+      <block type="controls_forEach" id="D{XG==q$flbH?32eX%D(">
+        <field name="VAR" id="jxTInS{}mk_)WJa[:,fA">i</field>
+        <value name="LIST">
+          <block type="get_attr" id="b~2/cb$WhEj*9i6,(ey5">
+            <value name="PATH">
+              <shadow type="text" id="+n~;GfHf{,#D!5D}H+m=">
+                <field name="TEXT">s</field>
+              </shadow>
+            </value>
+            <value name="OBJECT">
+              <block type="variables_get" id="YloS$N%I=6[yk;loD*1O">
+                <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO">
+          <block type="procedures_callcustomnoreturn" id="er{Pwq:Y7n_I|CQoup,|">
+            <mutation name="set_bd">
+              <arg name="mz"></arg>
+              <arg name="value"></arg>
+            </mutation>
+            <value name="ARG0">
+              <block type="variables_get" id="(-_i0(y:W}U_x?s(7k%4">
+                <field name="VAR" id="jxTInS{}mk_)WJa[:,fA">i</field>
+              </block>
+            </value>
+            <value name="ARG1">
+              <block type="math_number" id="{2u/=v!k|yJsOesq[CU^">
+                <field name="NUM">150</field>
+              </block>
+            </value>
+            <next>
+              <block type="debug" id="b1}}DmS-[_W:+Y+$|%)r">
+                <field name="Severity">log</field>
+                <value name="TEXT">
+                  <shadow type="text" id="7wx?ca_U[S~8DA4}*RXx">
+                    <field name="TEXT">test</field>
+                  </shadow>
+                  <block type="variables_get" id="_zz;w64g-!E$zX$]pvyI">
+                    <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block type="debug" id="o[S0+1%{oLU+r:03tz7=">
+            <field name="Severity">log</field>
+            <value name="TEXT">
+              <shadow type="text" id="7wx?ca_U[S~8DA4}*RXx">
+                <field name="TEXT">test</field>
+              </shadow>
+              <block type="variables_get" id="tjqxQ(MO|CR~/Xq5;Pm[">
+                <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+              </block>
+            </value>
+            <next>
+              <block type="control" id="C^lZ^SNIQ#,vh}?hSG_O">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" delay_input="false"></mutation>
+                <field name="OID">worx.0.xxxxxxxxxxxxxxxxxxxx.areas.startSequence</field>
+                <field name="WITH_DELAY">FALSE</field>
+                <value name="VALUE">
+                  <block type="convert_object2json" id="z)EXA+%8lB4K#7!Hp1V%">
+                    <field name="PRETTIFY">FALSE</field>
+                    <value name="VALUE">
+                      <block type="variables_get" id="C4np)gS@^Y*?-0I+R6+r">
+                        <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
+
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="${]4s$w?n24Az}=7iAIY">mz</variable>
+    <variable id="o.FQ]_Xa!tHn2T7Ak{Pt">value</variable>
+    <variable id="/@E4iFRMr:x+u?{7yFlB">test</variable>
+    <variable id="jxTInS{}mk_)WJa[:,fA">i</variable>
+  </variables>
+  <block type="procedures_defcustomnoreturn" id="u:w*aBH!92nydG0Mu.1-" x="-87" y="-87">
+    <mutation statements="false">
+      <arg name="mz" varid="${]4s$w?n24Az}=7iAIY"></arg>
+      <arg name="value" varid="o.FQ]_Xa!tHn2T7Ak{Pt"></arg>
+    </mutation>
+    <field name="NAME">set_bd</field>
+    <field name="SCRIPT">bXouY2ZnLmN1dC5iZCA9IDE1MA==</field>
+    <comment pinned="false" h="80" w="160">Beschreibe diese Funktion …</comment>
+  </block>
+  <block type="variables_set" id="jiP0218}2,Y]B]RdKD~`" x="-87" y="-35">
+    <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+    <value name="VALUE">
+      <block type="convert_json2object" id=";Ef{FHk_~heeozyHFxci">
+        <value name="VALUE">
+          <block type="get_value" id="LMfldD:[D4%}yWE8,N0y">
+            <field name="ATTR">val</field>
+            <field name="OID">worx.0.xxxxxxxxxxxxxxxxxxxx.areas.startSequence</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <next>
+      <block type="controls_forEach" id="D{XG==q$flbH?32eX%D(">
+        <field name="VAR" id="jxTInS{}mk_)WJa[:,fA">i</field>
+        <value name="LIST">
+          <block type="get_attr" id="b~2/cb$WhEj*9i6,(ey5">
+            <value name="PATH">
+              <shadow type="text" id="+n~;GfHf{,#D!5D}H+m=">
+                <field name="TEXT">s</field>
+              </shadow>
+            </value>
+            <value name="OBJECT">
+              <block type="variables_get" id="YloS$N%I=6[yk;loD*1O">
+                <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO">
+          <block type="procedures_callcustomnoreturn" id="er{Pwq:Y7n_I|CQoup,|">
+            <mutation name="set_bd">
+              <arg name="mz"></arg>
+              <arg name="value"></arg>
+            </mutation>
+            <value name="ARG0">
+              <block type="variables_get" id="(-_i0(y:W}U_x?s(7k%4">
+                <field name="VAR" id="jxTInS{}mk_)WJa[:,fA">i</field>
+              </block>
+            </value>
+            <value name="ARG1">
+              <block type="math_number" id="{2u/=v!k|yJsOesq[CU^">
+                <field name="NUM">150</field>
+              </block>
+            </value>
+            <next>
+              <block type="debug" id="b1}}DmS-[_W:+Y+$|%)r">
+                <field name="Severity">log</field>
+                <value name="TEXT">
+                  <shadow type="text" id="7wx?ca_U[S~8DA4}*RXx">
+                    <field name="TEXT">test</field>
+                  </shadow>
+                  <block type="variables_get" id="_zz;w64g-!E$zX$]pvyI">
+                    <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block type="debug" id="o[S0+1%{oLU+r:03tz7=">
+            <field name="Severity">log</field>
+            <value name="TEXT">
+              <shadow type="text" id="7wx?ca_U[S~8DA4}*RXx">
+                <field name="TEXT">test</field>
+              </shadow>
+              <block type="variables_get" id="tjqxQ(MO|CR~/Xq5;Pm[">
+                <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+              </block>
+            </value>
+            <next>
+              <block type="control" id="C^lZ^SNIQ#,vh}?hSG_O">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" delay_input="false"></mutation>
+                <field name="OID">worx.0.xxxxxxxxxxxxxxxxxxxx.areas.startSequence</field>
+                <field name="WITH_DELAY">FALSE</field>
+                <value name="VALUE">
+                  <block type="convert_object2json" id="z)EXA+%8lB4K#7!Hp1V%">
+                    <field name="PRETTIFY">FALSE</field>
+                    <value name="VALUE">
+                      <block type="variables_get" id="C4np)gS@^Y*?-0I+R6+r">
+                        <field name="VAR" id="/@E4iFRMr:x+u?{7yFlB">test</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
+```
