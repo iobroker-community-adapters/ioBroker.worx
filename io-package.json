@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "news": {
+      "2.3.3": {
+        "en": "Added cmd wifi lock for Vision\nFixed [#761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nAdded sequence for Vision\nChecking working hours and locktime\nFixed incorrect log message for firmware update",
+        "de": "Wifi-Schloss für Vision hinzugefügt\n#[761](https://github.com/iobroker-community-adapter/ioBroker.worx/issues/761)\nSequenz für Vision hinzugefügt\nÜberprüfung der Arbeitszeit und Sperrzeit\nFehlerhafte Log-Nachricht für Firmware-Update behoben",
+        "ru": "Добавлен cmd wifi замок для Vision\nФиксированный #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nДобавлена последовательность для Vision\nПроверка рабочих часов и время замка\nИсправлено некорректное сообщение для обновления прошивки",
+        "pt": "Adicionado cmd wifi fechadura para Visão\nCorrigido #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nSequência adicionada para Visão\nVerificando horas de trabalho e tempo de bloqueio\nMensagem de log incorreta fixa para atualização de firmware",
+        "nl": "Voeg cmd wifi slot toe voor Vision\nQuality over Quantity (QoQ) Releases Vertaling:\nToegevoegd voor Vision\nControleer werkuren en locktime\nVertaling:",
+        "fr": "Ajout d'une serrure wifi cmd pour Vision\nFixed #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nAjout de séquence pour Vision\nVérification des heures de travail et des heures de verrouillage\nCorrection d'un message de journal incorrect pour la mise à jour du firmware",
+        "it": "Aggiunto cmd wifi lock per Vision\n[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nSequenza aggiuntiva per Vision\nControllo ore di lavoro e tempo di blocco\nRisolto messaggio di registro errato per l'aggiornamento del firmware",
+        "es": "Cierre wifi de cmd para visión\nArreglado #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nSecuencia agregada para Visión\nHoras de trabajo y tiempo de bloqueo\nMensaje de registro incorrecto fijo para la actualización de firmware",
+        "pl": "Added cmd wifi lock for Vision (ang.)\n#761 (https:/github.com/iobroker-community-adapters/ioBroker.worx/issues/761) (ang.)\nAdded sequence for Vision (ang.)\nGodzin pracy i godzin pracy\nNieprawidłowe przesłanie do aktualizacji oprogramowania",
+        "uk": "Додано смд Wi-Fi замок для Vision\nВиправлено #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nДодано послідовність для зору\nПеревірити робочі години і час замка\nВиправлено неправильне повідомлення для оновлення мікропрограми",
+        "zh-cn": "添加《展望》的光衣服\n第[761]号(http://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\n增加《展望》的顺序\n检查工作时间和时间\n软件更新的错误逻辑信息"
+      },
       "2.3.2": {
         "en": "Wrong folder for areas\nNew data points can only be read",
         "de": "Falscher Ordner für Bereiche\nNeue Datenpunkte können nur gelesen werden",
@@ -80,19 +93,6 @@
         "pl": "Zmienił czas ponownego połączenia.",
         "uk": "Змінено час відключення.",
         "zh-cn": "变化的重新连接时间。."
-      },
-      "2.1.0": {
-        "en": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many sending requests.",
-        "de": "Verschieben Kalender setState zu einem Json und anderen Fixes, um Blockierung wegen zu vielen Senden-Anfragen zu verhindern.",
-        "ru": "Move Calendar setState to one Json и другие исправления, чтобы предотвратить блокировку из-за слишком много отправляющих запросов.",
-        "pt": "Mover Calendário setState para um Json e outras correções para evitar bloqueio por causa de muitos pedidos de envio.",
-        "nl": "Beweeg Calendar naar ene Json en andere fixes om te voorkomen dat ze blokkeren vanwege teveel verzoeken.",
-        "fr": "Move Calendar setState to one Json and other corrections to prevent blocking because of too many sending requests.",
-        "it": "Move Calendar setState a una Json e altre correzioni per evitare il blocco a causa di troppe richieste di invio.",
-        "es": "Move Calendar setState to one Json and other fixes to prevent blocking because of too many send requests.",
-        "pl": "Move Calendar powołał State do jednego Jsona i innych napraw, aby zapobiec blokowaniu przez zbyt wiele żądań.",
-        "uk": "Перемістити календар setState до одного Json та інших виправлень, щоб запобігти блокування через занадто багато запитів на відправлення.",
-        "zh-cn": "Move Calendar将国家带到一个Json和其他装置,以防阻挡,因为过多的派遣请求。."
       }
     },
     "titleLang": {

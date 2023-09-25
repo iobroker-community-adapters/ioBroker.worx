@@ -36,16 +36,13 @@ The adapter can control the mower and you can change config params like mowtimes
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 2.3.3 (2023-09-25)
 
 -   (Lucky-ESA) Added cmd wifi lock for Vision
 -   (Lucky-ESA) Fixed [#761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)
 -   (Lucky-ESA) Added sequence for Vision
 -   (Lucky-ESA) Checking working hours and locktime
 -   (Lucky-ESA) Fixed incorrect log message for firmware update
-
-## Changelog
 
 ### 2.3.2 (2023-07-21)
 
