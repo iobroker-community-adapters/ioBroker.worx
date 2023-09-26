@@ -567,7 +567,7 @@ class Worx extends utils.Adapter {
             .then((response) => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
-                this.log.info("Refresh token for MQTT-Connection");
+                this.log.debug("Refresh token for MQTT-Connection");
                 this.updateMqttData(false);
                 this.start_mqtt();
             })
@@ -929,7 +929,7 @@ class Worx extends utils.Adapter {
             this.mqttC.on("connect", async (session_present) => {
                 this.setMqttOnline(true);
                 this.log.debug(`MQTT connection: ${session_present}`);
-                this.log.info("MQTT connected to: " + this.userData.mqtt_newendpoint);
+                this.log.debug("MQTT connected to: " + this.userData.mqtt_newendpoint);
                 this.mqtt_blocking = 0;
                 this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                 for (const mower of this.deviceArray) {
@@ -990,7 +990,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("disconnect", () => {
-                this.log.info("Disconnected");
+                this.log.debug("Disconnected");
                 this.setMqttOnline(false);
             });
 
@@ -2519,6 +2519,7 @@ class Worx extends utils.Adapter {
     }
 
     async cleanOldVersion(serial) {
+        if (this.version == null) this.version = "";
         const cleanOldVersion = await this.getObjectAsync(
             this.name + "." + this.instance + "." + serial + ".oldVersionCleaned",
         );
@@ -2531,116 +2532,16 @@ class Worx extends utils.Adapter {
             await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".weather", {
                 recursive: true,
             });
-            await this.setObjectNotExistsAsync(this.name + "." + this.instance + "." + serial + ".oldVersionCleaned", {
-                type: "state",
-                common: {
-                    name: {
-                        en: "Version check",
-                        de: "Versionskontrolle",
-                        ru: "Проверка версии",
-                        pt: "Verificação da versão",
-                        nl: "Versie controle",
-                        fr: "Vérification de la version",
-                        it: "Controllo della versione",
-                        es: "Verificación de la versión",
-                        pl: "Kontrola",
-                        uk: "Перевірка версій",
-                        "zh-cn": "检查",
-                    },
-                    type: "string",
-                    role: "info.firmware",
-                    write: false,
-                    read: true,
-                },
-                native: {},
-            });
-            this.extendObjectAsync(serial + ".mower.firmware", {
-                type: "state",
-                common: {
-                    name: {
-                        en: "Firmware Version",
-                        de: "Firmware Version",
-                        ru: "Версия прошивки",
-                        pt: "Versão de firmware",
-                        nl: "Firmware Version",
-                        fr: "Firmware Version",
-                        it: "Versione firmware",
-                        es: "Versión de firmware",
-                        pl: "Strona oficjalna",
-                        uk: "Версія прошивки",
-                        "zh-cn": "Frmware Version",
-                    },
-                    type: "number",
-                    role: "info.firmware",
-                    read: true,
-                    write: false,
-                    desc: "Firmware Version",
-                },
-                native: {},
-            });
-            this.log.debug(`Object ${serial}.mower.firmware change string to number`);
-
             this.log.info("Done with cleaning");
         } else {
             try {
                 //Preparation for next Version
                 let oldVersion = "2.0.1";
-                await this.extendObjectAsync(serial + ".oldVersionCleaned", {
-                    type: "state",
-                    common: {
-                        name: {
-                            en: "Version check",
-                            de: "Versionskontrolle",
-                            ru: "Проверка версии",
-                            pt: "Verificação da versão",
-                            nl: "Versie controle",
-                            fr: "Vérification de la version",
-                            it: "Controllo della versione",
-                            es: "Verificación de la versión",
-                            pl: "Kontrola",
-                            uk: "Перевірка версій",
-                            "zh-cn": "检查",
-                        },
-                        type: "string",
-                        role: "info.firmware",
-                        write: false,
-                        read: true,
-                    },
-                    native: {},
-                });
-
                 const oldVerState = await this.getStateAsync(serial + ".oldVersionCleaned");
                 if (oldVerState && oldVerState.val) {
                     oldVersion = oldVerState.val.toString();
                 }
 
-                if (this.version > oldVersion && oldVersion <= "2.0.3") {
-                    this.extendObjectAsync(serial + ".mower.firmware", {
-                        type: "state",
-                        common: {
-                            name: {
-                                en: "Firmware Version",
-                                de: "Firmware Version",
-                                ru: "Версия прошивки",
-                                pt: "Versão de firmware",
-                                nl: "Firmware Version",
-                                fr: "Firmware Version",
-                                it: "Versione firmware",
-                                es: "Versión de firmware",
-                                pl: "Strona oficjalna",
-                                uk: "Версія прошивки",
-                                "zh-cn": "Frmware Version",
-                            },
-                            type: "number",
-                            role: "info.firmware",
-                            read: true,
-                            write: false,
-                            desc: "Firmware Version",
-                        },
-                        native: {},
-                    });
-                    this.log.debug(`Object ${serial}.mower.firmware change string to number`);
-                }
                 if (this.version > oldVersion && oldVersion <= "2.3.1") {
                     let checking;
                     checking = await this.getObjectAsync(serial + ".mower.actualArea");
@@ -2663,6 +2564,26 @@ class Worx extends utils.Adapter {
                 this.log.info("cleanOldVersion: " + e);
             }
         }
+        const common = {
+            name: {
+                en: "Version check",
+                de: "Versionskontrolle",
+                ru: "Проверка версии",
+                pt: "Verificação da versão",
+                nl: "Versie controle",
+                fr: "Vérification de la version",
+                it: "Controllo della versione",
+                es: "Verificación de la versión",
+                pl: "Kontrola",
+                uk: "Перевірка версій",
+                "zh-cn": "检查",
+            },
+            type: "string",
+            role: "info.firmware",
+            write: false,
+            read: true,
+        };
+        await this.createDataPoint(`${serial}.oldVersionCleaned`, common, "state");
         await this.setStateAsync(serial + ".oldVersionCleaned", this.version, true);
     }
 }
