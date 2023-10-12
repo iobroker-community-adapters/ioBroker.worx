@@ -30,12 +30,20 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ## Disscussion und Questions
 
-<https://forum.iobroker.net/topic/4834/adapter-worx-landroid/>
+🇩🇪 [Fragen](https://forum.iobroker.net/topic/4834/adapter-worx-landroid/)
 
 <!--
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+## Changelog
+
+### **WORK IN PROGRESS**
+
+-   (Lucky-ESA) Fixed folder without raw
+-   (Lucky-ESA) Changed Loglevel at refresh token
+
 ### 2.3.3 (2023-09-25)
 
 -   (Lucky-ESA) Added cmd wifi lock for Vision
