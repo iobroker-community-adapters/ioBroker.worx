@@ -324,7 +324,7 @@ Standard ohne Zonen:
 
 ![Vision img/mqtt_info.png](../en/img/mqtt_info.png)
 
-### Beispiel Blockly startsequence Vison
+### Beispiel Blockly startsequence Vision
 
 ```
 <xml xmlns="https://developers.google.com/blockly/xml">
@@ -549,3 +549,108 @@ Standard ohne Zonen:
   </block>
 </xml>
 ```
+
+### Oder
+
+```
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="2#Mf$#JFCN9Nw2F2L[?=">x</variable>
+    <variable id="fNt-C|86(glunJ:-t=dK">p</variable>
+    <variable id="Rci4:iMYXzjoI2k]P^X)">s</variable>
+    <variable id="[t-srB,I/UkXaWBk4*A*">list</variable>
+    <variable id="]WA|%5f=H9^9uiLc;KS[">new_json</variable>
+  </variables>
+  <block type="procedures_defcustomreturn" id="@Y/LobsPw4k!jQb)fI!." x="88" y="13">
+    <mutation statements="false">
+      <arg name="x" varid="2#Mf$#JFCN9Nw2F2L[?="></arg>
+      <arg name="p" varid="fNt-C|86(glunJ:-t=dK"></arg>
+      <arg name="s" varid="Rci4:iMYXzjoI2k]P^X)"></arg>
+    </mutation>
+    <field name="NAME">json</field>
+    <field name="SCRIPT">eFsicCJdID0gcDsNCnhbInMiXSA9IHM7DQpyZXR1cm4geA==</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+  </block>
+  <block type="variables_set" id="WAsPqIMv;bh95{7~Y!D!" x="88" y="63">
+    <field name="VAR" id="[t-srB,I/UkXaWBk4*A*">list</field>
+    <value name="VALUE">
+      <block type="convert_json2object" id="S5uRAnpcGp/7*1b,aum~">
+        <value name="VALUE">
+          <block type="text" id="}n3]_HIP*7y5GMEo-!c3">
+            <field name="TEXT">{p:[],s:[]}</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set" id="Kf#KkskB7l|uDiI!(fjq">
+        <field name="VAR" id="]WA|%5f=H9^9uiLc;KS[">new_json</field>
+        <value name="VALUE">
+          <block type="procedures_callcustomreturn" id="K;OJHrji~09PeJ33q.gl">
+            <mutation name="json">
+              <arg name="x"></arg>
+              <arg name="p"></arg>
+              <arg name="s"></arg>
+            </mutation>
+            <value name="ARG0">
+              <block type="variables_get" id="ipM^e+~#-hoo0(047Ybo">
+                <field name="VAR" id="[t-srB,I/UkXaWBk4*A*">list</field>
+              </block>
+            </value>
+            <value name="ARG1">
+              <block type="lists_create_with" id="HJIZHLc]lL0Tgqe$E~Ul">
+                <mutation items="0"></mutation>
+              </block>
+            </value>
+            <value name="ARG2">
+              <block type="lists_create_with" id="JH=jADj%lYJ(:7%v[o+3">
+                <mutation items="1"></mutation>
+                <value name="ADD0">
+                  <block type="convert_json2object" id="@5BT0}WJ`srV89LD5h?D">
+                    <value name="VALUE">
+                      <block type="text" id="=.e.D[I2IQ{u!4;(-D-,">
+                        <field name="TEXT">{"id":1,"c":1,"cfg":{"cut":{"bd":150,"ob":1}}}</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="control" id="k$;?LM/[x-TbZ^m=F4}i">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" delay_input="false"></mutation>
+            <field name="OID">worx.0.xxxxxxxxxx.areas.startSequence</field>
+            <field name="WITH_DELAY">FALSE</field>
+            <value name="VALUE">
+              <block type="convert_object2json" id="b~2Bz}OiNg{V]!QgN^J7">
+                <field name="PRETTIFY">FALSE</field>
+                <value name="VALUE">
+                  <block type="variables_get" id="b|+SOSd+ZD@*XHPGu*I(">
+                    <field name="VAR" id="]WA|%5f=H9^9uiLc;KS[">new_json</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
+```
+
+### or direct
+
+```
+{"p": [],"s": [{"id": 1, "c": 1, "cfg": {"cut": {"bd": 100, "ob": 1}}}]}
+```
+
+![img/ok_direct.png](img/ok_direct.png)
+
+### not allowed
+
+![img/ok_direct.png](img/not_ok_direct.png)
+![img/json_nok.png](../en/img/json_nok.png)
+![img/array_nok.png](../en/img/array_nok.png)
