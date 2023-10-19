@@ -43,6 +43,8 @@ The adapter can control the mower and you can change config params like mowtimes
 
 -   (Lucky-ESA) Fixed folder without raw
 -   (Lucky-ESA) Changed Loglevel at refresh token
+-   (Lucky-ESA) Fixed restriction vision bordercut
+-   (Lucky-ESA) Fixed check json vision startsequence
 
 ### 2.3.3 (2023-09-25)
 

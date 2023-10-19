@@ -257,8 +257,8 @@ Example:
                 "c": 1, // 1 if the charging station is in this zone. 0 for no charging station.
                 "cfg": {
                     "cut": {
-                        "bd": 100, // bordercut in mm
-                        "ob": 0 // 1 for driving over slabs if they are detected, otherwise 0.
+                        "bd": 100, // bordercut in mm - allowed 10mm, 15mm und 20mm
+                        "ob": 0 // 1 for driving over slabs if they are detected, otherwise 0. Different per-zone is not allowed
                     }
                 }
             },
@@ -268,7 +268,7 @@ Example:
                 "cfg": {
                     "cut": {
                         "bd": 100, // bordercut in mm
-                        "ob": 0 // 1 for driving over slabs if they are detected, otherwise 0.
+                        "ob": 0 // 1 for driving over slabs if they are detected, otherwise 0. Different per-zone is not allowed
                     }
                 }
             }

@@ -257,8 +257,8 @@ Beispiel:
                 "c": 1, // 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation.
                 "cfg": {
                     "cut": {
-                        "bd": 100, // Kantenschnitt in mm
-                        "ob": 0 // 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.
+                        "bd": 100, // Kantenschnitt in mm - erlaubt 10mm, 15mm und 20mm
+                        "ob": 0 // 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.Unterschiedliche Werte pro Zone sind nicht zulässig
                     }
                 }
             },
@@ -268,7 +268,7 @@ Beispiel:
                 "cfg": {
                     "cut": {
                         "bd": 100, // Kantenschnitt in mm
-                        "ob": 0 // 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.
+                        "ob": 0 // 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0. Unterschiedliche Werte pro Zone sind nicht zulässig
                     }
                 }
             }

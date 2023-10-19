@@ -1633,15 +1633,29 @@ class Worx extends utils.Adapter {
             return;
         }
         let isOK = true;
+        let first = true;
         let isCS = 0;
+        let isBC = 0;
         let check_id = 1;
         if (mz) {
             if (mz.p && Array.isArray(mz.p)) {
                 if (mz.s && Array.isArray(mz.s)) {
                     for (const id of mz.s) {
-                        if (!id.id || !id.c || !id.cfg || !id.cfg.cut || !id.cfg.cut.bd || !id.cfg.cut.ob) {
+                        if (
+                            id.id == null ||
+                            id.c == null ||
+                            !id.cfg ||
+                            !id.cfg.cut ||
+                            id.cfg.cut.bd == null ||
+                            id.cfg.cut.ob == null
+                        ) {
                             isOK = false;
                             this.log.warn(`startsequenceVision: Missing key - ${JSON.stringify(state)}`);
+                            continue;
+                        }
+                        if (first) {
+                            first = false;
+                            isBC = id.cfg.cut.ob;
                         }
                         if (id.id > check_id) {
                             isOK = false;
@@ -1649,9 +1663,35 @@ class Worx extends utils.Adapter {
                                 `startsequenceVision: Key s is sorted incorrectly - ${JSON.stringify(state)}`,
                             );
                         }
-                        if (id.cfg.ob == 1 && isCS == 0) {
+                        if (id.cfg.cut.bd != 100 && id.cfg.cut.bd != 150 && id.cfg.cut.bd != 200) {
+                            isOK = false;
+                            this.log.warn(
+                                `startsequenceVision: BorderCut - ${JSON.stringify(
+                                    id.cfg.cut.bd,
+                                )} is not allowed. Allowed is 100, 150 and 200!`,
+                            );
+                        } else if (id.cfg.cut.ob != isBC) {
+                            isOK = false;
+                            this.log.warn(
+                                `startsequenceVision: Different "go over slabs" per-zone is not allowed - ${JSON.stringify(
+                                    state,
+                                )}`,
+                            );
+                        } else if (id.cfg.cut.ob > 1) {
+                            isOK = false;
+                            this.log.warn(
+                                `startsequenceVision: Key ob greather 1 is not allowed - ${JSON.stringify(
+                                    id.cfg.cut.ob,
+                                )}`,
+                            );
+                        } else if (id.c > 1) {
+                            isOK = false;
+                            this.log.warn(
+                                `startsequenceVision: Key c greather 1 is not allowed - ${JSON.stringify(id.c)}`,
+                            );
+                        } else if (id.c == 1 && isCS == 0) {
                             isCS = 1;
-                        } else if (id.cfg.ob > 0 && isCS == 1) {
+                        } else if (id.c > 0 && isCS == 1) {
                             isOK = false;
                             this.log.warn(
                                 `startsequenceVision: Charging station only possible in one zone - ${JSON.stringify(
@@ -1660,6 +1700,7 @@ class Worx extends utils.Adapter {
                             );
                         }
                         ++check_id;
+                        isBC = id.cfg.cut.ob;
                         if (!isOK) {
                             break;
                         }
