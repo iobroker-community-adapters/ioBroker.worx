@@ -550,7 +550,7 @@ Standard ohne Zonen:
 </xml>
 ```
 
-### Oder
+### oder
 
 ```
 <xml xmlns="https://developers.google.com/blockly/xml">
@@ -641,7 +641,7 @@ Standard ohne Zonen:
 </xml>
 ```
 
-### or direct
+### oder direct
 
 ```
 {"p": [],"s": [{"id": 1, "c": 1, "cfg": {"cut": {"bd": 100, "ob": 1}}}]}
@@ -649,7 +649,7 @@ Standard ohne Zonen:
 
 ![img/ok_direct.png](img/ok_direct.png)
 
-### not allowed
+### nicht erlaubt
 
 ![img/ok_direct.png](img/not_ok_direct.png)
 ![img/json_nok.png](../en/img/json_nok.png)
