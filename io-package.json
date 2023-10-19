@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "news": {
+      "2.3.4": {
+        "en": "Fixed folder without raw\nChanged Loglevel at refresh token\nFixed restriction vision bordercut\nFixed check json vision startsequence",
+        "de": "Fixed Ordner ohne roh\nÄnderte Loglevel bei Refresh-Token\nFeste Beschränkung Vision Grenzschnitt\nFeste Check-Json-Vision-Anfolge",
+        "ru": "Фиксированная папка без сырья\nИзмененный Loglevel на обновленном токене\nФиксированное ограничение видение пограничное\nИсправлена проверка json видение startsequence",
+        "pt": "Pasta fixa sem matéria-prima\nNível de log alterado no token de atualização\nCorte de fronteira de visão de restrição fixa\nVerificação fixa json visão startsequence",
+        "nl": "Gerepareerde map zonder rauw\nVeranderde Loglevel bij verfrissende token\nVertaling:\nVertaling:",
+        "fr": "Dossier fixe sans cru\nChanged Loglevel at refresh token\nLimite fixe de vision bordercut\nVérification fixe json vision startequence",
+        "it": "Cartella fissa senza grezzo\nCambiato livello di log al token di aggiornamento\nFisso di restrizione visione taglio di confine\nControllo fisso json visione startequence",
+        "es": "Carpeta fija sin crudo\nNivel de registro cambiado en token refrescante\nVisión de restricción fija límite\nControl fijo json vision startsequence",
+        "pl": "Fixed folder without raw cotton\nZmienił rachunek do odświeżania tokenów\nWizje ograniczenia granicznego\nWizualizacja jsonów zaczyna sekwencjonować",
+        "uk": "Виправлена папка без сировини\nЗмінений рівень Loglevel на оновленому токені\nВиправлено обмеження зору кордон\nФіксований чек json vision startsequence",
+        "zh-cn": "九. 无原材料的配件\nB. 制冷剂的改建\nB. 限制边界的设想\nB. 固定的检查Json构想的开始"
+      },
       "2.3.3": {
         "en": "Added cmd wifi lock for Vision\nFixed [#761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nAdded sequence for Vision\nChecking working hours and locktime\nFixed incorrect log message for firmware update",
         "de": "Wifi-Schloss für Vision hinzugefügt\n#[761](https://github.com/iobroker-community-adapter/ioBroker.worx/issues/761)\nSequenz für Vision hinzugefügt\nÜberprüfung der Arbeitszeit und Sperrzeit\nFehlerhafte Log-Nachricht für Firmware-Update behoben",
@@ -80,19 +93,6 @@
         "pl": "Pozwoliło to na ponowne połączenie wielu szewców.",
         "uk": "Покращено відключення для багаторазової косарки.",
         "zh-cn": "改善对多种反应的重新连接。."
-      },
-      "2.1.1": {
-        "en": "Changed reconnection times.",
-        "de": "Geänderte Wiederverbindungszeiten.",
-        "ru": "Изменены времена повторного подключения.",
-        "pt": "Tempos de reconexão alterados.",
-        "nl": "Veranderde verbindingstijden.",
-        "fr": "Changement de temps de reconnection.",
-        "it": "Cambiati tempi di riconnessione.",
-        "es": "Cambio de tiempos de reconexión.",
-        "pl": "Zmienił czas ponownego połączenia.",
-        "uk": "Змінено час відключення.",
-        "zh-cn": "变化的重新连接时间。."
       }
     },
     "titleLang": {
