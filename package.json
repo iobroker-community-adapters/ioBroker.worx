@@ -36,7 +36,7 @@
     "@alcalzone/release-script-plugin-license": "^3.5.9",
     "@alcalzone/release-script-plugin-manual-review": "^3.5.9",
     "@iobroker/adapter-core": "^3.0.4",
-    "aws-iot-device-sdk": "^2.2.12",
+    "aws-iot-device-sdk": "^2.2.13",
     "aws-iot-device-sdk-v2": "^1.16.2",
     "axios": "^1.6.0",
     "http-cookie-agent": "^5.0.4",
