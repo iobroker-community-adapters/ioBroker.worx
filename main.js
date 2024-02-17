@@ -806,7 +806,7 @@ class Worx extends utils.Adapter {
             try {
                 config_builder = iot.AwsIotMqttConnectionConfigBuilder.new_default_builder();
             } catch (e) {
-                this.log.warn(`error builder: ${e}`);
+                this.log.error(`error builder: ${e}`);
                 return null;
             }
             config_builder.with_clean_session(false);
@@ -830,18 +830,24 @@ class Worx extends utils.Adapter {
             try {
                 config = config_builder.build();
             } catch (e) {
-                this.log.warn(`error build: ${e}`);
+                this.log.error(`error build: ${e}`);
                 return null;
             }
-            const client = new mqtt.MqttClient();
+            let client;
+            try {
+                client = new mqtt.MqttClient();
+            } catch (e) {
+                this.log.error(`Please update the system! error client: ${e}`);
+                return null;
+            }
             try {
                 return client.new_connection(config);
             } catch (e) {
-                this.log.warn(`error connection: ${e}`);
+                this.log.error(`Please update the system! error connection: ${e}`);
                 return null;
             }
         } catch (e) {
-            this.log.info(`awsMqtt: ${e}`);
+            this.log.error(`awsMqtt: ${e}`);
             return null;
         }
     }
