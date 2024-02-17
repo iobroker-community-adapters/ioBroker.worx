@@ -419,7 +419,7 @@ class Worx extends utils.Adapter {
                 let version = 0;
                 let released_at = "";
                 let json;
-                if (Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
+                if (fw_json != null && Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
                     version = parseFloat(fw_json.product.version);
                     released_at = fw_json.product.released_at;
                     json = JSON.stringify(fw_json);
@@ -755,7 +755,7 @@ class Worx extends utils.Adapter {
                 return res.data;
             })
             .catch((error) => {
-                if (path.includes("firmware-upgrade") && error.response.status === 404) {
+                if (path.includes("firmware-upgrade") && error.response && error.response.status === 404) {
                     this.log.debug("Updating firmware information is currently not possible!");
                     return error.response.status;
                 } else {
@@ -1473,6 +1473,8 @@ class Worx extends utils.Adapter {
                         this.mowTimeEx(id, mowTimeExtend, mower);
                     } else if (
                         command === "mowerActive" &&
+                        mower &&
+                        mower.last_status &&
                         mower.last_status.payload &&
                         mower.last_status.payload.cfg &&
                         mower.last_status.payload.cfg.sc
@@ -1511,6 +1513,8 @@ class Worx extends utils.Adapter {
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (
                         command === "log_improvement" &&
+                        mower &&
+                        mower.last_status &&
                         mower.last_status.payload &&
                         mower.last_status.payload.cfg &&
                         mower.last_status.payload.cfg.log &&
@@ -1521,6 +1525,8 @@ class Worx extends utils.Adapter {
                         this.sendMessage(`{"log":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (
                         command === "log_troubleshooting" &&
+                        mower &&
+                        mower.last_status &&
                         mower.last_status.payload &&
                         mower.last_status.payload.cfg &&
                         mower.last_status.payload.cfg.log &&
@@ -1934,6 +1940,8 @@ class Worx extends utils.Adapter {
         this.log.debug(`Start mower ${JSON.stringify(mower)}`);
 
         if (
+            mower != null &&
+            mower.last_status != null &&
             mower.last_status.payload &&
             mower.last_status.payload.dat &&
             (mower.last_status.payload.dat.ls === 1 || mower.last_status.payload.dat.ls === 34) &&
@@ -1958,6 +1966,8 @@ class Worx extends utils.Adapter {
      */
     stopMower(mower, command) {
         if (
+            mower != null &&
+            mower.last_status != null &&
             mower.last_status.payload &&
             mower.last_status.payload.dat &&
             mower.last_status.payload.dat.ls === 7 &&
@@ -2357,11 +2367,16 @@ class Worx extends utils.Adapter {
     changeMowerArea(id, value, mower) {
         const val = value;
 
-        if ((mower.last_status.payload && mower.last_status.payload.cfg == null) || mower.last_status.payload == null) {
+        if (
+            !mower ||
+            !mower.last_status == null ||
+            !mower.last_status.payload ||
+            !mower.last_status.payload.cfg == null
+        ) {
             // check if config exist
             this.log.warn(
                 `Cant send command because no Configdata from cloud exist please try again later. last message: ${JSON.stringify(
-                    mower.last_status.payload,
+                    mower,
                 )}`,
             );
             return;
@@ -2500,6 +2515,7 @@ class Worx extends utils.Adapter {
         const val = value;
 
         if (
+            !mower ||
             !mower.last_status ||
             !mower.last_status.payload ||
             !mower.last_status.payload.cfg ||
@@ -2508,7 +2524,7 @@ class Worx extends utils.Adapter {
             // check if config exist
             this.log.warn(
                 `Cant send command because cfg.sc is missing from cloud exist please try again later. last message: ${JSON.stringify(
-                    mower.last_status,
+                    mower,
                 )}`,
             );
             return;

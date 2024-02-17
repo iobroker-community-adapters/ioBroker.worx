@@ -38,6 +38,11 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+-   (Lucky-ESA) Fixed Sentry messages
+
 ### 2.3.4 (2023-10-19)
 
 -   (Lucky-ESA) Fixed folder without raw
