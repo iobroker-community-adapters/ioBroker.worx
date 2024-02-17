@@ -486,7 +486,7 @@ class Worx extends utils.Adapter {
                         }
                         const data = res.data;
                         const forceIndex = true;
-                        const preferedArrayName = null;
+                        const preferedArrayName = "";
                         await this.setStates(data);
                         const index = this.deviceArray.findIndex((index) => index.serial_number === data.serial_number);
                         this.log.debug(`Index Update: ${index}`);
@@ -918,7 +918,7 @@ class Worx extends utils.Adapter {
                     const new_mower = await this.cleanupRaw(mower);
                     this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
                         forceIndex: true,
-                        preferedArrayName: null,
+                        preferedArrayName: "",
                     });
                 } else {
                     this.log.info(`Worxcloud MQTT could not find mower topic - ${topic} in mowers`);
@@ -1810,7 +1810,7 @@ class Worx extends utils.Adapter {
             const new_data = await this.cleanupRaw(check);
             this.json2iob.parse(`${check["serial_number"]}.rawMqtt`, new_data, {
                 forceIndex: true,
-                preferedArrayName: null,
+                preferedArrayName: "",
             });
         } else {
             this.log.info(`The reset didn't work.`);
