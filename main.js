@@ -1017,7 +1017,7 @@ class Worx extends utils.Adapter {
 
     updateMqttData(newToken) {
         if (this.mqttC != null && !newToken) {
-            const statistic = this.mqttC.getQueueStatistics();
+            const statistic = this.mqttC.getOperationalStatistics();
             if (statistic) {
                 this.log.debug(`getQueueStatistics: ${JSON.stringify(statistic)}`);
                 this.setState(`info_mqtt.incompleteOperationCount`, {
