@@ -619,14 +619,18 @@ class Worx extends utils.Adapter {
             for (const o of objects.oneTimeShedule) {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
-                val: false,
-                ack: true,
-            });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
-                val: false,
-                ack: true,
-            });
+            if (await this.objectExists(`${mower.serial_number}.mower.firmware_update_start`)) {
+                await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+                    val: false,
+                    ack: true,
+                });
+            }
+            if (await this.objectExists(`${mower.serial_number}.mower.firmware_update_start_approved`)) {
+                await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
+                    val: false,
+                    ack: true,
+                });
+            }
         }
 
         if (fw_json) {

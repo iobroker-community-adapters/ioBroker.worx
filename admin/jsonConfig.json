@@ -1,5 +1,6 @@
 {
     "i18n": true,
+    "type": "panel",
     "items": {
         "mail": {
             "type": "text",
