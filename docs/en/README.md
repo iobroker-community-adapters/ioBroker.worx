@@ -74,9 +74,14 @@
     -   `DF.OLMSwitch_FastHoming`: Fast return to the charging station - true-on/false-off
 
 -   ACS Module (Wire only)
+
     -   `US.ACS`: Enable or disable ACS - 1-on/0-off
 
+-   EA Module (Vision only)
+    -   `EA.h`: Height adjustment of mower deck from 30-60 in 5 mm increments
+
 ![Module img/module.png](img/module.png)
+![Module img/module_ea.png](img/module_ea.png)
 
 ### mower (Wire and Vision)
 

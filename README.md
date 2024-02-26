@@ -42,6 +42,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ### **WORK IN PROGRESS**
 
 -   (Lucky-ESA) Fixed Sentry messages
+-   (Lucky-ESA) Added for Vision lectric height adjustment
 
 ### 2.3.4 (2023-10-19)
 

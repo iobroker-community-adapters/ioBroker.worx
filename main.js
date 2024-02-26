@@ -5,7 +5,7 @@
  */
 
 const utils = require("@iobroker/adapter-core");
-const axios = require("axios").default;
+const axios = require("axios");
 //const awsIot = require("aws-iot-device-sdk").device;
 const { mqtt, iot } = require("aws-iot-device-sdk-v2");
 // const qs = require("qs");
@@ -22,6 +22,7 @@ const poll_check = 1000; //1 sec.
 const ping_interval = 1000 * 60 * 10; //10 Minutes
 const max_request = 20;
 const category = "iobroker";
+const access_json = ["01a58ec15db78660aa8f67251aeca1bd"];
 
 class Worx extends utils.Adapter {
     /**
@@ -312,7 +313,7 @@ class Worx extends utils.Adapter {
                     this.log.info(`Found device ${name} with id ${id}`);
 
                     await this.cleanOldVersion(id);
-                    await this.createDevices(device);
+                    await this.createDevices(device, this.md5_user(device.serial_number));
                     const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
                     this.log.debug("fw_id: " + JSON.stringify(fw_id));
                     await this.createAdditionalDeviceStates(device, fw_id);
@@ -340,6 +341,11 @@ class Worx extends utils.Adapter {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
+    }
+
+    md5_user(sn) {
+        const md5_hash = crypto.createHash("md5").update(sn).digest("hex");
+        return access_json.includes(md5_hash);
     }
 
     async createProductStates(mower) {
@@ -1410,6 +1416,17 @@ class Worx extends utils.Adapter {
             );
 
             if (mower) {
+                if (command === "developer_json") {
+                    if (!this.md5_user(mower.serial_number)) return;
+                    try {
+                        const dev_json = JSON.parse(state.val.toString());
+                        this.sendMessage(JSON.stringify(dev_json), mower.serial_number, id);
+                    } catch (e) {
+                        this.log.info("Cannot parse json!");
+                    }
+                    this.setState(id, { ack: true });
+                    return;
+                }
                 try {
                     if (command == "state") {
                         if (state.val === true) {
@@ -1575,6 +1592,18 @@ class Worx extends utils.Adapter {
                         const msg = this.modules[mower.serial_number].DF;
                         msg.fh = state.val ? 1 : 0;
                         this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
+                    } else if (command === "h" && this.modules[mower.serial_number].EA) {
+                        const msg = this.modules[mower.serial_number].EA;
+                        msg.h = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
+                        if (msg.h < 30 || msg.h > 60) {
+                            this.log.warn(`Only between 30 and 60 are allowed!`);
+                            return;
+                        }
+                        if (msg.h % 5 != 0) {
+                            this.log.warn(`Electric adjustment: Unit only in 5 mm increments!`);
+                            return;
+                        }
+                        this.sendMessage(`{"modules":{"EA":${JSON.stringify(msg)}}}`, mower.serial_number, id);
                     } else if (command === "ACS" && this.modules[mower.serial_number].US) {
                         const msg = this.modules[mower.serial_number].US;
                         msg.enabled = state.val || 0;
