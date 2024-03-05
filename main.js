@@ -625,18 +625,14 @@ class Worx extends utils.Adapter {
             for (const o of objects.oneTimeShedule) {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
-            if (await this.objectExists(`${mower.serial_number}.mower.firmware_update_start`)) {
-                await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
-                    val: false,
-                    ack: true,
-                });
-            }
-            if (await this.objectExists(`${mower.serial_number}.mower.firmware_update_start_approved`)) {
-                await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
-                    val: false,
-                    ack: true,
-                });
-            }
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+                val: false,
+                ack: true,
+            });
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
+                val: false,
+                ack: true,
+            });
         }
 
         if (fw_json) {
@@ -1017,7 +1013,9 @@ class Worx extends utils.Adapter {
             await this.mqttC.connect();
         } catch (e) {
             this.log.info(`connectMqtt: ${e}`);
+            this.setState("info.connection", false, true);
             this.setMqttOnline(false);
+            this.mqttC = null;
         }
     }
 
@@ -1110,6 +1108,9 @@ class Worx extends utils.Adapter {
                         this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
                     } catch (e) {
                         this.log.warn(`Cannot send message ${message}.`);
+                        this.mqttC = null;
+                        this.setState("info.connection", false, true);
+                        this.setMqttOnline(false);
                     }
                 }
             } else {
