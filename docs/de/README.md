@@ -74,9 +74,14 @@
     -   `DF.OLMSwitch_FastHoming`: Verwendet erstellte Abkürzungen mit Magnetband - true-an/false-aus
 
 -   ACS Module (nur Draht)
+
     -   `US.ACS`: ACS aktivieren oder deaktivieren - 1-on/0-off
 
+-   EA Module (nur Vision)
+    -   `EA.h`: Höheneinstellung Mähwerk von 30-60 in 5 Schritte
+
 ![Module img/module.png](../en/img/module.png)
+![Module img/module_ea.png](../en/img/module_ea.png)
 
 ### mower (Draht und Vision)
 
