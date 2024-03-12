@@ -5,5 +5,7 @@
     "delay for edge cut": "边缘切割延迟",
     "Distance and time in min and m": "距离和时间（分钟和米）",
     "Ping MQTT Connection every 10 minutes.": "每 10 分钟 Ping 一次 MQTT 连接",
-    "Updating MQTT data after token update.": "令牌更新后更新 MQTT 数据。"
+    "Updating MQTT data after token update.": "令牌更新后更新 MQTT 数据。",
+    "vision setting": "附加视觉设置",
+    "vision timeslots": "创建每天最大 Vision 割草次数作为数据点"
 }

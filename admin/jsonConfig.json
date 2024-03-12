@@ -67,6 +67,21 @@
             "newLine": true,
             "default": false,
             "sm": 3
+        },
+        "_headerAdapter": {
+            "type": "header",
+            "text": "vision setting",
+            "size": 2
+        },
+        "vision_timeslots": {
+            "type": "number",
+            "label": "vision timeslots",
+            "newLine": true,
+            "default": 2,
+            "min": 2,
+            "max": 10,
+            "step": 1,
+            "sm": 3
         }
     }
 }

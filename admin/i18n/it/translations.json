@@ -5,5 +5,7 @@
     "delay for edge cut": "ritardo per il taglio del bordo",
     "Distance and time in min and m": "Distanza e tempo in min e m",
     "Ping MQTT Connection every 10 minutes.": "Connessione Ping MQTT ogni 10 minuti",
-    "Updating MQTT data after token update.": "Aggiornamento dei dati MQTT dopo l'aggiornamento del token."
+    "Updating MQTT data after token update.": "Aggiornamento dei dati MQTT dopo l'aggiornamento del token.",
+    "vision setting": "Impostazioni di visione aggiuntive",
+    "vision timeslots": "Creati i tempi massimi di falciatura Vision al giorno come punti dati"
 }
