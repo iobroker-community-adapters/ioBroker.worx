@@ -1369,7 +1369,6 @@ class Worx extends utils.Adapter {
         try {
             this.setState("info.connection", false, true);
             this.setState("info_mqtt.online", false, true);
-            this.mqttC && this.mqttC.disconnect();
             this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
             this.updateInterval && this.clearInterval(this.updateInterval);
             this.refreshActivity && this.clearInterval(this.refreshActivity);
@@ -1380,6 +1379,11 @@ class Worx extends utils.Adapter {
                 this.pingInterval[mower.serial_number] && this.clearInterval(this.pingInterval[mower.serial_number]);
             }
             this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
+            try {
+                this.mqttC && this.mqttC.disconnect();
+            } catch (e) {
+                this.mqttC = null;
+            }
             callback();
         } catch (e) {
             callback();
