@@ -44,6 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Fixed Sentry messages
 -   (Lucky-ESA) Catch publish crash
 -   (Lucky-ESA) Added for Vision electric height adjustment
+-   (Lucky-ESA) Added for Vision new calendar
 
 ### 2.3.4 (2023-10-19)
 
@@ -176,11 +177,11 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ### 1.4.0 (2021-07-05)
 
--   update testing
--   add gps coordinates
--   add new status states
--   add new Autolock states
--   add new OffLinits states
+-   (TA2k) update testing
+-   (TA2k) add gps coordinates
+-   (TA2k) add new status states
+-   (TA2k) add new Autolock states
+-   (TA2k) add new OffLinits states
 
 ### 1.3.7 (03.06.2021)
 

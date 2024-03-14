@@ -227,8 +227,7 @@
         "server": "worx",
         "meterMin": false,
         "pingMqtt": false,
-        "updateMqtt": false,
-        "vision_timeslots": 2
+        "updateMqtt": false
     },
     "objects": [],
     "instanceObjects": [

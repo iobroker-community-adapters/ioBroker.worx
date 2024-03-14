@@ -610,7 +610,6 @@ class Worx extends utils.Adapter {
                 }
             }
         }
-
         if (
             (status && status.cfg && status.cfg.sc != null && status.cfg.sc.ots != null) ||
             (status &&
@@ -626,7 +625,59 @@ class Worx extends utils.Adapter {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
+        if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm != null && status.cfg.sc.m != null) {
+            this.log.info("PartyModus found, create states...");
+            // create States
+            for (const o of objects.partyModus) {
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+            }
+        }
+        // Vision PartyMode
+        if (status && status.cfg && status.cfg.sc && status.cfg.sc.enabled != null) {
+            this.log.info("PartyModus found, create states...");
+            // create States
+            for (const o of objects.partyModus) {
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+            }
+        }
+        // Vision Paused
+        if (status && status.cfg && status.cfg.sc && status.cfg.sc.paused != null) {
+            this.log.info("Paused found, create states...");
+            // create States
+            for (const o of objects.paused) {
+                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+            }
+        }
+        if (mower.capabilities != null && !mower.capabilities.includes("vision")) {
+            await this.createDataPoint(
+                `${mower.serial_number}.calendar.${objects.calJson[0]._id}`,
+                objects.calJson[0].common,
+                objects.calJson[0].type,
+                objects.calJson[0].native,
+            );
+        }
+        await this.createDataPoint(
+            `${mower.serial_number}.calendar.${objects.calJson[1]._id}`,
+            objects.calJson[1].common,
+            objects.calJson[1].type,
+            objects.calJson[1].native,
+        );
+        await this.createDataPoint(
+            `${mower.serial_number}.calendar.${objects.calJson[2]._id}`,
+            objects.calJson[2].common,
+            objects.calJson[2].type,
+            objects.calJson[2].native,
+        );
+        if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
+            await this.createDataPoint(
+                `${mower.serial_number}.calendar.${objects.calJson[0]._id}2`,
+                objects.calJson[0].common,
+                objects.calJson[0].type,
+                objects.calJson[0].native,
+            );
+        }
 
+        this.log.debug(JSON.stringify(mower));
         if (fw_json) {
             this.fw_available[mower.serial_number] = true;
             this.log.info("Firmware found, create states...");
@@ -679,61 +730,6 @@ class Worx extends utils.Adapter {
                 ack: true,
             });
         }
-
-        if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm != null && status.cfg.sc.m != null) {
-            this.log.info("PartyModus found, create states...");
-            // create States
-            for (const o of objects.partyModus) {
-                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
-            }
-        }
-        // Vision PartyMode
-        if (status && status.cfg && status.cfg.sc && status.cfg.sc.enabled != null) {
-            this.log.info("PartyModus found, create states...");
-            // create States
-            for (const o of objects.partyModus) {
-                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
-            }
-        }
-        // Vision Paused
-        if (status && status.cfg && status.cfg.sc && status.cfg.sc.paused != null) {
-            this.log.info("Paused found, create states...");
-            // create States
-            for (const o of objects.paused) {
-                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
-            }
-        }
-        if (mower.capabilities != null && !mower.capabilities.includes("vision")) {
-            await this.createDataPoint(
-                `${mower.serial_number}.calendar.${objects.calJson[0]._id}`,
-                objects.calJson[0].common,
-                objects.calJson[0].type,
-                objects.calJson[0].native,
-            );
-        }
-
-        await this.createDataPoint(
-            `${mower.serial_number}.calendar.${objects.calJson[1]._id}`,
-            objects.calJson[1].common,
-            objects.calJson[1].type,
-            objects.calJson[1].native,
-        );
-        await this.createDataPoint(
-            `${mower.serial_number}.calendar.${objects.calJson[2]._id}`,
-            objects.calJson[2].common,
-            objects.calJson[2].type,
-            objects.calJson[2].native,
-        );
-        if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
-            await this.createDataPoint(
-                `${mower.serial_number}.calendar.${objects.calJson[0]._id}2`,
-                objects.calJson[0].common,
-                objects.calJson[0].type,
-                objects.calJson[0].native,
-            );
-        }
-
-        this.log.debug(JSON.stringify(mower));
     }
 
     async apiRequest(path, withoutToken, method, data) {
@@ -1239,75 +1235,148 @@ class Worx extends utils.Adapter {
     async evaluateVisionCalendar(mower, arr) {
         if (arr) {
             this.log.debug("COUNTER: " + arr.length);
+            this.log.debug("COUNTER SLOTS: " + this.modules[mower.serial_number]["slots"]);
+            const time_slots = this.modules[mower.serial_number]["slots"];
+            let ishigher = false;
+            let islower = 0;
+            for (let i = 0; i < 7; i++) {
+                const day_slots = arr.filter((item) => item.d === i);
+                if (day_slots.length > time_slots) {
+                    this.log.info(`Device ${mower.serial_number} has more than ${time_slots} mowing times.`);
+                    ishigher = true;
+                }
+                if (day_slots.length > islower) {
+                    islower = day_slots.length;
+                }
+            }
+            let week_count = 0;
+            let common = {};
+            if (ishigher) {
+                this.modules[mower.serial_number]["slots"] = islower;
+                for (const day of this.week) {
+                    common = {
+                        name: objects.weekname[week_count],
+                    };
+                    await this.createDataPoint(
+                        `${mower.serial_number}.calendar.${week_count}_${day}`,
+                        common,
+                        "channel",
+                    );
+                    for (let i = 0; i < islower; i++) {
+                        common = {
+                            name: objects.weekname[week_count],
+                        };
+                        await this.createDataPoint(
+                            `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}`,
+                            common,
+                            "folder",
+                        );
+                        for (const o of objects.calendar_vision) {
+                            await this.createDataPoint(
+                                `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}.${o._id}`,
+                                o.common,
+                                o.type,
+                                o.native,
+                            );
+                        }
+                    }
+                    ++week_count;
+                }
+            } else if (time_slots != 2 && islower < time_slots) {
+                this.modules[mower.serial_number]["slots"] = islower;
+                const calendar_dp = await this.getObjectListAsync({
+                    startkey: `${this.namespace}.${mower.serial_number}.calendar.`,
+                    endkey: `${this.namespace}.${mower.serial_number}.calendar.\u9999`,
+                });
+                if (calendar_dp && calendar_dp.rows) {
+                    const dp = `${this.namespace}.${mower.serial_number}.calendar.1_monday.time_`;
+                    for (let i = islower; i < 1440; i++) {
+                        const find_dp = calendar_dp.rows.filter((item) => item.id === `${dp}${i}`);
+                        week_count = 0;
+                        if (find_dp.length > 0) {
+                            for (const day of this.week) {
+                                await this.delObjectAsync(
+                                    `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}`,
+                                    {
+                                        recursive: true,
+                                    },
+                                );
+                                ++week_count;
+                            }
+                        } else {
+                            i = 1440;
+                            break;
+                        }
+                    }
+                }
+            }
             let x = 0;
-            let y = 1;
             const new_schedule = [];
             for (let i = 0; i < this.week.length; i++) {
-                const empty_schedule = {
-                    e: 0,
-                    d: 0,
-                    s: 0,
-                    t: 0,
-                    cfg: {
-                        cut: {
-                            b: 0,
-                            z: [],
+                for (let a = 0; a < time_slots; a++) {
+                    const empty_schedule = {
+                        e: 0,
+                        d: 0,
+                        s: 0,
+                        t: 0,
+                        cfg: {
+                            cut: {
+                                b: 0,
+                                z: [],
+                            },
                         },
-                    },
-                };
-                let t = "00:00";
-                let wt = 0;
-                let cut = false;
-                y = x + 1;
-                if (arr[x] && parseFloat(arr[x].d) === i) {
-                    t = this.formatDate(parseFloat(arr[x].s) * 60000, "hh:mm");
-                    wt = arr[x].t;
-                    cut = arr[x].cfg && arr[x].cfg.cut && arr[x].cfg.cut.b && arr[x].cfg.cut.b === 1 ? true : false;
-                    this.log.debug(JSON.stringify(arr[x]));
-                    new_schedule.push(arr[x]);
-                    x++;
-                } else {
-                    empty_schedule.d = i;
-                    new_schedule.push(empty_schedule);
+                    };
+                    let t = "00:00";
+                    let wt = 0;
+                    let cut = false;
+                    let e = false;
+                    let z = [];
+                    if (arr[x] && parseFloat(arr[x].d) === i) {
+                        t = this.formatDate(parseFloat(arr[x].s) * 60000, "hh:mm");
+                        wt = arr[x].t;
+                        e = arr[x].e === 1 ? true : false;
+                        z = arr[x].cfg.cut.z;
+                        cut = arr[x].cfg && arr[x].cfg.cut && arr[x].cfg.cut.b && arr[x].cfg.cut.b === 1 ? true : false;
+                        this.log.debug(JSON.stringify(arr[x]));
+                        new_schedule.push(arr[x]);
+                        x++;
+                    } else {
+                        empty_schedule.d = i;
+                        new_schedule.push(empty_schedule);
+                    }
+                    await this.setStateAsync(
+                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.startTime`,
+                        {
+                            val: t,
+                            ack: true,
+                        },
+                    );
+                    await this.setStateAsync(
+                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.workTime`,
+                        {
+                            val: wt,
+                            ack: true,
+                        },
+                    );
+                    await this.setStateAsync(
+                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.borderCut`,
+                        {
+                            val: cut,
+                            ack: true,
+                        },
+                    );
+                    await this.setStateAsync(
+                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.enabled_time`,
+                        {
+                            val: e,
+                            ack: true,
+                        },
+                    );
+                    await this.setStateAsync(`${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.zones`, {
+                        val: JSON.stringify(z),
+                        ack: true,
+                    });
                 }
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}.startTime`, {
-                    val: t,
-                    ack: true,
-                });
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}.workTime`, {
-                    val: wt,
-                    ack: true,
-                });
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}.borderCut`, {
-                    val: cut,
-                    ack: true,
-                });
-                t = "00:00";
-                wt = 0;
-                cut = false;
-                if (arr[y] && parseFloat(arr[y].d) === i) {
-                    t = this.formatDate(parseFloat(arr[y].s) * 60000, "hh:mm");
-                    wt = arr[y].t;
-                    cut = arr[y].cfg && arr[y].cfg.cut && arr[y].cfg.cut.b && arr[y].cfg.cut.b === 1 ? true : false;
-                    this.log.debug(JSON.stringify(arr[y]));
-                    new_schedule.push(arr[y]);
-                    x++;
-                } else {
-                    empty_schedule.d = i;
-                    new_schedule.push(empty_schedule);
-                }
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}2.startTime`, {
-                    val: t,
-                    ack: true,
-                });
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}2.workTime`, {
-                    val: wt,
-                    ack: true,
-                });
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}2.borderCut`, {
-                    val: cut,
-                    ack: true,
-                });
             }
             arr = new_schedule;
             return arr;
@@ -1406,6 +1475,9 @@ class Worx extends utils.Adapter {
                 "reset_battery_time",
                 "reset_blade_time",
                 "firmware_update_start",
+                "zones",
+                "enabled_time",
+                "add_timeslot",
             ];
             const command = id.split(".").pop();
             if (command == null) return;
@@ -1467,12 +1539,18 @@ class Worx extends utils.Adapter {
                         } else {
                             this.changeMowerCfg(id, state.val, mower, false);
                         }
+                    } else if (command === "enabled_time" || command === "zones") {
+                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                            this.changeVisionCfg(id, state.val, mower, false);
+                        }
                     } else if (command === "calJson_sendto" && state.val) {
                         if (mower.capabilities != null && mower.capabilities.includes("vision")) {
                             this.changeVisionCfg(id, state.val, mower, true);
                         } else {
                             this.changeMowerCfg(id, state.val, mower, true);
                         }
+                    } else if (command === "add_timeslot" && state.val) {
+                        this.addNewTimeslot(id, mower);
                     } else if (
                         command === "area_0" ||
                         command === "area_1" ||
@@ -1671,6 +1749,58 @@ class Worx extends utils.Adapter {
                 this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`);
             }
         }
+    }
+
+    /**
+     * @param {string} id
+     * @param {object} mower
+     */
+    async addNewTimeslot(id, mower) {
+        await this.setStateAsync(id, false, true);
+        if (this.modules[mower.serial_number] == null || this.modules[mower.serial_number].slots == null) {
+            this.log.warn(`Cannot found scheduler for device ${mower.serial_number}`);
+            return;
+        }
+        let common = {};
+        let week_count = 0;
+        const higher_slot = this.modules[mower.serial_number].slots;
+        for (const day of this.week) {
+            mower.last_status.payload.cfg.sc.slots.push({
+                e: 0,
+                d: week_count,
+                s: 0,
+                t: 0,
+                cfg: {
+                    cut: {
+                        b: 0,
+                        z: [],
+                    },
+                },
+            });
+            for (let i = higher_slot; i < higher_slot + 1; i++) {
+                common = {
+                    name: objects.weekname[week_count],
+                };
+                await this.createDataPoint(
+                    `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}`,
+                    common,
+                    "folder",
+                );
+                for (const o of objects.calendar_vision) {
+                    await this.createDataPoint(
+                        `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}.${o._id}`,
+                        o.common,
+                        o.type,
+                        o.native,
+                    );
+                }
+            }
+            ++week_count;
+        }
+        ++this.modules[mower.serial_number].slots;
+        mower.last_status.payload.cfg.sc.slots.sort((a, b) => {
+            return a.d - b.d || a.s - b.s;
+        });
     }
 
     /**
@@ -2244,8 +2374,15 @@ class Worx extends utils.Adapter {
                             schedule_new.push(slot);
                         }
                     }
-                    this.log.debug(`Send Schedule: ${JSON.stringify(schedule_new)}`);
-                    this.sendMessage(`{"sc":{"slots":${JSON.stringify(schedule_new)}}}`, mower.serial_number, id);
+                    if (schedule_new.length > 0) {
+                        schedule_new.sort((a, b) => {
+                            return a.d - b.d || a.s - b.s;
+                        });
+                        this.log.debug(`Send Schedule: ${JSON.stringify(schedule_new)}`);
+                        this.sendMessage(`{"sc":{"slots":${JSON.stringify(schedule_new)}}}`, mower.serial_number, id);
+                    } else {
+                        this.log.info(`No schedule times found!`);
+                    }
                     this.setState(`${mower.serial_number}.calendar.calJson_sendto`, {
                         val: false,
                         ack: true,
@@ -2257,15 +2394,19 @@ class Worx extends utils.Adapter {
             return;
         }
         const arr = id.split(".");
-        const scheduleSelect = arr[4].search("2") === -1 ? 0 : 1;
+        const scheduleSelect = arr[5].split("_").pop();
+        if (scheduleSelect == null) {
+            this.log.warn(`Cannot find schedule time - ${arr[5]}`);
+            return;
+        }
         const message = mower.last_status.payload.cfg.sc.slots;
-        let dayID = this.week.indexOf(arr[4].replace(/2/g, ""));
-        dayID = dayID + dayID + scheduleSelect;
-        this.log.debug(`day: ${arr[4].replace(/2/g, "")} scheduleSelect: ${scheduleSelect} dID: ${dayID}`);
+        let dayID = this.week.indexOf(arr[4]);
+        dayID = parseInt(dayID.toString()) * this.modules[mower.serial_number]["slots"] + parseInt(scheduleSelect);
+        this.log.debug(`day: ${arr[4]} scheduleSelect: ${scheduleSelect} dID: ${dayID}`);
         try {
-            if (arr[5] === "borderCut") {
+            if (arr[6] === "borderCut") {
                 message[dayID].cfg.cut.b = value ? 1 : 0;
-            } else if (arr[5] === "workTime") {
+            } else if (arr[6] === "workTime") {
                 const max = 1440 - message[dayID].s;
                 this.log.debug(`value: ${value} max: ${max} dID: ${dayID}`);
                 if (value >= 0 && value <= max) {
@@ -2274,7 +2415,7 @@ class Worx extends utils.Adapter {
                     this.log.error("Time out of range 0 min < time < 1440 min.");
                     return;
                 }
-            } else if (arr[5] === "startTime") {
+            } else if (arr[6] === "startTime") {
                 const t = value.split(":");
                 const h = parseInt(t[0]);
                 const m = parseInt(t[1]);
@@ -2285,6 +2426,15 @@ class Worx extends utils.Adapter {
                     this.log.error('Time out of range: e.g "10:00"');
                     return;
                 }
+            } else if (arr[6] === "enabled_time") {
+                message[dayID].e = value ? 1 : 0;
+            } else if (arr[6] === "zones") {
+                try {
+                    message[dayID].cfg.cut.z = JSON.parse(value);
+                } catch (e) {
+                    this.log.error(`Cannot parse zones - ${JSON.stringify(value)}`);
+                    return;
+                }
             } else {
                 this.log.error("Something went wrong while setting new mower times");
                 return;
@@ -2293,7 +2443,7 @@ class Worx extends utils.Adapter {
             this.log.error(`Error while setting mower time: ${e}`);
             return;
         }
-        this.log.debug(`Mowing time change at ${scheduleSelect} to: ${JSON.stringify(message)}`);
+        this.log.debug(`Mowing time change at time_${scheduleSelect} to: ${JSON.stringify(message)}`);
         this.setState(`${mower.serial_number}.calendar.calJson_tosend`, {
             val: JSON.stringify(message),
             ack: true,
