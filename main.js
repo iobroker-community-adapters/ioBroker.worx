@@ -1186,6 +1186,11 @@ class Worx extends utils.Adapter {
                 const merge = new_merge.findIndex((request) => request.id === ids);
                 if (merge && new_merge[merge] && new_merge[merge][send] != null) {
                     new_merge[merge][send] = Date.now();
+                } else if (send === "request" && parseInt(ids) != 0) {
+                    data_json[ids]["request"] = 0;
+                    data_json[ids]["response"] = Date.now();
+                    data_json[ids]["action"] = "Unknown";
+                    data_json[ids]["user"] = "Unknown";
                 } else {
                     this.log.debug(`UNDEFINED:  ${JSON.stringify(data_json)}`);
                     this.log.debug(`UNDEFINED_id:  ${ids}`);
@@ -1236,7 +1241,7 @@ class Worx extends utils.Adapter {
         if (arr) {
             this.log.debug("COUNTER: " + arr.length);
             this.log.debug("COUNTER SLOTS: " + this.modules[mower.serial_number]["slots"]);
-            const time_slots = this.modules[mower.serial_number]["slots"];
+            let time_slots = this.modules[mower.serial_number]["slots"];
             let ishigher = false;
             let islower = 0;
             for (let i = 0; i < 7; i++) {
@@ -1253,6 +1258,7 @@ class Worx extends utils.Adapter {
             let common = {};
             if (ishigher) {
                 this.modules[mower.serial_number]["slots"] = islower;
+                time_slots = islower;
                 for (const day of this.week) {
                     common = {
                         name: objects.weekname[week_count],
@@ -1284,6 +1290,7 @@ class Worx extends utils.Adapter {
                 }
             } else if (time_slots != 2 && islower < time_slots) {
                 this.modules[mower.serial_number]["slots"] = islower;
+                time_slots = islower;
                 const calendar_dp = await this.getObjectListAsync({
                     startkey: `${this.namespace}.${mower.serial_number}.calendar.`,
                     endkey: `${this.namespace}.${mower.serial_number}.calendar.\u9999`,
