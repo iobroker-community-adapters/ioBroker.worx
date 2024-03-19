@@ -1186,7 +1186,7 @@ class Worx extends utils.Adapter {
                 const merge = new_merge.findIndex((request) => request.id === ids);
                 if (merge && new_merge[merge] && new_merge[merge][send] != null) {
                     new_merge[merge][send] = Date.now();
-                } else if (send === "request" && parseInt(ids) != 0) {
+                } else if (send === "response" && parseInt(ids) != 0) {
                     data_json[ids]["request"] = 0;
                     data_json[ids]["response"] = Date.now();
                     data_json[ids]["action"] = "Unknown";
