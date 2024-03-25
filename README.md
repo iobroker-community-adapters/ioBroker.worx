@@ -15,6 +15,8 @@
 
 **This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
 
+## NEW!!! Node 18 required
+
 ## Worx (Kress, Landxcape and Ferrex) adapter for ioBroker
 
 Control via cloud and mqtt
@@ -45,6 +47,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Catch publish crash
 -   (Lucky-ESA) Added for Vision electric height adjustment
 -   (Lucky-ESA) Added for Vision new calendar
+-   (Lucky-ESA) Node 18 required
 
 ### 2.3.4 (2023-10-19)
 
