@@ -1292,6 +1292,7 @@ class Worx extends utils.Adapter {
                     ++week_count;
                 }
             } else if (time_slots != 2 && islower < time_slots) {
+                islower = islower < 2 ? 2 : islower;
                 this.modules[mower.serial_number]["slots"] = islower;
                 time_slots = islower;
                 const calendar_dp = await this.getObjectListAsync({
