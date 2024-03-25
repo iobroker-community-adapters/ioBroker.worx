@@ -1342,7 +1342,7 @@ class Worx extends utils.Adapter {
                     let e = false;
                     let z = [];
                     if (arr[x] && parseFloat(arr[x].d) === i) {
-                        t = this.formatDate(parseFloat(arr[x].s) * 60000, "hh:mm");
+                        t = arr[x].s === 0 ? "00:00" : this.formatDate(parseFloat(arr[x].s) * 60000, "hh:mm");
                         wt = arr[x].t;
                         e = arr[x].e === 1 ? true : false;
                         z = arr[x].cfg.cut.z;
@@ -2378,8 +2378,7 @@ class Worx extends utils.Adapter {
                         message_dp = JSON.parse(message.val);
                     }
                     for (const slot of message_dp) {
-                        if (slot.s !== 0 && slot.t !== 0) {
-                            slot.e = 1;
+                        if (slot.s !== 0 || slot.t !== 0) {
                             this.log.debug(JSON.stringify(slot));
                             schedule_new.push(slot);
                         }
