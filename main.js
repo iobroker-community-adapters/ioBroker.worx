@@ -1187,6 +1187,9 @@ class Worx extends utils.Adapter {
                 if (merge && new_merge[merge] && new_merge[merge][send] != null) {
                     new_merge[merge][send] = Date.now();
                 } else if (send === "response" && parseInt(ids) != 0) {
+                    if (!data_json[ids] || data_json[ids]["request"] == null) {
+                        data_json[ids] = {};
+                    }
                     data_json[ids]["request"] = 0;
                     data_json[ids]["response"] = Date.now();
                     data_json[ids]["action"] = "Unknown";
@@ -2407,7 +2410,9 @@ class Worx extends utils.Adapter {
             return;
         }
         const message = mower.last_status.payload.cfg.sc.slots;
-        let dayID = this.week.indexOf(arr[4]);
+        const arr_day = arr[4].split("_")[1];
+        this.log.debug(`Dayname: ${arr_day}`);
+        let dayID = this.week.indexOf(arr_day);
         dayID = parseInt(dayID.toString()) * this.modules[mower.serial_number]["slots"] + parseInt(scheduleSelect);
         this.log.debug(`day: ${arr[4]} scheduleSelect: ${scheduleSelect} dID: ${dayID}`);
         try {
