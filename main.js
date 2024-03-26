@@ -2218,6 +2218,10 @@ class Worx extends utils.Adapter {
                         },
                     };
                 }
+                this.setState(`${mower.serial_number}.mower.oneTimeStart`, {
+                    val: false,
+                    ack: true,
+                });
             }
         } else if (idType === "oneTimeJson") {
             try {
