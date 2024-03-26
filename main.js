@@ -2392,11 +2392,11 @@ class Worx extends utils.Adapter {
                         schedule_new.sort((a, b) => {
                             return a.d - b.d || a.s - b.s;
                         });
-                        this.log.debug(`Send Schedule: ${JSON.stringify(schedule_new)}`);
-                        this.sendMessage(`{"sc":{"slots":${JSON.stringify(schedule_new)}}}`, mower.serial_number, id);
                     } else {
-                        this.log.info(`No schedule times found!`);
+                        this.log.info(`All timeslots deleted!!!`);
                     }
+                    this.log.debug(`Send Schedule: ${JSON.stringify(schedule_new)}`);
+                    this.sendMessage(`{"sc":{"slots":${JSON.stringify(schedule_new)}}}`, mower.serial_number, id);
                     this.setState(`${mower.serial_number}.calendar.calJson_sendto`, {
                         val: false,
                         ack: true,
