@@ -204,9 +204,10 @@
 }
 ```
 
--   `oneTimeStart`: One-time mowing start "first fill oneTimeWithBorder and oneTimeWorkTime" - with a 1,1 second delay (wire & Vision/changeable)
+-   `oneTimeStart`: One-time mowing start “First set oneTimeWithBorder, oneTimeWorkTime and oneTimeZones for Vision” - with a 1,1 second delay (wire & Vision/changeable)
 -   `oneTimeWithBorder`: With bordercut - Change value without delay (wire & Vision/changeable)
 -   `oneTimeWorkTime`: Worktime max. 8h in 30 minute steps - Change value without delay (wire & Vision/changeable)
+-   `oneTimeZones`: Set zones [1,2,4] (Vision/changeable)
 -   `online`: Mower online (wire & Vision/readonly)
 -   `partyModus`: Partymodus turn on/off (wire & Vision/changeable)
 -   `pause`: Mower break turn on/off (wire & Vision/changeable)

@@ -624,6 +624,17 @@ class Worx extends utils.Adapter {
             for (const o of objects.oneTimeShedule) {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
+            if (
+                status &&
+                status.cfg &&
+                status.cfg.sc != null &&
+                status.cfg.sc.once != null &&
+                status.cfg.sc.once.time != null
+            ) {
+                for (const o of objects.oneTimeSheduleZone) {
+                    await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+                }
+            }
         }
         if (status && status.cfg && status.cfg.sc && status.cfg.sc.distm != null && status.cfg.sc.m != null) {
             this.log.info("PartyModus found, create states...");
@@ -1489,6 +1500,7 @@ class Worx extends utils.Adapter {
                 "zones",
                 "enabled_time",
                 "add_timeslot",
+                "oneTimeZones",
             ];
             const command = id.split(".").pop();
             if (command == null) return;
@@ -2199,13 +2211,24 @@ class Worx extends utils.Adapter {
                     return;
                 }
                 if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                    let zone_array;
+                    const zones = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeZones`);
+                    try {
+                        if (zones != null && zones.val != null) {
+                            zone_array = JSON.stringify(zones.val);
+                        } else {
+                            zone_array = [];
+                        }
+                    } catch (e) {
+                        zone_array = [];
+                    }
                     msgJson = {
                         once: {
                             time: wtm.val,
                             cfg: {
                                 cut: {
                                     b: bc.val ? 1 : 0,
-                                    z: [],
+                                    z: zone_array,
                                 },
                             },
                         },

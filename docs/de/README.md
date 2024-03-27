@@ -204,9 +204,10 @@
 }
 ```
 
--   `oneTimeStart`: einmaliges Mähen start "Erst oneTimeWithBorder und oneTimeWorkTime setzen" - mit einer Verzögerung von 1,1 Sekunde (Draht & Vision/änderbar)
+-   `oneTimeStart`: einmaliges Mähen start "Erst oneTimeWithBorder, oneTimeWorkTime und beim Vision noch oneTimeZones setzen" - mit einer Verzögerung von 1,1 Sekunde (Draht & Vision/änderbar)
 -   `oneTimeWithBorder`: Mit Kantenschnitt - Wert ohne Verzögerung setzen (Draht & Vision/änderbar)
 -   `oneTimeWorkTime`: Mähzeit max. 8h in 30 Minuten Schritte - Wert ohne Verzögerung setzen (Draht & Vision/änderbar)
+-   `oneTimeZones`: Zonen setzen [1,2,4] (Vision/änderbar)
 -   `online`: Mäher Online (Draht & Vision/nur lesen)
 -   `partyModus`: Party-Modus schalten an/aus (Draht & Vision/änderbar)
 -   `pause`: Mähpause schalten an/aus (Draht & Vision/änderbar)
