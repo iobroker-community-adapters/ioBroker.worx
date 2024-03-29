@@ -47,6 +47,8 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Catch publish crash
 -   (Lucky-ESA) Added for Vision electric height adjustment
 -   (Lucky-ESA) Added for Vision new calendar
+-   (Lucky-ESA) Added head light
+-   (Lucky-ESA) Added cut over slabs
 -   (Lucky-ESA) Node 18 required
 
 ### 2.3.4 (2023-10-19)

@@ -1690,7 +1690,7 @@ class Worx extends utils.Adapter {
                         const msg = {};
                         msg.enabled = state.val;
                         this.sendMessage(`{"modules":{"HL":${JSON.stringify(msg)}}}`, mower.serial_number, id);
-                    } else if (command === "slab") {
+                    } else if (command === "cutOverSlabs") {
                         const msg = {};
                         msg.slab = state.val;
                         this.sendMessage(`{"vis":${msg}}`, mower.serial_number, id);

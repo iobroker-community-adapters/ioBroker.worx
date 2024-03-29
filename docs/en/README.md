@@ -116,10 +116,16 @@
     -   `US.ACS`: Enable or disable ACS - 1-on/0-off
 
 -   EA Module (Vision only)
+
     -   `EA.h`: Height adjustment of mower deck from 30-60 in 5 mm increments
+
+-   HL Module (Vision only)
+    -   `HL.HL_Status`: Status head light
+    -   `HL.hl`: Head light on = 1/off = 0
 
 ![Module img/module.png](img/module.png)
 ![Module img/module_ea.png](img/module_ea.png)
+![Module img/module_ea.png](img/module_hl.png)
 
 ### mower (Wire and Vision)
 
@@ -130,6 +136,7 @@
 -   `batteryState`: Battery state in % (wire & Vision/readonly)
 -   `batteryTemperature`: Battery temperature in celsius (wire & Vision/readonly)
 -   `batteryVoltage`: Battery voltage in Volt (wire & Vision/readonly)
+-   `cutOverSlabs`: Cut over slabs on = true / off = false (Vision/changeable)
 -   `direction`: Direction in grad (wire & Vision/readonly)
 -   `edgecut`: Start EdgeCut (wire & Vision/changeable)
 -   `error`: Error message from mower (wire & Vision/readonly)

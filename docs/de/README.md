@@ -106,20 +106,26 @@
 
 ### modules (Draht und Vision)
 
--   Off Limit Module (Draht und Vision)
+-   Off Limit Modul (Draht und Vision)
 
     -   `DF.OLMSwitch_Cutting`: Verhindert das überfahren vom Magnetband - true-an/false-aus
     -   `DF.OLMSwitch_FastHoming`: Verwendet erstellte Abkürzungen mit Magnetband - true-an/false-aus
 
--   ACS Module (nur Draht)
+-   ACS Modul (nur Draht)
 
     -   `US.ACS`: ACS aktivieren oder deaktivieren - 1-on/0-off
 
--   EA Module (nur Vision)
+-   EA Modul (nur Vision)
+
     -   `EA.h`: Höheneinstellung Mähwerk von 30-60 in 5 Schritte
+
+-   HL Modul (nur Vision)
+    -   `HL.HL_Status`: Status Scheinwerfer
+    -   `HL.hl`: Scheinwerfer ein = 1/ausschalten = 0
 
 ![Module img/module.png](../en/img/module.png)
 ![Module img/module_ea.png](../en/img/module_ea.png)
+![Module img/module_ea.png](../en/img/module_hl.png)
 
 ### mower (Draht und Vision)
 
@@ -130,6 +136,7 @@
 -   `batteryState`: Batteriestatus in % (Draht & Vision/nur lesen)
 -   `batteryTemperature`: Batterietemperatur in Celsius (Draht & Vision/nur lesen)
 -   `batteryVoltage`: Batteriespannung in Volt (Draht & Vision/nur lesen)
+-   `cutOverSlabs`: Über Platten mähen an = true / aus = false (Vision/änderbar)
 -   `direction`: Richtung in Grad (Draht & Vision/nur lesen)
 -   `edgecut`: Start EdgeCut (Draht & Vision/änderbar)
 -   `error`: Errormeldung vom Mäher (Draht & Vision/nur lesen)
