@@ -190,6 +190,8 @@
 ```
 
 -   `firmware_available_date`: Datum verfügbaren Firmware - Dummy 1970-01-01 wenn der Adapter neu installiert wird und es kein Update zur Verfügung steht (Draht & Vision/nur lesen)
+-   `firmware_body` Inhalt von dat.fw (Vision/nur lesen)
+-   `firmware_head` Inhalt dat.head.fw (Vision/nur lesen)
 -   `firmware_update_start`: Start Update in 2 Schritten (Draht & Vision/änderbar)
 -   `firmware_update_start_approved`: Aktualisierung der Firmware starten - `firmware_update_start` muss auf true gesetzt sein (Draht & Vision/änderbar)
 -   `gradient`: Gefälle oder Anstieg in Grad (Draht & Vision/nur lesen)

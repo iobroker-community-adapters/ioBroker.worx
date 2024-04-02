@@ -190,6 +190,8 @@
 ```
 
 -   `firmware_available_date`: Date available firmware - Dummy 1970-01-01 when the adapter is reinstalled and no update is available (wire & Vision/readonly)
+-   `firmware_body` Value from dat.fw (Vision/readonly)
+-   `firmware_head` Value from dat.head.fw (Vision/readonly)
 -   `firmware_update_start`: Start firmware update in 2 steps (wire & Vision/changeable)
 -   `firmware_update_start_approved`: Start firmware update - `firmware_update_start` must be set to true (wire & Vision/changeable)
 -   `gradient`: Gradient in grad (wire & Vision/readonly)

@@ -37,7 +37,6 @@ class Worx extends utils.Adapter {
         this.on("stateChange", this.onStateChange.bind(this));
         this.on("unload", this.onUnload.bind(this));
         this.deviceArray = [];
-        this.fw_available = {};
         this.laststatus = {};
         this.lasterror = {};
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
@@ -309,7 +308,6 @@ class Worx extends utils.Adapter {
                     this.modules[device.serial_number] = {};
                     this.modules[device.serial_number]["edgeCut"] = false;
                     const name = device.name;
-                    this.fw_available[device.serial_number] = false;
                     this.log.info(`Found device ${name} with id ${id}`);
 
                     await this.cleanOldVersion(id);
@@ -420,21 +418,59 @@ class Worx extends utils.Adapter {
 
     async updateFirmware() {
         for (const mower of this.deviceArray) {
-            if (this.fw_available[mower.serial_number] === true) {
-                const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmware-upgrade`, false);
-                let version = 0;
-                let released_at = "";
-                let json;
-                if (fw_json != null && Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
-                    version = parseFloat(fw_json.product.version);
-                    released_at = fw_json.product.released_at;
-                    json = JSON.stringify(fw_json);
-                } else {
-                    const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
-                    if (is_set && is_set.val != null && typeof is_set.val === "number" && is_set.val > 0) {
-                        this.log.debug(`Update not needed!`);
+            const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmware-upgrade`, false);
+            let version = 0;
+            let released_at = "";
+            let json;
+            if (fw_json != null && fw_json.product && fw_json.product.version != null) {
+                version = parseFloat(fw_json.product.version);
+                released_at = fw_json.product.released_at;
+                json = JSON.stringify(fw_json);
+            } else {
+                const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
+                const is_same = await this.getStateAsync(`${mower.serial_number}.mower.firmware`);
+                const is_same_all = await this.getStateAsync(`${mower.serial_number}.mower.firmware_all`);
+                if (
+                    is_same_all &&
+                    is_same_all.val != null &&
+                    is_set &&
+                    is_set.val != null &&
+                    typeof is_set.val === "number" &&
+                    is_same &&
+                    is_same.val != null &&
+                    typeof is_same.val === "number"
+                ) {
+                    if (is_same.val > is_set.val) {
+                        this.log.debug("Update firmware was carried out manually...");
+                        try {
+                            const is_json = JSON.parse(is_same_all.val.toString());
+                            is_json.product.version = is_same.val;
+                            version = is_same.val;
+                            released_at = is_json.product.released_at;
+                            json = JSON.stringify(is_json);
+                        } catch (e) {
+                            this.log.debug(`Cannot found Firmware JSON - ${e}`);
+                            version = parseFloat(mower.firmware_version);
+                            released_at = "1970-01-01";
+                            json = JSON.stringify({
+                                mandatory: false,
+                                product: {
+                                    uuid: mower.uuid,
+                                    version: parseFloat(mower.firmware_version),
+                                    released_at: "1970-01-01",
+                                    changelog: "Update only when new firmware is available.",
+                                },
+                            });
+                        }
+                    } else if (is_same.val == is_set.val) {
+                        this.log.debug("Firmware is current...");
+                        return;
+                    } else {
+                        this.log.warn("Error Firmware, please create a issues...");
                         return;
                     }
+                } else {
+                    this.log.info("No new Firmware found, create dummy states...");
                     version = parseFloat(mower.firmware_version);
                     released_at = "1970-01-01";
                     json = JSON.stringify({
@@ -447,19 +483,19 @@ class Worx extends utils.Adapter {
                         },
                     });
                 }
-                await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
-                    val: version,
-                    ack: true,
-                });
-                await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
-                    val: released_at,
-                    ack: true,
-                });
-                await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
-                    val: json,
-                    ack: true,
-                });
             }
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+                val: version,
+                ack: true,
+            });
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+                val: released_at,
+                ack: true,
+            });
+            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+                val: json,
+                ack: true,
+            });
         }
     }
 
@@ -689,25 +725,63 @@ class Worx extends utils.Adapter {
         }
 
         this.log.debug(JSON.stringify(mower));
-        if (fw_json) {
-            this.fw_available[mower.serial_number] = true;
-            this.log.info("Firmware found, create states...");
-            for (const o of objects.firmware_available) {
-                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
-            }
-            let version = 0;
-            let released_at = "";
-            let json;
-            if (Object.keys(fw_json).length > 0 && fw_json.product && fw_json.product.version) {
-                version = parseFloat(fw_json.product.version);
-                released_at = fw_json.product.version;
-                json = JSON.stringify(fw_json);
-            } else {
-                const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
-                if (is_set && is_set.val != null && typeof is_set.val === "number" && is_set.val > 0) {
-                    this.log.debug(`Update not needed!`);
+        for (const o of objects.firmware_available) {
+            await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+        }
+        let version = 0;
+        let released_at = "";
+        let json;
+        if (fw_json && fw_json.product && fw_json.product.version != null) {
+            this.log.info("New Firmware found, create states...");
+            version = parseFloat(fw_json.product.version);
+            released_at = fw_json.product.released_at;
+            json = JSON.stringify(fw_json);
+        } else {
+            this.log.info("No new Firmware found, check states...");
+            const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
+            const is_same = await this.getStateAsync(`${mower.serial_number}.mower.firmware`);
+            const is_same_all = await this.getStateAsync(`${mower.serial_number}.mower.firmware_all`);
+            if (
+                is_same_all &&
+                is_same_all.val != null &&
+                is_set &&
+                is_set.val != null &&
+                typeof is_set.val === "number" &&
+                is_same &&
+                is_same.val != null &&
+                typeof is_same.val === "number"
+            ) {
+                if (is_same.val > is_set.val) {
+                    this.log.debug("Update firmware was carried out manually...");
+                    try {
+                        const is_json = JSON.parse(is_same_all.val.toString());
+                        is_json.product.version = is_same.val;
+                        version = is_same.val;
+                        released_at = is_json.product.released_at;
+                        json = JSON.stringify(is_json);
+                    } catch (e) {
+                        this.log.debug(`Cannot found Firmware JSON - ${e}`);
+                        version = parseFloat(mower.firmware_version);
+                        released_at = "1970-01-01";
+                        json = JSON.stringify({
+                            mandatory: false,
+                            product: {
+                                uuid: mower.uuid,
+                                version: parseFloat(mower.firmware_version),
+                                released_at: "1970-01-01",
+                                changelog: "Update only when new firmware is available.",
+                            },
+                        });
+                    }
+                } else if (is_same.val == is_set.val) {
+                    this.log.debug("Firmware is current...");
+                    return;
+                } else {
+                    this.log.warn("Error Firmware, please create a issues...");
                     return;
                 }
+            } else {
+                this.log.info("No new Firmware found, create dummy states...");
                 version = parseFloat(mower.firmware_version);
                 released_at = "1970-01-01";
                 json = JSON.stringify({
@@ -720,27 +794,27 @@ class Worx extends utils.Adapter {
                     },
                 });
             }
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
-                val: version,
-                ack: true,
-            });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
-                val: released_at,
-                ack: true,
-            });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
-                val: json,
-                ack: true,
-            });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
-                val: false,
-                ack: true,
-            });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
-                val: false,
-                ack: true,
-            });
         }
+        await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+            val: version,
+            ack: true,
+        });
+        await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+            val: released_at,
+            ack: true,
+        });
+        await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+            val: json,
+            ack: true,
+        });
+        await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+            val: false,
+            ack: true,
+        });
+        await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
+            val: false,
+            ack: true,
+        });
     }
 
     async apiRequest(path, withoutToken, method, data) {
