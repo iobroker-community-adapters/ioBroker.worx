@@ -6,8 +6,6 @@
 
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios");
-//const awsIot = require("aws-iot-device-sdk").device;
-const { mqtt, iot } = require("aws-iot-device-sdk-v2");
 // const qs = require("qs");
 const Json2iob = require("json2iob");
 const tough = require("tough-cookie");
@@ -56,6 +54,8 @@ class Worx extends utils.Adapter {
         this.session = {};
         this.initConnection = true;
         this.mqttC = null;
+        this.iot = null;
+        this.mqtt = null;
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
         this.createActivity = helper.createActivity;
@@ -110,6 +110,16 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        try {
+            this.iot = require("aws-iot-device-sdk-v2").iot;
+            this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
+            this.log.info(`Use new aws-iot-device-sdk-v2.`);
+        } catch (e) {
+            this.iot = require("aws-iot-device-sdk").device;
+            this.qos = { qos: 1 };
+            this.log.warn(e);
+            this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
+        }
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
         this.userAgent += this.version;
@@ -611,7 +621,12 @@ class Worx extends utils.Adapter {
                 this.session = response.data;
                 this.log.debug("Refresh token for MQTT-Connection");
                 this.updateMqttData(false);
-                this.start_mqtt();
+                if (this.mqtt) {
+                    this.start_mqtt();
+                } else {
+                    // @ts-ignore
+                    this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                }
             })
             .catch((error) => {
                 this.log.error(error);
@@ -882,61 +897,90 @@ class Worx extends utils.Adapter {
 
     async awsMqtt() {
         try {
-            this.mqttC && (await this.mqttC.disconnect());
             const uuid = this.randomClientid(8, 64) || uuidv4();
-            const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
             this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
             }
-            let config_builder;
-            try {
-                config_builder = iot.AwsIotMqttConnectionConfigBuilder.new_default_builder();
-            } catch (e) {
-                this.log.error(`error builder: ${e}`);
-                return null;
-            }
-            config_builder.with_clean_session(false);
-            config_builder.with_client_id(
-                `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/${category}/${uuid}`,
-            );
-            config_builder.with_endpoint(this.userData.mqtt_newendpoint);
-            //config_builder.with_port(443);
-            //config_builder.with_reconnect_max_sec(1000);
-            //config_builder.with_reconnect_min_sec(10000);
-            //config_builder.with_keep_alive_seconds(30);
-            config_builder.with_custom_authorizer(
-                `${category}?jwt=${encodeURIComponent(accessTokenParts[0])}.${encodeURIComponent(accessTokenParts[1])}`,
-                "",
-                encodeURIComponent(accessTokenParts[2]),
-                "",
-                category,
-                category,
-            ); // Port is default 443
-            let config;
-            try {
-                config = config_builder.build();
-            } catch (e) {
-                this.log.error(`error build: ${e}`);
-                return null;
-            }
-            let client;
-            try {
-                client = new mqtt.MqttClient();
-            } catch (e) {
-                this.log.error(`Please update the system! error client: ${e}`);
-                return null;
-            }
-            try {
-                return client.new_connection(config);
-            } catch (e) {
-                this.log.error(`Please update the system! error connection: ${e}`);
-                return null;
+            if (this.mqtt != null) {
+                this.mqttC && (await this.mqttC.disconnect());
+                const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
+                let config_builder;
+                try {
+                    config_builder = this.iot.AwsIotMqttConnectionConfigBuilder.new_default_builder();
+                } catch (e) {
+                    this.log.error(`error builder: ${e}`);
+                    return null;
+                }
+                config_builder.with_clean_session(false);
+                config_builder.with_client_id(
+                    `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/${category}/${uuid}`,
+                );
+                config_builder.with_endpoint(this.userData.mqtt_newendpoint);
+                //config_builder.with_port(443);
+                //config_builder.with_reconnect_max_sec(1000);
+                //config_builder.with_reconnect_min_sec(10000);
+                //config_builder.with_keep_alive_seconds(30);
+                config_builder.with_custom_authorizer(
+                    `${category}?jwt=${encodeURIComponent(accessTokenParts[0])}.${encodeURIComponent(accessTokenParts[1])}`,
+                    "",
+                    encodeURIComponent(accessTokenParts[2]),
+                    "",
+                    category,
+                    category,
+                ); // Port is default 443
+                let config;
+                try {
+                    config = config_builder.build();
+                } catch (e) {
+                    this.log.error(`error build: ${e}`);
+                    return null;
+                }
+                let client;
+                try {
+                    client = new this.mqtt.MqttClient();
+                    this.qos = this.mqtt.QoS.AtLeastOnce;
+                } catch (e) {
+                    this.log.error(`Please update the system! error client: ${e}`);
+                    return null;
+                }
+                try {
+                    return client.new_connection(config);
+                } catch (e) {
+                    this.log.error(`Please update the system! error connection: ${e}`);
+                    return null;
+                }
+            } else {
+                const headers = this.createWebsocketHeader();
+                let region = "eu-west-1";
+                const split_mqtt = this.userData.mqtt_newendpoint.split(".");
+                if (split_mqtt.length === 3) {
+                    region = split_mqtt[2];
+                }
+                return new this.iot({
+                    clientId: `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/iobroker/${uuid}`,
+                    username: "iobroker",
+                    protocol: "wss-custom-auth",
+                    host: this.userData.mqtt_newendpoint,
+                    region: region,
+                    customAuthHeaders: headers,
+                    baseReconnectTimeMs: 1000,
+                });
             }
         } catch (e) {
             this.log.error(`awsMqtt: ${e}`);
             return null;
         }
+    }
+
+    createWebsocketHeader() {
+        const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
+        const headers = {
+            "x-amz-customauthorizer-name": "com-worxlandroid-customer",
+            "x-amz-customauthorizer-signature": accessTokenParts[2],
+            jwt: `${accessTokenParts[0]}.${accessTokenParts[1]}`,
+        };
+        return headers;
     }
 
     async connectMqtt() {
@@ -947,13 +991,13 @@ class Worx extends utils.Adapter {
                 return;
             }
 
-            this.mqttC.on("message", async (topic, message, dup, qos, retain) => {
+            this.mqttC.on("message", async (topic, message) => {
                 let data;
                 try {
                     const json = Buffer.from(message);
                     data = JSON.parse(json.toString("utf-8"));
                     this.log.debug(`Mower MQTT: ${JSON.stringify(data)}`);
-                    this.log.debug(`topic: ${topic} - dup: ${dup} - qos: ${qos} - retain: ${retain}`);
+                    this.log.debug(`topic: ${topic}`);
                 } catch (error) {
                     this.log.warn(`Cannot parse mqtt message ${message} for topic ${topic}`);
                     return;
@@ -1021,7 +1065,7 @@ class Worx extends utils.Adapter {
 
             this.mqttC.on("connect", async (session_present) => {
                 this.setMqttOnline(true);
-                this.log.debug(`MQTT connection: ${session_present}`);
+                this.log.debug(`MQTT connection: ${JSON.stringify(session_present)}`);
                 this.log.debug("MQTT connected to: " + this.userData.mqtt_newendpoint);
                 this.mqtt_blocking = 0;
                 this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
@@ -1034,7 +1078,8 @@ class Worx extends utils.Adapter {
                         this.log.info(`Connection interrupted!`);
                         return;
                     }
-                    await this.mqttC.subscribe(mower.mqtt_topics.command_out, mqtt.QoS.AtLeastOnce);
+                    // @ts-ignore
+                    await this.mqttC.subscribe(mower.mqtt_topics.command_out, this.qos);
                     this.log.debug(
                         `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
                     );
@@ -1067,8 +1112,9 @@ class Worx extends utils.Adapter {
                     this.log.info(`Request counter since adapter start: ${this.requestCounter}`);
                     this.log.info(`Reconnects since adapter start: ${this.reconnectCounter}`);
                     this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
-
-                    this.mqttC && (await this.mqttC.disconnect());
+                    if (this.mqtt) {
+                        this.mqttC && (await this.mqttC.disconnect());
+                    }
                     this.mqttC = null;
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
                     this.mqtt_restart = null;
@@ -1091,7 +1137,9 @@ class Worx extends utils.Adapter {
                 this.log.info(`MQTT ERROR: ${error}`);
                 this.setMqttOnline(false);
             });
-            await this.mqttC.connect();
+            if (this.mqtt) {
+                await this.mqttC.connect();
+            }
         } catch (e) {
             this.log.info(`connectMqtt: ${e}`);
             this.setState("info.connection", false, true);
@@ -1105,7 +1153,7 @@ class Worx extends utils.Adapter {
     }
 
     updateMqttData(newToken) {
-        if (this.mqttC != null && !newToken) {
+        if (this.mqttC != null && !newToken && this.mqtt) {
             const statistic = this.mqttC.getOperationalStatistics();
             if (statistic) {
                 this.log.debug(`getQueueStatistics: ${JSON.stringify(statistic)}`);
@@ -1181,12 +1229,14 @@ class Worx extends utils.Adapter {
                     await this.lastCommand(this.mqtt_response_check, "request", data.id, command);
                     this.log.debug(`this.mqtt_response_check:  ${JSON.stringify(this.mqtt_response_check)}`);
                     this.log.debug(`sendData:  ${message}`);
-                    this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
+                    // @ts-ignore
+                    this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos);
                 } catch (error) {
                     this.log.info(`sendMessage normal:  ${error}`);
                     this.log.debug(`sendData normal:  ${JSON.stringify(message)}`);
                     try {
-                        this.mqttC.publish(mower.mqtt_topics.command_in, message, mqtt.QoS.AtLeastOnce);
+                        // @ts-ignore
+                        this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos);
                     } catch (e) {
                         this.log.warn(`Cannot send message ${message}.`);
                         this.mqttC = null;
@@ -1545,7 +1595,12 @@ class Worx extends utils.Adapter {
             }
             this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
             try {
-                this.mqttC && this.mqttC.disconnect();
+                if (this.mqtt != null) {
+                    this.mqttC && this.mqttC.disconnect();
+                } else {
+                    // @ts-ignore
+                    this.mqttC && this.mqttC.end();
+                }
             } catch (e) {
                 this.mqttC = null;
             }

@@ -50,6 +50,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Added head light
 -   (Lucky-ESA) Added cut over slabs
 -   (Lucky-ESA) Node 18 required
+-   (Lucky-ESA) Catch aws_cer error and use old mqtt connection
 
 ### 2.3.4 (2023-10-19)
 
