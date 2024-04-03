@@ -1831,7 +1831,7 @@ class Worx extends utils.Adapter {
                         const msg = this.modules[mower.serial_number].DF;
                         msg.fh = state.val ? 1 : 0;
                         this.sendMessage(`{"modules":{"DF":${JSON.stringify(msg)}}}`, mower.serial_number, id);
-                    } else if (command === "h" && this.modules[mower.serial_number].EA) {
+                    } else if (command === "height" && this.modules[mower.serial_number].EA) {
                         const msg = this.modules[mower.serial_number].EA;
                         msg.h = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         if (msg.h < 30 || msg.h > 60) {
