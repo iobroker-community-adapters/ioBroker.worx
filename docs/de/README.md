@@ -117,15 +117,16 @@
 
 -   EA Modul (nur Vision)
 
-    -   `EA.h`: Höheneinstellung Mähwerk von 30-60 in 5 Schritte
+    -   `EA.height`: Höheneinstellung Mähwerk von 30-60 in 5 Schritte
 
 -   HL Modul (nur Vision)
-    -   `HL.HL_Status`: Status Scheinwerfer
-    -   `HL.hl`: Scheinwerfer ein = 1/ausschalten = 0
+    -   `HL.status`: Status Scheinwerfer
+    -   `HL.enabled`: Scheinwerfer installiert ja = 1/nein = 0
+    -   `HL.on`: Tageslicht = 0/Dunkelheit = 1
 
 ![Module img/module.png](../en/img/module.png)
 ![Module img/module_ea.png](../en/img/module_ea.png)
-![Module img/module_ea.png](../en/img/module_hl.png)
+![Module img/module_hl.png](../en/img/module_hl.png)
 
 ### mower (Draht und Vision)
 

@@ -117,15 +117,16 @@
 
 -   EA Module (Vision only)
 
-    -   `EA.h`: Height adjustment of mower deck from 30-60 in 5 mm increments
+    -   `EA.height`: Height adjustment of mower deck from 30-60 in 5 mm increments
 
 -   HL Module (Vision only)
-    -   `HL.HL_Status`: Status head light
-    -   `HL.hl`: Head light on = 1/off = 0
+    -   `HL.status`: Status head light
+    -   `HL.enabled`: Head light installed yes = 1/no = 0
+    -   `HL.on`: Daylight = 0/Darkness = 1
 
 ![Module img/module.png](img/module.png)
 ![Module img/module_ea.png](img/module_ea.png)
-![Module img/module_ea.png](img/module_hl.png)
+![Module img/module_hl.png](img/module_hl.png)
 
 ### mower (Wire and Vision)
 
