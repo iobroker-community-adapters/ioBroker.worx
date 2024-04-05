@@ -50,6 +50,7 @@ class Worx extends utils.Adapter {
         this.poll_check_time = 0;
         this.requestCounter = 0;
         this.reconnectCounter = 0;
+        this.rainCounterInterval = {};
         this.requestCounterStart = Date.now();
         this.session = {};
         this.initConnection = true;
@@ -313,6 +314,10 @@ class Worx extends utils.Adapter {
                 this.log.debug(JSON.stringify(res.data));
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
+                    this.rainCounterInterval[device.serial_number] = {};
+                    this.rainCounterInterval[device.serial_number]["interval"] = null;
+                    this.rainCounterInterval[device.serial_number]["count"] = 0;
+                    this.rainCounterInterval[device.serial_number]["last"] = 0;
                     const id = device.serial_number;
                     this.vision[device.uuid] = device.serial_number;
                     this.modules[device.serial_number] = {};
@@ -377,7 +382,9 @@ class Worx extends utils.Adapter {
             }
         }
     }
+
     async createActivityLogStates(mower, firstStart) {
+        // TODO Check last start rain counter
         if (mower && mower.serial_number) {
             //first start while get devices
             const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
@@ -422,6 +429,46 @@ class Worx extends utils.Adapter {
                 this.loadActivity[device.serial_number] = false;
             } else {
                 this.loadActivity[device.serial_number] = false;
+            }
+        }
+    }
+
+    async checkRainStatus() {
+        for (const mower of this.deviceArray) {
+            if (mower && mower.serial_number) {
+                if (
+                    this.rainCounterInterval[mower.serial_number] &&
+                    this.rainCounterInterval[mower.serial_number]["interval"]
+                ) {
+                    const status = await this.getStateAsync(`${mower.serial_number}.mower.online`);
+                    if (!status || status.val == null || !status.val) {
+                        this.stopRainCounter(mower.serial_number);
+                        this.setRainCounter(mower.serial_number, 0);
+                        continue;
+                    }
+                    const now = new Date();
+                    const date = new Date(status.ts);
+                    const diff = now.getTime() - date.getTime();
+                    const diff_hour = Math.ceil(diff / (1000 * 60 * 60));
+                    if (diff_hour > 12) {
+                        this.stopRainCounter(mower.serial_number);
+                        this.setRainCounter(mower.serial_number, 0);
+                        continue;
+                    }
+                    const waitRain = await this.getStateAsync(`${mower.serial_number}.mower.waitRainCountdown`);
+                    const waitSensor = await this.getStateAsync(`${mower.serial_number}.mower.waitRainSensor`);
+                    if (
+                        !waitRain ||
+                        waitRain.val == null ||
+                        !waitSensor ||
+                        waitSensor.val == null ||
+                        waitSensor.val == 1
+                    ) {
+                        this.stopRainCounter(mower.serial_number);
+                        this.setRainCounter(mower.serial_number, 0);
+                        continue;
+                    }
+                }
             }
         }
     }
@@ -600,6 +647,7 @@ class Worx extends utils.Adapter {
 
     async refreshToken() {
         this.log.debug("Refresh token");
+        this.checkRainStatus();
         await this.requestClient({
             url: this.clouds[this.config.server].loginUrl + "oauth/token?",
             method: "post",
@@ -620,7 +668,7 @@ class Worx extends utils.Adapter {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
                 this.log.debug("Refresh token for MQTT-Connection");
-                this.updateMqttData(false);
+                this.updateMqttData(true);
                 if (this.mqtt) {
                     this.start_mqtt();
                 } else {
@@ -636,7 +684,7 @@ class Worx extends utils.Adapter {
 
     async createAdditionalDeviceStates(mower, fw_json) {
         if (!mower || !mower.last_status || !mower.last_status.payload) {
-            this.log.debug("No payload found");
+            this.log.debug(`No payload found for device ${mower.serial_number}`);
             return;
         }
         const status = mower.last_status.payload;
@@ -1540,6 +1588,27 @@ class Worx extends utils.Adapter {
         return returnObject;
     }
 
+    /**
+     * @param {string} id
+     */
+    stopRainCounter(id) {
+        this.clearInterval(this.rainCounterInterval[id]["interval"]);
+        this.rainCounterInterval[id]["interval"] = null;
+        this.rainCounterInterval[id]["count"] = 0;
+        this.rainCounterInterval[id]["last"] = 0;
+    }
+
+    /**
+     * @param {string} id
+     * @param {number} value
+     */
+    async setRainCounter(id, value) {
+        await this.setStateAsync(`${id}.mower.waitRainCountdown`, {
+            val: value,
+            ack: true,
+        });
+    }
+
     getCodeChallenge() {
         let hash = "";
         let result = "";
@@ -1592,6 +1661,9 @@ class Worx extends utils.Adapter {
             this.updateFW && this.clearInterval(this.updateFW);
             for (const mower of this.deviceArray) {
                 this.pingInterval[mower.serial_number] && this.clearInterval(this.pingInterval[mower.serial_number]);
+                this.rainCounterInterval[mower.serial_number] &&
+                    this.rainCounterInterval[mower.serial_number]["interval"] &&
+                    this.clearInterval(this.rainCounterInterval[mower.serial_number]["interval"]);
             }
             this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
             try {
@@ -1818,7 +1890,7 @@ class Worx extends utils.Adapter {
                     } else if (command === "cutOverSlabs") {
                         const msg = {};
                         msg.slab = state.val;
-                        this.sendMessage(`{"vis":${msg}}`, mower.serial_number, id);
+                        this.sendMessage(`{"vis":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "OLMSwitch_Cutting" && this.modules[mower.serial_number].DF) {
                         const msg = this.modules[mower.serial_number].DF;
                         msg.cut = state.val ? 1 : 0;
