@@ -1889,7 +1889,7 @@ class Worx extends utils.Adapter {
                         this.sendMessage(`{"al":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "cutOverSlabs") {
                         const msg = {};
-                        msg.slab = state.val;
+                        msg.slab = state.val ? 1 : 0;
                         this.sendMessage(`{"vis":${JSON.stringify(msg)}}`, mower.serial_number, id);
                     } else if (command === "OLMSwitch_Cutting" && this.modules[mower.serial_number].DF) {
                         const msg = this.modules[mower.serial_number].DF;
