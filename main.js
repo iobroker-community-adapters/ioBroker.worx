@@ -647,7 +647,7 @@ class Worx extends utils.Adapter {
 
     async refreshToken() {
         this.log.debug("Refresh token");
-        this.checkRainStatus();
+        //this.checkRainStatus();
         await this.requestClient({
             url: this.clouds[this.config.server].loginUrl + "oauth/token?",
             method: "post",
