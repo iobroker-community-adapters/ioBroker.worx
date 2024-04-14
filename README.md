@@ -47,11 +47,12 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Catch publish crash
 -   (Lucky-ESA) Added for Vision electric height adjustment
 -   (Lucky-ESA) Added for Vision new calendar
--   (Lucky-ESA) Added head light
--   (Lucky-ESA) Added cut over slabs
+-   (Lucky-ESA) Added Vision head light
+-   (Lucky-ESA) Added Vision cut over slabs
 -   (Lucky-ESA) Node 18 required
 -   (Lucky-ESA) Catch aws_cer error and use old mqtt connection
 -   (Lucky-ESA) Added rain wait countdown
+-   (Lucky-ESA) Added Vision Multi Zone
 
 ### 2.3.4 (2023-10-19)
 

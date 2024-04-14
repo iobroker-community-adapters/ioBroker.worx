@@ -298,9 +298,18 @@
 
 ### Additionally for vision
 
--   Area
-    -   `rfid`: Total Areas (readonly)
-    -   `startSequence`: Multizone JSON (Vision/changeable) [Example](#example-blockly-startsequence-vison)
+-   MultiZone
+    -   `multiZone.passages.passage_01.tagIdFrom`: RFID id of z1 - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.passages.passage_01.tagIdTo`: RFID id of z2 - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.passages.passage_01.zoneIdFrom`: Zone from (must z1 < z2) - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.passages.passage_01.zoneIdTo`: Zone closed (must z2 > z1) - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.zones.zone_1.borderDistance`: Edge cut in mm - allowed 10mm, 15mm and 20mm - Set with Blockly without delay - Change is written in `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.zones.zone_1.chargingStation`: 1 If the charging station is found in this zone. 0 for no charging station - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.zones.zone_1.cutOverBorder`: 1 to drive over plates if they are detected, otherwise 0. Different values ​​per zone are not permitted - Set with Blockly without delay - Change is written to `multiZone.multiZone` (Vision /changeable)
+    -   `multiZone.zones.zone_1.zone_id`: Numbering - Start with 1 - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
+    -   `multiZone.rfid`: Total Areas (readonly)
+    -   `multiZone.multiZone`: Multizone JSON (Vision/changeable) [Example](#example-blockly-startsequence-vision)
+    -   `multiZone.sendMultiZoneJson`: Send changes to Worx with a delay of 1.1 seconds (vision/changeable)
 
 Example:
 

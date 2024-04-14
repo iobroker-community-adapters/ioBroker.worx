@@ -473,6 +473,167 @@ class Worx extends utils.Adapter {
         }
     }
 
+    /**
+     * @param {object} mower
+     * @param {boolean} first
+     */
+    async evaluateVisionMultiZone(mower, first) {
+        const all_zones = await this.getObjectListAsync({
+            startkey: `${this.namespace}.${mower.serial_number}.multiZone.zones.`,
+            endkey: `${this.namespace}.${mower.serial_number}.multiZone.zones.\u9999`,
+        });
+        const all_passages = await this.getObjectListAsync({
+            startkey: `${this.namespace}.${mower.serial_number}.multiZone.passages.`,
+            endkey: `${this.namespace}.${mower.serial_number}.multiZone.passages.\u9999`,
+        });
+        const count_zone_obj = all_zones.rows.length / 5;
+        const count_passage_obj = all_passages.rows.length / 5;
+        this.log.debug(`Count Zone: ${count_zone_obj} - Count Passage: ${count_passage_obj}`);
+        this.modules[mower.serial_number]["mz"] = mower.last_status.payload.cfg.mz;
+        const count_zone_current = mower.last_status.payload.cfg.mz.s.length;
+        const count_passages_current = mower.last_status.payload.cfg.mz.p.length;
+        this.log.debug(`Count Receive Zone: ${count_zone_current} - Count Receive Passage: ${count_passages_current}`);
+        let count_zone = 1;
+        if (
+            mower.last_status &&
+            mower.last_status.payload &&
+            mower.last_status.payload.cfg &&
+            mower.last_status.payload.cfg.mz &&
+            mower.last_status.payload.cfg.mz.s != null &&
+            mower.last_status.payload.cfg.mz.s.length > 0 &&
+            count_zone_current != count_zone_obj
+        ) {
+            if (first) {
+                this.log.info(`Found Zone, Create Zones State`);
+            }
+            count_zone = 1;
+            for (let a = 1; a <= mower.last_status.payload.cfg.mz.s.length; a++) {
+                const state_value = JSON.parse(JSON.stringify(objects.zones[0]).replace(/%s/gi, count_zone.toString()));
+                await this.createDataPoint(
+                    `${mower.serial_number}.multiZone.zones.${state_value._id}${count_zone}`,
+                    state_value.common,
+                    state_value.type,
+                    state_value.native,
+                );
+                for (const o of objects.zones_states) {
+                    await this.createDataPoint(
+                        `${mower.serial_number}.multiZone.zones.zone_${count_zone}.${o._id}`,
+                        o.common,
+                        o.type,
+                        o.native,
+                    );
+                }
+                ++count_zone;
+            }
+        } else {
+            if (first) {
+                this.log.info(`No zones found`);
+            }
+        }
+        if (count_zone_obj > count_zone_current) {
+            for (let a = count_zone_current + 1; a <= count_zone_obj; a++) {
+                this.log.debug(`Delete Zone: ${mower.serial_number}.multiZone.zones.zone_${a}`);
+                await this.delObjectAsync(`${mower.serial_number}.multiZone.zones.zone_${a}`, {
+                    recursive: true,
+                });
+            }
+        }
+        if (
+            mower.last_status &&
+            mower.last_status.payload &&
+            mower.last_status.payload.cfg &&
+            mower.last_status.payload.cfg.mz &&
+            mower.last_status.payload.cfg.mz.p != null &&
+            mower.last_status.payload.cfg.mz.p.length > 0 &&
+            count_passages_current != count_passage_obj
+        ) {
+            if (first) {
+                this.log.info(`Found Passages, Create Passages State`);
+            }
+            count_zone = 1;
+            for (let a = 1; a <= mower.last_status.payload.cfg.mz.p.length; a++) {
+                const state_value = JSON.parse(
+                    JSON.stringify(objects.passage[0]).replace(/%s/gi, count_zone.toString()),
+                );
+                await this.createDataPoint(
+                    `${mower.serial_number}.multiZone.passages.${state_value._id}${("0" + count_zone).slice(-2)}`,
+                    state_value.common,
+                    state_value.type,
+                    state_value.native,
+                );
+                for (const o of objects.passage_states) {
+                    await this.createDataPoint(
+                        `${mower.serial_number}.multiZone.passages.passage_${("0" + count_zone).slice(-2)}.${o._id}`,
+                        o.common,
+                        o.type,
+                        o.native,
+                    );
+                }
+                ++count_zone;
+            }
+        } else {
+            if (first) {
+                this.log.info(`No Passages found`);
+            }
+        }
+        if (count_passage_obj > count_passages_current) {
+            for (let a = count_passages_current + 1; a <= count_passage_obj; a++) {
+                this.log.debug(
+                    `Delete Passage: ${mower.serial_number}.multiZone.passages.passage_${("0" + a).slice(-2)}`,
+                );
+                await this.delObjectAsync(`${mower.serial_number}.multiZone.passages.passage_${("0" + a).slice(-2)}`, {
+                    recursive: true,
+                });
+            }
+        }
+        if (!first) {
+            this.log.debug(`Write multi zone: ${JSON.stringify(mower.last_status.payload.cfg.mz)}`);
+            if (count_zone_current > 0) {
+                for (let a = 1; a <= count_zone_current; a++) {
+                    const array_id = a - 1;
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.zone_id`, {
+                        val: mower.last_status.payload.cfg.mz.s[array_id].id,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.chargingStation`, {
+                        val: mower.last_status.payload.cfg.mz.s[array_id].c,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.borderDistance`, {
+                        val: mower.last_status.payload.cfg.mz.s[array_id].cfg.cut.bd,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.cutOverBorder`, {
+                        val: mower.last_status.payload.cfg.mz.s[array_id].cfg.cut.ob,
+                        ack: true,
+                    });
+                }
+            }
+            if (count_passages_current > 0) {
+                for (let a = 1; a <= count_passages_current; a++) {
+                    const slot = ("0" + a).slice(-2);
+                    const array_id = a - 1;
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.zoneIdFrom`, {
+                        val: mower.last_status.payload.cfg.mz.p[array_id].z1,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.zoneIdTo`, {
+                        val: mower.last_status.payload.cfg.mz.p[array_id].z2,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.tagIdFrom`, {
+                        val: mower.last_status.payload.cfg.mz.p[array_id].t1,
+                        ack: true,
+                    });
+                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.tagIdTo`, {
+                        val: mower.last_status.payload.cfg.mz.p[array_id].t2,
+                        ack: true,
+                    });
+                }
+            }
+        }
+    }
+
     async updateFirmware() {
         for (const mower of this.deviceArray) {
             const fw_json = await this.apiRequest(`product-items/${mower.serial_number}/firmware-upgrade`, false);
@@ -513,7 +674,7 @@ class Worx extends utils.Adapter {
                                 mandatory: false,
                                 product: {
                                     uuid: mower.uuid,
-                                    version: parseFloat(mower.firmware_version),
+                                    version: mower.firmware_version,
                                     released_at: "1970-01-01",
                                     changelog: "Update only when new firmware is available.",
                                 },
@@ -534,7 +695,7 @@ class Worx extends utils.Adapter {
                         mandatory: false,
                         product: {
                             uuid: mower.uuid,
-                            version: parseFloat(mower.firmware_version),
+                            version: mower.firmware_version,
                             released_at: "1970-01-01",
                             changelog: "Update only when new firmware is available.",
                         },
@@ -830,7 +991,7 @@ class Worx extends utils.Adapter {
                             mandatory: false,
                             product: {
                                 uuid: mower.uuid,
-                                version: parseFloat(mower.firmware_version),
+                                version: mower.firmware_version,
                                 released_at: "1970-01-01",
                                 changelog: "Update only when new firmware is available.",
                             },
@@ -851,7 +1012,7 @@ class Worx extends utils.Adapter {
                     mandatory: false,
                     product: {
                         uuid: mower.uuid,
-                        version: parseFloat(mower.firmware_version),
+                        version: mower.firmware_version,
                         released_at: "1970-01-01",
                         changelog: "Update only when new firmware is available.",
                     },
@@ -1702,6 +1863,14 @@ class Worx extends utils.Adapter {
                 "enabled_time",
                 "add_timeslot",
                 "oneTimeZones",
+                "zone_id",
+                "chargingStation",
+                "borderDistance",
+                "cutOverBorder",
+                "zoneIdFrom",
+                "zoneIdTo",
+                "tagIdFrom",
+                "tagIdTo",
             ];
             const command = id.split(".").pop();
             if (command == null) return;
@@ -1784,11 +1953,7 @@ class Worx extends utils.Adapter {
                         const area = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.changeMowerArea(id, area, mower);
                     } else if (command === "startSequence") {
-                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
-                            this.startSequencesVision(id, state.val, mower);
-                        } else {
-                            this.startSequences(id, state.val, mower);
-                        }
+                        this.startSequences(id, state.val, mower);
                     } else if (command === "manuell_update") {
                         const lastTime = await this.getStateAsync(`${mower.serial_number}.activityLog.last_update`);
                         if (state.val && lastTime && lastTime.val && Date.now() - Number(lastTime.val) > not_allowed) {
@@ -1932,6 +2097,25 @@ class Worx extends utils.Adapter {
                         });
                     } else if (command === "firmware_update_start" && state.val) {
                         this.checkfirmware(mower);
+                    } else if (command === "multiZone" && state.val) {
+                        await this.setStateAsync(id, {
+                            ack: true,
+                        });
+                    } else if (command === "sendMultiZoneJson" && state.val) {
+                        this.startSequencesVision(id, state.val, mower, true);
+                    } else if (
+                        command === "zone_id" ||
+                        command === "chargingStation" ||
+                        command === "borderDistance" ||
+                        command === "cutOverBorder" ||
+                        command === "zoneIdFrom" ||
+                        command === "zoneIdTo" ||
+                        command === "tagIdFrom" ||
+                        command === "tagIdTo"
+                    ) {
+                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                            this.startSequencesVision(id, state.val, mower, false);
+                        }
                     } else if (
                         (command === "reset_blade_time_approved" ||
                             command === "reset_battery_time_approved" ||
@@ -2027,103 +2211,161 @@ class Worx extends utils.Adapter {
      * @param {string} id
      * @param {object} state
      * @param {object} mower
+     * @param {boolean} send
      */
-    startSequencesVision(id, state, mower) {
-        let mz = {};
-        try {
-            mz = JSON.parse(state);
-        } catch (e) {
-            this.log.warn(`Cannot parse json startSequencesVision: ${JSON.stringify(state)}`);
+    async startSequencesVision(id, state, mower, send) {
+        const load_mz = await this.getStateAsync(`${mower.serial_number}.multiZone.multiZone`);
+        if (!load_mz || !load_mz.val) {
+            this.log.warn(`Cannot load json multiZone: ${JSON.stringify(load_mz)}`);
             return;
         }
-        let isOK = true;
-        let first = true;
-        let isCS = 0;
-        let isBC = 0;
-        let check_id = 1;
-        if (mz) {
-            if (mz.p && Array.isArray(mz.p)) {
-                if (mz.s && Array.isArray(mz.s)) {
-                    for (const id of mz.s) {
-                        if (
-                            id.id == null ||
-                            id.c == null ||
-                            !id.cfg ||
-                            !id.cfg.cut ||
-                            id.cfg.cut.bd == null ||
-                            id.cfg.cut.ob == null
-                        ) {
-                            isOK = false;
-                            this.log.warn(`startsequenceVision: Missing key - ${JSON.stringify(state)}`);
-                            continue;
-                        }
-                        if (first) {
-                            first = false;
+        let mz = {};
+        load_mz.val = typeof load_mz.val === "string" ? load_mz.val : load_mz.val.toString();
+        try {
+            mz = JSON.parse(load_mz.val);
+        } catch (e) {
+            this.log.warn(`Cannot parse json multiZone: ${JSON.stringify(load_mz)}`);
+            return;
+        }
+        if (send) {
+            let isOK = true;
+            let first = true;
+            let isCS = 0;
+            let isBC = 0;
+            let check_id = 1;
+            if (mz) {
+                if (mz.p && Array.isArray(mz.p)) {
+                    if (mz.s && Array.isArray(mz.s)) {
+                        for (const id of mz.s) {
+                            if (
+                                id.id == null ||
+                                id.c == null ||
+                                !id.cfg ||
+                                !id.cfg.cut ||
+                                id.cfg.cut.bd == null ||
+                                id.cfg.cut.ob == null
+                            ) {
+                                isOK = false;
+                                this.log.warn(`multiZoneVision: Missing key - ${JSON.stringify(state)}`);
+                                continue;
+                            }
+                            if (first) {
+                                first = false;
+                                isBC = id.cfg.cut.ob;
+                            }
+                            if (id.id > check_id) {
+                                isOK = false;
+                                this.log.warn(
+                                    `multiZoneVision: Key s is sorted incorrectly - ${JSON.stringify(state)}`,
+                                );
+                            }
+                            if (id.cfg.cut.bd != 100 && id.cfg.cut.bd != 150 && id.cfg.cut.bd != 200) {
+                                isOK = false;
+                                this.log.warn(
+                                    `multiZoneVision: BorderCut - ${JSON.stringify(
+                                        id.cfg.cut.bd,
+                                    )} is not allowed. Allowed is 100, 150 and 200!`,
+                                );
+                            } else if (id.cfg.cut.ob != isBC) {
+                                isOK = false;
+                                this.log.warn(
+                                    `multiZoneVision: Different "go over slabs" per-zone is not allowed - ${JSON.stringify(
+                                        state,
+                                    )}`,
+                                );
+                            } else if (id.cfg.cut.ob > 1) {
+                                isOK = false;
+                                this.log.warn(
+                                    `multiZoneVision: Key ob greather 1 is not allowed - ${JSON.stringify(
+                                        id.cfg.cut.ob,
+                                    )}`,
+                                );
+                            } else if (id.c > 1) {
+                                isOK = false;
+                                this.log.warn(
+                                    `multiZoneVision: Key c greather 1 is not allowed - ${JSON.stringify(id.c)}`,
+                                );
+                            } else if (id.c == 1 && isCS == 0) {
+                                isCS = 1;
+                            } else if (id.c > 0 && isCS == 1) {
+                                isOK = false;
+                                this.log.warn(
+                                    `multiZoneVision: Charging station only possible in one zone - ${JSON.stringify(
+                                        state,
+                                    )}`,
+                                );
+                            }
+                            ++check_id;
                             isBC = id.cfg.cut.ob;
+                            if (!isOK) {
+                                break;
+                            }
                         }
-                        if (id.id > check_id) {
-                            isOK = false;
-                            this.log.warn(
-                                `startsequenceVision: Key s is sorted incorrectly - ${JSON.stringify(state)}`,
-                            );
-                        }
-                        if (id.cfg.cut.bd != 100 && id.cfg.cut.bd != 150 && id.cfg.cut.bd != 200) {
-                            isOK = false;
-                            this.log.warn(
-                                `startsequenceVision: BorderCut - ${JSON.stringify(
-                                    id.cfg.cut.bd,
-                                )} is not allowed. Allowed is 100, 150 and 200!`,
-                            );
-                        } else if (id.cfg.cut.ob != isBC) {
-                            isOK = false;
-                            this.log.warn(
-                                `startsequenceVision: Different "go over slabs" per-zone is not allowed - ${JSON.stringify(
-                                    state,
-                                )}`,
-                            );
-                        } else if (id.cfg.cut.ob > 1) {
-                            isOK = false;
-                            this.log.warn(
-                                `startsequenceVision: Key ob greather 1 is not allowed - ${JSON.stringify(
-                                    id.cfg.cut.ob,
-                                )}`,
-                            );
-                        } else if (id.c > 1) {
-                            isOK = false;
-                            this.log.warn(
-                                `startsequenceVision: Key c greather 1 is not allowed - ${JSON.stringify(id.c)}`,
-                            );
-                        } else if (id.c == 1 && isCS == 0) {
-                            isCS = 1;
-                        } else if (id.c > 0 && isCS == 1) {
-                            isOK = false;
-                            this.log.warn(
-                                `startsequenceVision: Charging station only possible in one zone - ${JSON.stringify(
-                                    state,
-                                )}`,
-                            );
-                        }
-                        ++check_id;
-                        isBC = id.cfg.cut.ob;
-                        if (!isOK) {
-                            break;
-                        }
+                    } else {
+                        this.log.warn(`multiZoneVision: Missing key s - ${JSON.stringify(state)}`);
+                        isOK = false;
                     }
                 } else {
-                    this.log.warn(`startsequenceVision: Missing key s - ${JSON.stringify(state)}`);
+                    this.log.warn(`multiZoneVision: Missing key p - ${JSON.stringify(state)}`);
                     isOK = false;
                 }
             } else {
-                this.log.warn(`startsequenceVision: Missing key p - ${JSON.stringify(state)}`);
+                this.log.warn(`multiZoneVision: Missing key mz - ${JSON.stringify(state)}`);
                 isOK = false;
             }
+            if (isOK) {
+                this.log.debug(`multiZoneVision send: - ${JSON.stringify(state)}`);
+                this.sendMessage(`{"mz":${JSON.stringify(mz)}}`, mower.serial_number, id);
+            }
+            await this.setStateAsync(id, {
+                val: false,
+                ack: true,
+            });
         } else {
-            this.log.warn(`startsequenceVision: Missing key mz - ${JSON.stringify(state)}`);
-            isOK = false;
-        }
-        if (isOK) {
-            this.log.debug(`startsequenceVision send: - ${JSON.stringify(state)}`);
-            this.sendMessage(`{"mz":${JSON.stringify(mz)}}`, mower.serial_number, id);
+            await this.setStateAsync(id, {
+                ack: true,
+            });
+            const third = id.split(".")[4];
+            const att = third == "zones" ? "s" : "p";
+            const second = id.split(".")[5];
+            let array_pos = parseInt(second.split("_")[1]);
+            --array_pos;
+            const command = id.split(".").pop();
+            if (mz && mz[att] && mz[att][array_pos]) {
+                switch (command) {
+                    case "zone_id":
+                        mz[att][array_pos].id = state;
+                        break;
+                    case "chargingStation":
+                        mz[att][array_pos].c = state;
+                        break;
+                    case "borderDistance":
+                        mz[att][array_pos].cfg.cut.bd = state;
+                        break;
+                    case "cutOverBorder":
+                        mz[att][array_pos].cfg.cut.ob = state;
+                        break;
+                    case "zoneIdFrom":
+                        mz[att][array_pos].z1 = state;
+                        break;
+                    case "zoneIdTo":
+                        mz[att][array_pos].z2 = state;
+                        break;
+                    case "tagIdFrom":
+                        mz[att][array_pos].t1 = state;
+                        break;
+                    case "tagIdTo":
+                        mz[att][array_pos].t2 = state;
+                        break;
+                    default:
+                        this.log.warn(`Cannot found command ${command}`);
+                        return;
+                }
+                await this.setStateAsync(`${mower.serial_number}.multiZone.multiZone`, {
+                    val: JSON.stringify(mz),
+                    ack: true,
+                });
+            }
         }
     }
 

@@ -298,9 +298,18 @@
 
 ### Zusätzlich Vision Infos
 
--   Area
-    -   `rfid`: Anzahl Zonen (nur lesen)
-    -   `startSequence`: Multizone JSON (Vision/änderbar) [Beispiel](#beispiel-blockly-startsequence-vison)
+-   MultiZone
+    -   `multiZone.passages.passage_01.tagIdFrom`: RFID id von z1 - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.passages.passage_01.tagIdTo`: RFID id von z2 - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.passages.passage_01.zoneIdFrom`: Zone von (muss z1 < z2) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.passages.passage_01.zoneIdTo`: Zone zu (muss z2 > z1) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.zones.zone_1.borderDistance`: Kantenschnitt in mm - erlaubt 10mm, 15mm und 20mm - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.zones.zone_1.chargingStation`: 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.zones.zone_1.cutOverBorder`: 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.Unterschiedliche Werte pro Zone sind nicht zulässig - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.zones.zone_1.zone_id`: Nummerierung - Start mit 1 - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
+    -   `multiZone.rfid`: Anzahl Zonen (nur lesen)
+    -   `multiZone.multiZone`: Multizone JSON (Vision/änderbar) [Beispiel](#beispiel-blockly-startsequence-vision)
+    -   `multiZone.sendMultiZoneJson`: Änderungen an Worx senden mit mit einer Verzögerung von 1,1 Sekunden (Vision/änderbar)
 
 Beispiel:
 
@@ -365,7 +374,7 @@ Standard ohne Zonen:
 }
 ```
 
-![Vision img/areas_vision.png](../en/img/areas_vision.png)
+![Vision img/areas_vision.png](img/areas_vision.png)
 
 -   Mower
     -   `log_improvement`: Protokoll zur Verbesserung an Worx senden de-/aktivieren (änderbar)
