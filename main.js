@@ -479,12 +479,12 @@ class Worx extends utils.Adapter {
      */
     async evaluateVisionMultiZone(mower, first) {
         const all_zones = await this.getObjectListAsync({
-            startkey: `${this.namespace}.${mower.serial_number}.multiZone.zones.`,
-            endkey: `${this.namespace}.${mower.serial_number}.multiZone.zones.\u9999`,
+            startkey: `${this.namespace}.${mower.serial_number}.multiZonen.zones.`,
+            endkey: `${this.namespace}.${mower.serial_number}.multiZonen.zones.\u9999`,
         });
         const all_passages = await this.getObjectListAsync({
-            startkey: `${this.namespace}.${mower.serial_number}.multiZone.passages.`,
-            endkey: `${this.namespace}.${mower.serial_number}.multiZone.passages.\u9999`,
+            startkey: `${this.namespace}.${mower.serial_number}.multiZonen.passages.`,
+            endkey: `${this.namespace}.${mower.serial_number}.multiZonen.passages.\u9999`,
         });
         const count_zone_obj = all_zones.rows.length / 5;
         const count_passage_obj = all_passages.rows.length / 5;
@@ -493,7 +493,7 @@ class Worx extends utils.Adapter {
         const count_zone_current = mower.last_status.payload.cfg.mz.s.length;
         const count_passages_current = mower.last_status.payload.cfg.mz.p.length;
         this.log.debug(`Count Receive Zone: ${count_zone_current} - Count Receive Passage: ${count_passages_current}`);
-        let count_zone = 1;
+        let count_zone = 0;
         if (
             mower.last_status &&
             mower.last_status.payload &&
@@ -507,17 +507,17 @@ class Worx extends utils.Adapter {
                 this.log.info(`Found Zone, Create Zones State`);
             }
             count_zone = 1;
-            for (let a = 1; a <= mower.last_status.payload.cfg.mz.s.length; a++) {
+            for (let a = 0; a <= mower.last_status.payload.cfg.mz.s.length - 1; a++) {
                 const state_value = JSON.parse(JSON.stringify(objects.zones[0]).replace(/%s/gi, count_zone.toString()));
                 await this.createDataPoint(
-                    `${mower.serial_number}.multiZone.zones.${state_value._id}${count_zone}`,
+                    `${mower.serial_number}.multiZonen.zones.${state_value._id}${a}`,
                     state_value.common,
                     state_value.type,
                     state_value.native,
                 );
                 for (const o of objects.zones_states) {
                     await this.createDataPoint(
-                        `${mower.serial_number}.multiZone.zones.zone_${count_zone}.${o._id}`,
+                        `${mower.serial_number}.multiZonen.zones.zone_${a}.${o._id}`,
                         o.common,
                         o.type,
                         o.native,
@@ -531,9 +531,9 @@ class Worx extends utils.Adapter {
             }
         }
         if (count_zone_obj > count_zone_current) {
-            for (let a = count_zone_current + 1; a <= count_zone_obj; a++) {
-                this.log.debug(`Delete Zone: ${mower.serial_number}.multiZone.zones.zone_${a}`);
-                await this.delObjectAsync(`${mower.serial_number}.multiZone.zones.zone_${a}`, {
+            for (let a = count_zone_current; a <= count_zone_obj - 1; a++) {
+                this.log.debug(`Delete Zone: ${mower.serial_number}.multiZonen.zones.zone_${a}`);
+                await this.delObjectAsync(`${mower.serial_number}.multiZonen.zones.zone_${a}`, {
                     recursive: true,
                 });
             }
@@ -551,19 +551,19 @@ class Worx extends utils.Adapter {
                 this.log.info(`Found Passages, Create Passages State`);
             }
             count_zone = 1;
-            for (let a = 1; a <= mower.last_status.payload.cfg.mz.p.length; a++) {
+            for (let a = 0; a <= mower.last_status.payload.cfg.mz.p.length - 1; a++) {
                 const state_value = JSON.parse(
                     JSON.stringify(objects.passage[0]).replace(/%s/gi, count_zone.toString()),
                 );
                 await this.createDataPoint(
-                    `${mower.serial_number}.multiZone.passages.${state_value._id}${("0" + count_zone).slice(-2)}`,
+                    `${mower.serial_number}.multiZonen.passages.${state_value._id}${("0" + a).slice(-2)}`,
                     state_value.common,
                     state_value.type,
                     state_value.native,
                 );
                 for (const o of objects.passage_states) {
                     await this.createDataPoint(
-                        `${mower.serial_number}.multiZone.passages.passage_${("0" + count_zone).slice(-2)}.${o._id}`,
+                        `${mower.serial_number}.multiZonen.passages.passage_${("0" + a).slice(-2)}.${o._id}`,
                         o.common,
                         o.type,
                         o.native,
@@ -577,11 +577,11 @@ class Worx extends utils.Adapter {
             }
         }
         if (count_passage_obj > count_passages_current) {
-            for (let a = count_passages_current + 1; a <= count_passage_obj; a++) {
+            for (let a = count_passages_current; a <= count_passage_obj - 1; a++) {
                 this.log.debug(
-                    `Delete Passage: ${mower.serial_number}.multiZone.passages.passage_${("0" + a).slice(-2)}`,
+                    `Delete Passage: ${mower.serial_number}.multiZonen.passages.passage_${("0" + a).slice(-2)}`,
                 );
-                await this.delObjectAsync(`${mower.serial_number}.multiZone.passages.passage_${("0" + a).slice(-2)}`, {
+                await this.delObjectAsync(`${mower.serial_number}.multiZonen.passages.passage_${("0" + a).slice(-2)}`, {
                     recursive: true,
                 });
             }
@@ -589,44 +589,42 @@ class Worx extends utils.Adapter {
         if (!first) {
             this.log.debug(`Write multi zone: ${JSON.stringify(mower.last_status.payload.cfg.mz)}`);
             if (count_zone_current > 0) {
-                for (let a = 1; a <= count_zone_current; a++) {
-                    const array_id = a - 1;
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.zone_id`, {
-                        val: mower.last_status.payload.cfg.mz.s[array_id].id,
+                for (let a = 0; a <= count_zone_current - 1; a++) {
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.zones.zone_${a}.zone_id`, {
+                        val: mower.last_status.payload.cfg.mz.s[a].id,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.chargingStation`, {
-                        val: mower.last_status.payload.cfg.mz.s[array_id].c,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.zones.zone_${a}.chargingStation`, {
+                        val: mower.last_status.payload.cfg.mz.s[a].c,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.borderDistance`, {
-                        val: mower.last_status.payload.cfg.mz.s[array_id].cfg.cut.bd,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.zones.zone_${a}.borderDistance`, {
+                        val: mower.last_status.payload.cfg.mz.s[a].cfg.cut.bd,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.zones.zone_${a}.cutOverBorder`, {
-                        val: mower.last_status.payload.cfg.mz.s[array_id].cfg.cut.ob,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.zones.zone_${a}.cutOverBorder`, {
+                        val: mower.last_status.payload.cfg.mz.s[a].cfg.cut.ob,
                         ack: true,
                     });
                 }
             }
             if (count_passages_current > 0) {
-                for (let a = 1; a <= count_passages_current; a++) {
+                for (let a = 0; a <= count_passages_current - 1; a++) {
                     const slot = ("0" + a).slice(-2);
-                    const array_id = a - 1;
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.zoneIdFrom`, {
-                        val: mower.last_status.payload.cfg.mz.p[array_id].z1,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.passages.passage_${slot}.zoneIdFrom`, {
+                        val: mower.last_status.payload.cfg.mz.p[a].z1,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.zoneIdTo`, {
-                        val: mower.last_status.payload.cfg.mz.p[array_id].z2,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.passages.passage_${slot}.zoneIdTo`, {
+                        val: mower.last_status.payload.cfg.mz.p[a].z2,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.tagIdFrom`, {
-                        val: mower.last_status.payload.cfg.mz.p[array_id].t1,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.passages.passage_${slot}.tagIdFrom`, {
+                        val: mower.last_status.payload.cfg.mz.p[a].t1,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZone.passages.passage_${slot}.tagIdTo`, {
-                        val: mower.last_status.payload.cfg.mz.p[array_id].t2,
+                    await this.setStateAsync(`${mower.serial_number}.multiZonen.passages.passage_${slot}.tagIdTo`, {
+                        val: mower.last_status.payload.cfg.mz.p[a].t2,
                         ack: true,
                     });
                 }
@@ -2097,11 +2095,11 @@ class Worx extends utils.Adapter {
                         });
                     } else if (command === "firmware_update_start" && state.val) {
                         this.checkfirmware(mower);
-                    } else if (command === "multiZone" && state.val) {
+                    } else if (command === "multiZonen" && state.val) {
                         await this.setStateAsync(id, {
                             ack: true,
                         });
-                    } else if (command === "sendMultiZoneJson" && state.val) {
+                    } else if (command === "sendmultiZonenJson" && state.val) {
                         this.startSequencesVision(id, state.val, mower, true);
                     } else if (
                         command === "zone_id" ||
@@ -2214,9 +2212,9 @@ class Worx extends utils.Adapter {
      * @param {boolean} send
      */
     async startSequencesVision(id, state, mower, send) {
-        const load_mz = await this.getStateAsync(`${mower.serial_number}.multiZone.multiZone`);
+        const load_mz = await this.getStateAsync(`${mower.serial_number}.multiZonen.multiZonen`);
         if (!load_mz || !load_mz.val) {
-            this.log.warn(`Cannot load json multiZone: ${JSON.stringify(load_mz)}`);
+            this.log.warn(`Cannot load json multiZonen: ${JSON.stringify(load_mz)}`);
             return;
         }
         let mz = {};
@@ -2224,7 +2222,7 @@ class Worx extends utils.Adapter {
         try {
             mz = JSON.parse(load_mz.val);
         } catch (e) {
-            this.log.warn(`Cannot parse json multiZone: ${JSON.stringify(load_mz)}`);
+            this.log.warn(`Cannot parse json multiZonen: ${JSON.stringify(load_mz)}`);
             return;
         }
         if (send) {
@@ -2328,21 +2326,31 @@ class Worx extends utils.Adapter {
             const third = id.split(".")[4];
             const att = third == "zones" ? "s" : "p";
             const second = id.split(".")[5];
-            let array_pos = parseInt(second.split("_")[1]);
-            --array_pos;
+            const array_pos = parseInt(second.split("_")[1]);
             const command = id.split(".").pop();
             if (mz && mz[att] && mz[att][array_pos]) {
                 switch (command) {
                     case "zone_id":
-                        mz[att][array_pos].id = state;
-                        break;
+                        return;
                     case "chargingStation":
+                        if (state != 0 && state != 1) {
+                            this.log.warn(`Only 0 or 1 possible - ${state}`);
+                            return;
+                        }
                         mz[att][array_pos].c = state;
                         break;
                     case "borderDistance":
+                        if (state != 50 && state != 100 && state != 150 && state != 200) {
+                            this.log.warn(`Possible distance is 50, 100, 150 and 200. - ${state}`);
+                            return;
+                        }
                         mz[att][array_pos].cfg.cut.bd = state;
                         break;
                     case "cutOverBorder":
+                        if (state != 0 && state != 1) {
+                            this.log.warn(`Only 0 or 1 possible - ${state}`);
+                            return;
+                        }
                         mz[att][array_pos].cfg.cut.ob = state;
                         break;
                     case "zoneIdFrom":
@@ -2361,7 +2369,7 @@ class Worx extends utils.Adapter {
                         this.log.warn(`Cannot found command ${command}`);
                         return;
                 }
-                await this.setStateAsync(`${mower.serial_number}.multiZone.multiZone`, {
+                await this.setStateAsync(`${mower.serial_number}.multiZonen.multiZonen`, {
                     val: JSON.stringify(mz),
                     ack: true,
                 });
