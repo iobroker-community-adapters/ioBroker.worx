@@ -138,6 +138,8 @@
 -   `batteryState`: Battery state in % (wire & Vision/readonly)
 -   `batteryTemperature`: Battery temperature in celsius (wire & Vision/readonly)
 -   `batteryVoltage`: Battery voltage in Volt (wire & Vision/readonly)
+-   `cameraStatus`: Status Camera 0=OK/1=Error (Vision/readonly)
+-   `cameraError`: Camera error 0=OK/1=Error (Vision/readonly)
 -   `cutOverSlabs`: Cut over slabs on = true / off = false (Vision/changeable)
 -   `direction`: Direction in grad (wire & Vision/readonly)
 -   `edgecut`: Start EdgeCut (wire & Vision/changeable)
@@ -229,6 +231,7 @@
 
 ![Mower img/mower_3.png](img/mower_3.png)
 
+-   `rfidStatus`: Status RF sensor 0=OK/1=Error (vision/read only)
 -   `sendCommand`: Send cmd command (wire & Vision/changeable)
 
 ```json
@@ -298,18 +301,17 @@
 
 ### Additionally for vision
 
--   MultiZone
-    -   `multiZone.passages.passage_01.tagIdFrom`: RFID id of z1 - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
-    -   `multiZone.passages.passage_01.tagIdTo`: RFID id of z2 - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
-    -   `multiZone.passages.passage_01.zoneIdFrom`: Zone from (must z1 < z2) - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
-    -   `multiZone.passages.passage_01.zoneIdTo`: Zone closed (must z2 > z1) - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
-    -   `multiZone.zones.zone_1.borderDistance`: Edge cut in mm - allowed 50mm, 100mm, 150mm and 20mm - Set with Blockly without delay - Change is written in `multiZone.multiZone` (vision/changeable)
-    -   `multiZone.zones.zone_1.chargingStation`: 1 If the charging station is found in this zone. 0 for no charging station - Set with Blockly without delay - Change is written to `multiZone.multiZone` (vision/changeable)
-    -   `multiZone.zones.zone_1.cutOverBorder`: 1 to drive over plates if they are detected, otherwise 0. Different values ​​per zone are not permitted - Set with Blockly without delay - Change is written to `multiZone.multiZone` (Vision /changeable)
-    -   `multiZone.zones.zone_1.zone_id`: Numbering - Start with 1 - (vision/readonly)
-    -   `multiZone.rfid`: Total RF (readonly)
-    -   `multiZone.multiZone`: Multizone JSON (Vision/changeable) [Example](#example-blockly-startsequence-vision)
-    -   `multiZone.sendMultiZoneJson`: Send changes to Worx with a delay of 1.1 seconds (vision/changeable)
+-   MultiZones
+    -   `multiZonen.zones.zone_1.borderDistance`: When boarder cutting, the distance to the edge in mm - allowed 50mm, 100mm, 150mm and 200mm - Set with Blockly without delay - Change is written in `multiZonen.multiZonen` (vision/changeable)
+    -   `multiZonen.zones.zone_1.chargingStation`: 1 If the charging station is found in this zone. 0 for no charging station - Set with Blockly without delay - Change is written to `multiZonen.multiZonen` (vision/changeable)
+    -   `multiZonen.zones.zone_1.cutOverBorder`: 1 to drive over plates if they are detected, otherwise 0. Different values ​​per zone are not permitted - Set with Blockly without delay - Change is written to `multiZonen.multiZonen` (Vision /changeable)
+    -   `multiZonen.zones.zone_1.zone_id`: Numbering - Start with 1 - (vision/readonly)
+    -   `multiZonen.passages.passage_01.tagIdFrom`: RFID id of zoneIdFrom - Set with Blockly without delay - Change is written to `multiZonen.multiZonen` (vision/changeable)
+    -   `multiZonen.passages.passage_01.tagIdTo`: RFID id of zoneIdTo - Set with Blockly without delay - Change is written to `multiZonen.multiZonen` (vision/changeable)
+    -   `multiZonen.passages.passage_01.zoneIdFrom`: Zone from (must zoneIdFrom < zoneIdTo) - Set with Blockly without delay - Change is written to `multiZonen.multiZonen` (vision/changeable)
+    -   `multiZonen.passages.passage_01.zoneIdTo`: Zone closed (must zoneIdTo > zoneIdFrom) - Set with Blockly without delay - Change is written to `multiZonen.multiZonen` (vision/changeable)
+    -   `multiZonen.multiZonen`: Multizones JSON (Vision/changeable) [Example](#example-blockly-sendmultizonenjson-vision)
+    -   `multiZonen.sendmultiZonenJson`: Send changes to Worx with a delay of 1.1 seconds (vision/changeable)
 
 Example:
 
@@ -399,7 +401,7 @@ Default without zone:
 
 ![Vision img/mqtt_info.png](img/mqtt_info.png)
 
-### Example Blockly startsequence Vision
+### Example Blockly sendMultiZonenJson Vision
 
 ```
 <xml xmlns="https://developers.google.com/blockly/xml">

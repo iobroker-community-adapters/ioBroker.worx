@@ -15,7 +15,11 @@
 
 **This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
 
-## NEW!!! Node 18 required
+## Required
+
+-   Node 18 or 20
+-   JS-Controller >= 5.0.19
+-   Admin >= 6.13.16
 
 ## Worx (Kress, Landxcape and Ferrex) adapter for ioBroker
 

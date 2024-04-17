@@ -138,6 +138,8 @@
 -   `batteryState`: Batteriestatus in % (Draht & Vision/nur lesen)
 -   `batteryTemperature`: Batterietemperatur in Celsius (Draht & Vision/nur lesen)
 -   `batteryVoltage`: Batteriespannung in Volt (Draht & Vision/nur lesen)
+-   `cameraStatus`: Status Camera 0=OK/1=Error (Vision/nur lesen)
+-   `cameraError`: Camera error 0=OK/1=Error (Vision/nur lesen)
 -   `cutOverSlabs`: Über Platten mähen an = true / aus = false (Vision/änderbar)
 -   `direction`: Richtung in Grad (Draht & Vision/nur lesen)
 -   `edgecut`: Start EdgeCut (Draht & Vision/änderbar)
@@ -229,6 +231,7 @@
 
 ![Mower img/mower_3.png](../en/img/mower_3.png)
 
+-   `rfidStatus`: Status RF Sensor 0=OK/1=Fehler (Vision/nur lesen)
 -   `sendCommand`: Ein Befehl versenden (Draht & Vision/änderbar)
 
 ```json
@@ -282,13 +285,13 @@
 -   `totalTime`: Gesamte Rasenmäher-Arbeitszeit (Draht & Vision/nur lesen)
 -   `waitRain`: Regenverzögerung max. 12h in 30 Minuten Schritte (Draht & Vision/änderbar)
 -   `waitRainCountdown` Countdown wenn der Sensor wechselt von nass zu trocken (Draht & Vision/nur lesen)
--   `waitRainSensor` Status 0 für trochen und 1 für feucht (Draht & Vision/nur lesen)
+-   `waitRainSensor` Status 0 für trocken und 1 für feucht (Draht & Vision/nur lesen)
 -   `wifiQuality`: Wifi Qualität (Draht & Vision/nur lesen)
 
 ```json
 {
     "rain": {
-        "s": 0, // 0 für trochen und 1 für nass (Draht & Vision)
+        "s": 0, // 0 für trocken und 1 für nass (Draht & Vision)
         "cnt": 59 // Countdown wenn Wechsel von s=1 nass zu s=0 trocken - Regen wurde erkannt (Draht & Vision)
     }
 }
@@ -298,18 +301,17 @@
 
 ### Zusätzlich Vision Infos
 
--   MultiZone
-    -   `multiZone.passages.passage_01.tagIdFrom`: RFID id von z1 - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.passages.passage_01.tagIdTo`: RFID id von z2 - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.passages.passage_01.zoneIdFrom`: Zone von (muss z1 < z2) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.passages.passage_01.zoneIdTo`: Zone zu (muss z2 > z1) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.zones.zone_1.borderDistance`: Kantenschnitt in mm - erlaubt 50mm, 100mm, 150mm und 20mm - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.zones.zone_1.chargingStation`: 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.zones.zone_1.cutOverBorder`: 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.Unterschiedliche Werte pro Zone sind nicht zulässig - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZone.multiZone` geschrieben (Vision/änderbar)
-    -   `multiZone.zones.zone_1.zone_id`: Nummerierung - Start mit 1 - geschrieben (Vision/nur lesen)
-    -   `multiZone.rfid`: Anzahl RF (nur lesen)
-    -   `multiZone.multiZone`: Multizone JSON (Vision/änderbar) [Beispiel](#beispiel-blockly-startsequence-vision)
-    -   `multiZone.sendMultiZoneJson`: Änderungen an Worx senden mit mit einer Verzögerung von 1,1 Sekunden (Vision/änderbar)
+-   MultiZonen
+    -   `multiZonen.zones.zone_1.borderDistance`: Beim Kantenschnitt der Abstand zur Kante in mm - erlaubt 50mm, 100mm, 150mm und 200mm - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.zones.zone_1.chargingStation`: 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.zones.zone_1.cutOverBorder`: 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0.Unterschiedliche Werte pro Zone sind nicht zulässig - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.zones.zone_1.zone_id`: Nummerierung - Start mit 1 - geschrieben (Vision/nur lesen)
+    -   `multiZonen.passages.passage_01.tagIdFrom`: RFID id von zoneIdFrom - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.passages.passage_01.tagIdTo`: RFID id von zoneIdTo - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.passages.passage_01.zoneIdFrom`: Zone von (muss zoneIdFrom < zoneIdTo) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.passages.passage_01.zoneIdTo`: Zone zu (muss zoneIdTo > zoneIdFrom) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZonen.multiZonen` geschrieben (Vision/änderbar)
+    -   `multiZonen.multiZonen`: Multizonen JSON (Vision/änderbar) [Beispiel](#beispiel-blockly-sendmultizonenjson-vision)
+    -   `multiZonen.sendmultiZonenJson`: Änderungen an Worx senden mit mit einer Verzögerung von 1,1 Sekunden (Vision/änderbar)
 
 Beispiel:
 
@@ -399,7 +401,7 @@ Standard ohne Zonen:
 
 ![Vision img/mqtt_info.png](../en/img/mqtt_info.png)
 
-### Beispiel Blockly startsequence Vision
+### Beispiel Blockly sendMultiZonenJson Vision
 
 ```
 <xml xmlns="https://developers.google.com/blockly/xml">

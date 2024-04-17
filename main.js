@@ -2257,12 +2257,17 @@ class Worx extends utils.Adapter {
                                     `multiZoneVision: Key s is sorted incorrectly - ${JSON.stringify(state)}`,
                                 );
                             }
-                            if (id.cfg.cut.bd != 100 && id.cfg.cut.bd != 150 && id.cfg.cut.bd != 200) {
+                            if (
+                                id.cfg.cut.bd != 50 &&
+                                id.cfg.cut.bd != 100 &&
+                                id.cfg.cut.bd != 150 &&
+                                id.cfg.cut.bd != 200
+                            ) {
                                 isOK = false;
                                 this.log.warn(
                                     `multiZoneVision: BorderCut - ${JSON.stringify(
                                         id.cfg.cut.bd,
-                                    )} is not allowed. Allowed is 100, 150 and 200!`,
+                                    )} is not allowed. Allowed is 50, 100, 150 and 200!`,
                                 );
                             } else if (id.cfg.cut.ob != isBC) {
                                 isOK = false;
