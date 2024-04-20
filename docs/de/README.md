@@ -728,6 +728,5 @@ Standard ohne Zonen:
 
 ### nicht erlaubt
 
-![img/ok_direct.png](img/not_ok_direct.png)
 ![img/json_nok.png](../en/img/json_nok.png)
 ![img/array_nok.png](../en/img/array_nok.png)

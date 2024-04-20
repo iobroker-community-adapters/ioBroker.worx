@@ -728,6 +728,5 @@ Default without zone:
 
 ### not allowed
 
-![img/ok_direct.png](img/not_ok_direct.png)
 ![img/json_nok.png](img/json_nok.png)
 ![img/array_nok.png](img/array_nok.png)
