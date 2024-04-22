@@ -31,12 +31,12 @@
     "node": ">= 18"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.1.0",
+    "@iobroker/adapter-core": "^3.1.4",
     "aws-iot-device-sdk": "^2.2.13",
     "aws-iot-device-sdk-v2": "^1.19.3",
     "axios": "^1.6.8",
     "http-cookie-agent": "^6.0.3",
-    "json2iob": "^2.6.8",
+    "json2iob": "^2.6.10",
     "qs": "^6.12.1",
     "tough-cookie": "^4.1.3",
     "uuid": "^9.0.1"
