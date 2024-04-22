@@ -21,20 +21,21 @@
 
 ### Ordner
 
--   `activityLog`: Aktivitätenprotokoll (Kontrolle möglich)
--   `areas`: Zonen (Kontrolle möglich)
--   `calendar`: Mähplan (Kontrolle möglich)
--   `Modules`: Verfügbare Module (Kontrolle möglich)
--   `mower`: Mäher (Kontrolle möglich)
--   `product`: Alle Eigenschaften vom Geräte (Nur lesen)
--   `rawMqtt`: Alle Daten von der Worx-Cloud (Nur lesen)
+-   `activityLog`: Aktivitätenprotokoll (Draht & Vision / Kontrolle möglich)
+-   `areas`: Zonen (Draht / Kontrolle möglich)
+-   `multiZones`: Multizonen (Vision / Kontrolle möglich)
+-   `calendar`: Mähplan (Draht & Vision / Kontrolle möglich)
+-   `Modules`: Verfügbare Module (Draht & Vision / Kontrolle möglich)
+-   `mower`: Mäher (Draht & Vision / Kontrolle möglich)
+-   `product`: Alle Eigenschaften vom Gerät (Draht & Vision / Nur lesen)
+-   `rawMqtt`: Alle Daten von der Cloud (Draht & Vision / Nur lesen)
 
 ![Folder img/all_folders.png](../en/img/all_folders.png)
 
 ### activityLog (Draht und Vision)
 
 -   `last_update`: Letzte Update als Zeitstempel (nur lesen)
--   `manuell_update`: Lädt das aktuelle Aktivitätenprotokoll (automatisch nach Statusänderungen) (änderbar)
+-   `manuell_update`: Lädt das aktuelle Aktivitätenprotokoll (automatisch nach Statusänderungen - Draht & Vision / Kontrolle möglich)
 -   `payload`: Protokoll als JSON (für VIS oder Blockly) (nur lesen)
 
 ![Activity img/activity.png](../en/img/activity.png)
@@ -68,13 +69,13 @@
 
 ### calendar (Vision)
 
--   Beispiel Zeiteinstellung Mittwoch
+-   Beispiel Zeiteinstellung Freitag
 -   Als Standard werden 2 Timeslots angelegt. Werden 3 Slots in der APP angelegt werden auch 3 in ioBroker erstellt. Wird wieder auf 2 reduziert, dann wird in ioBroker diese Slots gelöscht. Der Tag mit den meisten Slots wird als Referenz für alle Tage verwendet.
 
     -   `friday.time_0.borderCut`: Mit oder ohne Kantenschnitt (ohne Verzögerung setzen) (änderbar)
     -   `friday.time_0.startTime`: Startzeit als Format hh:mm (0-23/0-59) Bsp.: 09:00 (ohne Verzögerung setzen) (änderbar)
     -   `friday.time_0.workTime`: Arbeitszeit in Minuten (180 min = 3h) Bsp.: 30 = Endzeit 09:30 (ohne Verzögerung setzen) (änderbar)
-    -   `friday.time_0.enabled_time`: Zeit aktivieren oder deaktivieren. Bei Deaktivierung wird der Timeslot gelöscht (ohne Verzögerung setzen) (änderbar)
+    -   `friday.time_0.enabled_time`: Zeit aktivieren oder deaktivieren. (ohne Verzögerung setzen) (änderbar)
     -   `friday.time_0.zones`: Welche Zonen sollen angefahren werden z. Bsp. [1,2,3] (ohne Verzögerung setzen) (änderbar)
     -   `calJson_sendto`: Sind alle Datenpunkte gesetzt dann diesen Button auf true setzen (mit einer Verzögerung von 1,1). Der Mäher mäht nun für 30 Minuten! (änderbar)
     -   `calJson_tosend`: Dieser JSON wird automatisch gefüllt und dann an Mqtt versendet. Kann natürlich auch selber erstellt werden. (änderbar)
@@ -97,7 +98,7 @@
         "cfg": {
             "cut": {
                 "b": 1, // 0=ohne Kantenschnitt/1=Mit Kantenschnitt
-                "z": [1] // In welchen Zonen - Beispiel 3 Zonen [1,2,6]
+                "z": [1] // In which zones - example 3 zones [1,2,6]
             }
         }
     }
@@ -109,7 +110,7 @@
 -   Off Limit Modul (Draht und Vision)
 
     -   `DF.OLMSwitch_Cutting`: Verhindert das überfahren vom Magnetband - true-an/false-aus
-    -   `DF.OLMSwitch_FastHoming`: Verwendet erstellte Abkürzungen mit Magnetband - true-an/false-aus
+    -   `DF.OLMSwitch_FastHoming`: Verwendet erstellte Abkürzungen mit Magnetband - mithilfe von Abkürzungen aus Magnetstreifen - true-an/false-aus
 
 -   ACS Modul (nur Draht)
 
@@ -118,7 +119,7 @@
 
 -   EA Modul (nur Vision)
 
-    -   `EA.height`: Höheneinstellung Mähwerk von 30-60 in 5 Schritte
+    -   `EA.height`: Höheneinstellung Mähwerk von 30-60 in 5mm Schritte
 
 -   HL Modul (nur Vision)
     -   `HL.status`: Status Scheinwerfer
@@ -170,7 +171,21 @@
         "19": "Battery trunk open timeout", //(Draht & Vision)
         "20": "wire sync", //(Draht & Vision unbekannt)
         "21": "msg num", //(Draht & Vision)
-        "110": "Camera error" //(Vision)
+        "101": "HBI error", //(RTK)
+        "102": "OTA error", //(RTK)
+        "103": "Map error", //(RTK)
+        "104": "Excessive slope", //(RTK)
+        "105": "Unreachable zone", //(RTK)
+        "106": "Unreachable charging station", //(RTK)
+        "108": "Insufficient sensor data", //(RTK)
+        "109": "Training start disallowed", //(RTK)
+        "110": "Camera error", //(Vision)
+        "111": "Lawn exploration required", //(Vision)
+        "112": "Mapping exploration failed", //(Vision)
+        "113": "RFID reader error", //(Vision)
+        "114": "Headlight error", //(Vision)
+        "115": "Missing charging station", //(RTK)
+        "116": "Blade height adjustment blocked" //(Vision & RTK)
     }
 }
 ```
@@ -274,7 +289,11 @@
         "31": "Zone training", //(Draht & Vision)
         "32": "Border Cut", //(Draht & Vision)
         "33": "Searching zone", //(Draht & Vision)
-        "34": "Pause" //(Draht & Vision)
+        "34": "Pause", //(Draht & Vision)
+        "103": "Moving to zone - The mower is reaching a zone without cutting", //(RTK)
+        "104": "Going home - The mower is returning to the charging station", //(RTK)
+        "110": "Border crossing", //(Vision)
+        "111": "Exploring lawn" //(Vision)
     }
 }
 ```
@@ -303,9 +322,9 @@
 
 -   multiZones
     -   `multiZones.zones.zone_1.borderDistance`: Beim Kantenschnitt der Abstand zur Kante in mm - erlaubt 50mm, 100mm, 150mm und 200mm - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
-    -   `multiZones.zones.zone_1.chargingStation`: 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
+    -   `multiZones.zones.zone_1.chargingStation`: 1 Wenn sich die Ladestation in dieser Zone befindet. 0 für keine Ladestation - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
     -   `multiZones.zones.zone_1.cutOverBorder`: 1 zum Überfahren von Platten, wenn diese erkannt werden, ansonsten 0. Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
-    -   `multiZones.zones.zone_1.zone_id`: Nummerierung - Start mit 1 - geschrieben (Vision/nur lesen)
+    -   `multiZones.zones.zone_1.zone_id`: Nummerierung - Start mit 1 (Vision/nur lesen)
     -   `multiZones.passages.passage_01.tagIdFrom`: RFID id von zoneIdFrom - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
     -   `multiZones.passages.passage_01.tagIdTo`: RFID id von zoneIdTo - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
     -   `multiZones.passages.passage_01.zoneIdFrom`: Zone von (muss zoneIdFrom < zoneIdTo) - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar)
@@ -331,7 +350,7 @@ Beispiel:
             // Die Zonen selbst
             {
                 "id": 1, // Nummerierung - Start mit 1
-                "c": 1, // 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation.
+                "c": 1, // 1 Wenn sich die Ladestation in dieser Zone befindet. 0 für keine Ladestation.
                 "cfg": {
                     "cut": {
                         "bd": 100, // Kantenschnitt der Abstand zur Kante in mm - erlaubt 50mm, 100mm, 150mm und 200mm
@@ -341,7 +360,7 @@ Beispiel:
             },
             {
                 "id": 2, // Nummerierung fortlaufend
-                "c": 0, // 1 Wenn sich die Ladestation in diese Zone gefindet. 0 für keine Ladestation.
+                "c": 0, // 1 Wenn sich die Ladestation in dieser Zone befindet. 0 für keine Ladestation.
                 "cfg": {
                     "cut": {
                         "bd": 100, // Kantenschnitt der Abstand zur Kante in mm - erlaubt 50mm, 100mm, 150mm und 200mm
@@ -391,8 +410,8 @@ Standard ohne Zonen:
 
 ### info_mqtt (Draht und Vision)
 
--   `incompleteOperationCount`: Gesamtzahl der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht gepackte Operationen sind eine Teilmenge davon.
--   `incompleteOperationSize`: Gesamtpaketgröße der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht gepackte Operationen sind eine Teilmenge davon.
+-   `incompleteOperationCount`: Gesamtzahl der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht quitierte Operationen sind eine Teilmenge davon.
+-   `incompleteOperationSize`: Gesamtpaketgröße der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht quitierte Operationen sind eine Teilmenge davon.
 -   `unackedOperationCount`: Gesamtzahl der Vorgänge, die an den Server gesendet wurden und auf eine entsprechende Bestätigung warten, bevor sie abgeschlossen werden können.
 -   `unackedOperationSize`: Gesamtpaketgröße der Vorgänge, die an den Server gesendet wurden und auf eine entsprechende Bestätigung warten, bevor sie abgeschlossen werden können.
 -   `last_update`: Letzte Aktualisierung vom Token

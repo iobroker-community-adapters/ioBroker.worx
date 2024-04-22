@@ -21,25 +21,26 @@
 
 ### Folder
 
--   `activityLog`: Your activity log (control possible)
--   `areas`: Areas (control possible)
--   `calendar`: Time schedule (control possible)
--   `Modules`: Your module(s) (control possible)
--   `mower`: Your mower (control possible)
--   `product`: All properties of your devices (readonly)
--   `rawMqtt`: All data from the cloud (readonly)
+-   `activityLog`: Your activity log (Wire & Vision / control possible)
+-   `areas`: Areas (Wire / control possible)
+-   `multiZones`: Multizones (Vision / control possible)
+-   `calendar`: Time schedule (Wire & Vision / control possible)
+-   `Modules`: Your module(s) (Wire & Vision / control possible)
+-   `mower`: Your mower (Wire & Vision / control possible)
+-   `product`: All properties of device (Wire & Vision / readonly)
+-   `rawMqtt`: All data from the cloud (Wire & Vision / readonly)
 
 ![Folder img/all_folders.png](img/all_folders.png)
 
 ### activityLog (Wire and Vision)
 
--   `last_update`: Last update as timestamp
--   `manuell_update`: Loads the current activity log (automatically after status changes)
+-   `last_update`: Last update as timestamp (Wire & Vision / readonly)
+-   `manuell_update`: Loads the current activity log (automatically after status changes - Wire & Vision / control possible)
 -   `payload`: Activity log as JSON Table (for VIS or Blockly)
 
 ![Activity img/activity.png](img/activity.png)
 
-### areas (without Vision)
+### areas (wire)
 
 -   `actualArea`: Current
 -   `actualAreaIndicator`: Next array zone start
@@ -58,7 +59,7 @@
 
     -   `wednesday.borderCut`: With or without bordercut (Change value without delay) (changeable)
     -   `wednesday.startTime`: Starttime hh:mm (0-23/0-59) e.g. 09:00 (Change value without delay) (changeable)
-    -   `wednesday.workTime`: Working time in minutes (180 min = 3h) e.g. 30 = Endzeit 09:30 (Change value without delay) (changeable)
+    -   `wednesday.workTime`: Working time in minutes (180 min = 3h) e.g. 30 = endtime 09:30 (Change value without delay) (changeable)
     -   `calJson_sendto`: If all States are set, then press button to send (with a 1,1 second delay). The mower will now mow for 30 minutes (changeable)
     -   `calJson_tosend`: This data is sent to Mqtt (Both mowing schedule/is set automatically). You can also create this JSON yourself. (changeable)
     -   `calendar.calJson`: Array for the weekly mowing plan. You can also create this ARRAY yourself. (mowing schedule 1/is set automatically - for wire only) (changeable)
@@ -73,8 +74,8 @@
 
     -   `friday.time_0.borderCut`: With or without bordercut (Change value without delay) (changeable)
     -   `friday.time_0.startTime`: Starttime hh:mm (0-23/0-59) e.g. 09:00 (Change value without delay) (changeable)
-    -   `friday.time_0.workTime`: Working time in minutes (180 min = 3h) e.g. 30 = Endzeit 09:30 (Change value without delay) (changeable)
-    -   `friday.time_0.enabled_time`: Activate or deactivate time. When deactivated, the timeslot is deleted (set without delay) (can be changed)
+    -   `friday.time_0.workTime`: Working time in minutes (180 min = 3h) e.g. 30 = Endtime 09:30 (Change value without delay) (changeable)
+    -   `friday.time_0.enabled_time`: Activate or deactivate time. (set without delay) (can be changed)
     -   `friday.time_0.zones`: Which zones should be approached, e.g. Example [1,2,3] (set without delay) (can be changed)
     -   `calJson_sendto`: If all States are set then set this button to true (with a delay of 1.1). The mower will now mow for 30 minutes! (changeable)
     -   `calJson_tosend`: This JSON is automatically filled and then sent to Mqtt. Of course you can also create it yourself. (changeable)
@@ -109,7 +110,7 @@
 -   Off Limit Module (Wire and Vision)
 
     -   `DF.OLMSwitch_Cutting`: Prevents magnetic tape from being run over - true-on/false-off
-    -   `DF.OLMSwitch_FastHoming`: Fast return to the charging station - true-on/false-off
+    -   `DF.OLMSwitch_FastHoming`: Fast return to the charging station - using shortcuts made from magnetic strips - true-on/false-off
 
 -   ACS Module (Wire only)
 
@@ -141,7 +142,7 @@
 -   `cameraStatus`: Status Camera 0=OK/1=Error (Vision/readonly)
 -   `cameraError`: Camera error 0=OK/1=Error (Vision/readonly)
 -   `cutOverSlabs`: Cut over slabs on = true / off = false (Vision/changeable)
--   `direction`: Direction in grad (wire & Vision/readonly)
+-   `direction`: Direction in degrees (wire & Vision/readonly)
 -   `edgecut`: Start EdgeCut (wire & Vision/changeable)
 -   `error`: Error message from mower (wire & Vision/readonly)
 
@@ -170,7 +171,21 @@
         "19": "Battery trunk open timeout", //(wire & Vision)
         "20": "wire sync", //(wire & Vision unknown)
         "21": "msg num", //(wire & Vision)
-        "110": "Camera error" //(Vision)
+        "101": "HBI error", //(RTK)
+        "102": "OTA error", //(RTK)
+        "103": "Map error", //(RTK)
+        "104": "Excessive slope", //(RTK)
+        "105": "Unreachable zone", //(RTK)
+        "106": "Unreachable charging station", //(RTK)
+        "108": "Insufficient sensor data", //(RTK)
+        "109": "Training start disallowed", //(RTK)
+        "110": "Camera error", //(Vision)
+        "111": "Lawn exploration required", //(Vision)
+        "112": "Mapping exploration failed", //(Vision)
+        "113": "RFID reader error", //(Vision)
+        "114": "Headlight error", //(Vision)
+        "115": "Missing charging station", //(RTK)
+        "116": "Blade height adjustment blocked" //(Vision & RTK)
     }
 }
 ```
@@ -198,8 +213,8 @@
 -   `firmware_head` Value from dat.head.fw (Vision/readonly)
 -   `firmware_update_start`: Start firmware update in 2 steps - see below `firmware_update_start_approved` (wire & Vision/changeable)
 -   `firmware_update_start_approved`: Start firmware update - `firmware_update_start` must be set to true (wire & Vision/changeable)
--   `gradient`: Gradient in grad (wire & Vision/readonly)
--   `inclination`: Inclination in grad (wire & Vision/readonly)
+-   `gradient`: Gradient in degrees (wire & Vision/readonly)
+-   `inclination`: Inclination in degrees (wire & Vision/readonly)
 -   `last_command`: Last Request from iobroker or APP as JSON Table (wire & Vision/readonly)
 -   `mowTimeExtend`: Mow time extend in % Range: -100%->100% (wire/changeable)
 -   `mowerActive`: Pause mowing plan (wire/changeable)
@@ -274,7 +289,11 @@
         "31": "Zone training", //(wire & Vision)
         "32": "Border Cut", //(wire & Vision)
         "33": "Searching zone", //(wire & Vision)
-        "34": "Pause" //(wire & Vision)
+        "34": "Pause", //(wire & Vision)
+        "103": "Moving to zone - The mower is reaching a zone without cutting", //(RTK)
+        "104": "Going home - The mower is returning to the charging station", //(RTK)
+        "110": "Border crossing", //(Vision)
+        "111": "Exploring lawn" //(Vision)
     }
 }
 ```
@@ -304,7 +323,7 @@
 -   MultiZones
     -   `multiZones.zones.zone_1.borderDistance`: When boarder cutting, the distance to the edge in mm - allowed 50mm, 100mm, 150mm and 200mm - Set with Blockly without delay - Change is written in `multiZones.multiZones` (vision/changeable)
     -   `multiZones.zones.zone_1.chargingStation`: 1 If the charging station is found in this zone. 0 for no charging station - Set with Blockly without delay - Change is written to `multiZones.multiZones` (vision/changeable)
-    -   `multiZones.zones.zone_1.cutOverBorder`: 1 to drive over plates if they are detected, otherwise 0. Set with Blockly without delay - Change is written to `multiZones.multiZones` (Vision /changeable)
+    -   `multiZones.zones.zone_1.cutOverBorder`: 1 to drive over slabs if they are detected, otherwise 0. Set with Blockly without delay - Change is written to `multiZones.multiZones` (Vision /changeable)
     -   `multiZones.zones.zone_1.zone_id`: Numbering - Start with 1 - (vision/readonly)
     -   `multiZones.passages.passage_01.tagIdFrom`: RFID id of zoneIdFrom - Set with Blockly without delay - Change is written to `multiZones.multiZones` (vision/changeable)
     -   `multiZones.passages.passage_01.tagIdTo`: RFID id of zoneIdTo - Set with Blockly without delay - Change is written to `multiZones.multiZones` (vision/changeable)
