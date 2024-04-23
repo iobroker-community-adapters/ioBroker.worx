@@ -54,8 +54,11 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Added Vision head light
 -   (Lucky-ESA) Added Vision cut over slabs
 -   (Lucky-ESA) Node 18 required
+-   (Lucky-ESA) JS-Controller >= 5.0.19 required
+-   (Lucky-ESA) Admin >=6.13.16 required
 -   (Lucky-ESA) Catch aws_cer error and use old mqtt connection
 -   (Lucky-ESA) Added Vision Multi Zone
+-   (Lucky-ESA) Delete ping
 
 ### 2.3.4 (2023-10-19)
 

@@ -10,14 +10,10 @@
 -   `App-Passwort`: APP Passwort
 -   `App Name`: Geräte auswählen
 -   `Verzögerung für Kantenschnitt`: Wann soll EdgeCut nach dem Losfahren starten (Beispiel nach 5 Sekunden bis zum Rasen)
-
-![Instance Settings img/instance_1.png](img/instance_1.png)
-
 -   `Entfernung und Zeit in Minuten und Metern`: Einheit für Laufzeit und Arbeitszeit in Min./Std. und Meter/KM
--   `MQTT-Verbindung alle 10 Minuten anpingen`: Nur zum testen. Bitte nicht länger als 1 Stunde!
--   `Aktualisieren der MQTT-Daten nach der Token-Aktualisierung.`: Nach der Erneuerung vom Token (jede Stunde) die Mqtt Daten neu laden. Das sind 24 zusätzlich Abfragen pro Tag und pro Geräte.
+-   `Aktualisieren der MQTT-Daten nach der Token-Aktualisierung.`: Nach der Erneuerung vom Token (jede Stunde) die Mqtt Daten neu laden.
 
-![Instance Settings img/instance_2.png](img/instance_2.png)
+![Instance Settings img/instance.png](img/instance.png)
 
 ### Ordner
 

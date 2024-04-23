@@ -17,7 +17,6 @@ const helper = require(`./lib/helper`);
 const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
-const ping_interval = 1000 * 60 * 10; //10 Minutes
 const max_request = 20;
 const category = "iobroker";
 const access_json = ["01a58ec15db78660aa8f67251aeca1bd"];
@@ -43,7 +42,7 @@ class Worx extends utils.Adapter {
         this.refreshActivity = null;
         this.loadActivity = {};
         this.refreshTokenTimeout = null;
-        this.pingInterval = {};
+        this.timeoutedgeCutDelay = null;
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
         this.vision = {};
@@ -325,7 +324,7 @@ class Worx extends utils.Adapter {
                     const name = device.name;
                     this.log.info(`Found device ${name} with id ${id}`);
 
-                    await this.cleanOldVersion(id);
+                    await this.cleanOldVersion(id, device.capabilities);
                     await this.createDevices(device, this.md5_user(device.serial_number));
                     const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
                     this.log.debug("fw_id: " + JSON.stringify(fw_id));
@@ -713,6 +712,59 @@ class Worx extends utils.Adapter {
                 ack: true,
             });
         }
+    }
+
+    async updateCloudData() {
+        await this.requestClient({
+            method: "get",
+            url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
+            headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "user-agent": this.userAgent,
+                authorization: "Bearer " + this.session.access_token,
+                "accept-language": "de-de",
+            },
+        })
+            .then(async (res) => {
+                if (!res.data) {
+                    return;
+                }
+                for (const device of res.data) {
+                    const index = this.deviceArray.findIndex((index) => index.serial_number === device.serial_number);
+                    this.log.debug(`Index Update: ${index}`);
+                    if (index != null && this.deviceArray[index] != null) {
+                        this.log.debug(`Update this.deviceArray: ${index}`);
+                        this.deviceArray[index] = device;
+                    } else if (!index) {
+                        this.log.debug(`Found new device ${device.serial_number}. Please restart adapter!!!`);
+                        continue;
+                    }
+                    await this.setStates(device);
+                    try {
+                        if (!device || !device.last_status || !device.last_status.payload) {
+                            this.log.debug("No last_status found");
+                            delete device.last_status;
+                            this.log.debug("Delete last_status");
+                        }
+                    } catch (error) {
+                        this.log.debug("Delete last_status: " + error);
+                    }
+                    const new_data = await this.cleanupRaw(device);
+                    if (new_data.last_status && new_data.last_status.timestamp != null) {
+                        delete new_data.last_status.timestamp;
+                    }
+                    this.json2iob.parse(`${device.serial_number}.rawMqtt`, new_data, {
+                        forceIndex: true,
+                        preferedArrayName: "",
+                        channelName: "All raw data of the mower",
+                    });
+                }
+            })
+            .catch((error) => {
+                this.log.error(error);
+                error.response && this.log.error(JSON.stringify(error.response.data));
+            });
     }
 
     async updateDevices() {
@@ -1255,9 +1307,6 @@ class Worx extends utils.Adapter {
                     } catch (error) {
                         this.log.info("Mqtt Delete last_status: " + error);
                     }
-                    if (this.config.pingMqtt) {
-                        this.pingToMqtt(mower);
-                    }
                     await this.setStates(mower);
                     const new_mower = await this.cleanupRaw(mower);
                     this.json2iob.parse(`${mower.serial_number}.rawMqtt`, new_mower, {
@@ -1290,12 +1339,13 @@ class Worx extends utils.Adapter {
                     this.log.debug(
                         `Mower Endpoint : ${mower.mqtt_endpoint} with user id ${mower.user_id} and mqtt registered ${mower.mqtt_registered} iot_registered ${mower.iot_registered} online ${mower.online} `,
                     );
-                    if (this.initConnection || this.config.updateMqtt) {
+                    if (this.initConnection) {
                         this.sendPing(mower, false, "", "startPing");
                     }
-                    if (this.config.pingMqtt) {
-                        this.pingToMqtt(mower);
-                    }
+                }
+                if (this.config.updateMqtt) {
+                    this.log.info(`Start Update for all devices`);
+                    this.updateCloudData();
                 }
                 this.initConnection = false;
             });
@@ -1395,18 +1445,6 @@ class Worx extends utils.Adapter {
                 ack: true,
             });
         }
-    }
-
-    /**
-     * @param {object} mower
-     */
-    pingToMqtt(mower) {
-        const mowerSN = mower.serial_number ? mower.serial_number : "";
-        this.pingInterval[mowerSN] && this.clearInterval(this.pingInterval[mowerSN]);
-        this.log.debug("Reset ping");
-        this.pingInterval[mowerSN] = this.setInterval(() => {
-            this.sendPing(mower, false, "", "pingToMqtt");
-        }, ping_interval);
     }
 
     /**
@@ -1813,13 +1851,13 @@ class Worx extends utils.Adapter {
             this.setState("info.connection", false, true);
             this.setState("info_mqtt.online", false, true);
             this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
+            this.timeoutedgeCutDelay && this.clearTimeout(this.timeoutedgeCutDelay);
             this.updateInterval && this.clearInterval(this.updateInterval);
             this.refreshActivity && this.clearInterval(this.refreshActivity);
             this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
             this.sleepTimer && this.clearTimeout(this.sleepTimer);
             this.updateFW && this.clearInterval(this.updateFW);
             for (const mower of this.deviceArray) {
-                this.pingInterval[mower.serial_number] && this.clearInterval(this.pingInterval[mower.serial_number]);
                 this.rainCounterInterval[mower.serial_number] &&
                     this.rainCounterInterval[mower.serial_number]["interval"] &&
                     this.clearInterval(this.rainCounterInterval[mower.serial_number]["interval"]);
@@ -3264,7 +3302,7 @@ class Worx extends utils.Adapter {
         this.sendMessage(`{"cmd":${val}}`, mower.serial_number, id);
     }
 
-    async cleanOldVersion(serial) {
+    async cleanOldVersion(serial, capabilities) {
         if (this.version == null) this.version = "";
         const cleanOldVersion = await this.getObjectAsync(
             this.name + "." + this.instance + "." + serial + ".oldVersionCleaned",
@@ -3304,6 +3342,17 @@ class Worx extends utils.Adapter {
                     if (checking) {
                         await this.delObjectAsync(serial + ".mower.zoneKeeper");
                         this.log.info(`Delete object ${serial}.mower.zoneKeeper`);
+                    }
+                }
+                if (this.version > oldVersion && oldVersion <= "2.3.4") {
+                    this.log.info(`VSION! Cleanup calendar and areas channel!!`);
+                    if (capabilities != null && capabilities.includes("vision")) {
+                        await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".calendar", {
+                            recursive: true,
+                        });
+                        await this.delForeignObjectAsync(this.name + "." + this.instance + "." + serial + ".areas", {
+                            recursive: true,
+                        });
                     }
                 }
             } catch (e) {

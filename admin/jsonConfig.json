@@ -54,13 +54,6 @@
             "default": false,
             "sm": 3
         },
-        "pingMqtt": {
-            "type": "checkbox",
-            "label": "Ping MQTT Connection every 10 minutes.",
-            "newLine": true,
-            "default": false,
-            "sm": 3
-        },
         "updateMqtt": {
             "type": "checkbox",
             "label": "Updating MQTT data after token update.",

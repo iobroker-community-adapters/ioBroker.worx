@@ -3,7 +3,6 @@
     "App Password": "Пароль програми",
     "App Name": "Назва програми",
     "delay for edge cut": "затримка для різання краю",
-    "Distance and time in min and m": "Відстань і час у хвилинах і метрах",
-    "Ping MQTT Connection every 10 minutes.": "Пінгуйте підключення MQTT кожні 10 хвилин",
-    "Updating MQTT data after token update.": "Оновлення даних MQTT після оновлення маркера."
+    "Distance and time in min and m": "Відстань і час у хвилинах/годинах і метрах/км",
+    "Updating MQTT data after token update.": "Оновлення даних після оновлення маркера."
 }

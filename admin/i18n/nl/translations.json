@@ -3,7 +3,6 @@
     "App Password": "App-wachtwoord",
     "App Name": "Applicatie naam",
     "delay for edge cut": "vertraging voor randafsnijding",
-    "Distance and time in min and m": "Afstand en tijd in min en m",
-    "Ping MQTT Connection every 10 minutes.": "Ping MQTT-verbinding elke 10 minuten",
-    "Updating MQTT data after token update.": "MQTT-gegevens bijwerken na tokenupdate."
+    "Distance and time in min and m": "Afstand en tijd in minuten/uur en meter/KM",
+    "Updating MQTT data after token update.": "Gegevens bijwerken na tokenupdate."
 }

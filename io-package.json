@@ -163,6 +163,45 @@
                 "condition": {
                     "operand": "and",
                     "rules": [
+                        "oldVersion<2.3.4",
+                        "newVersion>=3.0.0"
+                    ]
+                },
+                "title": {
+                    "en": "Important notice!",
+                    "de": "Wichtiger Hinweis!",
+                    "ru": "Важное замечание!",
+                    "pt": "Notícia importante!",
+                    "nl": "Belangrijke mededeling!",
+                    "fr": "Avis important!",
+                    "it": "Avviso IMPORTANTE!",
+                    "es": "Noticia importante!",
+                    "pl": "Ważna uwaga!",
+                    "uk": "Погода!",
+                    "zh-cn": "重要通知!"
+                },
+                "text": {
+                    "en": "Vision users! The structure of `calendar` has changed and `multiZones` replaces `areas`. All scripts must be adapted.",
+                    "de": "Vision-Nutzer! Die Struktur von `calendar` hat sich geändert und `multiZones` ersetzt `areas`. Alle Skripte müssen angepasst werden.",
+                    "ru": "Пользователи зрения! Структура «календара» изменилась, а «мультизонты» заменяют «области». Все сценарии должны быть адаптированы.",
+                    "pt": "Usuários de visão! A estrutura de `calendar` mudou e `multiZones` substitui `areas`. Todos os scripts devem ser adaptados.",
+                    "nl": "Vision gebruikers! De structuur van Calendar... is veranderd en MultiZones vervangt de gebieden. Alle scripts moeten aangepast worden.",
+                    "fr": "Les utilisateurs de vision ! La structure du \"calendrier\" a changé et les \"multiZones\" remplacent les \"zones\". Tous les scripts doivent être adaptés.",
+                    "it": "Utenti di visione! La struttura di `calendar` è cambiata e `multiZones` sostituisce `areas`. Tutti gli script devono essere adattati.",
+                    "es": "¡Usuarios de visión! La estructura de `calendar ' ha cambiado y `multiZones` reemplaza `areas`. Todos los scripts deben ser adaptados.",
+                    "pl": "Użytkownicy wizji! Zmieniła się struktura \"kalendarza\" i \"multiZones\" zastępuje \"obszary\". Wszystkie skrypty muszą być dostosowane.",
+                    "uk": "Шукати користувачів! У структурі `calendar` змінено і `multiZones` замінює `areas`. Всі скрипти повинні бути адаптовані.",
+                    "zh-cn": "视觉用户! `日历 ' 的结构已经改变,`多区 ' 取代`地区 ' 。 所有剧本必须改编."
+                },
+                "buttons": [
+                    "agree",
+                    "cancel"
+                ]
+            },
+            {
+                "condition": {
+                    "operand": "and",
+                    "rules": [
                         "oldVersion<2.0.0",
                         "newVersion>=2.0.0"
                     ]
@@ -230,7 +269,6 @@
         "edgeCutDelay": 5000,
         "server": "worx",
         "meterMin": false,
-        "pingMqtt": false,
         "updateMqtt": false
     },
     "objects": [],

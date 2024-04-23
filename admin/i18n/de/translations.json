@@ -3,7 +3,6 @@
     "App Password": "App-Passwort",
     "App Name": "App Name",
     "delay for edge cut": "Verzögerung für Kantenschnitt",
-    "Distance and time in min and m": "Entfernung und Zeit in Minuten und Metern",
-    "Ping MQTT Connection every 10 minutes.": "MQTT-Verbindung alle 10 Minuten anpingen",
-    "Updating MQTT data after token update.": "Aktualisieren der MQTT-Daten nach der Token-Aktualisierung."
+    "Distance and time in min and m": "Distanz und Zeit in Minute/Stunde und Meter/KM",
+    "Updating MQTT data after token update.": "Aktualisierung der Daten nach der Token-Aktualisierung."
 }
