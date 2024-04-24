@@ -525,7 +525,7 @@ class Worx extends utils.Adapter {
                 ++count_zone;
             }
         } else {
-            if (first) {
+            if (first && count_zone_obj === 0) {
                 this.log.info(`No zones found`);
             }
         }
@@ -571,7 +571,7 @@ class Worx extends utils.Adapter {
                 ++count_zone;
             }
         } else {
-            if (first) {
+            if (first && count_passage_obj === 0) {
                 this.log.info(`No Passages found`);
             }
         }
