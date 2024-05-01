@@ -476,6 +476,174 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      * @param {boolean} first
      */
+    async evaluateRTKZone(mower, first) {
+        const zone_available = this.modules[mower.serial_number]["rtk_zone"];
+        const zone_state_available = this.modules[mower.serial_number]["rtk_zone_state"];
+        let count_zone = 0;
+        let zone_count = 0;
+        let count_state = 4;
+        let h = false;
+        let sh = false;
+        let lapping = false;
+        if (
+            mower.last_status &&
+            mower.last_status.payload &&
+            mower.last_status.payload.cfg &&
+            mower.last_status.payload.cfg.rtk &&
+            mower.last_status.payload.cfg.rtk.zs != null &&
+            mower.last_status.payload.cfg.rtk.zs.length > 0
+        ) {
+            zone_count = mower.last_status.payload.cfg.rtk.zs.length;
+            if (
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.modules &&
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.modules.EA
+            ) {
+                if (mower.last_status.payload.cfg.rtk.zs[0].cfg.modules.EA.h != null) {
+                    h = true;
+                    ++count_state;
+                }
+                if (mower.last_status.payload.cfg.rtk.zs[0].cfg.modules.EA.sh != null) {
+                    sh = true;
+                    ++count_state;
+                }
+            }
+            if (
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.cut &&
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.cut.co != null
+            ) {
+                lapping = true;
+                ++count_state;
+            }
+        }
+        if (zone_available != zone_count || count_state != zone_state_available || first) {
+            const zone_count = mower.last_status.payload.cfg.rtk.zs.length;
+            if (zone_available < zone_count || count_state != zone_state_available || first) {
+                this.log.debug(`Smaller: Counter RTK Zone ${zone_count} - ${zone_available}`);
+                this.log.debug(`Smaller: Counter RTK Zone States ${count_state} - ${zone_state_available}`);
+                this.modules[mower.serial_number]["rtk_zone"] = zone_count;
+                this.modules[mower.serial_number]["rtk_zone_state"] = count_state;
+                for (let a = 0; a <= zone_count - 1; a++) {
+                    const state_value = JSON.parse(
+                        JSON.stringify(objects.zones[0]).replace(/%s/gi, count_zone.toString()),
+                    );
+                    await this.createDataPoint(
+                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.${state_value._id}${a}`,
+                        state_value.common,
+                        state_value.type,
+                        state_value.native,
+                    );
+                    for (const o of objects.rtk_zones) {
+                        await this.createDataPoint(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${o._id}`,
+                            o.common,
+                            o.type,
+                            o.native,
+                        );
+                    }
+                    if (h) {
+                        await this.createDataPoint(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_ea[0]._id}`,
+                            objects.rtk_zones_ea[0].common,
+                            objects.rtk_zones_ea[0].type,
+                            objects.rtk_zones_ea[0].native,
+                        );
+                    }
+                    if (sh) {
+                        await this.createDataPoint(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_sh[0]._id}`,
+                            objects.rtk_zones_sh[0].common,
+                            objects.rtk_zones_sh[0].type,
+                            objects.rtk_zones_sh[0].native,
+                        );
+                    }
+                    if (lapping) {
+                        await this.createDataPoint(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_overlapping[0]._id}`,
+                            objects.rtk_overlapping[0].common,
+                            objects.rtk_overlapping[0].type,
+                            objects.rtk_overlapping[0].native,
+                        );
+                    }
+                    ++count_zone;
+                }
+            } else if (zone_available > zone_count) {
+                this.log.debug(`Counter RTK Zone ${zone_count} - ${zone_available}`);
+                this.log.debug(`Counter RTK Zone States ${count_state} - ${zone_state_available}`);
+                this.modules[mower.serial_number]["rtk_zone"] = zone_count;
+                this.modules[mower.serial_number]["rtk_zone_state"] = count_state;
+                for (let a = zone_count; a <= zone_available - 1; a++) {
+                    this.log.debug(`Delete Zone: ${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}`);
+                    await this.delObjectAsync(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}`, {
+                        recursive: true,
+                    });
+                }
+            }
+        }
+        if (zone_count > 0) {
+            if (first) {
+                this.log.info(`Found RTK Zones, Create Zones State`);
+            }
+            for (let a = 0; a <= zone_count - 1; a++) {
+                await this.setStateAsync(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_id`, {
+                    val: mower.last_status.payload.cfg.rtk.zs[a].id,
+                    ack: true,
+                });
+                await this.setStateAsync(
+                    `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_frequency`,
+                    {
+                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.sc.freq,
+                        ack: true,
+                    },
+                );
+                await this.setStateAsync(
+                    `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutting`,
+                    {
+                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.t,
+                        ack: true,
+                    },
+                );
+                await this.setStateAsync(
+                    `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_direction`,
+                    {
+                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.d,
+                        ack: true,
+                    },
+                );
+                if (h) {
+                    await this.setStateAsync(
+                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height`,
+                        {
+                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h,
+                            ack: true,
+                        },
+                    );
+                }
+                if (sh) {
+                    await this.setStateAsync(
+                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height_fairway`,
+                        {
+                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.sh,
+                            ack: true,
+                        },
+                    );
+                }
+                if (lapping) {
+                    await this.setStateAsync(
+                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_overlapping`,
+                        {
+                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.co,
+                            ack: true,
+                        },
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * @param {object} mower
+     * @param {boolean} first
+     */
     async evaluateVisionMultiZone(mower, first) {
         const all_zones = await this.getObjectListAsync({
             startkey: `${this.namespace}.${mower.serial_number}.multiZones.zones.`,
@@ -898,6 +1066,12 @@ class Worx extends utils.Adapter {
             this.log.debug(`No payload found for device ${mower.serial_number}`);
             return;
         }
+        let vision = "NO";
+        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+            vision = "vision";
+        } else if (mower.capabilities != null && mower.capabilities.includes("maps")) {
+            vision = "rtk";
+        }
         const status = mower.last_status.payload;
         if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
             this.log.info("DoubleShedule found, create states...");
@@ -969,7 +1143,7 @@ class Worx extends utils.Adapter {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
-        if (mower.capabilities != null && !mower.capabilities.includes("vision")) {
+        if (vision === "NO") {
             await this.createDataPoint(
                 `${mower.serial_number}.calendar.${objects.calJson[0]._id}`,
                 objects.calJson[0].common,
@@ -1620,7 +1794,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      * @param {Array} arr
      */
-    async evaluateVisionCalendar(mower, arr) {
+    async evaluateVisionCalendar(mower, arr, vision) {
         if (arr) {
             this.log.debug("COUNTER: " + arr.length);
             this.log.debug("COUNTER SLOTS: " + this.modules[mower.serial_number]["slots"]);
@@ -1660,13 +1834,23 @@ class Worx extends utils.Adapter {
                             common,
                             "folder",
                         );
-                        for (const o of objects.calendar_vision) {
+                        for (const o of objects.calendar_vision_rtk) {
                             await this.createDataPoint(
                                 `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}.${o._id}`,
                                 o.common,
                                 o.type,
                                 o.native,
                             );
+                        }
+                        if (vision === "vision") {
+                            for (const o of objects.calendar_vision) {
+                                await this.createDataPoint(
+                                    `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}.${o._id}`,
+                                    o.common,
+                                    o.type,
+                                    o.native,
+                                );
+                            }
                         }
                     }
                     ++week_count;
@@ -1717,6 +1901,9 @@ class Worx extends utils.Adapter {
                             },
                         },
                     };
+                    if (vision === "vision") {
+                        empty_schedule.cfg.cut.b = 0;
+                    }
                     let t = "00:00";
                     let wt = 0;
                     let cut = false;
@@ -1749,13 +1936,15 @@ class Worx extends utils.Adapter {
                             ack: true,
                         },
                     );
-                    await this.setStateAsync(
-                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.borderCut`,
-                        {
-                            val: cut,
-                            ack: true,
-                        },
-                    );
+                    if (vision === "vision") {
+                        await this.setStateAsync(
+                            `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.borderCut`,
+                            {
+                                val: cut,
+                                ack: true,
+                            },
+                        );
+                    }
                     await this.setStateAsync(
                         `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.enabled_time`,
                         {
@@ -1907,6 +2096,13 @@ class Worx extends utils.Adapter {
                 "zoneIdTo",
                 "tagIdFrom",
                 "tagIdTo",
+                "zones_id",
+                "zones_frequency",
+                "zones_cutting",
+                "zones_direction",
+                "zones_height",
+                "zones_height_fairway",
+                "zones_overlapping",
             ];
             const command = id.split(".").pop();
             if (command == null) return;
@@ -1963,23 +2159,43 @@ class Worx extends utils.Adapter {
                         this.sendMessage(`{"rd":${val}}`, mower.serial_number, id);
                         this.log.debug(`Changed time wait after rain to:${val}`);
                     } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
-                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                        if (
+                            mower.capabilities != null &&
+                            (mower.capabilities.includes("vision") || mower.capabilities.includes("maps"))
+                        ) {
                             this.changeVisionCfg(id, state.val, mower, false);
                         } else {
                             this.changeMowerCfg(id, state.val, mower, false);
                         }
                     } else if (command === "enabled_time" || command === "zones") {
-                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                        if (
+                            mower.capabilities != null &&
+                            (mower.capabilities.includes("vision") || mower.capabilities.includes("maps"))
+                        ) {
                             this.changeVisionCfg(id, state.val, mower, false);
                         }
                     } else if (command === "calJson_sendto" && state.val) {
-                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                        if (
+                            mower.capabilities != null &&
+                            (mower.capabilities.includes("vision") || mower.capabilities.includes("maps"))
+                        ) {
                             this.changeVisionCfg(id, state.val, mower, true);
                         } else {
                             this.changeMowerCfg(id, state.val, mower, true);
                         }
                     } else if (command === "add_timeslot" && state.val) {
                         this.addNewTimeslot(id, mower);
+                    } else if (command === "frequency") {
+                        if (
+                            state.val == 0 ||
+                            (parseInt(state.val.toString()) > 0 && parseInt(state.val.toString()) < 65536)
+                        ) {
+                            this.sendMessage(`{"sc":{ "freq":${state.val}}}`, mower.serial_number, id);
+                        } else {
+                            this.log.warn(
+                                `Only a number between 1 and 65535 is allowed - Value: ${JSON.stringify(state.val)}`,
+                            );
+                        }
                     } else if (
                         command === "area_0" ||
                         command === "area_1" ||
@@ -2179,6 +2395,18 @@ class Worx extends utils.Adapter {
                         } else {
                             this.log.debug("Area array not found!");
                         }
+                    } else if (
+                        command === "zones_id" ||
+                        command === "zones_frequency" ||
+                        command === "zones_cutting" ||
+                        command === "zones_direction" ||
+                        command === "zones_height" ||
+                        command === "zones_height_fairway" ||
+                        command === "zones_overlapping"
+                    ) {
+                        this.startSequencesRTK(id, state.val, mower, false, command);
+                    } else if (command === "zoneJson_sendto" && state.val) {
+                        this.startSequencesRTK(id, state.val, mower, true, command);
                     }
                 } catch (error) {
                     this.log.error(`Error in ${id} ${error}`);
@@ -2241,6 +2469,161 @@ class Worx extends utils.Adapter {
         mower.last_status.payload.cfg.sc.slots.sort((a, b) => {
             return a.d - b.d || a.s - b.s;
         });
+    }
+
+    /**
+     * @param {string} id
+     * @param {object} state
+     * @param {object} mower
+     * @param {boolean} send
+     * @param {string} command
+     */
+    async startSequencesRTK(id, state, mower, send, command) {
+        if (send) {
+            const load_mz = await this.getStateAsync(`${mower.serial_number}.rtk_zones.zoneJson_tosend`);
+            if (!load_mz || !load_mz.val) {
+                this.log.warn(`Cannot load RTK json Zones: ${JSON.stringify(load_mz)}`);
+                return;
+            }
+            let mz = {};
+            load_mz.val = typeof load_mz.val === "string" ? load_mz.val : load_mz.val.toString();
+            try {
+                mz = JSON.parse(load_mz.val);
+            } catch (e) {
+                this.log.warn(`Cannot parse json RTK Zones: ${JSON.stringify(load_mz)}`);
+                return;
+            }
+            if (mz) {
+                if (Array.isArray(mz) && mz.length > 0) {
+                    for (const id of mz) {
+                        if (id.cfg.sc.freq > 65535) {
+                            this.log.warn(`Frequency higher 65535 is not allowed - ${id.cfg.sc.freq}`);
+                            return;
+                        }
+                        if (id.cfg.cut.t > 5) {
+                            this.log.warn(`Cutting pattern higher 5 is not allowed - ${id.cfg.cut.t}`);
+                            return;
+                        }
+                        if (id.cfg.cut.d > 359) {
+                            this.log.warn(`Cut direction higher 359 is not allowed - ${id.cfg.cut.d}`);
+                            return;
+                        }
+                        if (id.cfg.cut.co && id.cfg.cut.co > 100) {
+                            this.log.warn(`Cut overlapping higher 359 is not allowed - ${id.cfg.cut.d}`);
+                            return;
+                        }
+                        if (id.cfg.modules && id.cfg.modules.EA && id.cfg.modules.EA.h) {
+                            if (id.cfg.modules.EA.h < 30 || id.cfg.modules.EA.h > 60) {
+                                this.log.warn(`Only between 30 and 60 are allowed! - ${id.cfg.modules.EA.h}`);
+                                return;
+                            }
+                            if (id.cfg.modules.EA.h % 5 != 0) {
+                                this.log.warn(
+                                    `Electric adjustment: Unit only in 5 mm increments! - ${id.cfg.modules.EA.h}`,
+                                );
+                                return;
+                            }
+                        }
+                        if (id.cfg.modules && id.cfg.modules.EA && id.cfg.modules.EA.sh) {
+                            if (id.cfg.modules.EA.sh < 20 || id.cfg.modules.EA.sh > 40) {
+                                this.log.warn(`Only between 30 and 60 are allowed! - ${id.cfg.modules.EA.sh}`);
+                                return;
+                            }
+                            if (id.cfg.modules.EA.sh % 5 != 0) {
+                                this.log.warn(
+                                    `Electric adjustment: Unit only in 5 mm increments! - ${id.cfg.modules.EA.sh}`,
+                                );
+                                return;
+                            }
+                        }
+                    }
+                    this.log.debug(`ZoneRTK send: - ${JSON.stringify(state)}`);
+                    this.sendMessage(`{"zs":${JSON.stringify(mz)}}`, mower.serial_number, id);
+                    await this.setStateAsync(id, {
+                        val: false,
+                        ack: true,
+                    });
+                } else {
+                    this.log.info(`State zoneJson_tosend have a wrong type! - ${mz}`);
+                }
+            } else {
+                this.log.info(`State zoneJson_tosend is empty!`);
+            }
+            return;
+        }
+        const secsplit = id.split(".")[id.split(".").length - 2];
+        const zone_id = await this.getStateAsync(
+            `${mower.serial_number}.${objects.rtk_channel[0]._id}.${secsplit}.zones_id`,
+        );
+        if (zone_id && zone_id.val != null) {
+            const zs = mower.last_status.payload.cfg.rtk.zs.find((zone) => zone.id === zone_id.val);
+            if (zs) {
+                this.log.debug(`zs: ${JSON.stringify(zs)}`);
+                if (command === "zones_frequency") {
+                    if (zs.cfg.sc.freq > 65535) {
+                        this.log.warn(`Frequency higher 65535 is not allowed - ${zs.cfg.sc.freq}`);
+                        return;
+                    } else {
+                        zs.cfg.sc.freq = state;
+                    }
+                } else if (command === "zones_cutting") {
+                    if (zs.cfg.cut.t > 5) {
+                        this.log.warn(`Cutting pattern higher 5 is not allowed - ${zs.cfg.cut.t}`);
+                        return;
+                    } else {
+                        zs.cfg.cut.t = state;
+                    }
+                } else if (command === "zones_direction") {
+                    if (zs.cfg.cut.d > 359) {
+                        this.log.warn(`Cut direction higher 359 is not allowed - ${zs.cfg.cut.d}`);
+                        return;
+                    } else {
+                        zs.cfg.cut.d = state;
+                    }
+                } else if (command === "zones_height") {
+                    if (zs.cfg.modules.EA.h < 30 || zs.cfg.modules.EA.h > 60) {
+                        this.log.warn(`Only between 30 and 60 are allowed! - ${zs.cfg.cut.modules.EA.h}`);
+                        return;
+                    }
+                    if (zs.cfg.modules.EA.h % 5 != 0) {
+                        this.log.warn(`Electric adjustment: Unit only in 5 mm increments! - ${zs.cfg.modules.EA.h}`);
+                        return;
+                    }
+                    zs.cfg.modules.EA.h = state;
+                } else if (command === "zones_height_fairway") {
+                    if (zs.cfg.modules.EA.sh < 20 || zs.cfg.modules.EA.sh > 40) {
+                        this.log.warn(`Only between 30 and 60 are allowed! - ${zs.cfg.modules.EA.sh}`);
+                        return;
+                    }
+                    if (zs.cfg.modules.EA.sh % 5 != 0) {
+                        this.log.warn(`Electric adjustment: Unit only in 5 mm increments! - ${zs.cfg.modules.EA.sh}`);
+                        return;
+                    }
+                    zs.cfg.modules.EA.sh = state;
+                } else if (command === "zones_overlapping") {
+                    if (zs.cfg.cut.co && zs.cfg.cut.co > 100) {
+                        this.log.warn(`Cut overlapping higher 359 is not allowed - ${zs.cfg.cut.d}`);
+                        return;
+                    } else {
+                        zs.cfg.cut.co = state;
+                    }
+                } else {
+                    this.log.warn(`Cannot found command - ${command}!`);
+                    return;
+                }
+                await this.setStateAsync(`${mower.serial_number}.rtk_zones.zoneJson_tosend`, {
+                    val: JSON.stringify(mower.last_status.payload.cfg.rtk.zs),
+                    ack: true,
+                });
+                await this.setStateAsync(id, {
+                    ack: true,
+                });
+            } else {
+                this.log.warn(`Cannot found zones!`);
+            }
+        } else {
+            this.log.warn(`Cannot found zone-id!`);
+        }
     }
 
     /**

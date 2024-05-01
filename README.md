@@ -44,6 +44,11 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+-   (Lucky-ESA) Preperation mission Kress new API
+
 ### 3.0.0 (2024-04-25)
 
 -   (Lucky-ESA) Fixed Sentry messages
