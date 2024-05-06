@@ -390,12 +390,12 @@ class Worx extends utils.Adapter {
         // TODO Check last start rain counter
         if (mower && mower.serial_number) {
             //first start while get devices
+            if (firstStart) {
+                this.log.info("Create folder activityLog and set states.");
+                await this.createActivity(mower);
+            }
             const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
-                if (firstStart) {
-                    this.log.info("Create folder activityLog and set states.");
-                    await this.createActivity(mower);
-                }
                 await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
                     ack: true,
