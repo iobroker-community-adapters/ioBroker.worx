@@ -120,6 +120,10 @@ class Worx extends utils.Adapter {
             this.log.warn(e);
             this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
         }
+        if (typeof this.config.edgeCutDelay != "number" || this.config.edgeCutDelay < 1000) {
+            this.log.info(`Changed timeout for edgecut to 5000`);
+            this.config.edgeCutDelay = 5000;
+        }
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
         this.userAgent += this.version;
@@ -1331,6 +1335,7 @@ class Worx extends utils.Adapter {
     async awsMqtt() {
         try {
             const uuid = this.randomClientid(8, 64) || uuidv4();
+            this.log.info("UUID: " + uuid);
             this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
@@ -3642,6 +3647,7 @@ class Worx extends utils.Adapter {
 
         if (
             val === true &&
+            mower.last_status &&
             mower.last_status.payload &&
             mower.last_status.payload.cfg &&
             mower.last_status.payload.cfg.sc &&
@@ -3652,6 +3658,7 @@ class Worx extends utils.Adapter {
             this.sendMessage('{"cut":{"b":1,"z":[]}}', mower.serial_number, id);
         } else if (
             val === true &&
+            mower.last_status &&
             mower.last_status.payload &&
             mower.last_status.payload.cfg &&
             mower.last_status.payload.cfg.sc &&
