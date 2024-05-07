@@ -41,6 +41,7 @@ class Worx extends utils.Adapter {
         this.reLoginTimeout = null;
         this.refreshActivity = null;
         this.loadActivity = {};
+        this.interruptCheck = {};
         this.refreshTokenTimeout = null;
         this.timeoutedgeCutDelay = null;
         this.mqtt_blocking = 0;
@@ -124,6 +125,10 @@ class Worx extends utils.Adapter {
             this.log.info(`Changed timeout for edgecut to 5000`);
             this.config.edgeCutDelay = 5000;
         }
+        this.interruptCheck["count_max"] = 5000;
+        this.interruptCheck["count_time"] = 0;
+        this.interruptCheck["count"] = 0;
+        this.interruptCheck["last"] = 0;
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
         this.userAgent += this.version;
@@ -1356,8 +1361,8 @@ class Worx extends utils.Adapter {
                 );
                 config_builder.with_endpoint(this.userData.mqtt_newendpoint);
                 //config_builder.with_port(443);
-                //config_builder.with_reconnect_max_sec(1000);
-                //config_builder.with_reconnect_min_sec(10000);
+                config_builder.with_reconnect_max_sec(0.5);
+                config_builder.with_reconnect_min_sec(1);
                 //config_builder.with_keep_alive_seconds(30);
                 config_builder.with_custom_authorizer(
                     `${category}?jwt=${encodeURIComponent(accessTokenParts[0])}.${encodeURIComponent(accessTokenParts[1])}`,
@@ -1530,8 +1535,29 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("interrupt", async (error) => {
-                this.log.info(`Connection interrupted: ${error}`);
+                const check_time = Date.now() - this.interruptCheck["count_time"];
+                if (check_time > this.interruptCheck["count_max"]) {
+                    this.log.info(`Connection interrupted: ${error}`);
+                    this.interruptCheck["count"] = 0;
+                    this.log.info(`Last interrupt ${this.interruptCheck["last"]} ms`);
+                    this.interruptCheck["last"] = check_time;
+                } else {
+                    if (this.interruptCheck["count"] < 10) {
+                        ++this.interruptCheck["count"];
+                    } else {
+                        this.log.warn(
+                            `Mqtt Coonnection CLOSED! Please restart Adapter! Connection interrupted: ${error}`,
+                        );
+                        if (this.mqtt != null) {
+                            this.mqttC && this.mqttC.disconnect();
+                        } else {
+                            // @ts-ignore
+                            this.mqttC && this.mqttC.end();
+                        }
+                    }
+                }
                 this.setMqttOnline(false);
+                this.interruptCheck["count_time"] = Date.now();
             });
 
             this.mqttC.on("resume", async (return_code, session_present) => {
@@ -3668,6 +3694,7 @@ class Worx extends utils.Adapter {
             this.sendMessage('{"cmd":4}', mower.serial_number, id); // starte ZoneTraining
         } else if (
             val === true &&
+            mower.last_status &&
             mower.last_status.payload &&
             mower.last_status.payload.cfg &&
             mower.last_status.payload.cfg.sc &&
