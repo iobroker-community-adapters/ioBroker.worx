@@ -125,6 +125,10 @@ class Worx extends utils.Adapter {
             this.log.info(`Changed timeout for edgecut to 5000`);
             this.config.edgeCutDelay = 5000;
         }
+        if (this.config.intervalCloud > 1440 || this.config.intervalCloud < 10) {
+            this.log.warn(`Interval ${this.config.intervalCloud} is not allowed! Changed Interval to 30 Minutes!`);
+            this.config.intervalCloud = 60;
+        }
         this.interruptCheck["count_max"] = 5000;
         this.interruptCheck["count_time"] = 0;
         this.interruptCheck["count"] = 0;
@@ -165,7 +169,7 @@ class Worx extends utils.Adapter {
                 async () => {
                     await this.updateDevices();
                 },
-                10 * 60 * 1000,
+                10 * this.config.intervalCloud * 1000,
             ); // 10 minutes
 
             if (!this.session.expires_in || this.session.expires_in < 200) {
@@ -1340,7 +1344,6 @@ class Worx extends utils.Adapter {
     async awsMqtt() {
         try {
             const uuid = this.randomClientid(8, 64) || uuidv4();
-            this.log.info("UUID: " + uuid);
             this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
@@ -1537,9 +1540,9 @@ class Worx extends utils.Adapter {
             this.mqttC.on("interrupt", async (error) => {
                 const check_time = Date.now() - this.interruptCheck["count_time"];
                 if (check_time > this.interruptCheck["count_max"]) {
-                    this.log.info(`Connection interrupted: ${error}`);
+                    this.log.debug(`Connection interrupted: ${error}`);
                     this.interruptCheck["count"] = 0;
-                    this.log.info(`Last interrupt ${this.interruptCheck["last"]} ms`);
+                    this.log.debug(`Last interrupt ${this.interruptCheck["last"]} ms`);
                     this.interruptCheck["last"] = check_time;
                 } else {
                     if (this.interruptCheck["count"] < 10) {
@@ -1562,9 +1565,9 @@ class Worx extends utils.Adapter {
 
             this.mqttC.on("resume", async (return_code, session_present) => {
                 this.setMqttOnline(false);
-                this.log.info(`Resumed: rc: ${return_code} existing session: ${session_present}`);
-                this.log.info("MQTT reconnect: " + this.mqtt_blocking);
-                this.log.info(`Reconnect since adapter start: ${this.reconnectCounter}`);
+                this.log.debug(`Resumed: rc: ${return_code} existing session: ${session_present}`);
+                this.log.debug("MQTT reconnect: " + this.mqtt_blocking);
+                this.log.debug(`Reconnect since adapter start: ${this.reconnectCounter}`);
                 ++this.reconnectCounter;
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 15) {

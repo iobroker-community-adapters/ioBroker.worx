@@ -50,6 +50,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -   (Lucky-ESA) Preperation mission Kress new API
 -   (Lucky-ESA) Fixed TypeError
 -   (Lucky-ESA) Fixed missing activity states
+-   (Lucky-ESA) Added update interval in instance setting
 
 ### 3.0.0 (2024-04-25)
 

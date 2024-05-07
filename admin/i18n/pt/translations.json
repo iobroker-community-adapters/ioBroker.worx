@@ -4,5 +4,6 @@
     "App Name": "Nome do aplicativo",
     "delay for edge cut": "atraso para corte de borda",
     "Distance and time in min and m": "Distância e tempo em minutos/hora e metros/km",
-    "Updating MQTT data after token update.": "Atualizando dados após atualização do token."
+    "Updating MQTT data after token update.": "Atualizando dados após atualização do token.",
+    "Update interval in minutes": "Intervalo de atualização em minutos"
 }

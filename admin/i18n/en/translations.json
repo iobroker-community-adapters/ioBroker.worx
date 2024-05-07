@@ -2,6 +2,7 @@
     "APP username (eMail)": "APP username (eMail)",
     "App Password": "App Password",
     "App Name": "App Name",
+    "Update interval in minutes": "Update interval in minutes",
     "delay for edge cut": "delay for edge cut",
     "Distance and time in min and m": "Distance and time in Minute/Hour and Meter/KM",
     "Updating MQTT data after token update.": "Updating data after token update."

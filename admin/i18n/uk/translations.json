@@ -4,5 +4,6 @@
     "App Name": "Назва програми",
     "delay for edge cut": "затримка для різання краю",
     "Distance and time in min and m": "Відстань і час у хвилинах/годинах і метрах/км",
-    "Updating MQTT data after token update.": "Оновлення даних після оновлення маркера."
+    "Updating MQTT data after token update.": "Оновлення даних після оновлення маркера.",
+    "Update interval in minutes": "Інтервал оновлення в хвилинах"
 }

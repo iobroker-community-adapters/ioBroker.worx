@@ -40,6 +40,16 @@
             ],
             "label": "App Name"
         },
+        "intervalCloud": {
+            "type": "number",
+            "label": "Update interval in minutes",
+            "min": 60,
+            "max": 1440,
+            "step": 1,
+            "newLine": true,
+            "sm": 3,
+            "default": 60
+        },
         "edgeCutDelay": {
             "type": "number",
             "label": "delay for edge cut",

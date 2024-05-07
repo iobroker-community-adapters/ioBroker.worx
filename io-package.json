@@ -267,6 +267,7 @@
     "mail": "",
     "password": "",
     "edgeCutDelay": 5000,
+    "intervalCloud": 60,
     "server": "worx",
     "meterMin": false,
     "updateMqtt": false
