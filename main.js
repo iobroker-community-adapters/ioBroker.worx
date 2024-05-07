@@ -998,6 +998,7 @@ class Worx extends utils.Adapter {
                         if (new_data.last_status && new_data.last_status.timestamp != null) {
                             delete new_data.last_status.timestamp;
                         }
+                        this.last_update_connection(device.serial_number, 1);
                         this.json2iob.parse(`${device.serial_number}.${element.path}`, new_data, {
                             forceIndex: forceIndex,
                             preferedArrayName: preferedArrayName,
@@ -1429,6 +1430,17 @@ class Worx extends utils.Adapter {
         return headers;
     }
 
+    last_update_connection(id, con) {
+        this.setState(`${id}.mower.last_update`, {
+            val: Date.now(),
+            ack: true,
+        });
+        this.setState(`${id}.mower.last_update_connection`, {
+            val: con,
+            ack: true,
+        });
+    }
+
     async connectMqtt() {
         try {
             this.mqttC = await this.awsMqtt();
@@ -1456,6 +1468,7 @@ class Worx extends utils.Adapter {
                     this.log.debug(
                         "Worxcloud MQTT get Message for mower " + mower.name + " (" + mower.serial_number + ")",
                     );
+                    this.last_update_connection(mower.serial_number, 0);
                     try {
                         if (!data.cfg.sn) {
                             data.cfg.sn = mower.serial_number;

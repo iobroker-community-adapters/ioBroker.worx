@@ -192,7 +192,7 @@
 }
 ```
 
-![Mower img/mower_1.png](../en/img/mower_1.png)
+![Mower img/mower_1.png](img/mower_1.png)
 
 -   `firmware`: Installierte Firmware (Draht & Vision/nur lesen)
 -   `firmware_available`: Verfügbare Firmware (Draht & Vision/nur lesen)
@@ -218,12 +218,14 @@
 -   `gradient`: Gefälle oder Anstieg in Grad (Draht & Vision/nur lesen)
 -   `inclination`: Neigung in Grad (Draht & Vision/nur lesen)
 -   `last_command`: Letzter Befehl von iobroker oder der APP als JSON Table (Draht & Vision/nur lesen)
+-   `last_update` Letzte Update (wire & Vision/nur lesen)
+-   `last_update_connection` Von welcher Verbindung (Mqtt oder Cloud / wire & Vision/nur lesen)
 -   `mowTimeExtend`: Mähzeitverlängerung-/Verkürzung in % Bereich: -100%->100% (Draht/änderbar)
 -   `mowerActive`: Pause Mähplan (Draht/änderbar)
 -   `mqtt_update`: Update Mqtt Daten vom Mäher - max. 150/Tag (Draht & Vision/änderbar)
 -   `mqtt_update_count`: Counter von Update Mqtt Daten (Draht & Vision/nur lesen)
 
-![Mower img/mower_2.png](../en/img/mower_2.png)
+![Mower img/mower_2.png](img/mower_2.png)
 
 -   `oneTimeJson`: einmaliges Mähen als JSON (Draht & Vision/änderbar)
 
@@ -246,7 +248,7 @@
 -   `reset_blade_time`: Klingenarbeitszeit in 2 Schritten zurücksetzen (Draht & Vision/änderbar)
 -   `reset_blade_time_approved`: Klingenarbeitszeit zurücksetzen bestätigen - `reset_battery_time` muss auf true gesetzt sein (Draht & Vision/änderbar)
 
-![Mower img/mower_3.png](../en/img/mower_3.png)
+![Mower img/mower_3.png](img/mower_3.png)
 
 -   `rfidStatus`: Status RF Sensor 0=OK/1=Fehler (Vision/nur lesen)
 -   `sendCommand`: Ein Befehl versenden (Draht & Vision/änderbar)
@@ -336,7 +338,7 @@
 }
 ```
 
-![Mower img/mower_4.png](../en/img/mower_4.png)
+![Mower img/mower_4.png](img/mower_4.png)
 
 ### Zusätzlich Vision Infos
 

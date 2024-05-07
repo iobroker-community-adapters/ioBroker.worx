@@ -218,6 +218,8 @@
 -   `gradient`: Gradient in degrees (wire & Vision/readonly)
 -   `inclination`: Inclination in degrees (wire & Vision/readonly)
 -   `last_command`: Last Request from iobroker or APP as JSON Table (wire & Vision/readonly)
+-   `last_update` Last update (wire & Vision/readonly)
+-   `last_update_connection` Which connection (Mqtt or Cloud / wire & Vision/readonly)
 -   `mowTimeExtend`: Mow time extend in % Range: -100%->100% (wire/changeable)
 -   `mowerActive`: Pause mowing plan (wire/changeable)
 -   `mqtt_update`: Update Mqtt data max. 150/day (wire & Vision/changeable)
