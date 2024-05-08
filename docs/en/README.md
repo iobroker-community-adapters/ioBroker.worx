@@ -9,7 +9,7 @@
 -   `App Email`: Your APP Username (eMail)
 -   `App Password`: Your APP Password
 -   `App Name`: Choose your device
--   `Update interval in minutes` Interval to update all data
+-   `Update interval in minutes` Interval to update all data (Range from 10 to 1440 possible)
 -   `Delay for EdgeCut`: When should EdgeCut start (example 5 seconds to lawn)
 -   `Distance and time in min and m`: Default h and km
 -   `Updating MQTT data after token update.`: Loads the Worx data after the refresh token.

@@ -5,5 +5,6 @@
     "delay for edge cut": "vertraging voor randafsnijding",
     "Distance and time in min and m": "Afstand en tijd in minuten/uur en meter/KM",
     "Updating MQTT data after token update.": "Gegevens bijwerken na tokenupdate.",
-    "Update interval in minutes": "Update-interval in minuten"
+    "Update interval in minutes": "Update-interval in minuten",
+    "Range": "Bereik van 10 tot 1440 mogelijk"
 }

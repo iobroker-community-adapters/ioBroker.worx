@@ -9,7 +9,7 @@
 -   `App-Benutzername`: APP Benutzername (eMail)
 -   `App-Passwort`: APP Passwort
 -   `App Name`: Geräte auswählen
--   `Aktualisierungsintervall in Minuten` Intervall um alle Daten zu aktualisieren
+-   `Aktualisierungsintervall in Minuten` Intervall um alle Daten zu aktualisieren (Bereich von 10 bis 1440 möglich)
 -   `Verzögerung für Kantenschnitt`: Wann soll EdgeCut nach dem Losfahren starten (Beispiel nach 5 Sekunden bis zum Rasen)
 -   `Entfernung und Zeit in Minuten und Metern`: Einheit für Laufzeit und Arbeitszeit in Min./Std. und Meter/KM
 -   `Aktualisieren der MQTT-Daten nach der Token-Aktualisierung.`: Nach der Erneuerung vom Token (jede Stunde) die Mqtt Daten neu laden.

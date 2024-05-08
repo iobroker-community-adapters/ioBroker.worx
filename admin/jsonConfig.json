@@ -43,6 +43,7 @@
         "intervalCloud": {
             "type": "number",
             "label": "Update interval in minutes",
+            "tooltip": "Range",
             "min": 60,
             "max": 1440,
             "step": 1,

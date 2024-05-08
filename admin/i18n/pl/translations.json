@@ -5,5 +5,6 @@
     "delay for edge cut": "opóźnienie przy cięciu krawędzi",
     "Distance and time in min and m": "Odległość i czas w minutach/godzinach i metrach/km",
     "Updating MQTT data after token update.": "Aktualizacja danych po aktualizacji tokena.",
-    "Update interval in minutes": "Interwał aktualizacji w minutach"
+    "Update interval in minutes": "Interwał aktualizacji w minutach",
+    "Range": "Możliwy zakres od 10 do 1440"
 }
