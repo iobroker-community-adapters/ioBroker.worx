@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "news": {
+      "3.0.1": {
+        "en": "Preperation mission Kress new API\nFixed TypeError\nFixed missing activity states\nAdded update interval in instance setting\nAdded last update",
+        "de": "Preperation Mission Kress neue API\nFeste ArtError\nFeste fehlende Aktivitätszustände\nUpdate-Intervall in der Einstellung hinzugefügt\nLetzte Aktualisierung",
+        "ru": "Миссия Kress новый API\nFixed TypeError\nИсправленные состояния недостающей деятельности\nДобавленный интервал обновления в настройке\nДобавлено последнее обновление",
+        "pt": "Missão de preparação Kress nova API\nTipo fixoError\nEstados de atividade ausentes fixos\nAdicionado intervalo de atualização na configuração de instância\nAdicionado última atualização",
+        "nl": "Preperatiemissie Kress nieuwe API\nFixed TypeError\nVaste ontbrekende activiteitstoestanden\nBijgewerkt interval in instantie-instelling\nLaatste update toegevoegd",
+        "fr": "Mission préparatoire Kress nouvelle API\nType fixeErreur\nÉtats d'activité manquants fixes\nAjout de l'intervalle de mise à jour dans le paramètre instance\nDernière mise à jour ajoutée",
+        "it": "Missione di preperazione Kress nuova API\nTipo di errore fisso\nStati di attività mancanti fissi\nIntervallo di aggiornamento aggiunto nell'impostazione di istanza\nAggiunto l'ultimo aggiornamento",
+        "es": "Misión de Preperación Kress nueva API\nTipo fijoError\nEstados de actividad perdidos fijos\nAñadido intervalo de actualización en configuración de instancia\nÚltima actualización",
+        "pl": "Misja preperacyjna Kress new API\nNaprawiono błąd typu\nUstalone brakujące stany aktywności\nDodano interwał aktualizacji w ustawieniu instancji\nDodano ostatnią aktualizację",
+        "uk": "Попередня місія Kress новий API\nФіксований TypeError\nВиправлено відсутні стани діяльності\nДодано інтервал оновлення в налаштуваннях екземпляра\nДодано останнє оновлення",
+        "zh-cn": "考察团 Kress 新建 API\n固定类型错误\n固定缺失的活动状态\n在实例设置中添加更新间隔\n添加了上次更新"
+      },
       "3.0.0": {
         "en": "Fixed Sentry messages\nCatch publish crash\nAdded Vision completely\nNode 18 required\nJS-Controller >= 5.0.19 required\nAdmin >=6.13.16 required\nCatch aws_cer error and use old mqtt connection\nDelete ping",
         "de": "Feste Sentry-Nachrichten\nCrash veröffentlichen\nVision komplett hinzugefügt\nNode 18 erforderlich\nJS-Controller >= 5.0.19 erforderlich\nAdmin >=6.13.16 erforderlich\nFangen Sie aws_cer Fehler und verwenden Sie alte mqtt Verbindung\nLöschen von p",
@@ -80,19 +93,6 @@
         "pl": "Removed mowerActive for Vision (ang.)\nAddd Vision wstrzymał harmonogram\nStrona Addd Vision\nVision (ang.)\nFix wysyła wiadomość do dziedziczenia\n684\nFix-Array dziedziczenie\nVision mowers w/o Status & Error (ang.)\nOficjalna strona Add ZoneKeeper",
         "uk": "Вилучена косаркаАктива для зору\nДодати графік вибачення\nДодати вечірку зоруModus\nВиправлення запиту ping Vision\nВиправлення надсилання спадщини повідомлення\nВиправлення #684\nФіксований пристрій\nДодати косарки Vision w/o Статус і повідомлення про помилку\nДодати ZoneKeeper для попередніх косарки",
         "zh-cn": "取消对《愿景》的反应\n增加设想时间表\n加入《政党领导》\n固定请求书\nFix发出讯息\nFix #684\nFix装置Array继承\n添加《远景》:妻子/地位和电子信息\n前一轮答复的增区"
-      },
-      "2.1.3": {
-        "en": "Added ping option in the instance settings.",
-        "de": "In den Instanzeinstellungen wurde die Ping-Option hinzugefügt.",
-        "ru": "Добавлена опция ping в настройках примера.",
-        "pt": "Adicionado ping opção nas configurações de instância.",
-        "nl": "Toegevoegd pingoptie in de voorstellingen.",
-        "fr": "Ajout de l'option ping dans les paramètres de l'instance.",
-        "it": "Aggiunta opzione ping nelle impostazioni di istanza.",
-        "es": "Opción de ping agregada en la configuración de instancia.",
-        "pl": "Wykorzystywana opcja pingowa w ustawieniach.",
-        "uk": "Додано параметр ping в налаштуваннях екземпляра.",
-        "zh-cn": "在这种环境中增加选择。."
       }
     },
     "titleLang": {
