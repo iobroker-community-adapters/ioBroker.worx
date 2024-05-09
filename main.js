@@ -3653,7 +3653,10 @@ class Worx extends utils.Adapter {
 
         //hotfix 030620
         message && delete message.ots;
-
+        if (val % 10 != 0) {
+            this.log.warn(`MowerTimeExtend only in 10 second increments!`);
+            return;
+        }
         if (!isNaN(val) && val >= -100 && val <= 100) {
             message.p = val;
             this.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial_number, id);
