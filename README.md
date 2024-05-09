@@ -48,6 +48,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ### **WORK IN PROGRESS**
 
 -   (Lucky-ESA) mowTimeExtend restricted input
+-   (Lucky-ESA) Fixed TypeError
 
 ### 3.0.1 (2024-05-08)
 
