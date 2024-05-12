@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "news": {
+      "3.0.2": {
+        "en": "mowTimeExtend restricted input\nFixed TypeError",
+        "de": "mowTimeExtend eingeschränkter Eingang\nFeste ArtError",
+        "ru": "mowTime\nFixed TypeError",
+        "pt": "mowTimeExtend entrada restrita\nTipo fixoError",
+        "nl": "mowTimeUitgebreid beperkte invoer\nFixed TypeError",
+        "fr": "mowTimeExtend entrée restreinte\nType fixeErreur",
+        "it": "mowTimeExtend ingresso limitato\nTipo di errore fisso",
+        "es": "mowTimeExtienda entrada restringida\nTipo fijoError",
+        "pl": "mowTimeExtend ograniczone wejście\nNaprawiono błąd typu",
+        "uk": "mowTimeExtend обмежений вхід\nФіксований TypeError",
+        "zh-cn": "剪切时间扩展限制输入\n固定类型错误"
+      },
       "3.0.1": {
         "en": "Preperation mission Kress new API\nFixed TypeError\nFixed missing activity states\nAdded update interval in instance setting\nAdded last update",
         "de": "Preperation Mission Kress neue API\nFeste ArtError\nFeste fehlende Aktivitätszustände\nUpdate-Intervall in der Einstellung hinzugefügt\nLetzte Aktualisierung",
@@ -80,19 +93,6 @@
         "pl": "Oficjalna strona\nWykorzystywana info na żądanie - Worx niepełnosprawny punkt końcowy\nZresetowany czas ostrza i baterię\nDodać ping po odświeżeniu tokenu\nAdding german description (ang.)\nZmienić oprogramowanie\nChanged authendpoint (ang.)\nCzęść błędów naprawia\nKliencki klientid mqtt\nprzetłumaczyć\nNew Mqtt connection\n",
         "uk": "Додано оновлення прошивки\nЗапит на дошку - Worx відключений кінцевий пункт\nДодано час скидання леза і час батареї\nДодано пінг після оновленого токен\nДодано німецький опис\nЗмінений запит про прошивку\nЗмінено auth-endpoint\nДеякі виправлення помилок\nФіксувати унікальний клієнт mqtt\njavascript licenses api веб-сайт\nНовий Mqtt підключення\n",
         "zh-cn": "添加的“Frmware最新情况”\n删除以要求为主的委员会—— 残疾终点\n增加时间和电池时间\n装修后\n附加说明\n改变警觉要求\n改编\n一些布格瓦特\nFix独特的 mqt客户\n阅读摘要\nNew Mqt联系\n"
-      },
-      "2.2.0": {
-        "en": "Removed mowerActive for Vision\nAdd Vision paused schedule\nAdd Vision partyModus\nFix ping request Vision\nFix send message inheritance\nFix #684\nFix deviceArray inheritance\nAdd Vision mowers w/o Status & Error message\nAdd ZoneKeeper for previous mowers",
-        "de": "mowerActive für Visionentfernt\nVision Zeitplan Pausierung hinzugefügt\nVision partymodus hinzugefügt\nping Anfrage Vision gefixed\nSende-Nachricht-Erinnerung Problem behoben\n#684 gefixed\ndeviceArray Vererbung gefixed\nVision Mähers w/o Status & Fehlermeldung werden ohne Fehlermeldung hinzugefügt\nZoneKeeper für frühere Mäher hinzugefügt",
-        "ru": "Удаленная моверАктивна для видения\nДобавьте график работы с Vision paused\nДобавить видение partyModus\nFix ping запрос Видение\nFix отправить сообщение наследство\nФиксация #684\nFix устройствоArray наследство\nДобавить видение mowers w/o Статус и сообщение об ошибке\nДобавить ZoneKeeper за предыдущие косилки",
-        "pt": "Cortador removidoAtivo para Visão\nAdicionar Visão cronograma pausado\nAdicionar Vision partyModus\nFix ping request Visão\nCorrigir herança de mensagem de envio\nFixar #684\nCorrigir herança dispositivoArray\nAdicionar cortadores de visão w/o Status & Mensagem de erro\nAdicionar ZoneKeeper para cortadores anteriores",
-        "nl": "Verwijdering voor Vision\nVertaling:\nAdd Vision PartModus\nFix ping verzoek Vision\nVertaling:\nVertaling:\nVertaling:\nVertaling:\nAdd ZoneKeper voor eerdere masten",
-        "fr": "Débardeur enlevéActive for Vision\nAjouter Vision pause programme\nAjouter Vision partyModus\nFix ping request Vision\nEnvoyer un message\nFix #684\nDistributeur Array\nAjouter les tondeuses Vision w/o Statut & Message d'erreur\nAjouter ZoneKeeper pour les tondeuses précédentes",
-        "it": "Rimozione della falciatriceActive per Vision\nAggiungi Visione programma sospeso\nAggiungi Vision partyModus\nFissare la richiesta di ping\nRisolvi l'eredità del messaggio\nFissare #684\nFissare l'eredità di dispositivoArray\nAggiungi tosaerba Vision w/o Stato & messaggio di errore\nAggiungere ZoneKeeper per falciatrici precedenti",
-        "es": "Retire la cortadoraActiva para la visión\nAdd Vision paused schedule\nAgregar partido VisiónModus\nSolicitud de fijación Visión\nCorrección enviar la herencia del mensaje\nCorrección #684\nDispositivo fijoArray inheritance\nAgregar las cortadoras Visión w/o Status > Mensaje de error\nAñadir ZoneKeeper para cortacéspedes anteriores",
-        "pl": "Removed mowerActive for Vision (ang.)\nAddd Vision wstrzymał harmonogram\nStrona Addd Vision\nVision (ang.)\nFix wysyła wiadomość do dziedziczenia\n684\nFix-Array dziedziczenie\nVision mowers w/o Status & Error (ang.)\nOficjalna strona Add ZoneKeeper",
-        "uk": "Вилучена косаркаАктива для зору\nДодати графік вибачення\nДодати вечірку зоруModus\nВиправлення запиту ping Vision\nВиправлення надсилання спадщини повідомлення\nВиправлення #684\nФіксований пристрій\nДодати косарки Vision w/o Статус і повідомлення про помилку\nДодати ZoneKeeper для попередніх косарки",
-        "zh-cn": "取消对《愿景》的反应\n增加设想时间表\n加入《政党领导》\n固定请求书\nFix发出讯息\nFix #684\nFix装置Array继承\n添加《远景》:妻子/地位和电子信息\n前一轮答复的增区"
       }
     },
     "titleLang": {
