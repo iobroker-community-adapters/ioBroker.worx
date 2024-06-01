@@ -35,7 +35,7 @@
     "aws-iot-device-sdk": "^2.2.13",
     "aws-iot-device-sdk-v2": "^1.19.5",
     "axios": "^1.6.8",
-    "http-cookie-agent": "^6.0.3",
+    "http-cookie-agent": "^6.0.5",
     "json2iob": "^2.6.11",
     "qs": "^6.12.1",
     "tough-cookie": "^4.1.4",
