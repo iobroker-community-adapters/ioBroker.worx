@@ -34,7 +34,7 @@ The adapter can control the mower and you can change config params like mowtimes
 🇬🇧 [Description](/docs/en/README.md)</br>
 🇩🇪 [Beschreibung](/docs/de/README.md)
 
-## Disscussion und Questions
+## Discussion und Questions
 
 🇩🇪 [Fragen](https://forum.iobroker.net/topic/4834/adapter-worx-landroid/)
 
@@ -44,6 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
+
 ### 3.0.2 (2024-05-12)
 
 -   (Lucky-ESA) mowTimeExtend restricted input
