@@ -189,50 +189,52 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async login() {
-        let attempt = 0;
-        const maxAttempts = 3;
-        const retryDelay = 60000; // 1 Minute in Millisekunden
+   async login() {
+    let attempt = 0;
+    const maxAttempts = 3;
+    const retryDelay = 60000; // 1 Minute in Millisekunden
 
-        while (attempt < maxAttempts) {
-            try {
-                const data = await this.requestClient({
-                    url: this.clouds[this.config.server].loginUrl + "oauth/token",
-                    method: "post",
-                    headers: {
-                        accept: "application/json",
-                        "content-type": "application/json",
-                        "user-agent": this.userAgent,
-                        "accept-language": "de-de",
-                    },
-                    data: JSON.stringify({
-                        client_id: this.clouds[this.config.server].clientId,
-                        username: this.config.mail,
-                        password: this.config.password,
-                        scope: "*",
-                        grant_type: "password",
-                    }),
-                });
+    while (attempt < maxAttempts) {
+        try {
+            const data = await this.requestClient({
+                url: this.clouds[this.config.server].loginUrl + "oauth/token",
+                method: "post",
+                headers: {
+                    accept: "application/json",
+                    "content-type": "application/json",
+                    "user-agent": this.userAgent,
+                    "accept-language": "de-de",
+                },
+                data: JSON.stringify({
+                    client_id: this.clouds[this.config.server].clientId,
+                    username: this.config.mail,
+                    password: this.config.password,
+                    scope: "*",
+                    grant_type: "password",
+                }),
+            });
 
-                this.log.debug(JSON.stringify(data.data));
-                this.session = data.data;
-                this.setState("info.connection", true, true);
-                this.log.info(`Connected to ${this.config.server} server`);
-                return; // Beende die Schleife bei erfolgreicher Anmeldung
-                
-            } catch (error) {
-                this.log.error(`Login attempt ${attempt + 1} failed. Error: ${error}`);
-                error.response && this.log.error(JSON.stringify(error.response.data));
+            this.log.debug(JSON.stringify(data.data));
+            this.session = data.data;
+            this.setState("info.connection", true, true);
+            this.log.info(`Connected to ${this.config.server} server`);
+            return; // Beende die Schleife bei erfolgreicher Anmeldung
+            
+        } catch (error) {
+            this.log.error(`Login attempt ${attempt + 1} failed. Error: ${error}`);
+            error.response && this.log.error(JSON.stringify(error.response.data));
 
-                attempt++; // Erhöhe die Versuchszahl
+            attempt++; // Erhöhe die Versuchszahl
 
-                if (attempt >= maxAttempts) {
-                    this.log.warn(`Max login attempts reached. Waiting for ${retryDelay / 1000 / 60} minute(s) before retrying...`);
-                    await new Promise(resolve => setTimeout(resolve, retryDelay)); // Wartezeit von 1 Minute
-                    attempt = 0; // Setze die Versuche nach der Wartezeit zurück
-                }
+            if (attempt >= maxAttempts) {
+                this.log.warn(`Max login attempts reached. Waiting for ${retryDelay / 1000 / 60} minute(s) before retrying...`);
+                await this.delay(retryDelay); // Verwendet this.delay für den Timer
+                attempt = 0; // Setze die Versuche nach der Wartezeit zurück
             }
         }
+    }
+}
+
 
             /* App login simulation 
         const [code_verifier, codeChallenge] = this.getCodeChallenge();
