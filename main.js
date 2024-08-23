@@ -183,8 +183,8 @@ class Worx extends utils.Adapter {
                 async () => {
                     await this.updateDevices();
                 },
-                10 * this.config.intervalCloud * 1000,
-            ); // 10 minutes
+                60 * this.config.intervalCloud * 1000,
+            );
 
             if (!this.session.expires_in || this.session.expires_in < 200) {
                 this.session.expires_in = 3600;

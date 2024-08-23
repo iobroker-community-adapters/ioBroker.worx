@@ -78,7 +78,7 @@
             "type": "number",
             "label": "Update interval in minutes",
             "tooltip": "Range",
-            "min": 60,
+            "min": 10,
             "max": 1440,
             "step": 1,
             "newLine": true,
