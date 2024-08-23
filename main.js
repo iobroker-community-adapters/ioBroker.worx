@@ -70,6 +70,7 @@ class Worx extends utils.Adapter {
         this.cookieJar = new tough.CookieJar();
         this.requestClient = axios.create({
             withCredentials: true,
+            timeout: 5000,
             httpsAgent: new HttpsCookieAgent({
                 cookies: {
                     jar: this.cookieJar,
