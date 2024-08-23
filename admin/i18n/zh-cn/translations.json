@@ -6,5 +6,9 @@
     "Distance and time in min and m": "距离和时间（分钟/小时和米/公里）",
     "Updating MQTT data after token update.": "令牌更新后更新数据。",
     "Update interval in minutes": "更新间隔（分钟）",
-    "Range": "范围从 10 到 1440 可能"
+    "Range": "范围从 10 到 1440 可能",
+    "IP from Mower": "来自割草机的 IP",
+    "Pin Code": "PIN码",
+    "Update interval in seconds": "更新间隔（秒）",
+    "Ranges": "范围从 1 到 86400"
 }

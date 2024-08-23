@@ -6,5 +6,9 @@
     "Distance and time in min and m": "Afstand en tijd in minuten/uur en meter/KM",
     "Updating MQTT data after token update.": "Gegevens bijwerken na tokenupdate.",
     "Update interval in minutes": "Update-interval in minuten",
-    "Range": "Bereik van 10 tot 1440 mogelijk"
+    "Range": "Bereik van 10 tot 1440 mogelijk",
+    "IP from Mower": "IP van maaier",
+    "Pin Code": "Pincode",
+    "Update interval in seconds": "Update-interval in seconden",
+    "Ranges": "Bereik van 1 tot 86400 mogelijk"
 }

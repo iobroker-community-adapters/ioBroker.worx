@@ -6,7 +6,8 @@
             "type": "text",
             "label": "APP username (eMail)",
             "newLine": true,
-            "sm": 3
+            "sm": 3,
+            "hidden": "data.server === \"Remote\""
         },
         "password": {
             "type": "password",
@@ -14,7 +15,24 @@
             "repeat": false,
             "visible": true,
             "sm": 3,
-            "label": "App Password"
+            "label": "App Password",
+            "hidden": "data.server === \"Remote\""
+        },
+        "ip": {
+            "type": "text",
+            "label": "IP from Mower",
+            "newLine": true,
+            "sm": 3,
+            "hidden": "data.server !== \"Remote\""
+        },
+        "pin": {
+            "type": "password",
+            "newLine": true,
+            "repeat": false,
+            "visible": true,
+            "sm": 3,
+            "label": "Pin Code",
+            "hidden": "data.server !== \"Remote\""
         },
         "server": {
             "type": "select",
@@ -36,9 +54,25 @@
                 {
                     "label": "Ferrex",
                     "value": "ferrex"
+                },
+                {
+                    "label": "Remote",
+                    "value": "Remote"
                 }
             ],
             "label": "App Name"
+        },
+        "intervalMower": {
+            "type": "number",
+            "label": "Update interval in seconds",
+            "tooltip": "Range_1",
+            "min": 1,
+            "max": 86400,
+            "step": 1,
+            "newLine": true,
+            "sm": 3,
+            "default": 60,
+            "hidden": "data.server !== \"Remote\""
         },
         "intervalCloud": {
             "type": "number",
@@ -49,28 +83,32 @@
             "step": 1,
             "newLine": true,
             "sm": 3,
-            "default": 60
+            "default": 60,
+            "hidden": "data.server === \"Remote\""
         },
         "edgeCutDelay": {
             "type": "number",
             "label": "delay for edge cut",
             "newLine": true,
             "default": 5000,
-            "sm": 3
+            "sm": 3,
+            "hidden": "data.server === \"Remote\""
         },
         "meterMin": {
             "type": "checkbox",
             "label": "Distance and time in min and m",
             "newLine": true,
             "default": false,
-            "sm": 3
+            "sm": 3,
+            "hidden": "data.server === \"Remote\""
         },
         "updateMqtt": {
             "type": "checkbox",
             "label": "Updating MQTT data after token update.",
             "newLine": true,
             "default": false,
-            "sm": 3
+            "sm": 3,
+            "hidden": "data.server === \"Remote\""
         }
     }
 }

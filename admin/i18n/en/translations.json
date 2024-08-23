@@ -6,5 +6,9 @@
     "delay for edge cut": "delay for edge cut",
     "Distance and time in min and m": "Distance and time in Minute/Hour and Meter/KM",
     "Updating MQTT data after token update.": "Updating data after token update.",
-    "Range": "Range from 10 to 1440 possible"
+    "Range": "Range from 10 to 1440 possible",
+    "IP from Mower": "IP from Mower",
+    "Pin Code": "Pin Code",
+    "Update interval in seconds": "Update interval in seconds",
+    "Ranges": "Range from 1 to 86400 possible"
 }

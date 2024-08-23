@@ -6,5 +6,9 @@
     "Distance and time in min and m": "Расстояние и время в минутах/часах и метрах/км.",
     "Updating MQTT data after token update.": "Обновление данных после обновления токена.",
     "Update interval in minutes": "Интервал обновления в минутах",
-    "Range": "Возможен диапазон от 10 до 1440."
+    "Range": "Возможен диапазон от 10 до 1440.",
+    "IP from Mower": "IP от косилки",
+    "Pin Code": "Пин-код",
+    "Update interval in seconds": "Интервал обновления в секундах",
+    "Ranges": "Возможен диапазон от 1 до 86400."
 }

@@ -14,6 +14,7 @@ const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
+const remoteMower = require(`./lib/remote`);
 const not_allowed = 60000 * 10;
 const mqtt_poll_max = 60000;
 const poll_check = 1000; //1 sec.
@@ -57,6 +58,7 @@ class Worx extends utils.Adapter {
         this.mqttC = null;
         this.iot = null;
         this.mqtt = null;
+        this.remoteMower = null;
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
         this.createActivity = helper.createActivity;
@@ -111,6 +113,17 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        if (this.config.server === "Remote") {
+            this.remoteMower = new remoteMower(this.config, this, axios);
+            const ip = this.config.ip;
+            const pin = this.config.pin;
+            if (ip && pin && pin.toString().match(/^\d{4}$/)) {
+                this.remoteMower.start();
+            } else {
+                this.log.error(`Please configure the Landroid Adapter`);
+            }
+            return;
+        }
         try {
             this.iot = require("aws-iot-device-sdk-v2").iot;
             this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
@@ -2085,6 +2098,11 @@ class Worx extends utils.Adapter {
     onUnload(callback) {
         try {
             this.setState("info.connection", false, true);
+            if (this.remoteMower) {
+                this.remoteMower.destroy();
+                callback();
+                return;
+            }
             this.setState("info_mqtt.online", false, true);
             this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
             this.timeoutedgeCutDelay && this.clearTimeout(this.timeoutedgeCutDelay);

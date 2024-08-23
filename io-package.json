@@ -257,10 +257,12 @@
     ]
   },
   "encryptedNative": [
-    "password"
+    "password",
+    "pin"
   ],
   "protectedNative": [
-    "password"
+    "password",
+    "pin"
   ],
   "native": {
     "mail": "",
@@ -269,7 +271,10 @@
     "intervalCloud": 60,
     "server": "worx",
     "meterMin": false,
-    "updateMqtt": false
+    "updateMqtt": false,
+    "ip": "",
+    "pin": 0,
+    "intervalMower": 60
   },
   "objects": [],
   "instanceObjects": [
