@@ -3217,7 +3217,7 @@ class Worx extends utils.Adapter {
                     return;
                 }
             } catch (error) {
-                this.log.error("ONETIMESCHEDULE: NO vailed JSON format");
+                this.log.error("ONETIMESCHEDULE: NO valid JSON format");
                 return;
             }
         }
@@ -3294,7 +3294,7 @@ class Worx extends utils.Adapter {
 
             this.log.debug(`CALJSON length: ${msgJson.length}`);
         } catch (error) {
-            this.log.error("CALJSON: NO vailed JSON format");
+            this.log.error("CALJSON: NO valid JSON format");
             fail = true;
         }
 
