@@ -3746,7 +3746,7 @@ class Worx extends utils.Adapter {
 
     async sendCommand(value, mower, id) {
         const val = value;
-        if (val < 0 || val > 9) {
+        if (val < 0 || val > 104) {
             this.log.info(`Sending cmd:${val} is not allowed.`);
             return;
         }
