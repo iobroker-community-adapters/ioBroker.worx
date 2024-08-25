@@ -3719,7 +3719,8 @@ class Worx extends utils.Adapter {
             mower.last_status.payload.cfg.cut.b === 0
         ) {
             this.modules[mower.serial_number].edgeCut = true;
-            this.sendMessage('{"cut":{"b":1,"z":[],"bd": 100,"ob": 1}}', mower.serial_number, id);
+            //this.sendMessage('{"cut":{"b":1,"z":[],"bd": 100,"ob": 1}}', mower.serial_number, id);
+            this.sendMessage('{"cmd":101}', mower.serial_number, id);
         } else if (
             val === true &&
             mower.last_status &&
