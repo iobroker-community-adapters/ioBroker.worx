@@ -68,6 +68,7 @@ class Worx extends utils.Adapter {
         this.createMqttData = helper.createMqttData;
         this.json2iob = new Json2iob(this);
         this.cookieJar = new tough.CookieJar();
+        this.appname = null;
         this.requestClient = axios.create({
             withCredentials: true,
             timeout: 5000,
@@ -120,6 +121,7 @@ class Worx extends utils.Adapter {
             const pin = this.config.pin;
             if (ip && pin && pin.toString().match(/^\d{4}$/)) {
                 this.remoteMower.start();
+                this.appname = this.config.server;
             } else {
                 this.log.error(`Please configure the Landroid Adapter`);
             }
@@ -2172,6 +2174,20 @@ class Worx extends utils.Adapter {
             ];
             const command = id.split(".").pop();
             if (command == null) return;
+            if (this.appname === "Remote") {
+                if (this.remoteMower != null) {
+                    if (command == "start") {
+                        this.remoteMower.startMower();
+                        this.log.debug("Mower start!");
+                    } else if (command == "stop") {
+                        this.remoteMower.stopMower();
+                        this.log.debug("Mower stop!");
+                    } else {
+                        this.log.debug(`Cannot found command ${command}`);
+                    }
+                }
+                return;
+            }
             const check_time = Date.now() - this.poll_check_time;
             if (check_time < poll_check && !no_verification.includes(command)) {
                 this.log.info(
