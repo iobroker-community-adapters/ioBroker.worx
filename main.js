@@ -202,8 +202,10 @@ class Worx extends utils.Adapter {
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
             }, 60 * 1000); // 1 minutes
+            this.checkDeviceObjectTree();
         }
     }
+
     async login() {
         //Simple login
         const data = await this.requestClient({
@@ -324,6 +326,26 @@ class Worx extends utils.Adapter {
             });
         return data;
         */
+    }
+
+    async checkDeviceObjectTree() {
+        try {
+            this.log.info(`Start check devices object!`);
+            const devices = await this.getDevicesAsync();
+            for (const element of devices) {
+                const id = element["_id"].split(".").pop();
+                if (this.modules[id]) {
+                    this.log.debug(`Found device ${element["_id"]}`);
+                } else {
+                    this.log.warn(
+                        `Serial number ${id} was not found. Please delete the object tree ${element["_id"]}.`,
+                    );
+                    //await this.delObjectAsync(`${id}`, { recursive: true });
+                }
+            }
+        } catch (e) {
+            this.log.error(`checkDeviceFolder: ${e}`);
+        }
     }
 
     async getDeviceList() {
