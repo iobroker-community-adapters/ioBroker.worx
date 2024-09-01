@@ -2201,9 +2201,17 @@ class Worx extends utils.Adapter {
                     if (command == "start") {
                         this.remoteMower.startMower();
                         this.log.debug("Mower start!");
+                        this.setState(id, {
+                            val: false,
+                            ack: true,
+                        });
                     } else if (command == "stop") {
                         this.remoteMower.stopMower();
                         this.log.debug("Mower stop!");
+                        this.setState(id, {
+                            val: false,
+                            ack: true,
+                        });
                     } else {
                         this.log.debug(`Cannot found command ${command}`);
                     }
