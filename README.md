@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.1.0 (2024-09-10)
 
 -   (Lucky-ESA) Added Landroid IP
 -   (Lucky-ESA) Fixed interval
