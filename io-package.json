@@ -282,16 +282,16 @@
       "scope": "worx",
       "name": {
         "en": "Worx",
-        "de": "Worwegen",
+        "de": "Worx",
         "ru": "Worx",
         "pt": "Worx",
         "nl": "Worx",
-        "fr": "Pire",
+        "fr": "Worx",
         "it": "Worx",
         "es": "Worx",
         "pl": "Worx",
-        "uk": "Помилки",
-        "zh-cn": "蠕虫"
+        "uk": "Worx",
+        "zh-cn": "Worx"
       },
             "description": {
         "en": "Status and error notifications",
