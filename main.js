@@ -491,11 +491,11 @@ class Worx extends utils.Adapter {
             }
             const activity_log = await this.apiRequest(`product-items/${mower.serial_number}/activity-log`, false);
             if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
-                await this.setStateAsync(`${mower.serial_number}.activityLog.payload`, {
+                await this.setState(`${mower.serial_number}.activityLog.payload`, {
                     val: JSON.stringify(activity_log),
                     ack: true,
                 });
-                await this.setStateAsync(`${mower.serial_number}.activityLog.last_update`, {
+                await this.setState(`${mower.serial_number}.activityLog.last_update`, {
                     val: Date.now(),
                     ack: true,
                 });
@@ -515,11 +515,11 @@ class Worx extends utils.Adapter {
                 const activity_log = await this.apiRequest(`product-items/${device.serial_number}/activity-log`, false);
                 if (activity_log && Object.keys(activity_log).length > 0 && activity_log[0] && activity_log[0]._id) {
                     this.log.debug("UPDATE CHANGE");
-                    await this.setStateAsync(`${device.serial_number}.activityLog.payload`, {
+                    await this.setState(`${device.serial_number}.activityLog.payload`, {
                         val: JSON.stringify(activity_log),
                         ack: true,
                     });
-                    await this.setStateAsync(`${device.serial_number}.activityLog.last_update`, {
+                    await this.setState(`${device.serial_number}.activityLog.last_update`, {
                         val: Date.now(),
                         ack: true,
                     });
@@ -683,42 +683,30 @@ class Worx extends utils.Adapter {
                 this.log.info(`Found RTK Zones, Create Zones State`);
             }
             for (let a = 0; a <= zone_count - 1; a++) {
-                await this.setStateAsync(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_id`, {
+                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_id`, {
                     val: mower.last_status.payload.cfg.rtk.zs[a].id,
                     ack: true,
                 });
-                await this.setStateAsync(
-                    `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_frequency`,
-                    {
-                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.sc.freq,
-                        ack: true,
-                    },
-                );
-                await this.setStateAsync(
-                    `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutting`,
-                    {
-                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.t,
-                        ack: true,
-                    },
-                );
-                await this.setStateAsync(
-                    `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_direction`,
-                    {
-                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.d,
-                        ack: true,
-                    },
-                );
+                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_frequency`, {
+                    val: mower.last_status.payload.cfg.rtk.zs[a].cfg.sc.freq,
+                    ack: true,
+                });
+                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutting`, {
+                    val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.t,
+                    ack: true,
+                });
+                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_direction`, {
+                    val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.d,
+                    ack: true,
+                });
                 if (h) {
-                    await this.setStateAsync(
-                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height`,
-                        {
-                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h,
-                            ack: true,
-                        },
-                    );
+                    await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height`, {
+                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h,
+                        ack: true,
+                    });
                 }
                 if (sh) {
-                    await this.setStateAsync(
+                    await this.setState(
                         `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height_fairway`,
                         {
                             val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.sh,
@@ -727,7 +715,7 @@ class Worx extends utils.Adapter {
                     );
                 }
                 if (lapping) {
-                    await this.setStateAsync(
+                    await this.setState(
                         `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_overlapping`,
                         {
                             val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.co,
@@ -856,19 +844,19 @@ class Worx extends utils.Adapter {
             this.log.debug(`Write multi zone: ${JSON.stringify(mower.last_status.payload.cfg.mz)}`);
             if (count_zone_current > 0) {
                 for (let a = 0; a <= count_zone_current - 1; a++) {
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.zones.zone_${a}.zone_id`, {
+                    await this.setState(`${mower.serial_number}.multiZones.zones.zone_${a}.zone_id`, {
                         val: mower.last_status.payload.cfg.mz.s[a].id,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.zones.zone_${a}.chargingStation`, {
+                    await this.setState(`${mower.serial_number}.multiZones.zones.zone_${a}.chargingStation`, {
                         val: mower.last_status.payload.cfg.mz.s[a].c,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.zones.zone_${a}.borderDistance`, {
+                    await this.setState(`${mower.serial_number}.multiZones.zones.zone_${a}.borderDistance`, {
                         val: mower.last_status.payload.cfg.mz.s[a].cfg.cut.bd,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.zones.zone_${a}.cutOverBorder`, {
+                    await this.setState(`${mower.serial_number}.multiZones.zones.zone_${a}.cutOverBorder`, {
                         val: mower.last_status.payload.cfg.mz.s[a].cfg.cut.ob,
                         ack: true,
                     });
@@ -877,19 +865,19 @@ class Worx extends utils.Adapter {
             if (count_passages_current > 0) {
                 for (let a = 0; a <= count_passages_current - 1; a++) {
                     const slot = ("0" + a).slice(-2);
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.passages.passage_${slot}.zoneIdFrom`, {
+                    await this.setState(`${mower.serial_number}.multiZones.passages.passage_${slot}.zoneIdFrom`, {
                         val: mower.last_status.payload.cfg.mz.p[a].z1,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.passages.passage_${slot}.zoneIdTo`, {
+                    await this.setState(`${mower.serial_number}.multiZones.passages.passage_${slot}.zoneIdTo`, {
                         val: mower.last_status.payload.cfg.mz.p[a].z2,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.passages.passage_${slot}.tagIdFrom`, {
+                    await this.setState(`${mower.serial_number}.multiZones.passages.passage_${slot}.tagIdFrom`, {
                         val: mower.last_status.payload.cfg.mz.p[a].t1,
                         ack: true,
                     });
-                    await this.setStateAsync(`${mower.serial_number}.multiZones.passages.passage_${slot}.tagIdTo`, {
+                    await this.setState(`${mower.serial_number}.multiZones.passages.passage_${slot}.tagIdTo`, {
                         val: mower.last_status.payload.cfg.mz.p[a].t2,
                         ack: true,
                     });
@@ -966,15 +954,15 @@ class Worx extends utils.Adapter {
                     });
                 }
             }
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+            await this.setState(`${mower.serial_number}.mower.firmware_available`, {
                 val: version,
                 ack: true,
             });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+            await this.setState(`${mower.serial_number}.mower.firmware_available_date`, {
                 val: released_at,
                 ack: true,
             });
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+            await this.setState(`${mower.serial_number}.mower.firmware_available_all`, {
                 val: json,
                 ack: true,
             });
@@ -1383,23 +1371,23 @@ class Worx extends utils.Adapter {
                 });
             }
         }
-        await this.setStateAsync(`${mower.serial_number}.mower.firmware_available`, {
+        await this.setState(`${mower.serial_number}.mower.firmware_available`, {
             val: version,
             ack: true,
         });
-        await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_date`, {
+        await this.setState(`${mower.serial_number}.mower.firmware_available_date`, {
             val: released_at,
             ack: true,
         });
-        await this.setStateAsync(`${mower.serial_number}.mower.firmware_available_all`, {
+        await this.setState(`${mower.serial_number}.mower.firmware_available_all`, {
             val: json,
             ack: true,
         });
-        await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+        await this.setState(`${mower.serial_number}.mower.firmware_update_start`, {
             val: false,
             ack: true,
         });
-        await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start_approved`, {
+        await this.setState(`${mower.serial_number}.mower.firmware_update_start_approved`, {
             val: false,
             ack: true,
         });
@@ -1941,7 +1929,10 @@ class Worx extends utils.Adapter {
                 }
             }
             if (new_merge.length > max_request) new_merge.shift();
-            await this.setStateAsync(`${sn}.mower.last_command`, JSON.stringify(new_merge), true);
+            await this.setState(`${sn}.mower.last_command`, {
+                val: JSON.stringify(new_merge),
+                ack: true,
+            });
         } catch (e) {
             this.log.info("lastCommand: " + e);
             this.log.debug(e.stack);
@@ -1959,15 +1950,15 @@ class Worx extends utils.Adapter {
             const secString = sec ? "2" : "";
 
             for (let i = 0; i < this.week.length; i++) {
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}${secString}.startTime`, {
+                await this.setState(`${mower.serial_number}.calendar.${this.week[i]}${secString}.startTime`, {
                     val: arr[i][0],
                     ack: true,
                 });
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}${secString}.workTime`, {
+                await this.setState(`${mower.serial_number}.calendar.${this.week[i]}${secString}.workTime`, {
                     val: arr[i][1],
                     ack: true,
                 });
-                await this.setStateAsync(`${mower.serial_number}.calendar.${this.week[i]}${secString}.borderCut`, {
+                await this.setState(`${mower.serial_number}.calendar.${this.week[i]}${secString}.borderCut`, {
                     val: arr[i][2] && arr[i][2] === 1 ? true : false,
                     ack: true,
                 });
@@ -2107,22 +2098,16 @@ class Worx extends utils.Adapter {
                         empty_schedule.d = i;
                         new_schedule.push(empty_schedule);
                     }
-                    await this.setStateAsync(
-                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.startTime`,
-                        {
-                            val: t,
-                            ack: true,
-                        },
-                    );
-                    await this.setStateAsync(
-                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.workTime`,
-                        {
-                            val: wt,
-                            ack: true,
-                        },
-                    );
+                    await this.setState(`${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.startTime`, {
+                        val: t,
+                        ack: true,
+                    });
+                    await this.setState(`${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.workTime`, {
+                        val: wt,
+                        ack: true,
+                    });
                     if (vision === "vision") {
-                        await this.setStateAsync(
+                        await this.setState(
                             `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.borderCut`,
                             {
                                 val: cut,
@@ -2130,14 +2115,11 @@ class Worx extends utils.Adapter {
                             },
                         );
                     }
-                    await this.setStateAsync(
-                        `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.enabled_time`,
-                        {
-                            val: e,
-                            ack: true,
-                        },
-                    );
-                    await this.setStateAsync(`${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.zones`, {
+                    await this.setState(`${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.enabled_time`, {
+                        val: e,
+                        ack: true,
+                    });
+                    await this.setState(`${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.zones`, {
                         val: JSON.stringify(z),
                         ack: true,
                     });
@@ -2174,7 +2156,7 @@ class Worx extends utils.Adapter {
      * @param {number} value
      */
     async setRainCounter(id, value) {
-        await this.setStateAsync(`${id}.mower.waitRainCountdown`, {
+        await this.setState(`${id}.mower.waitRainCountdown`, {
             val: value,
             ack: true,
         });
@@ -2556,17 +2538,17 @@ class Worx extends utils.Adapter {
                         const tqval = typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.sendMessage(`{"tq":${tqval}}`, mower.serial_number, id);
                     } else if (command === "reset_battery_time" && state.val) {
-                        await this.setStateAsync(`${mower.serial_number}.mower.reset_battery_time`, {
+                        await this.setState(`${mower.serial_number}.mower.reset_battery_time`, {
                             ack: true,
                         });
                     } else if (command === "reset_blade_time" && state.val) {
-                        await this.setStateAsync(`${mower.serial_number}.mower.reset_blade_time`, {
+                        await this.setState(`${mower.serial_number}.mower.reset_blade_time`, {
                             ack: true,
                         });
                     } else if (command === "firmware_update_start" && state.val) {
                         this.checkfirmware(mower);
                     } else if (command === "multiZones" && state.val) {
-                        await this.setStateAsync(id, {
+                        await this.setState(id, {
                             ack: true,
                         });
                     } else if (command === "sendmultiZonesJson" && state.val) {
@@ -2777,7 +2759,7 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      */
     async addNewTimeslot(id, mower) {
-        await this.setStateAsync(id, false, true);
+        await this.setState(id, { val: false, ack: true });
         if (this.modules[mower.serial_number] == null || this.modules[mower.serial_number].slots == null) {
             this.log.warn(`Cannot found scheduler for device ${mower.serial_number}`);
             return;
@@ -2892,7 +2874,7 @@ class Worx extends utils.Adapter {
                     }
                     this.log.debug(`ZoneRTK send: - ${JSON.stringify(state)}`);
                     this.sendMessage(`{"zs":${JSON.stringify(mz)}}`, mower.serial_number, id);
-                    await this.setStateAsync(id, {
+                    await this.setState(id, {
                         val: false,
                         ack: true,
                     });
@@ -2964,11 +2946,11 @@ class Worx extends utils.Adapter {
                     this.log.warn(`Cannot found command - ${command}!`);
                     return;
                 }
-                await this.setStateAsync(`${mower.serial_number}.rtk_zones.zoneJson_tosend`, {
+                await this.setState(`${mower.serial_number}.rtk_zones.zoneJson_tosend`, {
                     val: JSON.stringify(mower.last_status.payload.cfg.rtk.zs),
                     ack: true,
                 });
-                await this.setStateAsync(id, {
+                await this.setState(id, {
                     ack: true,
                 });
             } else {
@@ -3094,12 +3076,12 @@ class Worx extends utils.Adapter {
                 this.log.debug(`multiZoneVision send: - ${JSON.stringify(state)}`);
                 this.sendMessage(`{"mz":${JSON.stringify(mz)}}`, mower.serial_number, id);
             }
-            await this.setStateAsync(id, {
+            await this.setState(id, {
                 val: false,
                 ack: true,
             });
         } else {
-            await this.setStateAsync(id, {
+            await this.setState(id, {
                 ack: true,
             });
             const third = id.split(".")[4];
@@ -3148,7 +3130,7 @@ class Worx extends utils.Adapter {
                         this.log.warn(`Cannot found command ${command}`);
                         return;
                 }
-                await this.setStateAsync(`${mower.serial_number}.multiZones.multiZones`, {
+                await this.setState(`${mower.serial_number}.multiZones.multiZones`, {
                     val: JSON.stringify(mz),
                     ack: true,
                 });
@@ -3165,13 +3147,13 @@ class Worx extends utils.Adapter {
         if (!fw || !fw_ava || fw == fw_ava) {
             this.log.debug(`No update found. Start request to Worx.`);
             this.updateFirmware();
-            await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+            await this.setState(`${mower.serial_number}.mower.firmware_update_start`, {
                 val: false,
                 ack: true,
             });
             return;
         }
-        await this.setStateAsync(`${mower.serial_number}.mower.firmware_update_start`, {
+        await this.setState(`${mower.serial_number}.mower.firmware_update_start`, {
             ack: true,
         });
     }
@@ -3190,11 +3172,11 @@ class Worx extends utils.Adapter {
                 check = await this.apiRequest(`product-items/${device}/counters/blade/reset`, false, "post");
                 this.log.debug(`Receive: Reset blade time - ${JSON.stringify(check)}`);
                 if (check) {
-                    await this.setStateAsync(`${device}.mower.reset_blade_time`, {
+                    await this.setState(`${device}.mower.reset_blade_time`, {
                         val: false,
                         ack: true,
                     });
-                    await this.setStateAsync(`${device}.mower.reset_blade_time_approved`, {
+                    await this.setState(`${device}.mower.reset_blade_time_approved`, {
                         val: false,
                         ack: true,
                     });
@@ -3207,11 +3189,11 @@ class Worx extends utils.Adapter {
                 check = await this.apiRequest(`product-items/${device}/counters/battery/reset`, false, "post");
                 this.log.debug(`Receive: Reset battery time - ${JSON.stringify(check)}`);
                 if (check) {
-                    await this.setStateAsync(`${device}.mower.reset_battery_time`, {
+                    await this.setState(`${device}.mower.reset_battery_time`, {
                         val: false,
                         ack: true,
                     });
-                    await this.setStateAsync(`${device}.mower.reset_battery_time_approved`, {
+                    await this.setState(`${device}.mower.reset_battery_time_approved`, {
                         val: false,
                         ack: true,
                     });
@@ -3229,11 +3211,11 @@ class Worx extends utils.Adapter {
                     this.log.debug(`Unknown error during update!`);
                 }
             }
-            await this.setStateAsync(`${device}.mower.firmware_update_start`, {
+            await this.setState(`${device}.mower.firmware_update_start`, {
                 val: false,
                 ack: true,
             });
-            await this.setStateAsync(`${device}.mower.firmware_update_start_approved`, {
+            await this.setState(`${device}.mower.firmware_update_start_approved`, {
                 val: false,
                 ack: true,
             });
@@ -4122,7 +4104,10 @@ class Worx extends utils.Adapter {
             read: true,
         };
         await this.createDataPoint(`${serial}.oldVersionCleaned`, common, "state");
-        await this.setStateAsync(serial + ".oldVersionCleaned", this.version, true);
+        await this.setState(serial + ".oldVersionCleaned", {
+            val: this.version,
+            ack: true,
+        });
     }
 }
 
