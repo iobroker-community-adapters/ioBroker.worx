@@ -5,6 +5,8 @@
  */
 
 const utils = require("@iobroker/adapter-core");
+const path = require("node:path");
+const fs = require("fs");
 const axios = require("axios");
 // const qs = require("qs");
 const Json2iob = require("json2iob");
@@ -21,6 +23,50 @@ const poll_check = 1000; //1 sec.
 const max_request = 20;
 const category = "iobroker";
 const access_json = ["01a58ec15db78660aa8f67251aeca1bd"];
+const error_states = {
+    0: "No error",
+    1: "Trapped",
+    2: "Lifted",
+    3: "Wire missing",
+    4: "Outside boundary",
+    5: "Raining",
+    6: "Close door to cut grass",
+    7: "Close door to go home",
+    8: "Blade motor fault",
+    9: "Wheel motor fault",
+    10: "Trapped timeout fault",
+    11: "Upside down",
+    12: "Battery low",
+    13: "Wire reversed",
+    14: "Charge error",
+    15: "Home search timeout",
+    16: "WiFi locked",
+    17: "Battery over temperature",
+    18: "Dummy model",
+    19: "Battery trunk open timeout",
+    20: "Wire signal out of sync",
+    100: "Charging station docking error",
+    101: "HBI error",
+    102: "OTA upgrade error",
+    103: "Map error",
+    104: "Excessive slope",
+    105: "Unreachable zone",
+    106: "Unreachable charging station",
+    107: "Calibration needed",
+    108: "Insufficient sensor data",
+    109: "Training start disallowed",
+    110: "Camera error",
+    111: "Lawn exploration required",
+    112: "Mapping exploration failed",
+    113: "RFID reader error",
+    114: "Headlight error",
+    115: "Missing charging station",
+    116: "Blade height adjustment blocked",
+    117: "Unsupported blade height",
+    118: "Manual firrnware upgrade required",
+    119: "Area limit exceeded",
+    120: "Charging station undocking error",
+};
 
 class Worx extends utils.Adapter {
     /**
@@ -41,6 +87,7 @@ class Worx extends utils.Adapter {
         this.userAgent = "ioBroker ";
         this.reLoginTimeout = null;
         this.refreshActivity = null;
+        this.notifyAvailable = false;
         this.loadActivity = {};
         this.interruptCheck = {};
         this.refreshTokenTimeout = null;
@@ -115,6 +162,7 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        this.notifyAvailable = await this.checkControllerRelease();
         if (this.config.server === "Remote") {
             this.remoteMower = new remoteMower(this.config, this, axios);
             const ip = this.config.ip;
@@ -376,7 +424,7 @@ class Worx extends utils.Adapter {
                     this.log.info(`Found device ${name} with id ${id}`);
 
                     await this.cleanOldVersion(id, device.capabilities);
-                    await this.createDevices(device, this.md5_user(device.serial_number));
+                    await this.createDevices(device, this.md5_user(device.serial_number), error_states);
                     const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
                     this.log.debug("fw_id: " + JSON.stringify(fw_id));
                     await this.createAdditionalDeviceStates(device, fw_id);
@@ -949,6 +997,8 @@ class Worx extends utils.Adapter {
                 if (!res.data) {
                     return;
                 }
+                const err_notify = [];
+                const status_notify = [];
                 for (const device of res.data) {
                     const index = this.deviceArray.findIndex((index) => index.serial_number === device.serial_number);
                     this.log.debug(`Index Update: ${index}`);
@@ -965,6 +1015,18 @@ class Worx extends utils.Adapter {
                             this.log.debug("No last_status found");
                             delete device.last_status;
                             this.log.debug("Delete last_status");
+                        } else {
+                            if (!device.online) status_notify.push(device.serial_number);
+                            if (
+                                device.last_status.payload &&
+                                device.last_status.payload.dat &&
+                                device.last_status.payload.dat.le > 0
+                            ) {
+                                const messages = error_states[device.last_status.payload.dat.le]
+                                    ? ` ${error_states[device.last_status.payload.dat.le]}`
+                                    : ` ${device.last_status.payload.dat.le}`;
+                                err_notify.push(`${device.serial_number}${messages}`);
+                            }
                         }
                     } catch (error) {
                         this.log.debug("Delete last_status: " + error);
@@ -978,6 +1040,12 @@ class Worx extends utils.Adapter {
                         preferedArrayName: "",
                         channelName: "All raw data of the mower",
                     });
+                }
+                if (err_notify.length > 0) {
+                    await this.registerEventNotification(err_notify, "mowerError", true);
+                }
+                if (status_notify.length > 0) {
+                    this.registerEventNotification(status_notify, "mowerStatus", true);
                 }
             })
             .catch((error) => {
@@ -995,6 +1063,8 @@ class Worx extends utils.Adapter {
             },
         ];
         for (const device of this.deviceArray) {
+            const err_notify = [];
+            const status_notify = [];
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
                 await this.requestClient({
@@ -1023,11 +1093,23 @@ class Worx extends utils.Adapter {
                             this.log.debug(`Update this.deviceArray: ${index}`);
                             this.deviceArray[index] = data;
                         }
+                        if (!data.online) status_notify.push(device.serial_number);
                         try {
                             if (!data || !data.last_status || !data.last_status.payload) {
                                 this.log.debug("No last_status found");
                                 delete data.last_status;
                                 this.log.debug("Delete last_status");
+                            } else {
+                                if (
+                                    data.last_status.payload &&
+                                    data.last_status.payload.dat &&
+                                    data.last_status.payload.dat.le > 0
+                                ) {
+                                    const messages = error_states[data.last_status.payload.dat.le]
+                                        ? ` ${error_states[data.last_status.payload.dat.le]}`
+                                        : ` ${data.last_status.payload.dat.le}`;
+                                    err_notify.push(`${device.serial_number}${messages}`);
+                                }
                             }
                         } catch (error) {
                             this.log.debug("Delete last_status: " + error);
@@ -1072,6 +1154,12 @@ class Worx extends utils.Adapter {
                         this.log.error(error);
                         error.response && this.log.error(JSON.stringify(error.response.data));
                     });
+            }
+            if (err_notify.length > 0) {
+                await this.registerEventNotification(err_notify, "mowerError", true);
+            }
+            if (status_notify.length > 0) {
+                this.registerEventNotification(status_notify, "mowerStatus", true);
             }
         }
     }
@@ -1522,6 +1610,7 @@ class Worx extends utils.Adapter {
                     } catch (error) {
                         this.log.debug(`this.mqttC.on: ${error}`);
                     }
+                    const err_notify = [];
                     try {
                         if (!mower || !mower.last_status || !mower.last_status.payload) {
                             this.log.debug("No last_status found");
@@ -1541,6 +1630,17 @@ class Worx extends utils.Adapter {
                                 .toISOString()
                                 .replace("T", " ")
                                 .replace("Z", "");
+                            if (
+                                mower.last_status.payload &&
+                                mower.last_status.payload.dat &&
+                                mower.last_status.payload.dat.le > 0
+                            ) {
+                                const messages = error_states[mower.last_status.payload.dat.le]
+                                    ? ` ${error_states[mower.last_status.payload.dat.le]}`
+                                    : ` ${mower.last_status.payload.dat.le}`;
+                                err_notify.push(`${mower.serial_number}${messages}`);
+                                this.registerEventNotification(err_notify, "mowerError", false);
+                            }
                         }
                     } catch (error) {
                         this.log.info("Mqtt Delete last_status: " + error);
@@ -2193,6 +2293,7 @@ class Worx extends utils.Adapter {
                 "zones_height",
                 "zones_height_fairway",
                 "zones_overlapping",
+                "notification",
             ];
             const command = id.split(".").pop();
             if (command == null) return;
@@ -2232,7 +2333,6 @@ class Worx extends utils.Adapter {
             this.log.debug(
                 `state change: id_____ ${id} Mower ${mower_id}_____${command}______${JSON.stringify(mower)}`,
             );
-
             if (mower) {
                 if (command === "developer_json") {
                     if (!this.md5_user(mower.serial_number)) return;
@@ -2243,6 +2343,10 @@ class Worx extends utils.Adapter {
                         this.log.info("Cannot parse json!");
                     }
                     this.setState(id, { ack: true });
+                    return;
+                }
+                if (command === "notification") {
+                    this.setNotification(id, mower, state);
                     return;
                 }
                 try {
@@ -2528,6 +2632,143 @@ class Worx extends utils.Adapter {
                 this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
                 this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`);
             }
+        }
+    }
+
+    /**
+     * @param {string} id
+     * @param {object} mower
+     * @param {ioBroker.State | null | undefined} state
+     */
+    setNotification(id, mower, state) {
+        if (state && state.val != null) {
+            if (!this.modules[mower.serial_number]) this.modules[mower.serial_number] = {};
+            this.modules[mower.serial_number]["notify"] = state.val;
+            const notify_native = {
+                native: {
+                    notify: state.val,
+                },
+            };
+            this.extendObject(mower.serial_number, notify_native);
+            if (state.val) {
+                this.log.info(`Notification for ${mower.serial_number} activated`);
+            } else {
+                this.log.info(`Notification for ${mower.serial_number} disabled`);
+            }
+            this.setState(id, { val: state.val, ack: true });
+        }
+    }
+
+    /**
+     * Check controller release
+     * @returns {Promise<boolean>}
+     */
+    async checkControllerRelease() {
+        const jscontroller = await this.getForeignObjectAsync(`system.host.${this.host}`);
+        if (jscontroller && jscontroller.common && jscontroller.common.installedVersion != null) {
+            if (jscontroller.common.installedVersion >= "5.0.14") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Load notifications from file
+     */
+    loadNotifications() {
+        try {
+            const notify_path = path.join(utils.getAbsoluteDefaultDataDir(), "notifications.json").replace(/\\/g, "/");
+            if (fs.existsSync(notify_path)) {
+                const data_notify = fs.readFileSync(notify_path, "utf-8");
+                return JSON.parse(data_notify);
+            } else {
+                this.log.debug(`Cannot read or parse notifications.json!`);
+                return {};
+            }
+        } catch (err) {
+            this.log.debug(`Could not read notifications.json: ${err.message}`);
+            return {};
+        }
+    }
+
+    /**
+     * Register status/error notification
+     *
+     * @param {object} id
+     * @param {string} action
+     * @param {boolean} update
+     * @returns {Promise<void>}
+     */
+    async registerEventNotification(id, action, update) {
+        if (!this.notifyAvailable) return;
+        //const worx = await this.loadNotifications();
+        //const ada = `system.adapter.${this.namespace}`;
+        //let notifiy_message = "";
+        const lastDevice = await this.getStateAsync(`info.${action}`);
+        const arrDevices = lastDevice && typeof lastDevice.val === "string" ? JSON.parse(lastDevice.val) : [];
+        //if (worx && worx[action] && worx[action][ada]) {
+        //    notifiy_message = worx[action][ada].toString();
+        //}
+        let send = false;
+        if (update) {
+            for (const id_message of id) {
+                const mowerId = id_message.split(" ");
+                this.log.debug(`MowerID: ${mowerId[0]}`);
+                if (!this.modules[mowerId[0]] || !this.modules[mowerId[0]]["notify"]) continue;
+                //if (notifiy_message != "" && notifiy_message.indexOf(id_message) === -1) {
+                //    send = true;
+                //    break;
+                //}
+                if (!arrDevices.includes(id_message)) {
+                    send = true;
+                    arrDevices.push(id_message);
+                }
+            }
+        } else {
+            const mowerId = id[0].split(" ");
+            if (!this.modules[mowerId[0]] || !this.modules[mowerId[0]]["notify"]) return;
+            if (!arrDevices.includes(id[0])) {
+                send = true;
+                arrDevices.push(id[0]);
+            }
+        }
+        this.log.debug(`Action: ${action} - send: ${send}`);
+        this.log.debug(`Check: ${JSON.stringify(arrDevices)}`);
+        if (send) {
+            const new_message = [];
+            for (const id_message of arrDevices) {
+                const mowerId = id_message.split(" ");
+                if (id.includes(id_message)) {
+                    new_message.push(id_message);
+                    continue;
+                }
+                if (action === "mowerError") {
+                    const err_val = await this.getStateAsync(`${mowerId[0]}.mower.error`);
+                    if (err_val && err_val.val != null && typeof err_val.val === "number" && err_val.val > 0) {
+                        const messages = error_states[err_val.val]
+                            ? ` ${error_states[err_val.val]}`
+                            : ` ${err_val.val}`;
+                        new_message.push(messages);
+                    }
+                } else {
+                    const sta_val = await this.getStateAsync(`${mowerId[0]}.mower.online`);
+                    if (sta_val && sta_val.val != null && !sta_val.val) {
+                        this.log.debug(`mowerId2: ${id.includes(id_message)}`);
+                        new_message.push(mowerId[0]);
+                    }
+                }
+            }
+            this.log.debug(`Send: ${JSON.stringify(new_message)}`);
+            if (new_message.length > 0) {
+                await this.registerNotification("worx", action, new_message.join(", "));
+            }
+            await this.setState(`info.${action}`, { val: JSON.stringify(new_message), ack: true });
+        } else {
+            this.log.debug(`Message for ${JSON.stringify(id)} is available`);
         }
     }
 

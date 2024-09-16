@@ -277,6 +277,103 @@
     "pin": 0,
     "intervalMower": 60
   },
+  "notifications": [
+    {
+      "scope": "worx",
+      "name": {
+        "en": "Worx",
+        "de": "Worwegen",
+        "ru": "Worx",
+        "pt": "Worx",
+        "nl": "Worx",
+        "fr": "Pire",
+        "it": "Worx",
+        "es": "Worx",
+        "pl": "Worx",
+        "uk": "Помилки",
+        "zh-cn": "蠕虫"
+      },
+            "description": {
+        "en": "Status and error notifications",
+        "de": "Status- und Fehlermeldungen",
+        "ru": "Уведомления о состоянии и ошибках",
+        "pt": "Notificações de status e erro",
+        "nl": "Status- en foutmeldingen",
+        "fr": "Notifications d'état et d'erreur",
+        "it": "Notifiche di stato e di errore",
+        "es": "Notificaciones de estado y error",
+        "pl": "Powiadomienia o stanie i błędach",
+        "uk": "Статус на сервери",
+        "zh-cn": "状态和错误通知"
+      },
+      "categories": [
+        {
+          "category": "mowerStatus",
+          "name": {
+            "en": "Offline Status",
+            "de": "Offline-Status",
+            "ru": "Оффлайновый статус",
+            "pt": "Estado offline",
+            "nl": "Offline status",
+            "fr": "État hors ligne",
+            "it": "Stato offline",
+            "es": "Situación general",
+            "pl": "Status offline",
+            "uk": "Статус на сервери",
+            "zh-cn": "离线状态"
+          },
+          "description": {
+            "en": "One or more devices are offline",
+            "de": "Ein oder mehrere Geräte sind offline",
+            "ru": "Один или несколько устройств отключены",
+            "pt": "Um ou mais dispositivos estão offline",
+            "nl": "Een of meer apparaten zijn offline",
+            "fr": "Un ou plusieurs appareils sont hors ligne",
+            "it": "Uno o più dispositivi sono offline",
+            "es": "Uno o más dispositivos están fuera de línea",
+            "pl": "Jedno lub więcej urządzeń jest wyłączonych",
+            "uk": "Один або більше пристроїв автономні",
+            "zh-cn": "一个或多个设备已下线"
+          },
+          "regex": [],
+          "limit": 1,
+          "severity": "notify"
+        },
+        {
+          "category": "mowerError",
+          "name": {
+            "en": "Error message",
+            "de": "Fehlermeldung",
+            "ru": "Сообщение ошибки",
+            "pt": "Mensagem de erro",
+            "nl": "Foutmelding",
+            "fr": "Message d'erreur",
+            "it": "Messaggio di errore",
+            "es": "Mensaje de error",
+            "pl": "Komunikat o błędzie",
+            "uk": "Повідомлення про помилку",
+            "zh-cn": "错误消息"
+          },
+                    "description": {
+            "en": "Last error message",
+            "de": "Letzte Fehlermeldung",
+            "ru": "Последнее сообщение об ошибке",
+            "pt": "Última mensagem de erro",
+            "nl": "Laatste foutmelding",
+            "fr": "Dernier message d'erreur",
+            "it": "Ultimo messaggio di errore",
+            "es": "Último mensaje de error",
+            "pl": "Wiadomość o ostatnim błędzie",
+            "uk": "Останнє повідомлення про помилку",
+            "zh-cn": "上次错误消息"
+          },
+          "regex": [],
+          "limit": 1,
+          "severity": "notify"
+        }
+      ]
+    }
+  ],
   "objects": [],
   "instanceObjects": [
     {
@@ -321,6 +418,56 @@
         "read": true,
         "write": false,
         "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.mowerStatus",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": {
+          "en": "Offline Status",
+          "de": "Offline-Status",
+          "ru": "Оффлайновый статус",
+          "pt": "Estado offline",
+          "nl": "Offline status",
+          "fr": "État hors ligne",
+          "it": "Stato offline",
+          "es": "Situación general",
+          "pl": "Status offline",
+          "uk": "Статус на сервери",
+          "zh-cn": "离线状态"
+        },
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "[]"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.mowerError",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": {
+          "en": "Last error message",
+          "de": "Letzte Fehlermeldung",
+          "ru": "Последнее сообщение об ошибке",
+          "pt": "Última mensagem de erro",
+          "nl": "Laatste foutmelding",
+          "fr": "Dernier message d'erreur",
+          "it": "Ultimo messaggio di errore",
+          "es": "Último mensaje de error",
+          "pl": "Wiadomość o ostatnim błędzie",
+          "uk": "Останнє повідомлення про помилку",
+          "zh-cn": "上次错误消息"
+        },
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "[]"
       },
       "native": {}
     }

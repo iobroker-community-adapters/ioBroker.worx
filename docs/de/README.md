@@ -224,8 +224,10 @@
 -   `mowerActive`: Pause Mähplan (Draht/änderbar)
 -   `mqtt_update`: Update Mqtt Daten vom Mäher - max. 150/Tag (Draht & Vision/änderbar)
 -   `mqtt_update_count`: Counter von Update Mqtt Daten (Draht & Vision/nur lesen)
+-   `notification`: Benachrichtigung über JS-Controller aktivieren oder deaktivieren. Es wird Offline und Fehlermeldungen ausgegeben. (Draht & Vision/änderbar)
 
-![Mower img/mower_2.png](img/mower_2.png)
+![Mower img/mower_2.png](img/mower_2.png)</br>
+![Mower img/info_connection.png](img/info_connection.png)
 
 -   `oneTimeJson`: einmaliges Mähen als JSON (Draht & Vision/änderbar)
 
