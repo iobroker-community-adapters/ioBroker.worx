@@ -6,7 +6,11 @@
             "type": "text",
             "label": "APP username (eMail)",
             "newLine": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "hidden": "data.server === \"Remote\""
         },
         "password": {
@@ -14,7 +18,11 @@
             "newLine": true,
             "repeat": false,
             "visible": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "label": "App Password",
             "hidden": "data.server === \"Remote\""
         },
@@ -22,7 +30,11 @@
             "type": "text",
             "label": "IP from Mower",
             "newLine": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "hidden": "data.server !== \"Remote\""
         },
         "pin": {
@@ -30,14 +42,22 @@
             "newLine": true,
             "repeat": false,
             "visible": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "label": "Pin Code",
             "hidden": "data.server !== \"Remote\""
         },
         "server": {
             "type": "select",
             "newLine": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "options": [
                 {
                     "label": "Worx",
@@ -70,7 +90,11 @@
             "max": 86400,
             "step": 1,
             "newLine": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "default": 60,
             "hidden": "data.server !== \"Remote\""
         },
@@ -82,7 +106,11 @@
             "max": 1440,
             "step": 1,
             "newLine": true,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "default": 60,
             "hidden": "data.server === \"Remote\""
         },
@@ -91,7 +119,11 @@
             "label": "delay for edge cut",
             "newLine": true,
             "default": 5000,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "hidden": "data.server === \"Remote\""
         },
         "meterMin": {
@@ -99,7 +131,11 @@
             "label": "Distance and time in min and m",
             "newLine": true,
             "default": false,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "hidden": "data.server === \"Remote\""
         },
         "updateMqtt": {
@@ -107,7 +143,11 @@
             "label": "Updating MQTT data after token update.",
             "newLine": true,
             "default": false,
-            "sm": 3,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
             "hidden": "data.server === \"Remote\""
         }
     }
