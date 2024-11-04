@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.1.1 (2024-11-04)
 
 -   (Lucky-ESA) Added JS-Controller Notification
 -   (Lucky-ESA) Dependencies updated

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "news": {
+      "3.1.1": {
+        "en": "Added JS-Controller Notification\nDependencies updated\nNew design for settings page added",
+        "de": "Hinzugefügt JS-Controller Notifizierung\nAusgaben aktualisiert\nNeues Design für Einstellungen Seite hinzugefügt",
+        "ru": "Добавлено JS-Controller Уведомление\nОбновленные данные о зависимостях\nНовый дизайн добавлена страница настроек",
+        "pt": "Adicionado JS-Controller Notificação\nDependências atualizadas\nNovo design para configurações página adicionada",
+        "nl": "Toegevoegd JS-Controller Kennisgeving\nAfhankelijkheden bijgewerkt\nNieuw ontwerp voor instellingen pagina toegevoegd",
+        "fr": "JS-Controller ajouté Notification\nDépendances actualisées\nNouvelle conception pour les paramètres page ajoutée",
+        "it": "Aggiunto JS-Controller Notifica\nDipendenze aggiornate\nNuovo design per le impostazioni pagina aggiunto",
+        "es": "Añadido JS-Controller Notificación\nActualización de las dependencias\nNuevo diseño para la página de configuración añadido",
+        "pl": "Dodano kontroler JS Powiadomienie\nAktualizacja zależności\nDodano nowy projekt strony ustawień",
+        "uk": "Додано JS-Controller Повідомлення\nЗалежність оновлено\nНовий дизайн для сторінки налаштувань",
+        "zh-cn": "增加的联署材料主计长 通知\n更新的依赖关系\n添加了设置页面的新设计"
+      },
       "3.1.0": {
         "en": "Added Landroid IP\nFixed interval\nFixed Vision Edgecut",
         "de": "Hinzugefügt Landroid IP\nFeste Intervalle\nFeste Vision Edgecut",
@@ -80,19 +93,6 @@
         "pl": "Added cmd wifi lock for Vision (ang.)\n#761 (https:/github.com/iobroker-community-adapters/ioBroker.worx/issues/761) (ang.)\nAdded sequence for Vision (ang.)\nGodzin pracy i godzin pracy\nNieprawidłowe przesłanie do aktualizacji oprogramowania",
         "uk": "Додано смд Wi-Fi замок для Vision\nВиправлено #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nДодано послідовність для зору\nПеревірити робочі години і час замка\nВиправлено неправильне повідомлення для оновлення мікропрограми",
         "zh-cn": "添加《展望》的光衣服\n第[761]号(http://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\n增加《展望》的顺序\n检查工作时间和时间\n软件更新的错误逻辑信息"
-      },
-      "2.3.2": {
-        "en": "Wrong folder for areas\nNew data points can only be read",
-        "de": "Falscher Ordner für Bereiche\nNeue Datenpunkte können nur gelesen werden",
-        "ru": "Неправильная папка для областей\nНовые точки данных можно прочитать только",
-        "pt": "Pasta errada para áreas\nNovos pontos de dados só podem ser lidos",
-        "nl": "Verkeerde map voor gebieden\nNieuwe datapunten kunnen alleen gelezen worden",
-        "fr": "Wrong dossier pour les zones\nDe nouveaux points de données ne peuvent être lus que",
-        "it": "Cartella sbagliato per le aree\nNuovi punti di dati possono essere letti solo",
-        "es": "Carpeta incorrecta para áreas\nNuevos puntos de datos solo se pueden leer",
-        "pl": "Wrong folder (ang.)\nMożna odczytać tylko nowe punkty danych",
-        "uk": "Папка wrong для зон\nНові дані можна прочитати лише",
-        "zh-cn": "环境领域\n新的数据点只能阅读。"
       }
     },
     "titleLang": {
@@ -293,7 +293,7 @@
         "uk": "Worx",
         "zh-cn": "Worx"
       },
-            "description": {
+      "description": {
         "en": "Status and error notifications",
         "de": "Status- und Fehlermeldungen",
         "ru": "Уведомления о состоянии и ошибках",
@@ -354,7 +354,7 @@
             "uk": "Повідомлення про помилку",
             "zh-cn": "错误消息"
           },
-                    "description": {
+          "description": {
             "en": "Last error message",
             "de": "Letzte Fehlermeldung",
             "ru": "Последнее сообщение об ошибке",
