@@ -40,7 +40,7 @@
     "http-cookie-agent": "^6.0.6",
     "json2iob": "^2.6.12",
     "qs": "^6.13.0",
-    "tough-cookie": "^4.1.4",
+    "tough-cookie": "^5.0.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
