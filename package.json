@@ -41,7 +41,7 @@
     "json2iob": "^2.6.12",
     "qs": "^6.13.0",
     "tough-cookie": "^5.0.0",
-    "uuid": "^11.0.2"
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.8.0",
