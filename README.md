@@ -48,6 +48,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) Migration to ESLint9
+- (Lucky-ESA) Node 20 required
 
 ### 3.1.1 (2024-11-04)
 
