@@ -105,6 +105,8 @@ class Worx extends utils.Adapter {
         this.mqttC = null;
         this.iot = null;
         this.mqtt = null;
+        this.partyModusTimer = {};
+        this.partyModusTimerCounter = {};
         this.remoteMower = null;
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
@@ -2222,6 +2224,8 @@ class Worx extends utils.Adapter {
             this.sleepTimer && this.clearTimeout(this.sleepTimer);
             this.updateFW && this.clearInterval(this.updateFW);
             for (const mower of this.deviceArray) {
+                this.partyModusTimer[mower.serial_number] &&
+                    this.clearInterval(this.partyModusTimer[mower.serial_number]);
                 this.rainCounterInterval[mower.serial_number] &&
                     this.rainCounterInterval[mower.serial_number]["interval"] &&
                     this.clearInterval(this.rainCounterInterval[mower.serial_number]["interval"]);
@@ -2429,23 +2433,19 @@ class Worx extends utils.Adapter {
                         const mowTimeExtend =
                             typeof state.val === "number" ? state.val : parseInt(state.val.toString());
                         this.mowTimeEx(id, mowTimeExtend, mower);
-                    } else if (
-                        command === "mowerActive" &&
-                        mower &&
-                        mower.last_status &&
-                        mower.last_status.payload &&
-                        mower.last_status.payload.cfg &&
-                        mower.last_status.payload.cfg.sc
-                    ) {
+                    } else if (command === "mowerActive") {
                         const val = state.val ? 1 : 0;
-                        const message = mower.last_status.payload.cfg.sc;
-
-                        //hotfix 030620
-                        delete message.ots;
-                        delete message.distm;
-                        message.m = val;
-                        this.log.debug(`Mow times disabled: ${message.m}`);
-                        this.sendMessage(`{"sc":${JSON.stringify(message)}}`, mower.serial_number, id);
+                        this.log.debug(`Mow times disabled for 60 minutes`);
+                        if (val) {
+                            this.sendMessage(`{"sc":{"m":${val},"distm":0}}`, mower.serial_number, id);
+                            if (this.partyModusTimer[mower.serial_number]) {
+                                this.clearInterval(this.partyModusTimer[mower.serial_number]);
+                                this.partyModusTimer[mower.serial_number] = null;
+                                this.partyModusTimerCounter[mower.serial_number] = 0;
+                            }
+                        } else {
+                            this.sendPartyModusTimer(id, 60, mower);
+                        }
                     } else if (command === "edgecut") {
                         this.edgeCutting(id, state.val, mower);
                     } else if (command === "sendCommand") {
@@ -2454,6 +2454,8 @@ class Worx extends utils.Adapter {
                         this.startOneShedule(id, state.val, mower);
                     } else if (command === "partyModus") {
                         this.sendPartyModus(id, state.val, mower);
+                    } else if (command === "partyModusTimer") {
+                        this.sendPartyModusTimer(id, state.val, mower);
                     } else if (command === "calJson" || command === "calJson2") {
                         this.changeWeekJson(id, state.val, mower);
                     } else if (command === "AutoLock") {
@@ -3875,6 +3877,60 @@ class Worx extends utils.Adapter {
         } else {
             this.sendMessage('{"sc":{ "m":1, "distm": 0}}', mower.serial_number, id);
         }
+        if (this.partyModusTimer[mower.serial_number]) {
+            this.clearInterval(this.partyModusTimer[mower.serial_number]);
+            this.partyModusTimer[mower.serial_number] = null;
+            this.partyModusTimerCounter[mower.serial_number] = 0;
+        }
+    }
+
+    /**
+     * @param {string} id
+     * @param {any} value
+     * @param {any} mower
+     */
+    sendPartyModusTimer(id, value, mower) {
+        if (value < 0 || value > 1440) {
+            this.log.warn(`Only between 30 and 60 are allowed!`);
+            return;
+        }
+        const data = mower.last_status.payload;
+        if (!data.cfg && data.cfg.sc && data.cfg.sc.m != null) {
+            if (!data.cfg && data.cfg.sc && data.cfg.sc.m == 2) {
+                this.log.warn(`Please deactivate Party Mode first!`);
+                return;
+            }
+        }
+        this.sendMessage(`{"sc":{ "m":0, "distm": ${value}}}`, mower.serial_number, id);
+        this.setState(id, {
+            val: value,
+            ack: true,
+        });
+        this.sendPartyModusTimerInterval(value, mower);
+    }
+
+    /**
+     * @param {any} value
+     * @param {any} mower
+     */
+    sendPartyModusTimerInterval(value, mower) {
+        this.partyModusTimerCounter[mower.serial_number] &&
+            this.clearInterval(this.partyModusTimer[mower.serial_number]);
+        this.log.info(`Start Party Modus Timer with ${value} minutes`);
+        this.partyModusTimerCounter[mower.serial_number] = value;
+        this.partyModusTimer[mower.serial_number] = this.setInterval(async () => {
+            this.setState(`${mower.serial_number}.mower.partyModusTimer`, {
+                val: this.partyModusTimerCounter[mower.serial_number],
+                ack: true,
+            });
+            if (this.partyModusTimerCounter[mower.serial_number] === 0) {
+                this.clearInterval(this.partyModusTimer[mower.serial_number]);
+                this.partyModusTimer[mower.serial_number] = null;
+                this.partyModusTimerCounter[mower.serial_number] = 0;
+                return;
+            }
+            --this.partyModusTimerCounter[mower.serial_number];
+        }, 60 * 1000);
     }
 
     /**

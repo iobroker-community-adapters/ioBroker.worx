@@ -50,6 +50,7 @@ The adapter can control the mower and you can change config params like mowtimes
 - (Lucky-ESA) Migration to ESLint9
 - (Lucky-ESA) Node 20 required
 - (Lucky-ESA) Admin 7.4.10 required
+- (Lucky-ESA) Added Party Modus Timer (wire only)
 
 ### 3.1.1 (2024-11-04)
 
