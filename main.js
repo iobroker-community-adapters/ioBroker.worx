@@ -68,6 +68,37 @@ const error_states = {
     120: "Charging station undocking error",
 };
 
+const no_verification = [
+    "borderCut",
+    "startTime",
+    "workTime",
+    "oneTimeWithBorder",
+    "oneTimeWorkTime",
+    "reset_battery_time",
+    "reset_blade_time",
+    "firmware_update_start",
+    "zones",
+    "enabled_time",
+    "add_timeslot",
+    "oneTimeZones",
+    "zone_id",
+    "chargingStation",
+    "borderDistance",
+    "cutOverBorder",
+    "zoneIdFrom",
+    "zoneIdTo",
+    "tagIdFrom",
+    "tagIdTo",
+    "zones_id",
+    "zones_frequency",
+    "zones_cutting",
+    "zones_direction",
+    "zones_height",
+    "zones_height_fairway",
+    "zones_overlapping",
+    "notification",
+];
+
 class Worx extends utils.Adapter {
     /**
      * @param {Partial<utils.AdapterOptions>} [options={}]
@@ -95,7 +126,7 @@ class Worx extends utils.Adapter {
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
         this.vision = {};
-        this.poll_check_time = 0;
+        this.poll_check_time = {};
         this.requestCounter = 0;
         this.reconnectCounter = 0;
         this.rainCounterInterval = {};
@@ -107,6 +138,7 @@ class Worx extends utils.Adapter {
         this.mqtt = null;
         this.partyModusTimer = {};
         this.partyModusTimerCounter = {};
+        this.lastRequest = {};
         this.remoteMower = null;
         this.mqtt_response_check = {};
         this.createDevices = helper.createDevices;
@@ -427,6 +459,8 @@ class Worx extends utils.Adapter {
 
                     await this.cleanOldVersion(id, device.capabilities);
                     await this.createDevices(device, this.md5_user(device.serial_number), error_states);
+                    this.lastRequest[device.serial_number] = false;
+                    this.poll_check_time[device.serial_number] = 0;
                     const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
                     this.log.debug(`fw_id: ${JSON.stringify(fw_id)}`);
                     await this.createAdditionalDeviceStates(device, fw_id);
@@ -2252,38 +2286,11 @@ class Worx extends utils.Adapter {
      */
     async onStateChange(id, state) {
         if (state && !state.ack && state.val !== null) {
-            const no_verification = [
-                "borderCut",
-                "startTime",
-                "workTime",
-                "oneTimeWithBorder",
-                "oneTimeWorkTime",
-                "reset_battery_time",
-                "reset_blade_time",
-                "firmware_update_start",
-                "zones",
-                "enabled_time",
-                "add_timeslot",
-                "oneTimeZones",
-                "zone_id",
-                "chargingStation",
-                "borderDistance",
-                "cutOverBorder",
-                "zoneIdFrom",
-                "zoneIdTo",
-                "tagIdFrom",
-                "tagIdTo",
-                "zones_id",
-                "zones_frequency",
-                "zones_cutting",
-                "zones_direction",
-                "zones_height",
-                "zones_height_fairway",
-                "zones_overlapping",
-                "notification",
-            ];
+            const mower_id = id.split(".")[2];
+            this.log.debug(`Request SN: ${mower_id}`);
             const command = id.split(".").pop();
             if (command == null) {
+                this.log.warn(`Command ${id} not found!`);
                 return;
             }
             if (this.appname === "Remote") {
@@ -2308,16 +2315,18 @@ class Worx extends utils.Adapter {
                 }
                 return;
             }
-            const check_time = Date.now() - this.poll_check_time;
+            const check_time = Date.now() - this.poll_check_time[mower_id];
             if (check_time < poll_check && !no_verification.includes(command)) {
                 this.log.info(
                     `Min Time between requests is 1000ms. The time between commands was ${check_time} ms. Request ${id} with value ${state.val} was not sended`,
                 );
                 return;
             }
-            this.poll_check_time = Date.now();
-            const mower_id = id.split(".")[2];
+            if (!this.lastRequest[mower_id]) {
+                this.poll_check_time[mower_id] = Date.now();
+            }
             const mower = this.deviceArray.find(device => device.serial_number === mower_id);
+            this.lastRequest[mower.serial_number] = no_verification.includes(command);
             this.log.debug(`this.modules!  ${JSON.stringify(this.modules)}`);
             this.log.debug(
                 `state change: id_____ ${id} Mower ${mower_id}_____${command}______${JSON.stringify(mower)}`,
