@@ -121,6 +121,7 @@ class Worx extends utils.Adapter {
         this.loadActivity = {};
         this.interruptCheck = {};
         this.refreshTokenTimeout = null;
+        this.refreshStartTokenTimeout = null;
         this.timeoutedgeCutDelay = null;
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
@@ -195,6 +196,31 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        let configChanged = false;
+        const instance = await this.getObjectAsync("session");
+        if (instance && instance.native && instance.native.pw != "") {
+            if (
+                this.config.mail === instance.native.user &&
+                this.config.password === this.decrypt(instance.native.pw)
+            ) {
+                this.log.debug(`User and password have not been changed!`);
+                configChanged = true;
+            } else {
+                this.log.debug(`Save user and password!!`);
+                this.setSession();
+            }
+            if (this.config.server === instance.native.server) {
+                this.log.debug(`Server have not been changed!`);
+            } else {
+                if (configChanged) {
+                    this.setSession();
+                    configChanged = false;
+                }
+            }
+        } else if (instance && instance.native) {
+            this.log.debug(`Save mail and password!`);
+            this.setSession();
+        }
         this.notifyAvailable = await this.checkControllerRelease();
         if (this.config.server === "Remote") {
             this.remoteMower = new remoteMower(this.config, this, axios);
@@ -242,7 +268,23 @@ class Worx extends utils.Adapter {
         this.subscribeStates("*");
 
         this.log.info(`Login to ${this.config.server}`);
-        await this.login();
+        let session = 0;
+        if (configChanged) {
+            session = await this.sessionCheck();
+        }
+        if (session === 1) {
+            const refreshToken = await this.refreshToken(false);
+            if (refreshToken) {
+                session = this.session.expires_in * 1000 - 200;
+            } else {
+                session = 0;
+            }
+        }
+        this.log.debug(`Session value: ${session}`);
+        if (session === 0) {
+            this.log.info(`Start login`);
+            await this.login();
+        }
         if (this.session.access_token) {
             await this.getDeviceList();
             await this.updateDevices();
@@ -268,12 +310,16 @@ class Worx extends utils.Adapter {
                 this.session.expires_in = 3600;
             }
             this.updateMqttData(true);
-            this.refreshTokenInterval = this.setInterval(
-                () => {
-                    this.refreshToken();
-                },
-                (this.session.expires_in - 200) * 1000,
-            );
+
+            if (session === 0) {
+                this.setRefreshTokenInterval();
+            } else {
+                this.log.debug(`Start refreshTokenTimeout with ${session} minutes!`);
+                this.refreshStartTokenTimeout = this.setTimeout(async () => {
+                    this.refreshStartTokenTimeout = null;
+                    await this.refreshToken(true);
+                }, session);
+            }
 
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
@@ -304,6 +350,7 @@ class Worx extends utils.Adapter {
             .then(response => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
+                this.setSessionValue();
                 this.setState("info.connection", true, true);
                 this.log.info(`Connected to ${this.config.server} server`);
             })
@@ -312,6 +359,65 @@ class Worx extends utils.Adapter {
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
         return data;
+    }
+
+    async setSessionValue() {
+        this.session.next = new Date().getTime() + parseInt(this.session.expires_in) * 1000;
+        await this.setState("session", { val: this.encrypt(JSON.stringify(this.session)), ack: true });
+    }
+
+    setRefreshTokenInterval() {
+        this.log.debug(`Start refreshTokenInterval!`);
+        this.refreshTokenInterval = this.setInterval(
+            async () => {
+                await this.refreshToken(true);
+            },
+            (this.session.expires_in - 200) * 1000,
+        );
+    }
+
+    setSession() {
+        this.extendObject("session", {
+            native: {
+                user: this.config.mail,
+                pw: this.encrypt(this.config.password),
+                server: this.config.server,
+            },
+        });
+    }
+
+    async sessionCheck() {
+        const obj = await this.getObjectAsync("session");
+        if (obj) {
+            const check_key = await this.getStateAsync("session");
+            if (
+                check_key != null &&
+                check_key.val != null &&
+                check_key.val.toString().indexOf("aes-192-cbc") !== -1 &&
+                typeof check_key.val === "string" &&
+                check_key.val != ""
+            ) {
+                check_key.val = this.decrypt(check_key.val);
+                const actual = new Date().getTime();
+                if (typeof check_key.val === "string") {
+                    this.log.debug(`Old session ${check_key.val}`);
+                    const val = JSON.parse(check_key.val);
+                    if (val && val.next > actual) {
+                        this.log.debug(`Use old session!`);
+                        this.session = val;
+                        return val.next - actual;
+                    } else if (val && val.refresh_token) {
+                        this.log.debug(`Use old session for refresh token!`);
+                        this.session = val;
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+            return 0;
+        }
+        await this.setState("session", { val: "", ack: true });
+        return 0;
     }
 
     async checkDeviceObjectTree() {
@@ -1076,8 +1182,8 @@ class Worx extends utils.Adapter {
                                 error.response && this.log.debug(JSON.stringify(error.response.data));
                                 this.log.info(`${element.path} receive 401 error. Refresh Token in 60 seconds`);
                                 this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
-                                this.refreshTokenTimeout = this.setTimeout(() => {
-                                    this.refreshToken();
+                                this.refreshTokenTimeout = this.setTimeout(async () => {
+                                    await this.refreshToken(true);
                                 }, 1000 * 60);
                                 return;
                             }
@@ -1096,10 +1202,10 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async refreshToken() {
+    async refreshToken(first) {
         this.log.debug("Refresh token");
         //this.checkRainStatus();
-        await this.requestClient({
+        return await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token?`,
             method: "post",
             headers: {
@@ -1118,17 +1224,22 @@ class Worx extends utils.Adapter {
             .then(response => {
                 this.log.debug(JSON.stringify(response.data));
                 this.session = response.data;
-                this.log.debug("Refresh token for MQTT-Connection");
-                this.updateMqttData(true);
-                if (this.mqtt) {
-                    this.start_mqtt();
-                } else {
-                    this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                this.setSessionValue();
+                if (first) {
+                    this.log.debug("Refresh token for MQTT-Connection");
+                    this.updateMqttData(true);
+                    if (this.mqtt) {
+                        this.start_mqtt();
+                    } else {
+                        this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                    }
                 }
+                return true;
             })
             .catch(error => {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
+                return false;
             });
     }
 
@@ -1373,8 +1484,8 @@ class Worx extends utils.Adapter {
                         error.response && this.log.debug(JSON.stringify(error.response.data));
                         this.log.info(`${path} receive 401 error. Refresh Token in 30 seconds`);
                         this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
-                        this.refreshTokenTimeout = this.setTimeout(() => {
-                            this.refreshToken();
+                        this.refreshTokenTimeout = this.setTimeout(async () => {
+                            await this.refreshToken(true);
                         }, 1000 * 30);
                         return;
                     }
@@ -2155,6 +2266,7 @@ class Worx extends utils.Adapter {
             }
             this.setState("info_mqtt.online", false, true);
             this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
+            this.refreshStartTokenTimeout && this.clearTimeout(this.refreshStartTokenTimeout);
             this.timeoutedgeCutDelay && this.clearTimeout(this.timeoutedgeCutDelay);
             this.updateInterval && this.clearInterval(this.updateInterval);
             this.refreshActivity && this.clearInterval(this.refreshActivity);

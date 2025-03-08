@@ -437,6 +437,31 @@
                 "def": "[]"
             },
             "native": {}
+        },
+        {
+            "_id": "session",
+            "type": "state",
+            "common": {
+                "role": "state",
+                "name": {
+                    "en": "Session infos",
+                    "de": "Sitzungsinfos",
+                    "ru": "Сессионная информация",
+                    "pt": "InformaÃ§Ãμes de sessão",
+                    "nl": "Sessie-informatie",
+                    "fr": "Infos de séance",
+                    "it": "Informazioni di sessione",
+                    "es": "Información de sesión",
+                    "pl": "Informacje o sesji",
+                    "uk": "Інформація про сеанс",
+                    "zh-cn": "会话信息"
+                },
+                "type": "string",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
         }
     ]
 }
