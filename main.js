@@ -8,7 +8,6 @@ const utils = require("@iobroker/adapter-core");
 const path = require("node:path");
 const fs = require("fs");
 const axios = require("axios");
-// const qs = require("qs");
 const Json2iob = require("json2iob");
 const tough = require("tough-cookie");
 const { HttpsCookieAgent } = require("http-cookie-agent/http");
@@ -239,11 +238,6 @@ class Worx extends utils.Adapter {
             this.log.error("Please set username and password in the instance settings");
             return;
         }
-        // eslint-disable-next-line no-control-regex
-        if (/[\x00-\x08\x0E-\x1F\x80-\xFF]/.test(this.config.password)) {
-            this.log.error("Password is now encrypted: Please re-enter the password in the instance settings");
-            return;
-        }
 
         this.subscribeStates("*");
 
@@ -318,96 +312,6 @@ class Worx extends utils.Adapter {
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
         return data;
-
-        /* App login simulation
-        const [code_verifier, codeChallenge] = this.getCodeChallenge();
-        const loginForm = await this.requestClient({
-            method: "get",
-            url:
-                this.clouds[this.config.server].loginUrl +
-                "oauth/authorize?response_type=code&client_id=" +
-                this.clouds[this.config.server].clientId +
-                "&redirect_uri=" +
-                this.clouds[this.config.server].redirectUri +
-                "&scope=user:manage%20data:products%20mower:pair%20mower:update%20mower:lawn%20mower:view%20user:certificate%20user:profile%20mower:unpair%20mobile:notifications%20mower:warranty%20mower:firmware%20mower:activity_log&state=-u8vt3mPPBuugVgUpr4CD53MkzsyTeKP-x528sQ8&code_challenge=" +
-                codeChallenge +
-                "&code_challenge_method=S256&suggested_authentication_flow=login",
-            headers: {
-                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8",
-                "user-agent": this.userAgent,
-                "accept-language": "de-de",
-            },
-        })
-            .then((response) => {
-                this.log.info("Login form loaded");
-                return response.data;
-            })
-            .catch((error) => {
-                this.log.error(error);
-                error.response && this.log.error(JSON.stringify(error.response.data));
-            });
-        const form = this.extractHidden(loginForm);
-        form.email = this.config.mail;
-        form.password = this.config.password;
-        const codeResponse = await this.requestClient({
-            method: "post",
-            url: this.clouds[this.config.server].loginUrl + "login",
-            headers: {
-                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8",
-                "content-type": "application/x-www-form-urlencoded",
-                "accept-language": "de-de",
-                "user-agent": this.userAgent,
-            },
-            data: qs.stringify(form),
-        })
-            .then((response) => {
-                this.log.error("Login form submission failed");
-                const errorText = response.data.match('help is-danger">(.*)<');
-                errorText && this.log.error(errorText[1]);
-                return;
-            })
-            .catch((error) => {
-                if (error && error.message.includes("Unsupported protocol")) {
-                    this.log.info("Received Code");
-                    return qs.parse(error.request._options.path.split("?")[1]);
-                }
-                this.log.error(error);
-                error.response && this.log.error(JSON.stringify(error.response.data));
-            });
-        if (!codeResponse) {
-            this.log.warn("Could not get code response");
-            return;
-        }
-
-        const data = await this.requestClient({
-            url: this.clouds[this.config.server].loginUrl + "oauth/token?",
-            method: "post",
-            headers: {
-                accept: "application/json",
-                "content-type": "application/json",
-                "user-agent": this.userAgent,
-                "accept-language": "de-de",
-            },
-            data: JSON.stringify({
-                client_id: this.clouds[this.config.server].clientId,
-                code: codeResponse.code,
-                redirect_uri: this.clouds[this.config.server].redirectUri,
-                code_verifier: code_verifier,
-                grant_type: "authorization_code",
-            }),
-        })
-            .then((response) => {
-                this.log.debug(JSON.stringify(response.data));
-                this.session = response.data;
-                this.setState("info.connection", true, true);
-                this.log.info(`Connected to ${this.config.server} server`);
-            })
-            .catch((error) => {
-                this.log.error(error);
-                error.response && this.log.error(JSON.stringify(error.response.data));
-            });
-        return data;
-        */
     }
 
     async checkDeviceObjectTree() {
