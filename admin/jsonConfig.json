@@ -149,6 +149,35 @@
             "lg": 4,
             "xl": 4,
             "hidden": "data.server === \"Remote\""
+        },
+        "setState": {
+            "type": "setState",
+            "label": "deleteText",
+            "tooltip": "deleteSession",
+            "id": "playstation.%INSTANCE%.session",
+            "ack": true,
+            "val": "",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "style": {
+                "backgroundColor": "red",
+                "border": "outset"
+            }
+        },
+        "resetLogin": {
+            "type": "checkbox",
+            "label": "Reset Login counter",
+            "newLine": true,
+            "default": false,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
         }
     }
 }

@@ -10,5 +10,8 @@
     "IP from Mower": "IP van maaier",
     "Pin Code": "Pincode",
     "Update interval in seconds": "Update-interval in seconden",
-    "Ranges": "Bereik van 1 tot 86400 mogelijk"
+    "Ranges": "Bereik van 1 tot 86400 mogelijk",
+    "deleteSession": "Sessiegegevens verwijderen (in het geval van inlogproblemen)",
+    "deleteText": "Sessiegegevens verwijderen",
+    "Reset Login counter": "Reset inlogteller"
 }

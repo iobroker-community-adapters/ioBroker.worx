@@ -10,5 +10,8 @@
     "IP from Mower": "IP de la tondeuse",
     "Pin Code": "Code PIN",
     "Update interval in seconds": "Intervalle de mise à jour en secondes",
-    "Ranges": "Plage de 1 à 86400 possible"
+    "Ranges": "Plage de 1 à 86400 possible",
+    "deleteSession": "Supprimer les données de session (en cas de problèmes de connexion)",
+    "deleteText": "Supprimer les données de session",
+    "Reset Login counter": "Réinitialiser le compteur de connexion"
 }

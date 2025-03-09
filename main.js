@@ -66,7 +66,6 @@ const error_states = {
     119: "Area limit exceeded",
     120: "Charging station undocking error",
 };
-
 const no_verification = [
     "borderCut",
     "startTime",
@@ -97,6 +96,11 @@ const no_verification = [
     "zones_overlapping",
     "notification",
 ];
+const diff_time = 10000; // 10 seconds
+const max_count = 5; // Difference of the last 10 logins > diff_time
+const loginLength = 10;
+const refreshLength = 10;
+const errorLength = 10;
 
 class Worx extends utils.Adapter {
     /**
@@ -159,6 +163,23 @@ class Worx extends utils.Adapter {
                 },
             }),
         });
+        this.loginInfo = {
+            loginCounter: 0,
+            loginDiff: [],
+            lastLoginTimestamp: 0,
+            lastLoginDate: "",
+            refreshCounter: 0,
+            refreshHistory: [],
+            lastRefreshTimestamp: 0,
+            lastRefreshDate: "",
+            nextRefreshTimestamp: 0,
+            nextRefreshDate: "",
+            lastError: "",
+            errorHistory: [],
+            errorCounter: 0,
+            lastErrorTimestamp: 0,
+            lastErrorDate: "",
+        };
         this.modules = {};
         this.clouds = {
             worx: {
@@ -196,6 +217,29 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        const check_login = await this.getStateAsync("loginInfo");
+        if (check_login && check_login.val != null && typeof check_login.val === "string") {
+            const info = JSON.parse(check_login.val);
+            if (info.refreshHistory != null) {
+                this.loginInfo = info;
+            }
+        }
+        if (this.config.resetLogin) {
+            this.loginInfo.loginDiff = [];
+            this.loginInfo.loginCounter = 0;
+            await this.setLoginInfo();
+            this.log.info("Reset Login counter. Restarting now!");
+            await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
+                native: { resetLogin: false },
+            });
+        }
+        if (await this.loginCounterCheck()) {
+            this.log.error(`Login is blocked please check! Please reset the login counter in the instance settings!`);
+            return;
+        }
+        this.loginInfo.refreshCounter = 0;
+        this.loginInfo.refreshCounter = 0;
+        this.loginInfo.errorCounter = 0;
         let configChanged = false;
         const instance = await this.getObjectAsync("session");
         if (instance && instance.native && instance.native.pw != "") {
@@ -272,9 +316,11 @@ class Worx extends utils.Adapter {
         if (configChanged) {
             session = await this.sessionCheck();
         }
+        let session_check = false;
         if (session === 1) {
             const refreshToken = await this.refreshToken(false);
             if (refreshToken) {
+                session_check = true;
                 session = this.session.expires_in * 1000 - 200;
             } else {
                 session = 0;
@@ -313,14 +359,19 @@ class Worx extends utils.Adapter {
 
             if (session === 0) {
                 this.setRefreshTokenInterval();
+                if (!session_check) {
+                    this.setLoginInfoData(this.session.expires_in);
+                }
             } else {
                 this.log.debug(`Start refreshTokenTimeout with ${session} minutes!`);
+                if (!session_check) {
+                    this.setLoginInfoData(session);
+                }
                 this.refreshStartTokenTimeout = this.setTimeout(async () => {
                     this.refreshStartTokenTimeout = null;
                     await this.refreshToken(true);
                 }, session);
             }
-
             this.refreshActivity = this.setInterval(() => {
                 this.createActivityLogStates();
             }, 60 * 1000); // 1 minutes
@@ -353,12 +404,74 @@ class Worx extends utils.Adapter {
                 this.setSessionValue();
                 this.setState("info.connection", true, true);
                 this.log.info(`Connected to ${this.config.server} server`);
+                if (this.loginInfo.loginDiff.length > loginLength) {
+                    this.loginInfo.loginDiff.shift();
+                }
+                ++this.loginInfo.loginCounter;
+                const diff = Date.now() - this.loginInfo.lastLoginTimestamp;
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                this.loginInfo.loginDiff.push(diff);
+                this.loginInfo.lastLoginTimestamp = Date.now();
+                this.loginInfo.lastLoginDate = new Date().toISOString();
+                this.setLoginInfo();
             })
             .catch(error => {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
+                this.setLoginErrorData(error);
             });
         return data;
+    }
+
+    async loginCounterCheck() {
+        if (this.loginInfo.loginDiff.length > 0) {
+            let count = 0;
+            for (const diff of this.loginInfo.loginDiff) {
+                if (diff < diff_time) {
+                    ++count;
+                } else {
+                    count = 0;
+                }
+            }
+            if (count > max_count) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    setLoginInfoData(session) {
+        if (this.loginInfo.refreshHistory.length > refreshLength) {
+            this.loginInfo.refreshHistory.shift();
+        }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.loginInfo.refreshHistory.push(Date.now());
+        ++this.loginInfo.refreshCounter;
+        this.loginInfo.lastRefreshTimestamp = Date.now();
+        this.loginInfo.lastRefreshDate = new Date().toISOString();
+        this.loginInfo.nextRefreshTimestamp = Date.now() + (session - 200) * 1000;
+        this.loginInfo.nextRefreshDate = new Date(Date.now() + (session - 200) * 1000).toISOString();
+        this.setLoginInfo();
+    }
+
+    setLoginErrorData(error) {
+        if (this.loginInfo.errorHistory.length > errorLength) {
+            this.loginInfo.errorHistory.shift();
+        }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.loginInfo.errorHistory.push(Date.now());
+        this.loginInfo.lastError = error;
+        ++this.loginInfo.errorCounter;
+        this.loginInfo.lastErrorTimestamp = Date.now();
+        this.loginInfo.lastErrorDate = new Date().toISOString();
+        this.setLoginInfo();
+    }
+
+    async setLoginInfo() {
+        await this.setState("loginInfo", { val: JSON.stringify(this.loginInfo), ack: true });
     }
 
     async setSessionValue() {
@@ -497,6 +610,7 @@ class Worx extends utils.Adapter {
             .catch(error => {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
+                this.setLoginErrorData(error);
             });
     }
 
@@ -1087,6 +1201,7 @@ class Worx extends utils.Adapter {
             .catch(error => {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
+                this.setLoginErrorData(error);
             });
     }
 
@@ -1177,6 +1292,7 @@ class Worx extends utils.Adapter {
                         // this.setState(element.path + ".json", JSON.stringify(data), true);
                     })
                     .catch(error => {
+                        this.setLoginErrorData(error);
                         if (error.response) {
                             if (error.response.status === 401) {
                                 error.response && this.log.debug(JSON.stringify(error.response.data));
@@ -1234,11 +1350,13 @@ class Worx extends utils.Adapter {
                         this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
                     }
                 }
+                this.setLoginInfoData(this.session.expires_in);
                 return true;
             })
             .catch(error => {
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
+                this.setLoginErrorData(error);
                 return false;
             });
     }
@@ -1478,7 +1596,7 @@ class Worx extends utils.Adapter {
                 }
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
-
+                this.setLoginErrorData(error);
                 if (error.response) {
                     if (error.response.status === 401) {
                         error.response && this.log.debug(JSON.stringify(error.response.data));

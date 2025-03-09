@@ -10,5 +10,8 @@
     "IP from Mower": "IP del cortacésped",
     "Pin Code": "Código PIN",
     "Update interval in seconds": "Intervalo de actualización en segundos",
-    "Ranges": "Rango posible de 1 a 86400"
+    "Ranges": "Rango posible de 1 a 86400",
+    "deleteSession": "Eliminar datos de sesión (en caso de problemas de inicio de sesión)",
+    "deleteText": "Eliminar datos de sesión",
+    "Reset Login counter": "Restablecer contador de inicio de sesión"
 }

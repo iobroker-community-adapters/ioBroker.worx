@@ -10,5 +10,8 @@
     "IP from Mower": "IP dal rasaerba",
     "Pin Code": "Codice PIN",
     "Update interval in seconds": "Intervallo di aggiornamento in secondi",
-    "Ranges": "Intervallo possibile da 1 a 86400"
+    "Ranges": "Intervallo possibile da 1 a 86400",
+    "deleteSession": "Elimina i dati della sessione (in caso di problemi di accesso)",
+    "deleteText": "Elimina i dati di sessione",
+    "Reset Login counter": "Ripristina il contatore di accesso"
 }

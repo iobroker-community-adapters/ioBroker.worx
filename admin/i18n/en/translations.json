@@ -10,5 +10,8 @@
     "IP from Mower": "IP from Mower",
     "Pin Code": "Pin Code",
     "Update interval in seconds": "Update interval in seconds",
-    "Ranges": "Range from 1 to 86400 possible"
+    "Ranges": "Range from 1 to 86400 possible",
+    "deleteSession": "Delete session data (in case of login problems)",
+    "deleteText": "Delete session data",
+    "Reset Login counter": "Reset Login counter"
 }

@@ -10,5 +10,8 @@
     "IP from Mower": "来自割草机的 IP",
     "Pin Code": "PIN码",
     "Update interval in seconds": "更新间隔（秒）",
-    "Ranges": "范围从 1 到 86400"
+    "Ranges": "范围从 1 到 86400",
+    "deleteSession": "删除会话数据（如果登录问题）",
+    "deleteText": "删除会话数据",
+    "Reset Login counter": "重置登录计数器"
 }

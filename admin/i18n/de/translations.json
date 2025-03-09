@@ -10,5 +10,8 @@
     "IP from Mower": "IP von Mower",
     "Pin Code": "Geheimzahl",
     "Update interval in seconds": "Aktualisierungsintervall in Sekunden",
-    "Ranges": "Bereich von 1 bis 86400 möglich"
+    "Ranges": "Bereich von 1 bis 86400 möglich",
+    "deleteSession": "Sitzungsdaten löschen (bei Anmeldeprobleme)",
+    "deleteText": "Sitzungsdaten löschen",
+    "Reset Login counter": "Login-Zähler zurücksetzen"
 }
