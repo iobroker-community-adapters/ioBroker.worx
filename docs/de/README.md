@@ -376,8 +376,8 @@ Richtig</br>
 - `totalDistance`: Gesamte Entfernung (Draht & Vision/nur lesen)
 - `totalTime`: Gesamte Rasenmäher-Arbeitszeit (Draht & Vision/nur lesen)
 - `waitRain`: Regenverzögerung max. 12h in 30 Minuten Schritte und 0 für aus (Draht & Vision/änderbar) 🟢
-- `waitRainCountdown` Countdown wenn der Sensor wechselt von nass zu trocken (Draht & Vision/nur lesen) (derzeit deaktiviert)
-- `waitRainSensor` Status 0 für trocken und 1 für feucht (Draht & Vision/nur lesen)
+- `waitRainCountdown` Countdown wenn der Sensor wechselt von nass zu trocken (Draht/nur lesen) (Vision deaktiviert)
+- `waitRainSensor` Status 0 für trocken und 1 für feucht (Draht/nur lesen) (Vision deaktiviert)
 - `wifiQuality`: Wifi Qualität (Draht & Vision/nur lesen)
 
 ```json

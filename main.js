@@ -694,9 +694,16 @@ class Worx extends utils.Adapter {
     async checkRainStatus() {
         for (const mower of this.deviceArray) {
             if (mower && mower.serial_number) {
+                let vision = "NO";
+                if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                    vision = "vision";
+                } else if (mower.capabilities != null && mower.capabilities.includes("maps")) {
+                    vision = "rtk";
+                }
                 if (
                     this.rainCounterInterval[mower.serial_number] &&
-                    this.rainCounterInterval[mower.serial_number]["interval"]
+                    this.rainCounterInterval[mower.serial_number]["interval"] &&
+                    vision === "NO"
                 ) {
                     const status = await this.getStateAsync(`${mower.serial_number}.mower.online`);
                     if (!status || status.val == null || !status.val) {
@@ -1320,7 +1327,7 @@ class Worx extends utils.Adapter {
 
     async refreshToken(first) {
         this.log.debug("Refresh token");
-        //this.checkRainStatus();
+        this.checkRainStatus();
         return await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token?`,
             method: "post",

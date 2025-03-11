@@ -376,8 +376,8 @@ valid</br>
 - `totalDistance`: Total distance (wire & Vision/readonly)
 - `totalTime`: Total working time (wire & Vision/readonly)
 - `waitRain`: Rain delay max. 12h in 30 minute steps and 0 for off (wire & Vision/changeable) 🟢
-- `waitRainCountdown` Start countdown when the sensor changes from wet to dry (wire & Vision/readonly) (currently disabled)
-- `waitRainSensor` Status 0 for dry and 1 for wet (wire & Vision/readonly)
+- `waitRainCountdown` Start countdown when the sensor changes from wet to dry (wire/readonly) (Vision disabled)
+- `waitRainSensor` Status 0 for dry and 1 for wet (wire/readonly) (Vision disabled)
 - `wifiQuality`: Wifi quality (wire & Vision/readonly)
 
 ```json
