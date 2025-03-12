@@ -365,7 +365,7 @@ class Worx extends utils.Adapter {
                 }
             } else {
                 this.setState("info.connection", true, true);
-                this.log.debug(`Start refreshTokenTimeout with ${session} minutes!`);
+                this.log.debug(`Start refreshTokenTimeout with ${session} ms!`);
                 if (!session_check) {
                     this.setLoginInfoData(session);
                 }
