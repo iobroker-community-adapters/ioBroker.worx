@@ -337,7 +337,7 @@ class Worx extends utils.Adapter {
             await this.createMqttData();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
-
+            await this.updateFirmware();
             this.updateFW = this.setInterval(
                 async () => {
                     await this.updateFirmware();
@@ -1059,14 +1059,28 @@ class Worx extends utils.Adapter {
             let version = 0;
             let released_at = "";
             let json;
+            const is_same_all = await this.getStateAsync(`${mower.serial_number}.mower.firmware_all`);
+            if (typeof fw_json === "number") {
+                this.log.debug(`Response FW request ${fw_json}`);
+                if (is_same_all && is_same_all.val && typeof is_same_all.val === "string") {
+                    try {
+                        is_same_all.val = JSON.parse(is_same_all.val);
+                    } catch {
+                        this.log.debug(`Val is empty!`);
+                    }
+                    if (is_same_all.val && is_same_all.val["product"] && is_same_all.val["product"].released_at) {
+                        return;
+                    }
+                }
+            }
             if (fw_json != null && fw_json.product && fw_json.product.version != null) {
+                this.log.debug(`Response Firmware ${JSON.stringify(fw_json)}`);
                 version = parseFloat(fw_json.product.version);
                 released_at = fw_json.product.released_at;
                 json = JSON.stringify(fw_json);
             } else {
                 const is_set = await this.getStateAsync(`${mower.serial_number}.mower.firmware_available`);
                 const is_same = await this.getStateAsync(`${mower.serial_number}.mower.firmware`);
-                const is_same_all = await this.getStateAsync(`${mower.serial_number}.mower.firmware_all`);
                 if (
                     is_same_all &&
                     is_same_all.val != null &&
@@ -1080,7 +1094,8 @@ class Worx extends utils.Adapter {
                     if (is_same.val > is_set.val) {
                         this.log.debug("Update firmware was carried out manually...");
                         try {
-                            const is_json = JSON.parse(is_same_all.val.toString());
+                            const is_json =
+                                typeof is_same_all.val === "string" ? JSON.parse(is_same_all.val) : is_same_all.val;
                             is_json.product.version = is_same.val;
                             version = is_same.val;
                             released_at = is_json.product.released_at;
@@ -1597,7 +1612,7 @@ class Worx extends utils.Adapter {
                 return res.data;
             })
             .catch(error => {
-                if (path.includes("firmware-upgrade") && error.response && error.response.status === 404) {
+                if (path.includes("firmware-upgrade")) {
                     this.log.debug("Updating firmware information is currently not possible!");
                     return error.response.status;
                 }
