@@ -320,6 +320,7 @@ class Worx extends utils.Adapter {
         if (session === 1) {
             const refreshToken = await this.refreshToken(false);
             if (refreshToken) {
+                this.setState("info.connection", true, true);
                 session_check = true;
                 session = this.session.expires_in * 1000 - 200;
             } else {
@@ -363,6 +364,7 @@ class Worx extends utils.Adapter {
                     this.setLoginInfoData(this.session.expires_in);
                 }
             } else {
+                this.setState("info.connection", true, true);
                 this.log.debug(`Start refreshTokenTimeout with ${session} minutes!`);
                 if (!session_check) {
                     this.setLoginInfoData(session);
