@@ -372,6 +372,7 @@ class Worx extends utils.Adapter {
                 this.refreshStartTokenTimeout = this.setTimeout(async () => {
                     this.refreshStartTokenTimeout = null;
                     await this.refreshToken(true);
+                    this.setRefreshTokenInterval();
                 }, session);
             }
             this.refreshActivity = this.setInterval(() => {
@@ -1344,7 +1345,9 @@ class Worx extends utils.Adapter {
 
     async refreshToken(first) {
         this.log.debug("Refresh token");
-        this.checkRainStatus();
+        if (first) {
+            this.checkRainStatus();
+        }
         return await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token?`,
             method: "post",
