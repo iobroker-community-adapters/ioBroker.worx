@@ -484,6 +484,8 @@ class Worx extends utils.Adapter {
 
     setRefreshTokenInterval() {
         this.log.debug(`Start refreshTokenInterval!`);
+        this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
+        this.refreshTokenInterval = null;
         this.refreshTokenInterval = this.setInterval(
             async () => {
                 await this.refreshToken(true);
