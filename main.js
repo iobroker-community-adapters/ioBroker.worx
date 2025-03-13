@@ -338,7 +338,6 @@ class Worx extends utils.Adapter {
             await this.createMqttData();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
-            await this.updateFirmware();
             this.updateFW = this.setInterval(
                 async () => {
                     await this.updateFirmware();
