@@ -1,526 +1,526 @@
 {
-    "common": {
-        "name": "worx",
-        "version": "3.1.1",
-        "news": {
-            "3.1.1": {
-                "en": "Added JS-Controller Notification\nDependencies updated\nNew design for settings page added",
-                "de": "Hinzugefügt JS-Controller Notifizierung\nAusgaben aktualisiert\nNeues Design für Einstellungen Seite hinzugefügt",
-                "ru": "Добавлено JS-Controller Уведомление\nОбновленные данные о зависимостях\nНовый дизайн добавлена страница настроек",
-                "pt": "Adicionado JS-Controller Notificação\nDependências atualizadas\nNovo design para configurações página adicionada",
-                "nl": "Toegevoegd JS-Controller Kennisgeving\nAfhankelijkheden bijgewerkt\nNieuw ontwerp voor instellingen pagina toegevoegd",
-                "fr": "JS-Controller ajouté Notification\nDépendances actualisées\nNouvelle conception pour les paramètres page ajoutée",
-                "it": "Aggiunto JS-Controller Notifica\nDipendenze aggiornate\nNuovo design per le impostazioni pagina aggiunto",
-                "es": "Añadido JS-Controller Notificación\nActualización de las dependencias\nNuevo diseño para la página de configuración añadido",
-                "pl": "Dodano kontroler JS Powiadomienie\nAktualizacja zależności\nDodano nowy projekt strony ustawień",
-                "uk": "Додано JS-Controller Повідомлення\nЗалежність оновлено\nНовий дизайн для сторінки налаштувань",
-                "zh-cn": "增加的联署材料主计长 通知\n更新的依赖关系\n添加了设置页面的新设计"
-            },
-            "3.1.0": {
-                "en": "Added Landroid IP\nFixed interval\nFixed Vision Edgecut",
-                "de": "Hinzugefügt Landroid IP\nFeste Intervalle\nFeste Vision Edgecut",
-                "ru": "Добавлено Landroid IP\nИсправленный интервал\nFixed Vision Edgecut",
-                "pt": "Adicionado Landroid IP\nIntervalo fixo\nEdgecut de visão fixa",
-                "nl": "Toegevoegd Landroid IP\nVast interval\nVaste Vision Edgecut",
-                "fr": "Ajout d'une IP Landroid\nIntervalle fixe\nEdge de vision fixe",
-                "it": "Aggiunto Landroid IP\nIntervallo fisso\nEdgecut di visione fissa",
-                "es": "Añadido Landroid IP\nIntervalos fijos\nEdgecut de visión fija",
-                "pl": "Dodano IP Landroida\nPrzedział stały\nStałe widzenie Edgecut",
-                "uk": "Додано Landroid IP\nФіксований інтервал\nФіксований куточок зору",
-                "zh-cn": "添加的 Landroid IP 软件\n固定间隔\n固定视野边缘"
-            },
-            "3.0.2": {
-                "en": "mowTimeExtend restricted input\nFixed TypeError",
-                "de": "mowTimeExtend eingeschränkter Eingang\nFeste ArtError",
-                "ru": "mowTime\nFixed TypeError",
-                "pt": "mowTimeExtend entrada restrita\nTipo fixoError",
-                "nl": "mowTimeUitgebreid beperkte invoer\nFixed TypeError",
-                "fr": "mowTimeExtend entrée restreinte\nType fixeErreur",
-                "it": "mowTimeExtend ingresso limitato\nTipo di errore fisso",
-                "es": "mowTimeExtienda entrada restringida\nTipo fijoError",
-                "pl": "mowTimeExtend ograniczone wejście\nNaprawiono błąd typu",
-                "uk": "mowTimeExtend обмежений вхід\nФіксований TypeError",
-                "zh-cn": "剪切时间扩展限制输入\n固定类型错误"
-            },
-            "3.0.1": {
-                "en": "Preperation mission Kress new API\nFixed TypeError\nFixed missing activity states\nAdded update interval in instance setting\nAdded last update",
-                "de": "Preperation Mission Kress neue API\nFeste ArtError\nFeste fehlende Aktivitätszustände\nUpdate-Intervall in der Einstellung hinzugefügt\nLetzte Aktualisierung",
-                "ru": "Миссия Kress новый API\nFixed TypeError\nИсправленные состояния недостающей деятельности\nДобавленный интервал обновления в настройке\nДобавлено последнее обновление",
-                "pt": "Missão de preparação Kress nova API\nTipo fixoError\nEstados de atividade ausentes fixos\nAdicionado intervalo de atualização na configuração de instância\nAdicionado última atualização",
-                "nl": "Preperatiemissie Kress nieuwe API\nFixed TypeError\nVaste ontbrekende activiteitstoestanden\nBijgewerkt interval in instantie-instelling\nLaatste update toegevoegd",
-                "fr": "Mission préparatoire Kress nouvelle API\nType fixeErreur\nÉtats d'activité manquants fixes\nAjout de l'intervalle de mise à jour dans le paramètre instance\nDernière mise à jour ajoutée",
-                "it": "Missione di preperazione Kress nuova API\nTipo di errore fisso\nStati di attività mancanti fissi\nIntervallo di aggiornamento aggiunto nell'impostazione di istanza\nAggiunto l'ultimo aggiornamento",
-                "es": "Misión de Preperación Kress nueva API\nTipo fijoError\nEstados de actividad perdidos fijos\nAñadido intervalo de actualización en configuración de instancia\nÚltima actualización",
-                "pl": "Misja preperacyjna Kress new API\nNaprawiono błąd typu\nUstalone brakujące stany aktywności\nDodano interwał aktualizacji w ustawieniu instancji\nDodano ostatnią aktualizację",
-                "uk": "Попередня місія Kress новий API\nФіксований TypeError\nВиправлено відсутні стани діяльності\nДодано інтервал оновлення в налаштуваннях екземпляра\nДодано останнє оновлення",
-                "zh-cn": "考察团 Kress 新建 API\n固定类型错误\n固定缺失的活动状态\n在实例设置中添加更新间隔\n添加了上次更新"
-            },
-            "3.0.0": {
-                "en": "Fixed Sentry messages\nCatch publish crash\nAdded Vision completely\nNode 18 required\nJS-Controller >= 5.0.19 required\nAdmin >=6.13.16 required\nCatch aws_cer error and use old mqtt connection\nDelete ping",
-                "de": "Feste Sentry-Nachrichten\nCrash veröffentlichen\nVision komplett hinzugefügt\nNode 18 erforderlich\nJS-Controller >= 5.0.19 erforderlich\nAdmin >=6.13.16 erforderlich\nFangen Sie aws_cer Fehler und verwenden Sie alte mqtt Verbindung\nLöschen von p",
-                "ru": "Срочные сообщения\nЗаплатить крушение\nДобавлено Vision полностью\nНод 18 требуется\n JS 5.0.19\n>=6.13.16\nПоймать ошибку aws_cer и использовать старое соединение mqtt\nУдалить пинг",
-                "pt": "Mensagens de Sentry fixas\nCaptura de dados\nAdicionado Visão completamente\nNode 18 necessário\nJS-Controller >= 5.0.19 necessário\nAdmin >=6.13.16 necessário\nPegar o erro do aws_cer e usar a conexão mqt velha\nExcluir ping",
-                "nl": "Vaste invoerberichten\nCatch publiceren crash\nVision volledig toegevoegd\nNode 18 vereist\nJS-Controller < 5.01.19 vereist\nAdmin < 6.13.16 vereist\nAws_cer-fout vangen en oude mqtt-verbinding gebruiken\nPing verwijderen",
-                "fr": "Messages de saisie corrigés\nCatch publier l'accident\nAjout complet de Vision\nNoeud 18 requis\nJS-Contrôleur >= 5.0.19 requis\nAdmin >=6.13.16 requis\nCatch aws_cer erreur et utiliser l'ancienne connexion mqtt\nSupprimer ping",
-                "it": "Messaggi di Sentry fissi\nCatch pubblicare crash\nAggiunto Visione completamente\nNodo 18 richiesto\nJS-Controller >= 5.0.19 richiesto\nAdmin >=6.13.16 richiesto\nCattura errore aws_cer e uso vecchio collegamento mqtt\nElimina ping",
-                "es": "Mensajes fijos\nCatch public crash\nVisión agregada completamente\nNodo 18 requerido\nJS-Controller ≤ 5.0.19 requerido\nPersonal obligatorio\nCapturar error aws_cer y utilizar la conexión mqtt vieja\nSuprímase el texto",
-                "pl": "Poprawione wiadomości wysyłające\nPołów publikuje crash\nDodano obraz całkowicie\nWymagany węzeł 18\nJS- Controller > = 5.0.19 wymagane\nWymagany dodatek > = 6.13.16\nBłąd Catch aws _ cer i użyj starego połączenia mqtt\nUsuń ping",
-                "uk": "Фіксовані повідомлення Sentry\nCatch Публікація\nДодати бачення повністю\nNode 18 потрібно\nJS-Controller >=5.0.19 потрібно\nAdmin >=6.13.16 потрібно\nКетч aws_cer помилка і використовувати старий mqtt з'єднання\nВидалити пінг",
-                "zh-cn": "固定哨兵消息\n抓取发布崩溃\n完全添加的视觉\n需要18号节点\n联合来文主计长\n所需行政经费\n抓取 aws_cer 错误并使用旧的 mqtt 连接\n删除 ping"
-            },
-            "2.3.4": {
-                "en": "Fixed folder without raw\nChanged Loglevel at refresh token\nFixed restriction vision bordercut\nFixed check json vision startsequence",
-                "de": "Fixed Ordner ohne roh\nÄnderte Loglevel bei Refresh-Token\nFeste Beschränkung Vision Grenzschnitt\nFeste Check-Json-Vision-Anfolge",
-                "ru": "Фиксированная папка без сырья\nИзмененный Loglevel на обновленном токене\nФиксированное ограничение видение пограничное\nИсправлена проверка json видение startsequence",
-                "pt": "Pasta fixa sem matéria-prima\nNível de log alterado no token de atualização\nCorte de fronteira de visão de restrição fixa\nVerificação fixa json visão startsequence",
-                "nl": "Gerepareerde map zonder rauw\nVeranderde Loglevel bij verfrissende token\nVertaling:\nVertaling:",
-                "fr": "Dossier fixe sans cru\nChanged Loglevel at refresh token\nLimite fixe de vision bordercut\nVérification fixe json vision startequence",
-                "it": "Cartella fissa senza grezzo\nCambiato livello di log al token di aggiornamento\nFisso di restrizione visione taglio di confine\nControllo fisso json visione startequence",
-                "es": "Carpeta fija sin crudo\nNivel de registro cambiado en token refrescante\nVisión de restricción fija límite\nControl fijo json vision startsequence",
-                "pl": "Fixed folder without raw cotton\nZmienił rachunek do odświeżania tokenów\nWizje ograniczenia granicznego\nWizualizacja jsonów zaczyna sekwencjonować",
-                "uk": "Виправлена папка без сировини\nЗмінений рівень Loglevel на оновленому токені\nВиправлено обмеження зору кордон\nФіксований чек json vision startsequence",
-                "zh-cn": "九. 无原材料的配件\nB. 制冷剂的改建\nB. 限制边界的设想\nB. 固定的检查Json构想的开始"
-            },
-            "2.3.3": {
-                "en": "Added cmd wifi lock for Vision\nFixed [#761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nAdded sequence for Vision\nChecking working hours and locktime\nFixed incorrect log message for firmware update",
-                "de": "Wifi-Schloss für Vision hinzugefügt\n#[761](https://github.com/iobroker-community-adapter/ioBroker.worx/issues/761)\nSequenz für Vision hinzugefügt\nÜberprüfung der Arbeitszeit und Sperrzeit\nFehlerhafte Log-Nachricht für Firmware-Update behoben",
-                "ru": "Добавлен cmd wifi замок для Vision\nФиксированный #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nДобавлена последовательность для Vision\nПроверка рабочих часов и время замка\nИсправлено некорректное сообщение для обновления прошивки",
-                "pt": "Adicionado cmd wifi fechadura para Visão\nCorrigido #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nSequência adicionada para Visão\nVerificando horas de trabalho e tempo de bloqueio\nMensagem de log incorreta fixa para atualização de firmware",
-                "nl": "Voeg cmd wifi slot toe voor Vision\nQuality over Quantity (QoQ) Releases Vertaling:\nToegevoegd voor Vision\nControleer werkuren en locktime\nVertaling:",
-                "fr": "Ajout d'une serrure wifi cmd pour Vision\nFixed #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nAjout de séquence pour Vision\nVérification des heures de travail et des heures de verrouillage\nCorrection d'un message de journal incorrect pour la mise à jour du firmware",
-                "it": "Aggiunto cmd wifi lock per Vision\n[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nSequenza aggiuntiva per Vision\nControllo ore di lavoro e tempo di blocco\nRisolto messaggio di registro errato per l'aggiornamento del firmware",
-                "es": "Cierre wifi de cmd para visión\nArreglado #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nSecuencia agregada para Visión\nHoras de trabajo y tiempo de bloqueo\nMensaje de registro incorrecto fijo para la actualización de firmware",
-                "pl": "Added cmd wifi lock for Vision (ang.)\n#761 (https:/github.com/iobroker-community-adapters/ioBroker.worx/issues/761) (ang.)\nAdded sequence for Vision (ang.)\nGodzin pracy i godzin pracy\nNieprawidłowe przesłanie do aktualizacji oprogramowania",
-                "uk": "Додано смд Wi-Fi замок для Vision\nВиправлено #[761](https://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\nДодано послідовність для зору\nПеревірити робочі години і час замка\nВиправлено неправильне повідомлення для оновлення мікропрограми",
-                "zh-cn": "添加《展望》的光衣服\n第[761]号(http://github.com/iobroker-community-adapters/ioBroker.worx/issues/761)\n增加《展望》的顺序\n检查工作时间和时间\n软件更新的错误逻辑信息"
-            }
+  "common": {
+    "name": "worx",
+    "version": "3.2.0",
+    "news": {
+      "3.2.0": {
+        "en": "Migration to ESLint9\nNode 20 required\nAdmin 7.4.10 required\nAdded Party Modus Timer (wire only)\nSave session infos\nAdded rain countdown (wire only)",
+        "de": "Migration auf ESLint9\nNr. 20 erforderlich\nAdmin 7.4.10 erforderlich\nHinzugefügt Party Modus Timer (wire only)\nSpeichern von Sitzungsinformationen\nRegenzählung hinzugefügt (nur Drähte)",
+        "ru": "Миграция в ESLint9\nУзел 20 требуется\nТребуется администратор 7.4.10\nParty Modus Timer (только провод)\nСохранить информацию о сессии\nДобавлен обратный отсчет дождя (только провод)",
+        "pt": "Migração para ESLint9\nNode 20 necessário\nAdmin 7.4.10 necessário\nAdicionado Party Modus Timer (fio apenas)\nSalvar informações de sessão\nAdicionado contagem regressiva chuva (fio apenas)",
+        "nl": "Migratie naar ESLint9\nNode 20 vereist\nBeheerder 7.4.10 vereist\nToegevoegd Party Modus Timer (alleen draad)\nSessie-informatie opslaan\nToegevoegd regen countdown (alleen draad)",
+        "fr": "Migration vers ESLint9\nNode 20 requis\nAdmin 7.4.10 requis\nPartie ajoutée Modus Timer (fil seulement)\nEnregistrer les infos de session\nAjout du compte à rebours (fils seulement)",
+        "it": "Migrazione a ESLint9\nNodo 20 richiesto\nAdmin 7.4.10 richiesto\nAggiunto Party Modus Timer (solo il cablaggio)\nSalvare le informazioni di sessione\nConto di pioggia aggiunto (solo con fili)",
+        "es": "Migración a ESLint9\nNodo 20 requerido\nAdmin 7.4.10\nAñadido Parte Modus Timer (sólo alambre)\nGuardar información de sesión\nCuenta atrás de lluvia (sólo alambre)",
+        "pl": "Migracja do ESLint9\nWymagany węzeł 20\nWymagany admin 7.4.10\nDodano modus Timer Party (tylko drut)\nZapisz informacje o sesji\nDodano odliczanie deszczu (tylko drut)",
+        "uk": "Міграція в ESLint9\nNode 20 потрібно\nAdmin 7.4.10 потрібно\nДодано Вечірка Modus Timer (тільки тільки те)\nІнформація про сеанс\nДоданий відлік дощу (тільки тільки)",
+        "zh-cn": "迁移到ESLint9\n需要20号节点\n所需行政经费\n添加的政党模式计时器( 只有线)\n保存会话信息\n新增倒数雨( 只有线)"
+      },
+      "3.1.1": {
+        "en": "Added JS-Controller Notification\nDependencies updated\nNew design for settings page added",
+        "de": "Hinzugefügt JS-Controller Notifizierung\nAusgaben aktualisiert\nNeues Design für Einstellungen Seite hinzugefügt",
+        "ru": "Добавлено JS-Controller Уведомление\nОбновленные данные о зависимостях\nНовый дизайн добавлена страница настроек",
+        "pt": "Adicionado JS-Controller Notificação\nDependências atualizadas\nNovo design para configurações página adicionada",
+        "nl": "Toegevoegd JS-Controller Kennisgeving\nAfhankelijkheden bijgewerkt\nNieuw ontwerp voor instellingen pagina toegevoegd",
+        "fr": "JS-Controller ajouté Notification\nDépendances actualisées\nNouvelle conception pour les paramètres page ajoutée",
+        "it": "Aggiunto JS-Controller Notifica\nDipendenze aggiornate\nNuovo design per le impostazioni pagina aggiunto",
+        "es": "Añadido JS-Controller Notificación\nActualización de las dependencias\nNuevo diseño para la página de configuración añadido",
+        "pl": "Dodano kontroler JS Powiadomienie\nAktualizacja zależności\nDodano nowy projekt strony ustawień",
+        "uk": "Додано JS-Controller Повідомлення\nЗалежність оновлено\nНовий дизайн для сторінки налаштувань",
+        "zh-cn": "增加的联署材料主计长 通知\n更新的依赖关系\n添加了设置页面的新设计"
+      },
+      "3.1.0": {
+        "en": "Added Landroid IP\nFixed interval\nFixed Vision Edgecut",
+        "de": "Hinzugefügt Landroid IP\nFeste Intervalle\nFeste Vision Edgecut",
+        "ru": "Добавлено Landroid IP\nИсправленный интервал\nFixed Vision Edgecut",
+        "pt": "Adicionado Landroid IP\nIntervalo fixo\nEdgecut de visão fixa",
+        "nl": "Toegevoegd Landroid IP\nVast interval\nVaste Vision Edgecut",
+        "fr": "Ajout d'une IP Landroid\nIntervalle fixe\nEdge de vision fixe",
+        "it": "Aggiunto Landroid IP\nIntervallo fisso\nEdgecut di visione fissa",
+        "es": "Añadido Landroid IP\nIntervalos fijos\nEdgecut de visión fija",
+        "pl": "Dodano IP Landroida\nPrzedział stały\nStałe widzenie Edgecut",
+        "uk": "Додано Landroid IP\nФіксований інтервал\nФіксований куточок зору",
+        "zh-cn": "添加的 Landroid IP 软件\n固定间隔\n固定视野边缘"
+      },
+      "3.0.2": {
+        "en": "mowTimeExtend restricted input\nFixed TypeError",
+        "de": "mowTimeExtend eingeschränkter Eingang\nFeste ArtError",
+        "ru": "mowTime\nFixed TypeError",
+        "pt": "mowTimeExtend entrada restrita\nTipo fixoError",
+        "nl": "mowTimeUitgebreid beperkte invoer\nFixed TypeError",
+        "fr": "mowTimeExtend entrée restreinte\nType fixeErreur",
+        "it": "mowTimeExtend ingresso limitato\nTipo di errore fisso",
+        "es": "mowTimeExtienda entrada restringida\nTipo fijoError",
+        "pl": "mowTimeExtend ograniczone wejście\nNaprawiono błąd typu",
+        "uk": "mowTimeExtend обмежений вхід\nФіксований TypeError",
+        "zh-cn": "剪切时间扩展限制输入\n固定类型错误"
+      },
+      "3.0.1": {
+        "en": "Preperation mission Kress new API\nFixed TypeError\nFixed missing activity states\nAdded update interval in instance setting\nAdded last update",
+        "de": "Preperation Mission Kress neue API\nFeste ArtError\nFeste fehlende Aktivitätszustände\nUpdate-Intervall in der Einstellung hinzugefügt\nLetzte Aktualisierung",
+        "ru": "Миссия Kress новый API\nFixed TypeError\nИсправленные состояния недостающей деятельности\nДобавленный интервал обновления в настройке\nДобавлено последнее обновление",
+        "pt": "Missão de preparação Kress nova API\nTipo fixoError\nEstados de atividade ausentes fixos\nAdicionado intervalo de atualização na configuração de instância\nAdicionado última atualização",
+        "nl": "Preperatiemissie Kress nieuwe API\nFixed TypeError\nVaste ontbrekende activiteitstoestanden\nBijgewerkt interval in instantie-instelling\nLaatste update toegevoegd",
+        "fr": "Mission préparatoire Kress nouvelle API\nType fixeErreur\nÉtats d'activité manquants fixes\nAjout de l'intervalle de mise à jour dans le paramètre instance\nDernière mise à jour ajoutée",
+        "it": "Missione di preperazione Kress nuova API\nTipo di errore fisso\nStati di attività mancanti fissi\nIntervallo di aggiornamento aggiunto nell'impostazione di istanza\nAggiunto l'ultimo aggiornamento",
+        "es": "Misión de Preperación Kress nueva API\nTipo fijoError\nEstados de actividad perdidos fijos\nAñadido intervalo de actualización en configuración de instancia\nÚltima actualización",
+        "pl": "Misja preperacyjna Kress new API\nNaprawiono błąd typu\nUstalone brakujące stany aktywności\nDodano interwał aktualizacji w ustawieniu instancji\nDodano ostatnią aktualizację",
+        "uk": "Попередня місія Kress новий API\nФіксований TypeError\nВиправлено відсутні стани діяльності\nДодано інтервал оновлення в налаштуваннях екземпляра\nДодано останнє оновлення",
+        "zh-cn": "考察团 Kress 新建 API\n固定类型错误\n固定缺失的活动状态\n在实例设置中添加更新间隔\n添加了上次更新"
+      },
+      "3.0.0": {
+        "en": "Fixed Sentry messages\nCatch publish crash\nAdded Vision completely\nNode 18 required\nJS-Controller >= 5.0.19 required\nAdmin >=6.13.16 required\nCatch aws_cer error and use old mqtt connection\nDelete ping",
+        "de": "Feste Sentry-Nachrichten\nCrash veröffentlichen\nVision komplett hinzugefügt\nNode 18 erforderlich\nJS-Controller >= 5.0.19 erforderlich\nAdmin >=6.13.16 erforderlich\nFangen Sie aws_cer Fehler und verwenden Sie alte mqtt Verbindung\nLöschen von p",
+        "ru": "Срочные сообщения\nЗаплатить крушение\nДобавлено Vision полностью\nНод 18 требуется\n JS 5.0.19\n>=6.13.16\nПоймать ошибку aws_cer и использовать старое соединение mqtt\nУдалить пинг",
+        "pt": "Mensagens de Sentry fixas\nCaptura de dados\nAdicionado Visão completamente\nNode 18 necessário\nJS-Controller >= 5.0.19 necessário\nAdmin >=6.13.16 necessário\nPegar o erro do aws_cer e usar a conexão mqt velha\nExcluir ping",
+        "nl": "Vaste invoerberichten\nCatch publiceren crash\nVision volledig toegevoegd\nNode 18 vereist\nJS-Controller < 5.01.19 vereist\nAdmin < 6.13.16 vereist\nAws_cer-fout vangen en oude mqtt-verbinding gebruiken\nPing verwijderen",
+        "fr": "Messages de saisie corrigés\nCatch publier l'accident\nAjout complet de Vision\nNoeud 18 requis\nJS-Contrôleur >= 5.0.19 requis\nAdmin >=6.13.16 requis\nCatch aws_cer erreur et utiliser l'ancienne connexion mqtt\nSupprimer ping",
+        "it": "Messaggi di Sentry fissi\nCatch pubblicare crash\nAggiunto Visione completamente\nNodo 18 richiesto\nJS-Controller >= 5.0.19 richiesto\nAdmin >=6.13.16 richiesto\nCattura errore aws_cer e uso vecchio collegamento mqtt\nElimina ping",
+        "es": "Mensajes fijos\nCatch public crash\nVisión agregada completamente\nNodo 18 requerido\nJS-Controller ≤ 5.0.19 requerido\nPersonal obligatorio\nCapturar error aws_cer y utilizar la conexión mqtt vieja\nSuprímase el texto",
+        "pl": "Poprawione wiadomości wysyłające\nPołów publikuje crash\nDodano obraz całkowicie\nWymagany węzeł 18\nJS- Controller > = 5.0.19 wymagane\nWymagany dodatek > = 6.13.16\nBłąd Catch aws _ cer i użyj starego połączenia mqtt\nUsuń ping",
+        "uk": "Фіксовані повідомлення Sentry\nCatch Публікація\nДодати бачення повністю\nNode 18 потрібно\nJS-Controller >=5.0.19 потрібно\nAdmin >=6.13.16 потрібно\nКетч aws_cer помилка і використовувати старий mqtt з'єднання\nВидалити пінг",
+        "zh-cn": "固定哨兵消息\n抓取发布崩溃\n完全添加的视觉\n需要18号节点\n联合来文主计长\n所需行政经费\n抓取 aws_cer 错误并使用旧的 mqtt 连接\n删除 ping"
+      },
+      "2.3.4": {
+        "en": "Fixed folder without raw\nChanged Loglevel at refresh token\nFixed restriction vision bordercut\nFixed check json vision startsequence",
+        "de": "Fixed Ordner ohne roh\nÄnderte Loglevel bei Refresh-Token\nFeste Beschränkung Vision Grenzschnitt\nFeste Check-Json-Vision-Anfolge",
+        "ru": "Фиксированная папка без сырья\nИзмененный Loglevel на обновленном токене\nФиксированное ограничение видение пограничное\nИсправлена проверка json видение startsequence",
+        "pt": "Pasta fixa sem matéria-prima\nNível de log alterado no token de atualização\nCorte de fronteira de visão de restrição fixa\nVerificação fixa json visão startsequence",
+        "nl": "Gerepareerde map zonder rauw\nVeranderde Loglevel bij verfrissende token\nVertaling:\nVertaling:",
+        "fr": "Dossier fixe sans cru\nChanged Loglevel at refresh token\nLimite fixe de vision bordercut\nVérification fixe json vision startequence",
+        "it": "Cartella fissa senza grezzo\nCambiato livello di log al token di aggiornamento\nFisso di restrizione visione taglio di confine\nControllo fisso json visione startequence",
+        "es": "Carpeta fija sin crudo\nNivel de registro cambiado en token refrescante\nVisión de restricción fija límite\nControl fijo json vision startsequence",
+        "pl": "Fixed folder without raw cotton\nZmienił rachunek do odświeżania tokenów\nWizje ograniczenia granicznego\nWizualizacja jsonów zaczyna sekwencjonować",
+        "uk": "Виправлена папка без сировини\nЗмінений рівень Loglevel на оновленому токені\nВиправлено обмеження зору кордон\nФіксований чек json vision startsequence",
+        "zh-cn": "九. 无原材料的配件\nB. 制冷剂的改建\nB. 限制边界的设想\nB. 固定的检查Json构想的开始"
+      }
+    },
+    "titleLang": {
+      "en": "Worx",
+      "de": "Worx",
+      "ru": "Воркс",
+      "pt": "Worx",
+      "nl": "Worx",
+      "fr": "Worx",
+      "it": "Peggio",
+      "es": "Worx",
+      "pl": "Worx",
+      "uk": "Worx",
+      "zh-cn": "沃克斯"
+    },
+    "desc": {
+      "en": "Adapter for Worx, Kresss, Landxcape or Ferrex mower via cloud.",
+      "de": "Adapter für Worx, Kress, Landxcape oder Ferrex Mäher über Cloud.",
+      "ru": "Адаптер для мошенников Worx, Kresss, Landxcape или Ferrex через облако.",
+      "pt": "Adaptador para Worx, Kress, Landxcape ou Ferrex cortador via nuvem.",
+      "nl": "Adapter voor Worx, Kress, Landxcape of Ferrex Mower via wolk.",
+      "fr": "Adaptateur pour la tondeuse Worx, Kresss, Landxcape ou Ferrex via le cloud.",
+      "it": "Adattatore per tosaerba Worx, Kress, Landxcape o Ferrex tramite cloud.",
+      "es": "Adaptador para Worx, Kress, Landxcape o Ferrex mower a través de la nube.",
+      "pl": "Adapter for Worx, Kress, Landxcape lub Ferrex mower poprzez chmurę.",
+      "uk": "Адаптер для Worx, Kresss, Landxcape або Ferrex косарка через хмару.",
+      "zh-cn": "Worx, Kress, Landxcape or Ferrex mower through云。."
+    },
+    "authors": [
+      "TA2k <tombox2020@gmail.com>",
+      "MeisterTR",
+      "Lucky-ESA"
+    ],
+    "keywords": [
+      "mower",
+      "Worx",
+      "Kress",
+      "Landxcape",
+      "Ferrex",
+      "Landroid IP"
+    ],
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
+    "tier": 2,
+    "platform": "Javascript/Node.js",
+    "icon": "worx.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "garden",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "push",
+    "docs": {
+      "en": [
+        "docs/en/README.md"
+      ],
+      "de": [
+        "docs/de/README.md"
+      ]
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<2.3.4",
+            "newVersion>=3.0.0"
+          ]
         },
-        "titleLang": {
-            "en": "Worx",
-            "de": "Worx",
-            "ru": "Воркс",
-            "pt": "Worx",
-            "nl": "Worx",
-            "fr": "Worx",
-            "it": "Peggio",
-            "es": "Worx",
-            "pl": "Worx",
-            "uk": "Worx",
-            "zh-cn": "沃克斯"
+        "title": {
+          "en": "Important notice!",
+          "de": "Wichtiger Hinweis!",
+          "ru": "Важное замечание!",
+          "pt": "Notícia importante!",
+          "nl": "Belangrijke mededeling!",
+          "fr": "Avis important!",
+          "it": "Avviso IMPORTANTE!",
+          "es": "Noticia importante!",
+          "pl": "Ważna uwaga!",
+          "uk": "Погода!",
+          "zh-cn": "重要通知!"
         },
-        "desc": {
-            "en": "Adapter for Worx, Kresss, Landxcape or Ferrex mower via cloud.",
-            "de": "Adapter für Worx, Kress, Landxcape oder Ferrex Mäher über Cloud.",
-            "ru": "Адаптер для мошенников Worx, Kresss, Landxcape или Ferrex через облако.",
-            "pt": "Adaptador para Worx, Kress, Landxcape ou Ferrex cortador via nuvem.",
-            "nl": "Adapter voor Worx, Kress, Landxcape of Ferrex Mower via wolk.",
-            "fr": "Adaptateur pour la tondeuse Worx, Kresss, Landxcape ou Ferrex via le cloud.",
-            "it": "Adattatore per tosaerba Worx, Kress, Landxcape o Ferrex tramite cloud.",
-            "es": "Adaptador para Worx, Kress, Landxcape o Ferrex mower a través de la nube.",
-            "pl": "Adapter for Worx, Kress, Landxcape lub Ferrex mower poprzez chmurę.",
-            "uk": "Адаптер для Worx, Kresss, Landxcape або Ferrex косарка через хмару.",
-            "zh-cn": "Worx, Kress, Landxcape or Ferrex mower through云。."
+        "text": {
+          "en": "Vision users! The structure of `calendar` has changed and `multiZones` replaces `areas`. All scripts must be adapted.",
+          "de": "Vision-Nutzer! Die Struktur von `calendar` hat sich geändert und `multiZones` ersetzt `areas`. Alle Skripte müssen angepasst werden.",
+          "ru": "Пользователи зрения! Структура «календара» изменилась, а «мультизонты» заменяют «области». Все сценарии должны быть адаптированы.",
+          "pt": "Usuários de visão! A estrutura de `calendar` mudou e `multiZones` substitui `areas`. Todos os scripts devem ser adaptados.",
+          "nl": "Vision gebruikers! De structuur van Calendar... is veranderd en MultiZones vervangt de gebieden. Alle scripts moeten aangepast worden.",
+          "fr": "Les utilisateurs de vision ! La structure du \"calendrier\" a changé et les \"multiZones\" remplacent les \"zones\". Tous les scripts doivent être adaptés.",
+          "it": "Utenti di visione! La struttura di `calendar` è cambiata e `multiZones` sostituisce `areas`. Tutti gli script devono essere adattati.",
+          "es": "¡Usuarios de visión! La estructura de `calendar ' ha cambiado y `multiZones` reemplaza `areas`. Todos los scripts deben ser adaptados.",
+          "pl": "Użytkownicy wizji! Zmieniła się struktura \"kalendarza\" i \"multiZones\" zastępuje \"obszary\". Wszystkie skrypty muszą być dostosowane.",
+          "uk": "Шукати користувачів! У структурі `calendar` змінено і `multiZones` замінює `areas`. Всі скрипти повинні бути адаптовані.",
+          "zh-cn": "视觉用户! `日历 ' 的结构已经改变,`多区 ' 取代`地区 ' 。 所有剧本必须改编."
         },
-        "authors": [
-            "TA2k <tombox2020@gmail.com>",
-            "MeisterTR",
-            "Lucky-ESA"
-        ],
-        "keywords": [
-            "mower",
-            "Worx",
-            "Kress",
-            "Landxcape",
-            "Ferrex",
-            "Landroid IP"
-        ],
-        "licenseInformation": {
-            "license": "MIT",
-            "type": "free"
-        },
-        "tier": 2,
-        "platform": "Javascript/Node.js",
-        "icon": "worx.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.worx/master/admin/worx.png",
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.worx/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "garden",
-        "compact": true,
-        "connectionType": "cloud",
-        "dataSource": "push",
-        "docs": {
-            "en": [
-                "docs/en/README.md"
-            ],
-            "de": [
-                "docs/de/README.md"
-            ]
-        },
-        "messages": [
-            {
-                "condition": {
-                    "operand": "and",
-                    "rules": [
-                        "oldVersion<2.3.4",
-                        "newVersion>=3.0.0"
-                    ]
-                },
-                "title": {
-                    "en": "Important notice!",
-                    "de": "Wichtiger Hinweis!",
-                    "ru": "Важное замечание!",
-                    "pt": "Notícia importante!",
-                    "nl": "Belangrijke mededeling!",
-                    "fr": "Avis important!",
-                    "it": "Avviso IMPORTANTE!",
-                    "es": "Noticia importante!",
-                    "pl": "Ważna uwaga!",
-                    "uk": "Погода!",
-                    "zh-cn": "重要通知!"
-                },
-                "text": {
-                    "en": "Vision users! The structure of `calendar` has changed and `multiZones` replaces `areas`. All scripts must be adapted.",
-                    "de": "Vision-Nutzer! Die Struktur von `calendar` hat sich geändert und `multiZones` ersetzt `areas`. Alle Skripte müssen angepasst werden.",
-                    "ru": "Пользователи зрения! Структура «календара» изменилась, а «мультизонты» заменяют «области». Все сценарии должны быть адаптированы.",
-                    "pt": "Usuários de visão! A estrutura de `calendar` mudou e `multiZones` substitui `areas`. Todos os scripts devem ser adaptados.",
-                    "nl": "Vision gebruikers! De structuur van Calendar... is veranderd en MultiZones vervangt de gebieden. Alle scripts moeten aangepast worden.",
-                    "fr": "Les utilisateurs de vision ! La structure du \"calendrier\" a changé et les \"multiZones\" remplacent les \"zones\". Tous les scripts doivent être adaptés.",
-                    "it": "Utenti di visione! La struttura di `calendar` è cambiata e `multiZones` sostituisce `areas`. Tutti gli script devono essere adattati.",
-                    "es": "¡Usuarios de visión! La estructura de `calendar ' ha cambiado y `multiZones` reemplaza `areas`. Todos los scripts deben ser adaptados.",
-                    "pl": "Użytkownicy wizji! Zmieniła się struktura \"kalendarza\" i \"multiZones\" zastępuje \"obszary\". Wszystkie skrypty muszą być dostosowane.",
-                    "uk": "Шукати користувачів! У структурі `calendar` змінено і `multiZones` замінює `areas`. Всі скрипти повинні бути адаптовані.",
-                    "zh-cn": "视觉用户! `日历 ' 的结构已经改变,`多区 ' 取代`地区 ' 。 所有剧本必须改编."
-                },
-                "buttons": [
-                    "agree",
-                    "cancel"
-                ]
-            },
-            {
-                "condition": {
-                    "operand": "and",
-                    "rules": [
-                        "oldVersion<2.0.0",
-                        "newVersion>=2.0.0"
-                    ]
-                },
-                "title": {
-                    "en": "Important notice!",
-                    "de": "Wichtiger Hinweis!",
-                    "ru": "Важное замечание!",
-                    "pt": "Notícia importante!",
-                    "nl": "Belangrijke mededeling!",
-                    "fr": "Avis important!",
-                    "it": "Avviso IMPORTANTE!",
-                    "es": "Noticia importante!",
-                    "pl": "Ważna uwaga!",
-                    "uk": "Погода!",
-                    "zh-cn": "重要通知!"
-                },
-                "text": {
-                    "en": "Since v2.0.0 the password is saved encrypted. Please reenter your password in the settings after update.\n The folder rawMqtt is restructured please adjust your scripts.",
-                    "de": "Seit v2.0.0 wird das Passwort verschlüsselt gespeichert. Bitte geben Sie Ihr Passwort erneut in den Einstellungen nach dem Update ein.\n Der Ordner rawMqtt wurde umstrukturiert, bitte passen Sie Ihre Skripte an.",
-                    "ru": "С v2.0.0 пароль сохранен зашифрован. Пожалуйста, повторите пароль в настройках после обновления.\n Перестроена папка rawMqtt, пожалуйста, скорректируйте ваши скрипты.",
-                    "pt": "Desde v2.0.0 a senha é salva criptografada. Por favor, digite sua senha nas configurações após a atualização.\n A pasta rawMqtt é reestruturada, ajuste seus scripts.",
-                    "nl": "Aangezien het wachtwoord versleuteld is. Steun uw wachtwoord in de setting na update. De folder RawMqtt is herstructureerd.",
-                    "fr": "Depuis v2.0.0 le mot de passe est enregistré crypté. Veuillez entrer votre mot de passe dans les paramètres après la mise à jour.\n Le dossier rawMqtt est restructuré s'il vous plaît ajuster vos scripts.",
-                    "it": "Dal v2.0.0 la password viene salvata crittografata. Si prega di reinserire la password nelle impostazioni dopo l'aggiornamento.\n La cartella rawMqtt è ristrutturata si prega di regolare gli script.",
-                    "es": "Desde v2.0.0 la contraseña se guarda encriptada. Por favor vuelva a introducir su contraseña en la configuración después de la actualización.\n La carpeta rawMqtt es reestructurada por favor ajuste sus scripts.",
-                    "pl": "Od wersji v2.0.0 zapisywane jest hasłem. Powracaj do wasze hasło w ustawieniach po aktualizacji. Scenarzysta surMqtt jest zrestrukturyzowany do poprawy swoich scenariuszy.",
-                    "uk": "З v2.0.0 пароля зберігається зашифровано. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Текстовий сирМктт перебудовується, будь ласка, налаштуйте сценарії.",
-                    "zh-cn": "自第2.0.0号密码被加密。 请更正在最新资料后在环境中的密码。 编审后,请调整你的文字。."
-                },
-                "buttons": [
-                    "agree",
-                    "cancel"
-                ]
-            }
-        ],
-        "adminUI": {
-            "config": "json"
-        },
-        "plugins": {
-            "sentry": {
-                "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
-            }
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=6.0.11"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=7.4.10"
-            }
+        "buttons": [
+          "agree",
+          "cancel"
         ]
+      },
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<2.0.0",
+            "newVersion>=2.0.0"
+          ]
+        },
+        "title": {
+          "en": "Important notice!",
+          "de": "Wichtiger Hinweis!",
+          "ru": "Важное замечание!",
+          "pt": "Notícia importante!",
+          "nl": "Belangrijke mededeling!",
+          "fr": "Avis important!",
+          "it": "Avviso IMPORTANTE!",
+          "es": "Noticia importante!",
+          "pl": "Ważna uwaga!",
+          "uk": "Погода!",
+          "zh-cn": "重要通知!"
+        },
+        "text": {
+          "en": "Since v2.0.0 the password is saved encrypted. Please reenter your password in the settings after update.\n The folder rawMqtt is restructured please adjust your scripts.",
+          "de": "Seit v2.0.0 wird das Passwort verschlüsselt gespeichert. Bitte geben Sie Ihr Passwort erneut in den Einstellungen nach dem Update ein.\n Der Ordner rawMqtt wurde umstrukturiert, bitte passen Sie Ihre Skripte an.",
+          "ru": "С v2.0.0 пароль сохранен зашифрован. Пожалуйста, повторите пароль в настройках после обновления.\n Перестроена папка rawMqtt, пожалуйста, скорректируйте ваши скрипты.",
+          "pt": "Desde v2.0.0 a senha é salva criptografada. Por favor, digite sua senha nas configurações após a atualização.\n A pasta rawMqtt é reestruturada, ajuste seus scripts.",
+          "nl": "Aangezien het wachtwoord versleuteld is. Steun uw wachtwoord in de setting na update. De folder RawMqtt is herstructureerd.",
+          "fr": "Depuis v2.0.0 le mot de passe est enregistré crypté. Veuillez entrer votre mot de passe dans les paramètres après la mise à jour.\n Le dossier rawMqtt est restructuré s'il vous plaît ajuster vos scripts.",
+          "it": "Dal v2.0.0 la password viene salvata crittografata. Si prega di reinserire la password nelle impostazioni dopo l'aggiornamento.\n La cartella rawMqtt è ristrutturata si prega di regolare gli script.",
+          "es": "Desde v2.0.0 la contraseña se guarda encriptada. Por favor vuelva a introducir su contraseña en la configuración después de la actualización.\n La carpeta rawMqtt es reestructurada por favor ajuste sus scripts.",
+          "pl": "Od wersji v2.0.0 zapisywane jest hasłem. Powracaj do wasze hasło w ustawieniach po aktualizacji. Scenarzysta surMqtt jest zrestrukturyzowany do poprawy swoich scenariuszy.",
+          "uk": "З v2.0.0 пароля зберігається зашифровано. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Текстовий сирМктт перебудовується, будь ласка, налаштуйте сценарії.",
+          "zh-cn": "自第2.0.0号密码被加密。 请更正在最新资料后在环境中的密码。 编审后,请调整你的文字。."
+        },
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
+    ],
+    "adminUI": {
+      "config": "json"
     },
-    "encryptedNative": [
-        "password",
-        "pin"
-    ],
-    "protectedNative": [
-        "password",
-        "pin"
-    ],
-    "native": {
-        "mail": "",
-        "password": "",
-        "edgeCutDelay": 5000,
-        "intervalCloud": 60,
-        "server": "worx",
-        "meterMin": false,
-        "updateMqtt": false,
-        "ip": "",
-        "pin": 0,
-        "intervalMower": 60,
-        "resetLogin": false
+    "plugins": {
+      "sentry": {
+        "dsn": "https://ee01bcb677bf44cb847d1069bfda2736@sentry.iobroker.net/107"
+      }
     },
-    "notifications": [
-        {
-            "scope": "worx",
-            "name": {
-                "en": "Worx",
-                "de": "Worx",
-                "ru": "Worx",
-                "pt": "Worx",
-                "nl": "Worx",
-                "fr": "Worx",
-                "it": "Worx",
-                "es": "Worx",
-                "pl": "Worx",
-                "uk": "Worx",
-                "zh-cn": "Worx"
-            },
-            "description": {
-                "en": "Status and error notifications",
-                "de": "Status- und Fehlermeldungen",
-                "ru": "Уведомления о состоянии и ошибках",
-                "pt": "Notificações de status e erro",
-                "nl": "Status- en foutmeldingen",
-                "fr": "Notifications d'état et d'erreur",
-                "it": "Notifiche di stato e di errore",
-                "es": "Notificaciones de estado y error",
-                "pl": "Powiadomienia o stanie i błędach",
-                "uk": "Статус на сервери",
-                "zh-cn": "状态和错误通知"
-            },
-            "categories": [
-                {
-                    "category": "mowerStatus",
-                    "name": {
-                        "en": "Offline Status",
-                        "de": "Offline-Status",
-                        "ru": "Оффлайновый статус",
-                        "pt": "Estado offline",
-                        "nl": "Offline status",
-                        "fr": "État hors ligne",
-                        "it": "Stato offline",
-                        "es": "Situación general",
-                        "pl": "Status offline",
-                        "uk": "Статус на сервери",
-                        "zh-cn": "离线状态"
-                    },
-                    "description": {
-                        "en": "One or more devices are offline",
-                        "de": "Ein oder mehrere Geräte sind offline",
-                        "ru": "Один или несколько устройств отключены",
-                        "pt": "Um ou mais dispositivos estão offline",
-                        "nl": "Een of meer apparaten zijn offline",
-                        "fr": "Un ou plusieurs appareils sont hors ligne",
-                        "it": "Uno o più dispositivi sono offline",
-                        "es": "Uno o más dispositivos están fuera de línea",
-                        "pl": "Jedno lub więcej urządzeń jest wyłączonych",
-                        "uk": "Один або більше пристроїв автономні",
-                        "zh-cn": "一个或多个设备已下线"
-                    },
-                    "regex": [],
-                    "limit": 1,
-                    "severity": "notify"
-                },
-                {
-                    "category": "mowerError",
-                    "name": {
-                        "en": "Error message",
-                        "de": "Fehlermeldung",
-                        "ru": "Сообщение ошибки",
-                        "pt": "Mensagem de erro",
-                        "nl": "Foutmelding",
-                        "fr": "Message d'erreur",
-                        "it": "Messaggio di errore",
-                        "es": "Mensaje de error",
-                        "pl": "Komunikat o błędzie",
-                        "uk": "Повідомлення про помилку",
-                        "zh-cn": "错误消息"
-                    },
-                    "description": {
-                        "en": "Last error message",
-                        "de": "Letzte Fehlermeldung",
-                        "ru": "Последнее сообщение об ошибке",
-                        "pt": "Última mensagem de erro",
-                        "nl": "Laatste foutmelding",
-                        "fr": "Dernier message d'erreur",
-                        "it": "Ultimo messaggio di errore",
-                        "es": "Último mensaje de error",
-                        "pl": "Wiadomość o ostatnim błędzie",
-                        "uk": "Останнє повідомлення про помилку",
-                        "zh-cn": "上次错误消息"
-                    },
-                    "regex": [],
-                    "limit": 1,
-                    "severity": "notify"
-                }
-            ]
-        }
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
+      }
     ],
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": {
-                    "en": "Information",
-                    "de": "Informationen",
-                    "ru": "Информация",
-                    "pt": "Informação",
-                    "nl": "Informatie",
-                    "fr": "Information",
-                    "it": "Informazioni",
-                    "es": "Información",
-                    "pl": "Informacja",
-                    "uk": "Інформація",
-                    "zh-cn": "信息"
-                }
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": {
-                    "en": "Device or service connected",
-                    "de": "Geräte- oder Serviceanschluss",
-                    "ru": "Устройство или сервис подключены",
-                    "pt": "Dispositivo ou serviço conectado",
-                    "nl": "Device of dienst verbonden",
-                    "fr": "Appareil ou service connecté",
-                    "it": "Dispositivo o servizio collegato",
-                    "es": "Dispositivo o servicio conectado",
-                    "pl": "Urządzenie lub usługa połączona",
-                    "uk": "Пристрої або послуги підключені",
-                    "zh-cn": "证人或有关服务"
-                },
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.mowerStatus",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": {
-                    "en": "Offline Status",
-                    "de": "Offline-Status",
-                    "ru": "Оффлайновый статус",
-                    "pt": "Estado offline",
-                    "nl": "Offline status",
-                    "fr": "État hors ligne",
-                    "it": "Stato offline",
-                    "es": "Situación general",
-                    "pl": "Status offline",
-                    "uk": "Статус на сервери",
-                    "zh-cn": "离线状态"
-                },
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": "[]"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.mowerError",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": {
-                    "en": "Last error message",
-                    "de": "Letzte Fehlermeldung",
-                    "ru": "Последнее сообщение об ошибке",
-                    "pt": "Última mensagem de erro",
-                    "nl": "Laatste foutmelding",
-                    "fr": "Dernier message d'erreur",
-                    "it": "Ultimo messaggio di errore",
-                    "es": "Último mensaje de error",
-                    "pl": "Wiadomość o ostatnim błędzie",
-                    "uk": "Останнє повідомлення про помилку",
-                    "zh-cn": "上次错误消息"
-                },
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": "[]"
-            },
-            "native": {}
-        },
-        {
-            "_id": "session",
-            "type": "state",
-            "common": {
-                "role": "state",
-                "name": {
-                    "en": "Session infos",
-                    "de": "Sitzungsinfos",
-                    "ru": "Сессионная информация",
-                    "pt": "InformaÃ§Ãμes de sessão",
-                    "nl": "Sessie-informatie",
-                    "fr": "Infos de séance",
-                    "it": "Informazioni di sessione",
-                    "es": "Información de sesión",
-                    "pl": "Informacje o sesji",
-                    "uk": "Інформація про сеанс",
-                    "zh-cn": "会话信息"
-                },
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "loginInfo",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": {
-                    "en": "Login counter",
-                    "de": "Login-Zähler",
-                    "ru": "Счетчик логинов",
-                    "pt": "Contador de login",
-                    "nl": "Inlogteller",
-                    "fr": "Compteur de connexion",
-                    "it": "Sportello login",
-                    "es": "Contador login",
-                    "pl": "Licznik logowania",
-                    "uk": "Лічильник входу",
-                    "zh-cn": "登录计数器"
-                },
-                "type": "string",
-                "read": true,
-                "write": false,
-                "def": "{}"
-            },
-            "native": {}
-        }
+    "globalDependencies": [
+      {
+        "admin": ">=7.4.10"
+      }
     ]
+  },
+  "encryptedNative": [
+    "password",
+    "pin"
+  ],
+  "protectedNative": [
+    "password",
+    "pin"
+  ],
+  "native": {
+    "mail": "",
+    "password": "",
+    "edgeCutDelay": 5000,
+    "intervalCloud": 60,
+    "server": "worx",
+    "meterMin": false,
+    "updateMqtt": false,
+    "ip": "",
+    "pin": 0,
+    "intervalMower": 60,
+    "resetLogin": false
+  },
+  "notifications": [
+    {
+      "scope": "worx",
+      "name": {
+        "en": "Worx",
+        "de": "Worx",
+        "ru": "Worx",
+        "pt": "Worx",
+        "nl": "Worx",
+        "fr": "Worx",
+        "it": "Worx",
+        "es": "Worx",
+        "pl": "Worx",
+        "uk": "Worx",
+        "zh-cn": "Worx"
+      },
+      "description": {
+        "en": "Status and error notifications",
+        "de": "Status- und Fehlermeldungen",
+        "ru": "Уведомления о состоянии и ошибках",
+        "pt": "Notificações de status e erro",
+        "nl": "Status- en foutmeldingen",
+        "fr": "Notifications d'état et d'erreur",
+        "it": "Notifiche di stato e di errore",
+        "es": "Notificaciones de estado y error",
+        "pl": "Powiadomienia o stanie i błędach",
+        "uk": "Статус на сервери",
+        "zh-cn": "状态和错误通知"
+      },
+      "categories": [
+        {
+          "category": "mowerStatus",
+          "name": {
+            "en": "Offline Status",
+            "de": "Offline-Status",
+            "ru": "Оффлайновый статус",
+            "pt": "Estado offline",
+            "nl": "Offline status",
+            "fr": "État hors ligne",
+            "it": "Stato offline",
+            "es": "Situación general",
+            "pl": "Status offline",
+            "uk": "Статус на сервери",
+            "zh-cn": "离线状态"
+          },
+          "description": {
+            "en": "One or more devices are offline",
+            "de": "Ein oder mehrere Geräte sind offline",
+            "ru": "Один или несколько устройств отключены",
+            "pt": "Um ou mais dispositivos estão offline",
+            "nl": "Een of meer apparaten zijn offline",
+            "fr": "Un ou plusieurs appareils sont hors ligne",
+            "it": "Uno o più dispositivi sono offline",
+            "es": "Uno o más dispositivos están fuera de línea",
+            "pl": "Jedno lub więcej urządzeń jest wyłączonych",
+            "uk": "Один або більше пристроїв автономні",
+            "zh-cn": "一个或多个设备已下线"
+          },
+          "regex": [],
+          "limit": 1,
+          "severity": "notify"
+        },
+        {
+          "category": "mowerError",
+          "name": {
+            "en": "Error message",
+            "de": "Fehlermeldung",
+            "ru": "Сообщение ошибки",
+            "pt": "Mensagem de erro",
+            "nl": "Foutmelding",
+            "fr": "Message d'erreur",
+            "it": "Messaggio di errore",
+            "es": "Mensaje de error",
+            "pl": "Komunikat o błędzie",
+            "uk": "Повідомлення про помилку",
+            "zh-cn": "错误消息"
+          },
+          "description": {
+            "en": "Last error message",
+            "de": "Letzte Fehlermeldung",
+            "ru": "Последнее сообщение об ошибке",
+            "pt": "Última mensagem de erro",
+            "nl": "Laatste foutmelding",
+            "fr": "Dernier message d'erreur",
+            "it": "Ultimo messaggio di errore",
+            "es": "Último mensaje de error",
+            "pl": "Wiadomość o ostatnim błędzie",
+            "uk": "Останнє повідомлення про помилку",
+            "zh-cn": "上次错误消息"
+          },
+          "regex": [],
+          "limit": 1,
+          "severity": "notify"
+        }
+      ]
+    }
+  ],
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Information",
+          "de": "Informationen",
+          "ru": "Информация",
+          "pt": "Informação",
+          "nl": "Informatie",
+          "fr": "Information",
+          "it": "Informazioni",
+          "es": "Información",
+          "pl": "Informacja",
+          "uk": "Інформація",
+          "zh-cn": "信息"
+        }
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": {
+          "en": "Device or service connected",
+          "de": "Geräte- oder Serviceanschluss",
+          "ru": "Устройство или сервис подключены",
+          "pt": "Dispositivo ou serviço conectado",
+          "nl": "Device of dienst verbonden",
+          "fr": "Appareil ou service connecté",
+          "it": "Dispositivo o servizio collegato",
+          "es": "Dispositivo o servicio conectado",
+          "pl": "Urządzenie lub usługa połączona",
+          "uk": "Пристрої або послуги підключені",
+          "zh-cn": "证人或有关服务"
+        },
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.mowerStatus",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": {
+          "en": "Offline Status",
+          "de": "Offline-Status",
+          "ru": "Оффлайновый статус",
+          "pt": "Estado offline",
+          "nl": "Offline status",
+          "fr": "État hors ligne",
+          "it": "Stato offline",
+          "es": "Situación general",
+          "pl": "Status offline",
+          "uk": "Статус на сервери",
+          "zh-cn": "离线状态"
+        },
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "[]"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.mowerError",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": {
+          "en": "Last error message",
+          "de": "Letzte Fehlermeldung",
+          "ru": "Последнее сообщение об ошибке",
+          "pt": "Última mensagem de erro",
+          "nl": "Laatste foutmelding",
+          "fr": "Dernier message d'erreur",
+          "it": "Ultimo messaggio di errore",
+          "es": "Último mensaje de error",
+          "pl": "Wiadomość o ostatnim błędzie",
+          "uk": "Останнє повідомлення про помилку",
+          "zh-cn": "上次错误消息"
+        },
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "[]"
+      },
+      "native": {}
+    },
+    {
+      "_id": "session",
+      "type": "state",
+      "common": {
+        "role": "state",
+        "name": {
+          "en": "Session infos",
+          "de": "Sitzungsinfos",
+          "ru": "Сессионная информация",
+          "pt": "InformaÃ§Ãμes de sessão",
+          "nl": "Sessie-informatie",
+          "fr": "Infos de séance",
+          "it": "Informazioni di sessione",
+          "es": "Información de sesión",
+          "pl": "Informacje o sesji",
+          "uk": "Інформація про сеанс",
+          "zh-cn": "会话信息"
+        },
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "loginInfo",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": {
+          "en": "Login counter",
+          "de": "Login-Zähler",
+          "ru": "Счетчик логинов",
+          "pt": "Contador de login",
+          "nl": "Inlogteller",
+          "fr": "Compteur de connexion",
+          "it": "Sportello login",
+          "es": "Contador login",
+          "pl": "Licznik logowania",
+          "uk": "Лічильник входу",
+          "zh-cn": "登录计数器"
+        },
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "{}"
+      },
+      "native": {}
+    }
+  ]
 }

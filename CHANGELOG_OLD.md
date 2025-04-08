@@ -190,3 +190,13 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.0.0 (2024-04-25)
+
+- (Lucky-ESA) Fixed Sentry messages
+- (Lucky-ESA) Catch publish crash
+- (Lucky-ESA) Added Vision completely
+- (Lucky-ESA) Node 18 required
+- (Lucky-ESA) JS-Controller >= 5.0.19 required
+- (Lucky-ESA) Admin >=6.13.16 required
+- (Lucky-ESA) Catch aws_cer error and use old mqtt connection
+- (Lucky-ESA) Delete ping
