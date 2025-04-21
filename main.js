@@ -3385,13 +3385,15 @@ class Worx extends utils.Adapter {
             status = await this.getStateAsync(`${device}.mower.firmware_update_start`);
             if (status != null && status.val) {
                 this.log.debug(`Start Firmware Update!`);
-                check = await this.apiRequest(`product-items/${device}/firmware-upgrade`, false, "post");
+                check = await this.apiRequest(`product-items/${device}/firmware-upgrade?`, false, "post");
                 this.log.debug(`Receive: Start Firmware Update - ${JSON.stringify(check)}`);
                 if (check != null) {
                     this.log.debug(`Start firmware update has been sent.`);
                 } else {
                     this.log.debug(`Unknown error during update!`);
                 }
+            } else {
+                this.log.warn(`First set firmware_update_start on true!`);
             }
             await this.setState(`${device}.mower.firmware_update_start`, {
                 val: false,
