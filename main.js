@@ -4201,7 +4201,10 @@ class Worx extends utils.Adapter {
      */
     edgeCutting(id, value, mower) {
         const val = value;
-
+        this.setState(id, {
+            val: false,
+            ack: true,
+        });
         if (
             !mower ||
             !mower.last_status ||
