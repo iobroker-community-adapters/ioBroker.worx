@@ -13,5 +13,7 @@
     "Ranges": "Bereik van 1 tot 86400 mogelijk",
     "deleteSession": "Sessiegegevens verwijderen (in het geval van inlogproblemen)",
     "deleteText": "Sessiegegevens verwijderen",
-    "Reset Login counter": "Reset inlogteller"
+    "Reset Login counter": "Reset inlogteller",
+    "Notification": "Fouten weergeven via meldingen (voor alle apparaten)",
+    "Notification_tooltip": "U kunt de status worx.x.notificatie instellen voor elk apparaat"
 }

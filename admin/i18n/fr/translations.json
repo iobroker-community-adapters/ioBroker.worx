@@ -13,5 +13,7 @@
     "Ranges": "Plage de 1 à 86400 possible",
     "deleteSession": "Supprimer les données de session (en cas de problèmes de connexion)",
     "deleteText": "Supprimer les données de session",
-    "Reset Login counter": "Réinitialiser le compteur de connexion"
+    "Reset Login counter": "Réinitialiser le compteur de connexion",
+    "Notification": "Afficher les erreurs via des notifications (pour tous les appareils)",
+    "Notification_tooltip": "Vous pouvez définir l'état worx.x.notification pour chaque appareil"
 }

@@ -13,5 +13,7 @@
     "Ranges": "Możliwy zakres od 1 do 86400",
     "deleteSession": "Usuń dane sesji (w przypadku problemów logowania)",
     "deleteText": "Usuń dane sesji",
-    "Reset Login counter": "Zresetuj licznik logowania"
+    "Reset Login counter": "Zresetuj licznik logowania",
+    "Notification": "Wyświetl błędy za pomocą powiadomień (dla wszystkich urządzeń)",
+    "Notification_tooltip": "Możesz ustawić stan Worx.x. Notowanie dla każdego urządzenia"
 }

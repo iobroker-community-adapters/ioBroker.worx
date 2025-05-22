@@ -13,5 +13,7 @@
     "Ranges": "Faixa de 1 a 86.400 possíveis",
     "deleteSession": "Excluir dados da sessão (no caso de problemas de login)",
     "deleteText": "Excluir dados da sessão",
-    "Reset Login counter": "Redefina o contador de login"
+    "Reset Login counter": "Redefina o contador de login",
+    "Notification": "Exibir erros por meio de notificações (para todos os dispositivos)",
+    "Notification_tooltip": "Você pode definir o estado worx.x.Notificação para cada dispositivo"
 }

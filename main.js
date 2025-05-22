@@ -1190,13 +1190,27 @@ class Worx extends utils.Adapter {
                             delete device.last_status;
                             this.log.debug("Delete last_status");
                         } else {
-                            if (!device.online) {
+                            if (
+                                !device.online &&
+                                this.modules[device.serial_number] &&
+                                this.modules[device.serial_number]["notify"] &&
+                                this.modules[device.serial_number]["notify_excluded"] != null &&
+                                !this.modules[device.serial_number]["notify_excluded"].includes(
+                                    device.last_status.payload.dat.le,
+                                )
+                            ) {
                                 status_notify.push(device.serial_number);
                             }
                             if (
                                 device.last_status.payload &&
                                 device.last_status.payload.dat &&
-                                device.last_status.payload.dat.le > 0
+                                device.last_status.payload.dat.le > 0 &&
+                                this.modules[device.serial_number] &&
+                                this.modules[device.serial_number]["notify"] &&
+                                this.modules[device.serial_number]["notify_excluded"] != null &&
+                                !this.modules[device.serial_number]["notify_excluded"].includes(
+                                    device.last_status.payload.dat.le,
+                                )
                             ) {
                                 const messages = error_states[device.last_status.payload.dat.le]
                                     ? ` ${error_states[device.last_status.payload.dat.le]}`
@@ -1217,11 +1231,13 @@ class Worx extends utils.Adapter {
                         channelName: "All raw data of the mower",
                     });
                 }
-                if (err_notify.length > 0) {
-                    await this.registerEventNotification(err_notify, "mowerError", true);
-                }
-                if (status_notify.length > 0) {
-                    this.registerEventNotification(status_notify, "mowerStatus", true);
+                if (this.config.notification) {
+                    if (err_notify.length > 0) {
+                        await this.registerEventNotification(err_notify, "mowerError", true);
+                    }
+                    if (status_notify.length > 0) {
+                        this.registerEventNotification(status_notify, "mowerStatus", true);
+                    }
                 }
             })
             .catch(error => {
@@ -1270,7 +1286,15 @@ class Worx extends utils.Adapter {
                             this.log.debug(`Update this.deviceArray: ${index}`);
                             this.deviceArray[index] = data;
                         }
-                        if (!data.online) {
+                        if (
+                            !data.online &&
+                            this.modules[data.serial_number] &&
+                            this.modules[data.serial_number]["notify"] &&
+                            this.modules[data.serial_number]["notify_excluded"] != null &&
+                            !this.modules[data.serial_number]["notify_excluded"].includes(
+                                data.last_status.payload.dat.le,
+                            )
+                        ) {
                             status_notify.push(device.serial_number);
                         }
                         try {
@@ -1282,7 +1306,13 @@ class Worx extends utils.Adapter {
                                 if (
                                     data.last_status.payload &&
                                     data.last_status.payload.dat &&
-                                    data.last_status.payload.dat.le > 0
+                                    data.last_status.payload.dat.le > 0 &&
+                                    this.modules[data.serial_number] &&
+                                    this.modules[data.serial_number]["notify"] &&
+                                    this.modules[data.serial_number]["notify_excluded"] != null &&
+                                    !this.modules[data.serial_number]["notify_excluded"].includes(
+                                        data.last_status.payload.dat.le,
+                                    )
                                 ) {
                                     const messages = error_states[data.last_status.payload.dat.le]
                                         ? ` ${error_states[data.last_status.payload.dat.le]}`
@@ -1335,11 +1365,13 @@ class Worx extends utils.Adapter {
                         error.response && this.log.error(JSON.stringify(error.response.data));
                     });
             }
-            if (err_notify.length > 0) {
-                await this.registerEventNotification(err_notify, "mowerError", true);
-            }
-            if (status_notify.length > 0) {
-                this.registerEventNotification(status_notify, "mowerStatus", true);
+            if (this.config.notification) {
+                if (err_notify.length > 0) {
+                    await this.registerEventNotification(err_notify, "mowerError", true);
+                }
+                if (status_notify.length > 0) {
+                    this.registerEventNotification(status_notify, "mowerStatus", true);
+                }
             }
         }
     }
@@ -1825,7 +1857,17 @@ class Worx extends utils.Adapter {
                                     ? ` ${error_states[mower.last_status.payload.dat.le]}`
                                     : ` ${mower.last_status.payload.dat.le}`;
                                 err_notify.push(`${mower.serial_number}${messages}`);
-                                this.registerEventNotification(err_notify, "mowerError", false);
+                                if (
+                                    this.config.notification &&
+                                    this.modules[mower.serial_number] &&
+                                    this.modules[mower.serial_number]["notify"] &&
+                                    this.modules[mower.serial_number]["notify_excluded"] != null &&
+                                    !this.modules[mower.serial_number]["notify_excluded"].includes(
+                                        mower.last_status.payload.dat.le,
+                                    )
+                                ) {
+                                    this.registerEventNotification(err_notify, "mowerError", false);
+                                }
                             }
                         }
                     } catch (e) {
@@ -2511,6 +2553,10 @@ class Worx extends utils.Adapter {
                     this.setNotification(id, mower, state);
                     return;
                 }
+                if (command === "notification_excluded") {
+                    this.setNotificationExcluded(id, mower, state);
+                    return;
+                }
                 try {
                     if (command == "state") {
                         if (state.val === true) {
@@ -2804,24 +2850,60 @@ class Worx extends utils.Adapter {
      * @param {object} mower
      * @param {ioBroker.State | null | undefined} state
      */
-    setNotification(id, mower, state) {
+    setNotificationExcluded(id, mower, state) {
         if (state && state.val != null) {
+            let val = state.val;
+            if (!this.config.notification) {
+                this.log.warn(`Notification is for all devices disabled in the instance setting!!!`);
+                val = "4,5,16,18";
+            }
             if (!this.modules[mower.serial_number]) {
                 this.modules[mower.serial_number] = {};
+                this.modules[mower.serial_number]["notify"] = false;
             }
-            this.modules[mower.serial_number]["notify"] = state.val;
+            this.modules[mower.serial_number]["notify_excluded"] = val.toString().replace(/ /g, "").split(",");
             const notify_native = {
                 native: {
-                    notify: state.val,
+                    notify: this.modules[mower.serial_number]["notify"],
+                    notify_excluded: val,
                 },
             };
             this.extendObject(mower.serial_number, notify_native);
-            if (state.val) {
+            this.log.info(`Notification Error-ID for ${mower.serial_number} changed with ${val}`);
+            this.setState(id, { ack: true });
+        }
+    }
+
+    /**
+     * @param {string} id
+     * @param {object} mower
+     * @param {ioBroker.State | null | undefined} state
+     */
+    setNotification(id, mower, state) {
+        if (state && state.val != null) {
+            let val = state.val;
+            if (!this.config.notification && state.val) {
+                this.log.warn(`Notification is for all devices disabled in the instance setting!!!`);
+                val = false;
+            }
+            if (!this.modules[mower.serial_number]) {
+                this.modules[mower.serial_number] = {};
+                this.modules[mower.serial_number]["notify_excluded"] = "4,5,16,18".replace(/ /g, "").split(",");
+            }
+            this.modules[mower.serial_number]["notify"] = val;
+            const notify_native = {
+                native: {
+                    notify: val,
+                    notify_excluded: JSON.stringify(this.modules[mower.serial_number]["notify_excluded"]),
+                },
+            };
+            this.extendObject(mower.serial_number, notify_native);
+            if (val) {
                 this.log.info(`Notification for ${mower.serial_number} activated`);
             } else {
                 this.log.info(`Notification for ${mower.serial_number} disabled`);
             }
-            this.setState(id, { val: state.val, ack: true });
+            this.setState(id, { val: val, ack: true });
         }
     }
 

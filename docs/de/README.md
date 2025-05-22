@@ -36,6 +36,7 @@ Richtig</br>
 - `Verzögerung für Kantenschnitt`: Wann soll EdgeCut nach dem Losfahren starten (Beispiel nach 5 Sekunden bis zum Rasen)
 - `Entfernung und Zeit in Minuten und Metern`: Einheit für Laufzeit und Arbeitszeit in Min./Std. und Meter/KM
 - `Aktualisieren der MQTT-Daten nach der Token-Aktualisierung.`: Nach der Erneuerung vom Token (jede Stunde) die Mqtt Daten neu laden.
+- `Fehler über Benachrichtigungen anzeigen (für alle Geräte)`: Benachrichtigung für alle Geräte ein/ausschalten (kann unter Objekte für jedes Greäte ein/ausgeschaltet werden)
 - `Sitzungsdaten löschen` Bei Login Probleme die aktuelle Session löschen
 - `Login-Zähler zurücksetzen` Login-Zähler zurücksetzen
 
@@ -191,6 +192,8 @@ Richtig</br>
 - `edgecut`: Start EdgeCut (Draht & Vision/änderbar) 🟢
 - `error`: Errormeldung vom Mäher (Draht & Vision/nur lesen)
 
+### Error ID`s
+
 ```json
 {
     "states": {
@@ -273,6 +276,7 @@ Richtig</br>
 - `mqtt_update`: Update Mqtt Daten vom Mäher - max. 150/Tag (Draht & Vision/änderbar) 🟢
 - `mqtt_update_count`: Counter von Update Mqtt Daten (Draht & Vision/nur lesen)
 - `notification`: Benachrichtigung über JS-Controller aktivieren oder deaktivieren. Es wird Offline und Fehlermeldungen ausgegeben. (Draht & Vision/änderbar) 🔴
+- `notification_excluded`: Welche Fehler ID`s sollen nicht angezeigt werden (IDs mit Komma trennen [IDS](#error-ids))
 
 ![Mower img/mower_2.png](img/mower_2.png)</br>
 ![Mower img/info_connection.png](img/info_connection.png)
@@ -304,6 +308,8 @@ Richtig</br>
 - `rfidStatus`: Status RF Sensor 0=OK/1=Fehler (Vision/nur lesen)
 - `sendCommand`: Ein Befehl versenden (Draht & Vision/änderbar) 🟢
 
+### Send Commands
+
 ```json
 {
     "states": {
@@ -328,6 +334,8 @@ Richtig</br>
 
 - `state`: True für Mähvorgang starten und False für Mähvorgang beenden (Draht & Vision/änderbar) 🟢
 - `status`: Status vom Mäher (Draht & Vision & RTK/nur lesen)
+
+### Status ID`s
 
 ```json
 {

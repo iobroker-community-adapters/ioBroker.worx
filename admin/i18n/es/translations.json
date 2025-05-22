@@ -13,5 +13,7 @@
     "Ranges": "Rango posible de 1 a 86400",
     "deleteSession": "Eliminar datos de sesión (en caso de problemas de inicio de sesión)",
     "deleteText": "Eliminar datos de sesión",
-    "Reset Login counter": "Restablecer contador de inicio de sesión"
+    "Reset Login counter": "Restablecer contador de inicio de sesión",
+    "Notification": "Mostrar errores a través de notificaciones (para todos los dispositivos)",
+    "Notification_tooltip": "Puede configurar el estado worx.x.notificación para cada dispositivo"
 }

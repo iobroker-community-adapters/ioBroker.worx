@@ -13,5 +13,7 @@
     "Ranges": "范围从 1 到 86400",
     "deleteSession": "删除会话数据（如果登录问题）",
     "deleteText": "删除会话数据",
-    "Reset Login counter": "重置登录计数器"
+    "Reset Login counter": "重置登录计数器",
+    "Notification": "通过通知显示错误（对于所有设备）",
+    "Notification_tooltip": "您可以为每个设备设置状态worx.x。"
 }

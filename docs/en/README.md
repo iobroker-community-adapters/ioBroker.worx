@@ -36,6 +36,7 @@ valid</br>
 - `Delay for EdgeCut`: When should EdgeCut start (example 5 seconds to lawn)
 - `Distance and time in min and m`: Default h and km
 - `Updating MQTT data after token update.`: Loads the Worx data after the refresh token.
+- `Display errors via notifications (for all devices)`: Turn notification on/off for all devices (can be turned on/off for each device under Objects)
 - `Delete session data` If you have problems logging in, delete the current session
 - `Reset Login counter` Reset Login counter
 
@@ -273,6 +274,7 @@ valid</br>
 - `mqtt_update`: Update Mqtt data max. 150/day (wire & Vision/changeable) 🟢
 - `mqtt_update_count`: Counter Update Mqtt data (wire & Vision/readonly)
 - `notification`: Enable or disable notification via JS controller. Offline and error messages are output. (Design & Vision/changeable) 🔴
+- `notification_excluded`: Which error IDs should not be displayed (separate IDs with commas [IDS](#error-ids)) 🔴
 
 ![Mower img/mower_2.png](img/mower_2.png)</br>
 ![Mower img/info_connection.png](img/info_connection.png)
@@ -304,6 +306,8 @@ valid</br>
 - `rfidStatus`: Status RF sensor 0=OK/1=Error (vision/read only)
 - `sendCommand`: Send cmd command (wire & Vision/changeable) 🟢
 
+### Send Commands
+
 ```json
 {
     "states": {
@@ -328,6 +332,8 @@ valid</br>
 
 - `state`: True for start mower and False for stop mower (wire & Vision/changeable)
 - `status`: Status mower (wire & Vision/readonly)
+
+### Status ID`s
 
 ```json
 {

@@ -13,5 +13,7 @@
     "Ranges": "Bereich von 1 bis 86400 möglich",
     "deleteSession": "Sitzungsdaten löschen (bei Anmeldeprobleme)",
     "deleteText": "Sitzungsdaten löschen",
-    "Reset Login counter": "Login-Zähler zurücksetzen"
+    "Reset Login counter": "Login-Zähler zurücksetzen",
+    "Notification": "Fehler über Benachrichtigungen anzeigen (für alle Geräte)",
+    "Notification_tooltip": "Sie können den Status worx.x.notification für jedes Gerät festlegen"
 }

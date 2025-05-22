@@ -150,6 +150,18 @@
             "xl": 4,
             "hidden": "data.server === \"Remote\""
         },
+        "notification": {
+            "type": "checkbox",
+            "label": "Notification",
+            "tooltip": "Notification_tooltip",
+            "newLine": true,
+            "default": false,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+        },
         "setState": {
             "type": "setState",
             "label": "deleteText",

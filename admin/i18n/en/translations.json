@@ -13,5 +13,7 @@
     "Ranges": "Range from 1 to 86400 possible",
     "deleteSession": "Delete session data (in case of login problems)",
     "deleteText": "Delete session data",
-    "Reset Login counter": "Reset Login counter"
+    "Reset Login counter": "Reset Login counter",
+    "Notification": "Display errors via notifications (for all devices)",
+    "Notification_tooltip": "You can set the state worx.x.notification for each device"
 }

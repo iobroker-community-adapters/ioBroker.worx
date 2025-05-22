@@ -13,5 +13,7 @@
     "Ranges": "Intervallo possibile da 1 a 86400",
     "deleteSession": "Elimina i dati della sessione (in caso di problemi di accesso)",
     "deleteText": "Elimina i dati di sessione",
-    "Reset Login counter": "Ripristina il contatore di accesso"
+    "Reset Login counter": "Ripristina il contatore di accesso",
+    "Notification": "Visualizza errori tramite notifiche (per tutti i dispositivi)",
+    "Notification_tooltip": "È possibile impostare lo stato worx.x.notification per ciascun dispositivo"
 }
