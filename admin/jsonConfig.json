@@ -166,7 +166,7 @@
             "type": "setState",
             "label": "deleteText",
             "tooltip": "deleteSession",
-            "id": "playstation.%INSTANCE%.session",
+            "id": "worx.%INSTANCE%.session",
             "ack": true,
             "val": "",
             "newLine": true,
