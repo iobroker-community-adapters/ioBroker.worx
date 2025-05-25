@@ -190,6 +190,14 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.0.1 (2024-05-08)
+
+- (Lucky-ESA) Preperation mission Kress new API
+- (Lucky-ESA) Fixed TypeError
+- (Lucky-ESA) Fixed missing activity states
+- (Lucky-ESA) Added update interval in instance setting
+- (Lucky-ESA) Added last update
+
 ## 3.0.0 (2024-04-25)
 
 - (Lucky-ESA) Fixed Sentry messages

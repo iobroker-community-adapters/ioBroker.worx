@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.1 (2025-05-25)
 
 - (Lucky-ESA) Fixed starting firmware update (did not work)
 - (Lucky-ESA) Added confirm edgecut
@@ -77,14 +76,6 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (Lucky-ESA) mowTimeExtend restricted input
 - (Lucky-ESA) Fixed TypeError
-
-### 3.0.1 (2024-05-08)
-
-- (Lucky-ESA) Preperation mission Kress new API
-- (Lucky-ESA) Fixed TypeError
-- (Lucky-ESA) Fixed missing activity states
-- (Lucky-ESA) Added update interval in instance setting
-- (Lucky-ESA) Added last update
 
 ## License
 
