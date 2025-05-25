@@ -50,6 +50,7 @@ The adapter can control the mower and you can change config params like mowtimes
 - (Lucky-ESA) Fixed starting firmware update (did not work)
 - (Lucky-ESA) Added confirm edgecut
 - (Lucky-ESA) Added notifications about instance settings toggle on/off
+- (Lucky-ESA) Small bugs fixed
 
 ### 3.2.0 (2025-04-08)
 
