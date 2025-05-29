@@ -17,7 +17,7 @@
 
 ## Required
 
-- Node 20 or 22
+- Node 20, 22 or 24
 - JS-Controller >= 6.0.11
 - Admin >= 7.4.10
 
