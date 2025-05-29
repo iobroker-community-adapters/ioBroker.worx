@@ -48,6 +48,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) Fixed invalid object type
+- (Lucky-ESA) Error message it is raining changes to rain delay
 
 ### 3.2.1 (2025-05-25)
 

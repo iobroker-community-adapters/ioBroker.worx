@@ -28,7 +28,7 @@ const error_states = {
     2: "Lifted",
     3: "Wire missing",
     4: "Outside boundary",
-    5: "Raining",
+    5: "Rain delay",
     6: "Close door to cut grass",
     7: "Close door to go home",
     8: "Blade motor fault",

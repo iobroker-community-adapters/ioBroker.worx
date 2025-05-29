@@ -202,7 +202,7 @@ Richtig</br>
         "2": "Lifted", //(Draht & Vision & RTK-Body)
         "3": "Wire missing", //(Draht)
         "4": "Outside boundary", //(Draht & Vision & RTK-Body)
-        "5": "Raining", //(Draht & Vision & RTK-Body)
+        "5": "Rain delay", //(Draht & Vision & RTK-Body)
         "6": "Close door to cut grass", //(Draht)
         "7": "Close door to go home", //(Draht)
         "8": "Blade motor fault", //(Draht & Vision & RTK-Body)
