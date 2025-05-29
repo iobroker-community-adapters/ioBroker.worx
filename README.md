@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.2 (2025-05-29)
 
 - (Lucky-ESA) Fixed invalid object type
 - (Lucky-ESA) Error message it is raining changes to rain delay
@@ -77,11 +76,6 @@ The adapter can control the mower and you can change config params like mowtimes
 - (Lucky-ESA) Added Landroid IP
 - (Lucky-ESA) Fixed interval
 - (Lucky-ESA) Fixed Vision Edgecut
-
-### 3.0.2 (2024-05-12)
-
-- (Lucky-ESA) mowTimeExtend restricted input
-- (Lucky-ESA) Fixed TypeError
 
 ## License
 

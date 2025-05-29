@@ -190,6 +190,11 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.0.2 (2024-05-12)
+
+- (Lucky-ESA) mowTimeExtend restricted input
+- (Lucky-ESA) Fixed TypeError
+
 ## 3.0.1 (2024-05-08)
 
 - (Lucky-ESA) Preperation mission Kress new API

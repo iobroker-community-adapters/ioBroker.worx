@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.2.1",
+    "version": "3.2.2",
     "news": {
+      "3.2.2": {
+        "en": "Fixed invalid object type\nError message it is raining changes to rain delay",
+        "de": "Ungültiger Objekttyp behoben\nFehlermeldung, dass es regnet Änderungen an der Regenverzögerung",
+        "ru": "Фиксированный недействительный тип объекта\nСообщение об ошибке: идет дождь, меняется задержка дождя",
+        "pt": "Tipo de objeto inválido fixo\nMensagem de erro está chovendo mudanças no atraso da chuva",
+        "nl": "Vast ongeldig objecttype\nFoutmelding het regent veranderingen in regen vertraging",
+        "fr": "Type d'objet non valide corrigé\nMessage d'erreur il pleut des changements au retard de pluie",
+        "it": "Tipo di oggetto non valido fisso\nMessaggio di errore sta piovendo modifiche al ritardo della pioggia",
+        "es": "Tipo de objeto no válido fijo\nMensaje de error está lloviendo cambios a la demora de la lluvia",
+        "pl": "Naprawiono nieprawidłowy typ obiektu\nKomunikat o błędzie to deszcz zmian w opóźnieniu deszczu",
+        "uk": "Виправлено недійсний тип об'єкта\nПомилка повідомлення про дощ",
+        "zh-cn": "固定无效对象类型\n错误消息是下雨更改为雨延"
+      },
       "3.2.1": {
         "en": "Fixed starting firmware update (did not work)\nAdded confirm edgecut\nAdded notifications about instance settings toggle on/off\nSmall bugs fixed",
         "de": "Feste Start Firmware-Update (nicht funktionieren)\nHinzugefügt bestätigen Randcut\nHinzugefügt Benachrichtigungen über Instanzeinstellungen toggle on/off\nKleine Fehler behoben",
@@ -80,19 +93,6 @@
         "pl": "Misja preperacyjna Kress new API\nNaprawiono błąd typu\nUstalone brakujące stany aktywności\nDodano interwał aktualizacji w ustawieniu instancji\nDodano ostatnią aktualizację",
         "uk": "Попередня місія Kress новий API\nФіксований TypeError\nВиправлено відсутні стани діяльності\nДодано інтервал оновлення в налаштуваннях екземпляра\nДодано останнє оновлення",
         "zh-cn": "考察团 Kress 新建 API\n固定类型错误\n固定缺失的活动状态\n在实例设置中添加更新间隔\n添加了上次更新"
-      },
-      "3.0.0": {
-        "en": "Fixed Sentry messages\nCatch publish crash\nAdded Vision completely\nNode 18 required\nJS-Controller >= 5.0.19 required\nAdmin >=6.13.16 required\nCatch aws_cer error and use old mqtt connection\nDelete ping",
-        "de": "Feste Sentry-Nachrichten\nCrash veröffentlichen\nVision komplett hinzugefügt\nNode 18 erforderlich\nJS-Controller >= 5.0.19 erforderlich\nAdmin >=6.13.16 erforderlich\nFangen Sie aws_cer Fehler und verwenden Sie alte mqtt Verbindung\nLöschen von p",
-        "ru": "Срочные сообщения\nЗаплатить крушение\nДобавлено Vision полностью\nНод 18 требуется\n JS 5.0.19\n>=6.13.16\nПоймать ошибку aws_cer и использовать старое соединение mqtt\nУдалить пинг",
-        "pt": "Mensagens de Sentry fixas\nCaptura de dados\nAdicionado Visão completamente\nNode 18 necessário\nJS-Controller >= 5.0.19 necessário\nAdmin >=6.13.16 necessário\nPegar o erro do aws_cer e usar a conexão mqt velha\nExcluir ping",
-        "nl": "Vaste invoerberichten\nCatch publiceren crash\nVision volledig toegevoegd\nNode 18 vereist\nJS-Controller < 5.01.19 vereist\nAdmin < 6.13.16 vereist\nAws_cer-fout vangen en oude mqtt-verbinding gebruiken\nPing verwijderen",
-        "fr": "Messages de saisie corrigés\nCatch publier l'accident\nAjout complet de Vision\nNoeud 18 requis\nJS-Contrôleur >= 5.0.19 requis\nAdmin >=6.13.16 requis\nCatch aws_cer erreur et utiliser l'ancienne connexion mqtt\nSupprimer ping",
-        "it": "Messaggi di Sentry fissi\nCatch pubblicare crash\nAggiunto Visione completamente\nNodo 18 richiesto\nJS-Controller >= 5.0.19 richiesto\nAdmin >=6.13.16 richiesto\nCattura errore aws_cer e uso vecchio collegamento mqtt\nElimina ping",
-        "es": "Mensajes fijos\nCatch public crash\nVisión agregada completamente\nNodo 18 requerido\nJS-Controller ≤ 5.0.19 requerido\nPersonal obligatorio\nCapturar error aws_cer y utilizar la conexión mqtt vieja\nSuprímase el texto",
-        "pl": "Poprawione wiadomości wysyłające\nPołów publikuje crash\nDodano obraz całkowicie\nWymagany węzeł 18\nJS- Controller > = 5.0.19 wymagane\nWymagany dodatek > = 6.13.16\nBłąd Catch aws _ cer i użyj starego połączenia mqtt\nUsuń ping",
-        "uk": "Фіксовані повідомлення Sentry\nCatch Публікація\nДодати бачення повністю\nNode 18 потрібно\nJS-Controller >=5.0.19 потрібно\nAdmin >=6.13.16 потрібно\nКетч aws_cer помилка і використовувати старий mqtt з'єднання\nВидалити пінг",
-        "zh-cn": "固定哨兵消息\n抓取发布崩溃\n完全添加的视觉\n需要18号节点\n联合来文主计长\n所需行政经费\n抓取 aws_cer 错误并使用旧的 mqtt 连接\n删除 ping"
       }
     },
     "titleLang": {
