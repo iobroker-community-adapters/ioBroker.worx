@@ -44,6 +44,11 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+- (Lucky-ESA) Fixed invalid object type
+
 ### 3.2.1 (2025-05-25)
 
 - (Lucky-ESA) Fixed starting firmware update (did not work)
