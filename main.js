@@ -2530,7 +2530,11 @@ class Worx extends utils.Adapter {
                 this.poll_check_time[mower_id] = Date.now();
             }
             const mower = this.deviceArray.find(device => device.serial_number === mower_id);
-            this.lastRequest[mower.serial_number] = no_verification.includes(command);
+            if (mower && mower.serial_number != null) {
+                this.lastRequest[mower.serial_number] = no_verification.includes(command);
+            } else {
+                this.lastRequest[mower.serial_number] = false;
+            }
             this.log.debug(`this.modules!  ${JSON.stringify(this.modules)}`);
             this.log.debug(
                 `state change: id_____ ${id} Mower ${mower_id}_____${command}______${JSON.stringify(mower)}`,
@@ -2839,7 +2843,7 @@ class Worx extends utils.Adapter {
                     this.log.error(e.stack);
                 }
             } else {
-                this.log.error(`No mower found!  ${JSON.stringify(mower_id)}`);
+                this.log.error(`No mower found!  ${JSON.stringify(mower_id)} - ${id}`);
                 this.log.info(`Mower list ${JSON.stringify(this.deviceArray)}`);
             }
         }
