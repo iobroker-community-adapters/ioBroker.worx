@@ -1652,7 +1652,7 @@ class Worx extends utils.Adapter {
             .catch(error => {
                 if (path.includes("firmware-upgrade")) {
                     this.log.debug("Updating firmware information is currently not possible!");
-                    return error.response.status;
+                    return error.response && error.response.status != null ? error.response.status : error;
                 }
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
@@ -1808,8 +1808,12 @@ class Worx extends utils.Adapter {
                 }
                 this.updateMqttData(false);
                 this.mqtt_blocking = 0;
-                const mower = this.deviceArray.find(mower => mower.mqtt_topics.command_out === topic);
-                const merge = this.deviceArray.findIndex(merge => merge.mqtt_topics.command_out === topic);
+                const mower = this.deviceArray.find(
+                    val => val && val.mqtt_topics && val.mqtt_topics.command_out === topic,
+                );
+                const merge = this.deviceArray.findIndex(
+                    merge => merge && merge.mqtt_topics && merge.mqtt_topics.command_out === topic,
+                );
                 if (mower) {
                     this.log.debug(`Worxcloud MQTT get Message for mower ${mower.name} (${mower.serial_number})`);
                     this.last_update_connection(mower.serial_number, 0);
