@@ -2390,10 +2390,12 @@ class Worx extends utils.Adapter {
      * @param {string} id
      */
     stopRainCounter(id) {
-        this.clearInterval(this.rainCounterInterval[id]["interval"]);
-        this.rainCounterInterval[id]["interval"] = null;
-        this.rainCounterInterval[id]["count"] = 0;
-        this.rainCounterInterval[id]["last"] = 0;
+        if (this.rainCounterInterval[id]) {
+            this.rainCounterInterval[id]["interval"] && this.clearInterval(this.rainCounterInterval[id]["interval"]);
+            this.rainCounterInterval[id]["interval"] = null;
+            this.rainCounterInterval[id]["count"] = 0;
+            this.rainCounterInterval[id]["last"] = 0;
+        }
     }
 
     /**
@@ -2536,8 +2538,6 @@ class Worx extends utils.Adapter {
             const mower = this.deviceArray.find(device => device.serial_number === mower_id);
             if (mower && mower.serial_number != null) {
                 this.lastRequest[mower.serial_number] = no_verification.includes(command);
-            } else {
-                this.lastRequest[mower.serial_number] = false;
             }
             this.log.debug(`this.modules!  ${JSON.stringify(this.modules)}`);
             this.log.debug(
