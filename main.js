@@ -131,6 +131,7 @@ class Worx extends utils.Adapter {
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
         this.vision = {};
+        this.isMqttConneted = false;
         this.poll_check_time = {};
         this.requestCounter = 0;
         this.reconnectCounter = 0;
@@ -1720,7 +1721,9 @@ class Worx extends utils.Adapter {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
             }
             if (this.mqtt != null) {
-                this.mqttC && (await this.mqttC.disconnect());
+                if (this.isMqttConneted) {
+                    this.mqttC && (await this.mqttC.disconnect());
+                }
                 const accessTokenParts = this.session.access_token.replace(/_/g, "/").replace(/-/g, "+").split(".");
                 let config_builder;
                 try {
@@ -1820,6 +1823,7 @@ class Worx extends utils.Adapter {
             }
 
             this.mqttC.on("message", async (topic, message) => {
+                this.isMqttConneted = true;
                 let data;
                 try {
                     const json = Buffer.from(message);
@@ -1919,6 +1923,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("connect", async session_present => {
+                this.isMqttConneted = true;
                 this.setMqttOnline(true);
                 this.log.debug(`MQTT connection: ${JSON.stringify(session_present)}`);
                 this.log.debug(`MQTT connected to: ${this.userData.mqtt_newendpoint}`);
@@ -1949,6 +1954,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("interrupt", async error => {
+                this.isMqttConneted = false;
                 const check_time = Date.now() - this.interruptCheck["count_time"];
                 if (check_time > this.interruptCheck["count_max"]) {
                     this.log.debug(`Connection interrupted: ${error}`);
@@ -1974,6 +1980,7 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("resume", async (return_code, session_present) => {
+                this.isMqttConneted = false;
                 this.setMqttOnline(false);
                 this.log.debug(`Resumed: rc: ${return_code} existing session: ${session_present}`);
                 this.log.debug(`MQTT reconnect: ${this.mqtt_blocking}`);
@@ -1988,7 +1995,9 @@ class Worx extends utils.Adapter {
                     this.log.info(`Reconnects since adapter start: ${this.reconnectCounter}`);
                     this.log.info(`Adapter start date: ${new Date(this.requestCounterStart).toLocaleString()}`);
                     if (this.mqtt) {
-                        this.mqttC && (await this.mqttC.disconnect());
+                        if (this.isMqttConneted) {
+                            this.mqttC && (await this.mqttC.disconnect());
+                        }
                     }
                     this.mqttC = null;
                     this.mqtt_restart && this.clearTimeout(this.mqtt_restart);
@@ -2004,11 +2013,13 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("disconnect", () => {
+                this.isMqttConneted = false;
                 this.log.debug("Disconnected");
                 this.setMqttOnline(false);
             });
 
             this.mqttC.on("error", error => {
+                this.isMqttConneted = false;
                 this.log.info(`MQTT ERROR: ${error}`);
                 this.setMqttOnline(false);
             });
@@ -2094,12 +2105,25 @@ class Worx extends utils.Adapter {
                     await this.lastCommand(this.mqtt_response_check, "request", data.id, command);
                     this.log.debug(`this.mqtt_response_check:  ${JSON.stringify(this.mqtt_response_check)}`);
                     this.log.debug(`sendData:  ${message}`);
-                    this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos);
+                    if (this.mqtt != null) {
+                        if (this.isMqttConneted) {
+                            this.mqttC && (await this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos));
+                        }
+                    } else {
+                        this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos);
+                    }
                 } catch (e) {
                     this.log.info(`sendMessage normal:  ${e}`);
                     this.log.debug(`sendData normal:  ${JSON.stringify(message)}`);
                     try {
-                        this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos);
+                        if (this.mqtt != null) {
+                            if (this.isMqttConneted) {
+                                this.mqttC &&
+                                    (await this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos));
+                            }
+                        } else {
+                            this.mqttC.publish(mower.mqtt_topics.command_in, message, this.qos);
+                        }
                     } catch (e) {
                         this.log.warn(`Cannot send message ${message} - ${e}.`);
                         this.mqttC = null;
@@ -2506,7 +2530,9 @@ class Worx extends utils.Adapter {
             this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
             try {
                 if (this.mqtt != null) {
-                    this.mqttC && this.mqttC.disconnect();
+                    if (this.isMqttConneted) {
+                        this.mqttC && this.mqttC.disconnect();
+                    }
                 } else {
                     this.mqttC && this.mqttC.end();
                 }
