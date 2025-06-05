@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.2.2",
+    "version": "3.2.3",
     "news": {
+      "3.2.3": {
+        "en": "All Sentry issues fixed\nAdd new mowers without adapter restart",
+        "de": "Alle Probleme der Sentry behoben\nNeue Mäher ohne Adapter Neustart hinzufügen",
+        "ru": "Все проблемы с пенсией решены\nДобавить новые косилки без перезапуска адаптера",
+        "pt": "Todos os problemas de Enviado corrigidos\nAdicionar novos cortadores sem reinício do adaptador",
+        "nl": "Alle Sentry problemen opgelost\nNieuwe maaiers toevoegen zonder herstart adapter",
+        "fr": "Toutes les émissions de Sentry corrigées\nAjouter de nouvelles tondeuses sans redémarrage de l'adaptateur",
+        "it": "Tutti i problemi di Sentry risolti\nAggiungere nuove tosaerba senza riavviare l'adattatore",
+        "es": "Todos los problemas de Sentry fijos\nAñadir nuevas cortadoras sin reinicio de adaptador",
+        "pl": "Wszystkie kwestie związane z zapisem\nDodaj nowe kosiarki bez ponownego uruchamiania adaptera",
+        "uk": "Всі питання старень виправлені\nДодати нові косарки без перезавантаження адаптера",
+        "zh-cn": "所有哨兵问题已解决\n不重新启动适配器而添加新剪切器"
+      },
       "3.2.2": {
         "en": "Fixed invalid object type\nError message it is raining changes to rain delay",
         "de": "Ungültiger Objekttyp behoben\nFehlermeldung, dass es regnet Änderungen an der Regenverzögerung",
@@ -80,19 +93,6 @@
         "pl": "mowTimeExtend ograniczone wejście\nNaprawiono błąd typu",
         "uk": "mowTimeExtend обмежений вхід\nФіксований TypeError",
         "zh-cn": "剪切时间扩展限制输入\n固定类型错误"
-      },
-      "3.0.1": {
-        "en": "Preperation mission Kress new API\nFixed TypeError\nFixed missing activity states\nAdded update interval in instance setting\nAdded last update",
-        "de": "Preperation Mission Kress neue API\nFeste ArtError\nFeste fehlende Aktivitätszustände\nUpdate-Intervall in der Einstellung hinzugefügt\nLetzte Aktualisierung",
-        "ru": "Миссия Kress новый API\nFixed TypeError\nИсправленные состояния недостающей деятельности\nДобавленный интервал обновления в настройке\nДобавлено последнее обновление",
-        "pt": "Missão de preparação Kress nova API\nTipo fixoError\nEstados de atividade ausentes fixos\nAdicionado intervalo de atualização na configuração de instância\nAdicionado última atualização",
-        "nl": "Preperatiemissie Kress nieuwe API\nFixed TypeError\nVaste ontbrekende activiteitstoestanden\nBijgewerkt interval in instantie-instelling\nLaatste update toegevoegd",
-        "fr": "Mission préparatoire Kress nouvelle API\nType fixeErreur\nÉtats d'activité manquants fixes\nAjout de l'intervalle de mise à jour dans le paramètre instance\nDernière mise à jour ajoutée",
-        "it": "Missione di preperazione Kress nuova API\nTipo di errore fisso\nStati di attività mancanti fissi\nIntervallo di aggiornamento aggiunto nell'impostazione di istanza\nAggiunto l'ultimo aggiornamento",
-        "es": "Misión de Preperación Kress nueva API\nTipo fijoError\nEstados de actividad perdidos fijos\nAñadido intervalo de actualización en configuración de instancia\nÚltima actualización",
-        "pl": "Misja preperacyjna Kress new API\nNaprawiono błąd typu\nUstalone brakujące stany aktywności\nDodano interwał aktualizacji w ustawieniu instancji\nDodano ostatnią aktualizację",
-        "uk": "Попередня місія Kress новий API\nФіксований TypeError\nВиправлено відсутні стани діяльності\nДодано інтервал оновлення в налаштуваннях екземпляра\nДодано останнє оновлення",
-        "zh-cn": "考察团 Kress 新建 API\n固定类型错误\n固定缺失的活动状态\n在实例设置中添加更新间隔\n添加了上次更新"
       }
     },
     "titleLang": {

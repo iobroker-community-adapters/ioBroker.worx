@@ -190,6 +190,12 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.1.0 (2024-09-10)
+
+- (Lucky-ESA) Added Landroid IP
+- (Lucky-ESA) Fixed interval
+- (Lucky-ESA) Fixed Vision Edgecut
+
 ## 3.0.2 (2024-05-12)
 
 - (Lucky-ESA) mowTimeExtend restricted input

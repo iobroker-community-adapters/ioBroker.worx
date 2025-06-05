@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.3 (2025-06-05)
 
 - (Lucky-ESA) All Sentry issues fixed
 - (Lucky-ESA) Add new mowers without adapter restart
@@ -76,12 +75,6 @@ The adapter can control the mower and you can change config params like mowtimes
 - (Lucky-ESA) Added JS-Controller Notification
 - (Lucky-ESA) Dependencies updated
 - (Lucky-ESA) New design for settings page added
-
-### 3.1.0 (2024-09-10)
-
-- (Lucky-ESA) Added Landroid IP
-- (Lucky-ESA) Fixed interval
-- (Lucky-ESA) Fixed Vision Edgecut
 
 ## License
 
