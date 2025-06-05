@@ -48,6 +48,7 @@ The adapter can control the mower and you can change config params like mowtimes
 ### **WORK IN PROGRESS**
 
 - (Lucky-ESA) All Sentry issues fixed
+- (Lucky-ESA) Add new mowers without adapter restart
 
 ### 3.2.2 (2025-05-29)
 

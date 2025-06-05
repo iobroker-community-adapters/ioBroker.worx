@@ -123,6 +123,7 @@ class Worx extends utils.Adapter {
         this.refreshActivity = null;
         this.notifyAvailable = false;
         this.loadActivity = {};
+        this.new_device = {};
         this.interruptCheck = {};
         this.refreshTokenTimeout = null;
         this.refreshStartTokenTimeout = null;
@@ -333,7 +334,7 @@ class Worx extends utils.Adapter {
             await this.login();
         }
         if (this.session.access_token) {
-            await this.getDeviceList();
+            await this.getDeviceList(false);
             await this.updateDevices();
             await this.createMqttData();
             this.log.info("Start MQTT connection");
@@ -557,7 +558,7 @@ class Worx extends utils.Adapter {
         }
     }
 
-    async getDeviceList() {
+    async getDeviceList(check) {
         await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
@@ -573,25 +574,46 @@ class Worx extends utils.Adapter {
                 this.log.debug(JSON.stringify(res.data));
                 this.log.info(`Found ${res.data.length} devices`);
                 for (const device of res.data) {
-                    this.rainCounterInterval[device.serial_number] = {};
-                    this.rainCounterInterval[device.serial_number]["interval"] = null;
-                    this.rainCounterInterval[device.serial_number]["count"] = 0;
-                    this.rainCounterInterval[device.serial_number]["last"] = 0;
+                    const index = this.deviceArray.findIndex(index => index.serial_number === device.serial_number);
+                    if (!this.rainCounterInterval[device.serial_number]) {
+                        this.log.info("test1");
+                        this.rainCounterInterval[device.serial_number] = {};
+                        this.rainCounterInterval[device.serial_number]["interval"] = null;
+                        this.rainCounterInterval[device.serial_number]["count"] = 0;
+                        this.rainCounterInterval[device.serial_number]["last"] = 0;
+                    }
                     const id = device.serial_number;
-                    this.vision[device.uuid] = device.serial_number;
-                    this.modules[device.serial_number] = {};
-                    this.modules[device.serial_number]["edgeCut"] = false;
+                    this.vision[device.uuid] =
+                        this.vision[device.uuid] != null ? this.vision[device.uuid] : device.serial_number;
+                    if (!this.modules[device.serial_number]) {
+                        this.log.info("test2");
+                        this.modules[device.serial_number] = {};
+                        this.modules[device.serial_number]["edgeCut"] = false;
+                    }
                     const name = device.name;
-                    this.log.info(`Found device ${name} with id ${id}`);
-
-                    await this.cleanOldVersion(id, device.capabilities);
-                    await this.createDevices(device, this.md5_user(device.serial_number), error_states);
-                    this.lastRequest[device.serial_number] = false;
-                    this.poll_check_time[device.serial_number] = 0;
-                    const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
-                    this.log.debug(`fw_id: ${JSON.stringify(fw_id)}`);
-                    await this.createAdditionalDeviceStates(device, fw_id);
-                    this.deviceArray.push(device);
+                    if (!check) {
+                        this.log.info("test3");
+                        this.log.info(`Found device ${name} with id ${id}`);
+                        await this.cleanOldVersion(id, device.capabilities);
+                    }
+                    if (index == -1) {
+                        this.log.info("test4");
+                        await this.createDevices(device, this.md5_user(device.serial_number), error_states);
+                    }
+                    this.lastRequest[device.serial_number] =
+                        this.lastRequest[device.serial_number] != null ? this.lastRequest[device.serial_number] : false;
+                    this.poll_check_time[device.serial_number] =
+                        this.poll_check_time[device.serial_number] != null
+                            ? this.poll_check_time[device.serial_number]
+                            : 0;
+                    this.new_device[device.serial_number] = true;
+                    if (index == -1) {
+                        this.log.info("test5");
+                        const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
+                        this.log.debug(`fw_id: ${JSON.stringify(fw_id)}`);
+                        await this.createAdditionalDeviceStates(device, fw_id);
+                        this.deviceArray.push(device);
+                    }
                     if (
                         device &&
                         device.last_status &&
@@ -600,15 +622,24 @@ class Worx extends utils.Adapter {
                         device.last_status.payload.dat.ls != null &&
                         device.last_status.payload.dat.le != null
                     ) {
-                        this.laststatus[id] = device.last_status.payload.dat.ls;
-                        this.lasterror[id] = device.last_status.payload.dat.le;
-                        this.loadActivity[id] = false;
+                        this.log.info("test6");
+                        this.laststatus[id] =
+                            this.laststatus[id] != null ? this.laststatus[id] : device.last_status.payload.dat.ls;
+                        this.lasterror[id] =
+                            this.lasterror[id] != null ? this.lasterror[id] : device.last_status.payload.dat.le;
+                        this.loadActivity[id] = this.loadActivity[id] != null ? this.loadActivity[id] : false;
                     }
-                    await this.createActivityLogStates(device, true);
-                    await this.createProductStates(device);
+                    if (index == -1) {
+                        this.log.info("test7");
+                        await this.createActivityLogStates(device, true);
+                        await this.createProductStates(device);
+                    }
                     // this.json2iob.parse(`${id}.rawMqtt`, await this.cleanupRaw(device), {
                     //     forceIndex: true,
                     // });
+                }
+                if (check) {
+                    await this.updateDevices();
                 }
             })
             .catch(error => {
@@ -1884,6 +1915,11 @@ class Worx extends utils.Adapter {
                         preferedArrayName: "",
                     });
                 } else {
+                    if (data.cfg.sn && !this.new_device[data.cfg.sn]) {
+                        this.log.warn(`Found unknown device with SN ${data.cfg.sn} - Create all objects`);
+                        this.new_device[data.cfg.sn] = true;
+                        this.getDeviceList(true);
+                    }
                     this.log.info(`Worxcloud MQTT could not find mower topic - ${topic} in mowers`);
                     this.log.info(`Mower List : ${JSON.stringify(this.deviceArray)}`);
                 }
