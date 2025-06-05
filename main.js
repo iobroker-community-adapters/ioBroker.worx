@@ -576,7 +576,6 @@ class Worx extends utils.Adapter {
                 for (const device of res.data) {
                     const index = this.deviceArray.findIndex(index => index.serial_number === device.serial_number);
                     if (!this.rainCounterInterval[device.serial_number]) {
-                        this.log.info("test1");
                         this.rainCounterInterval[device.serial_number] = {};
                         this.rainCounterInterval[device.serial_number]["interval"] = null;
                         this.rainCounterInterval[device.serial_number]["count"] = 0;
@@ -586,18 +585,15 @@ class Worx extends utils.Adapter {
                     this.vision[device.uuid] =
                         this.vision[device.uuid] != null ? this.vision[device.uuid] : device.serial_number;
                     if (!this.modules[device.serial_number]) {
-                        this.log.info("test2");
                         this.modules[device.serial_number] = {};
                         this.modules[device.serial_number]["edgeCut"] = false;
                     }
                     const name = device.name;
                     if (!check) {
-                        this.log.info("test3");
                         this.log.info(`Found device ${name} with id ${id}`);
                         await this.cleanOldVersion(id, device.capabilities);
                     }
                     if (index == -1) {
-                        this.log.info("test4");
                         await this.createDevices(device, this.md5_user(device.serial_number), error_states);
                     }
                     this.lastRequest[device.serial_number] =
@@ -608,7 +604,6 @@ class Worx extends utils.Adapter {
                             : 0;
                     this.new_device[device.serial_number] = true;
                     if (index == -1) {
-                        this.log.info("test5");
                         const fw_id = await this.apiRequest(`product-items/${id}/firmware-upgrade`, false);
                         this.log.debug(`fw_id: ${JSON.stringify(fw_id)}`);
                         await this.createAdditionalDeviceStates(device, fw_id);
@@ -622,7 +617,6 @@ class Worx extends utils.Adapter {
                         device.last_status.payload.dat.ls != null &&
                         device.last_status.payload.dat.le != null
                     ) {
-                        this.log.info("test6");
                         this.laststatus[id] =
                             this.laststatus[id] != null ? this.laststatus[id] : device.last_status.payload.dat.ls;
                         this.lasterror[id] =
@@ -630,7 +624,6 @@ class Worx extends utils.Adapter {
                         this.loadActivity[id] = this.loadActivity[id] != null ? this.loadActivity[id] : false;
                     }
                     if (index == -1) {
-                        this.log.info("test7");
                         await this.createActivityLogStates(device, true);
                         await this.createProductStates(device);
                     }
