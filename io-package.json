@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.2.3",
+    "version": "3.2.4",
     "news": {
+      "3.2.4": {
+        "en": "TypeError native_excluded fixed",
+        "de": "TypeError native_ausgeschlossen fest",
+        "ru": "TypeError native_excluded",
+        "pt": "TipoError nativo_excluído corrigido",
+        "nl": "TypeError native_excluded vast",
+        "fr": "TypeError native_exclue fixe",
+        "it": "TipoErrore nativo_escluso fisso",
+        "es": "TipoError nativo_excluido fijo",
+        "pl": "TypeError native _ excluded fixed",
+        "uk": "TypeError рідний_виключений фіксований",
+        "zh-cn": "类型 Error 本地_ 排除已固定"
+      },
       "3.2.3": {
         "en": "All Sentry issues fixed\nAdd new mowers without adapter restart",
         "de": "Alle Probleme der Sentry behoben\nNeue Mäher ohne Adapter Neustart hinzufügen",
@@ -80,19 +93,6 @@
         "pl": "Dodano IP Landroida\nPrzedział stały\nStałe widzenie Edgecut",
         "uk": "Додано Landroid IP\nФіксований інтервал\nФіксований куточок зору",
         "zh-cn": "添加的 Landroid IP 软件\n固定间隔\n固定视野边缘"
-      },
-      "3.0.2": {
-        "en": "mowTimeExtend restricted input\nFixed TypeError",
-        "de": "mowTimeExtend eingeschränkter Eingang\nFeste ArtError",
-        "ru": "mowTime\nFixed TypeError",
-        "pt": "mowTimeExtend entrada restrita\nTipo fixoError",
-        "nl": "mowTimeUitgebreid beperkte invoer\nFixed TypeError",
-        "fr": "mowTimeExtend entrée restreinte\nType fixeErreur",
-        "it": "mowTimeExtend ingresso limitato\nTipo di errore fisso",
-        "es": "mowTimeExtienda entrada restringida\nTipo fijoError",
-        "pl": "mowTimeExtend ograniczone wejście\nNaprawiono błąd typu",
-        "uk": "mowTimeExtend обмежений вхід\nФіксований TypeError",
-        "zh-cn": "剪切时间扩展限制输入\n固定类型错误"
       }
     },
     "titleLang": {

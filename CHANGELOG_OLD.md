@@ -190,6 +190,12 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.1.1 (2024-11-04)
+
+- (Lucky-ESA) Added JS-Controller Notification
+- (Lucky-ESA) Dependencies updated
+- (Lucky-ESA) New design for settings page added
+
 ## 3.1.0 (2024-09-10)
 
 - (Lucky-ESA) Added Landroid IP

@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.4 (2025-06-14)
 
 - (Lucky-ESA) TypeError native_excluded fixed
 
@@ -74,12 +73,6 @@ The adapter can control the mower and you can change config params like mowtimes
 - (Lucky-ESA) Added Party Modus Timer (wire only)
 - (Lucky-ESA) Save session infos
 - (Lucky-ESA) Added rain countdown (wire only)
-
-### 3.1.1 (2024-11-04)
-
-- (Lucky-ESA) Added JS-Controller Notification
-- (Lucky-ESA) Dependencies updated
-- (Lucky-ESA) New design for settings page added
 
 ## License
 
