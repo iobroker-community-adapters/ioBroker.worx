@@ -280,16 +280,16 @@ class Worx extends utils.Adapter {
             }
             return;
         }
-        try {
-            this.iot = require("aws-iot-device-sdk-v2").iot;
-            this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
-            this.log.info(`Use new aws-iot-device-sdk-v2.`);
-        } catch (e) {
-            this.iot = require("aws-iot-device-sdk").device;
-            this.qos = { qos: 1 };
-            this.log.warn(e);
-            this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
-        }
+        //try {
+        //    this.iot = require("aws-iot-device-sdk-v2").iot;
+        //    this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
+        //    this.log.info(`Use new aws-iot-device-sdk-v2.`);
+        //} catch (e) {
+        this.iot = require("aws-iot-device-sdk").device;
+        this.qos = { qos: 1 };
+        //    this.log.warn(e);
+        //    this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
+        //}
         if (typeof this.config.edgeCutDelay != "number" || this.config.edgeCutDelay < 1000) {
             this.log.info(`Changed timeout for edgecut to 5000`);
             this.config.edgeCutDelay = 5000;
@@ -324,7 +324,7 @@ class Worx extends utils.Adapter {
             if (refreshToken) {
                 this.setState("info.connection", true, true);
                 session_check = true;
-                session = this.session.expires_in * 1000 - 200;
+                session = (this.session.expires_in - 200) * 1000;
             } else {
                 session = 0;
             }
@@ -413,15 +413,21 @@ class Worx extends utils.Adapter {
                 }
                 ++this.loginInfo.loginCounter;
                 const diff = Date.now() - this.loginInfo.lastLoginTimestamp;
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
+                // @ts-expect-error no error
                 this.loginInfo.loginDiff.push(diff);
                 this.loginInfo.lastLoginTimestamp = Date.now();
                 this.loginInfo.lastLoginDate = new Date().toISOString();
                 this.setLoginInfo();
             })
             .catch(error => {
+                this.session = {};
                 this.log.error(error);
+                if (error.response && error.response.status === 429) {
+                    this.log.info("The maximum number of requests has been reached!");
+                    if (error.response.headers) {
+                        this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                    }
+                }
                 error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
             });
@@ -449,8 +455,7 @@ class Worx extends utils.Adapter {
         if (this.loginInfo.refreshHistory.length > refreshLength) {
             this.loginInfo.refreshHistory.shift();
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error no error
         this.loginInfo.refreshHistory.push(Date.now());
         ++this.loginInfo.refreshCounter;
         this.loginInfo.lastRefreshTimestamp = Date.now();
@@ -464,8 +469,7 @@ class Worx extends utils.Adapter {
         if (this.loginInfo.errorHistory.length > errorLength) {
             this.loginInfo.errorHistory.shift();
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error no error
         this.loginInfo.errorHistory.push(Date.now());
         this.loginInfo.lastError = error;
         ++this.loginInfo.errorCounter;
@@ -487,6 +491,9 @@ class Worx extends utils.Adapter {
         this.log.debug(`Start refreshTokenInterval!`);
         this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
         this.refreshTokenInterval = null;
+        if (this.session.expires_in < 3600) {
+            this.session.expires_in = 3600;
+        }
         this.refreshTokenInterval = this.setInterval(
             async () => {
                 await this.refreshToken(true);
@@ -638,6 +645,12 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
+                if (error.response && error.response.status === 429) {
+                    this.log.info("The maximum number of requests has been reached!");
+                    if (error.response.headers) {
+                        this.log.error(`Device Header: ${JSON.stringify(error.response.headers)}`);
+                    }
+                }
                 error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
             });
@@ -1267,6 +1280,12 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
+                if (error.response && error.response.status === 429) {
+                    this.log.info("The maximum number of requests has been reached!");
+                    if (error.response.headers) {
+                        this.log.error(`Cloud Header: ${JSON.stringify(error.response.headers)}`);
+                    }
+                }
                 error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
             });
@@ -1375,6 +1394,12 @@ class Worx extends utils.Adapter {
                     .catch(error => {
                         this.setLoginErrorData(error);
                         if (error.response) {
+                            if (error.response.status === 429) {
+                                this.log.info("The maximum number of requests has been reached!");
+                                if (error.response.headers) {
+                                    this.log.error(`Update Header: ${JSON.stringify(error.response.headers)}`);
+                                }
+                            }
                             if (error.response.status === 401) {
                                 error.response && this.log.debug(JSON.stringify(error.response.data));
                                 this.log.info(`${element.path} receive 401 error. Refresh Token in 60 seconds`);
@@ -1440,6 +1465,12 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
+                if (error.response && error.response.status === 429) {
+                    this.log.info("The maximum number of requests has been reached!");
+                    if (error.response.headers) {
+                        this.log.error(`Token Header: ${JSON.stringify(error.response.headers)}`);
+                    }
+                }
                 error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
                 return false;
@@ -1675,6 +1706,12 @@ class Worx extends utils.Adapter {
                 return res.data;
             })
             .catch(error => {
+                if (error.response && error.response.status === 429) {
+                    this.log.info("The maximum number of requests has been reached!");
+                    if (error.response.headers) {
+                        this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                    }
+                }
                 if (path.includes("firmware-upgrade")) {
                     this.log.debug("Updating firmware information is currently not possible!");
                     return error.response && error.response.status != null ? error.response.status : error;
@@ -1954,7 +1991,6 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("interrupt", async error => {
-                this.isMqttConneted = false;
                 const check_time = Date.now() - this.interruptCheck["count_time"];
                 if (check_time > this.interruptCheck["count_max"]) {
                     this.log.debug(`Connection interrupted: ${error}`);
@@ -1980,7 +2016,6 @@ class Worx extends utils.Adapter {
             });
 
             this.mqttC.on("resume", async (return_code, session_present) => {
-                this.isMqttConneted = false;
                 this.setMqttOnline(false);
                 this.log.debug(`Resumed: rc: ${return_code} existing session: ${session_present}`);
                 this.log.debug(`MQTT reconnect: ${this.mqtt_blocking}`);
