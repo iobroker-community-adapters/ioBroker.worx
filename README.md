@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.5 (2025-06-25)
 
 - (Lucky-ESA) MQTT connection changed
 
@@ -69,15 +68,6 @@ The adapter can control the mower and you can change config params like mowtimes
 - (Lucky-ESA) Added confirm edgecut
 - (Lucky-ESA) Added notifications about instance settings toggle on/off
 - (Lucky-ESA) Small bugs fixed
-
-### 3.2.0 (2025-04-08)
-
-- (Lucky-ESA) Migration to ESLint9
-- (Lucky-ESA) Node 20 required
-- (Lucky-ESA) Admin 7.4.10 required
-- (Lucky-ESA) Added Party Modus Timer (wire only)
-- (Lucky-ESA) Save session infos
-- (Lucky-ESA) Added rain countdown (wire only)
 
 ## License
 

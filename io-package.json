@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.2.4",
+    "version": "3.2.5",
     "news": {
+      "3.2.5": {
+        "en": "MQTT connection changed",
+        "de": "MQTT-Anschluss geändert",
+        "ru": "Подключение MQTT изменилось",
+        "pt": "A ligação MQTT foi alterada",
+        "nl": "MQTT-verbinding gewijzigd",
+        "fr": "Changement de connexion MQTT",
+        "it": "Collegamento MQTT cambiato",
+        "es": "Cambio de conexión MQTT",
+        "pl": "Zmieniono połączenie MQTT",
+        "uk": "Зміна підключення MQTT",
+        "zh-cn": "MQTT 连接已更改"
+      },
       "3.2.4": {
         "en": "TypeError native_excluded fixed",
         "de": "TypeError native_ausgeschlossen fest",
@@ -80,19 +93,6 @@
         "pl": "Dodano kontroler JS Powiadomienie\nAktualizacja zależności\nDodano nowy projekt strony ustawień",
         "uk": "Додано JS-Controller Повідомлення\nЗалежність оновлено\nНовий дизайн для сторінки налаштувань",
         "zh-cn": "增加的联署材料主计长 通知\n更新的依赖关系\n添加了设置页面的新设计"
-      },
-      "3.1.0": {
-        "en": "Added Landroid IP\nFixed interval\nFixed Vision Edgecut",
-        "de": "Hinzugefügt Landroid IP\nFeste Intervalle\nFeste Vision Edgecut",
-        "ru": "Добавлено Landroid IP\nИсправленный интервал\nFixed Vision Edgecut",
-        "pt": "Adicionado Landroid IP\nIntervalo fixo\nEdgecut de visão fixa",
-        "nl": "Toegevoegd Landroid IP\nVast interval\nVaste Vision Edgecut",
-        "fr": "Ajout d'une IP Landroid\nIntervalle fixe\nEdge de vision fixe",
-        "it": "Aggiunto Landroid IP\nIntervallo fisso\nEdgecut di visione fissa",
-        "es": "Añadido Landroid IP\nIntervalos fijos\nEdgecut de visión fija",
-        "pl": "Dodano IP Landroida\nPrzedział stały\nStałe widzenie Edgecut",
-        "uk": "Додано Landroid IP\nФіксований інтервал\nФіксований куточок зору",
-        "zh-cn": "添加的 Landroid IP 软件\n固定间隔\n固定视野边缘"
       }
     },
     "titleLang": {

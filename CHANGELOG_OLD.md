@@ -190,6 +190,15 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.2.0 (2025-04-08)
+
+- (Lucky-ESA) Migration to ESLint9
+- (Lucky-ESA) Node 20 required
+- (Lucky-ESA) Admin 7.4.10 required
+- (Lucky-ESA) Added Party Modus Timer (wire only)
+- (Lucky-ESA) Save session infos
+- (Lucky-ESA) Added rain countdown (wire only)
+
 ## 3.1.1 (2024-11-04)
 
 - (Lucky-ESA) Added JS-Controller Notification
