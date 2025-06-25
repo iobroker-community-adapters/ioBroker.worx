@@ -422,13 +422,15 @@ class Worx extends utils.Adapter {
             .catch(error => {
                 this.session = {};
                 this.log.error(error);
-                if (error.response && error.response.status === 429) {
-                    this.log.info("The maximum number of requests has been reached!");
-                    if (error.response.headers) {
-                        this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                if (error.response) {
+                    if (error.response.status === 429) {
+                        this.log.info("The maximum number of requests has been reached!");
+                        if (error.response.headers) {
+                            this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                        }
                     }
+                    this.log.error(JSON.stringify(error.response.data));
                 }
-                error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
             });
         return data;
@@ -645,13 +647,15 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
-                if (error.response && error.response.status === 429) {
-                    this.log.info("The maximum number of requests has been reached!");
-                    if (error.response.headers) {
-                        this.log.error(`Device Header: ${JSON.stringify(error.response.headers)}`);
+                if (error.response) {
+                    if (error.response.status === 429) {
+                        this.log.info("The maximum number of requests has been reached!");
+                        if (error.response.headers) {
+                            this.log.error(`Device Header: ${JSON.stringify(error.response.headers)}`);
+                        }
                     }
+                    this.log.error(JSON.stringify(error.response.data));
                 }
-                error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
             });
     }
@@ -1280,13 +1284,15 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
-                if (error.response && error.response.status === 429) {
-                    this.log.info("The maximum number of requests has been reached!");
-                    if (error.response.headers) {
-                        this.log.error(`Cloud Header: ${JSON.stringify(error.response.headers)}`);
+                if (error.response) {
+                    if (error.response.status === 429) {
+                        this.log.info("The maximum number of requests has been reached!");
+                        if (error.response.headers) {
+                            this.log.error(`Cloud Header: ${JSON.stringify(error.response.headers)}`);
+                        }
                     }
+                    this.log.error(JSON.stringify(error.response.data));
                 }
-                error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
             });
     }
@@ -1394,13 +1400,13 @@ class Worx extends utils.Adapter {
                     .catch(error => {
                         this.setLoginErrorData(error);
                         if (error.response) {
+                            this.log.error(JSON.stringify(error.response.data));
                             if (error.response.status === 429) {
                                 this.log.info("The maximum number of requests has been reached!");
                                 if (error.response.headers) {
                                     this.log.error(`Update Header: ${JSON.stringify(error.response.headers)}`);
                                 }
-                            }
-                            if (error.response.status === 401) {
+                            } else if (error.response.status === 401) {
                                 error.response && this.log.debug(JSON.stringify(error.response.data));
                                 this.log.info(`${element.path} receive 401 error. Refresh Token in 60 seconds`);
                                 this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
@@ -1412,7 +1418,6 @@ class Worx extends utils.Adapter {
                         }
                         this.log.error(element.url);
                         this.log.error(error);
-                        error.response && this.log.error(JSON.stringify(error.response.data));
                     });
             }
             if (this.config.notification) {
@@ -1465,13 +1470,15 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
-                if (error.response && error.response.status === 429) {
-                    this.log.info("The maximum number of requests has been reached!");
-                    if (error.response.headers) {
-                        this.log.error(`Token Header: ${JSON.stringify(error.response.headers)}`);
+                if (error.response) {
+                    if (error.response.status === 429) {
+                        this.log.info("The maximum number of requests has been reached!");
+                        if (error.response.headers) {
+                            this.log.error(`Token Header: ${JSON.stringify(error.response.headers)}`);
+                        }
                     }
+                    this.log.error(JSON.stringify(error.response.data));
                 }
-                error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
                 return false;
             });
@@ -1706,20 +1713,14 @@ class Worx extends utils.Adapter {
                 return res.data;
             })
             .catch(error => {
-                if (error.response && error.response.status === 429) {
-                    this.log.info("The maximum number of requests has been reached!");
-                    if (error.response.headers) {
-                        this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
-                    }
-                }
                 if (path.includes("firmware-upgrade")) {
                     this.log.debug("Updating firmware information is currently not possible!");
                     return error.response && error.response.status != null ? error.response.status : error;
                 }
                 this.log.error(error);
-                error.response && this.log.error(JSON.stringify(error.response.data));
                 this.setLoginErrorData(error);
                 if (error.response) {
+                    this.log.error(JSON.stringify(error.response.data));
                     if (error.response.status === 401) {
                         error.response && this.log.debug(JSON.stringify(error.response.data));
                         this.log.info(`${path} receive 401 error. Refresh Token in 30 seconds`);
@@ -1728,6 +1729,11 @@ class Worx extends utils.Adapter {
                             await this.refreshToken(true);
                         }, 1000 * 30);
                         return;
+                    } else if (error.response.status === 429) {
+                        this.log.info("The maximum number of requests has been reached!");
+                        if (error.response.headers) {
+                            this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                        }
                     }
                 }
             });
