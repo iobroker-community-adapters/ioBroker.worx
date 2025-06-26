@@ -1781,8 +1781,8 @@ class Worx extends utils.Adapter {
                 );
                 config_builder.with_endpoint(this.userData.mqtt_newendpoint);
                 //config_builder.with_port(443);
-                config_builder.with_reconnect_max_sec(0.5);
-                config_builder.with_reconnect_min_sec(1);
+                //config_builder.with_reconnect_max_sec(0.5);
+                //config_builder.with_reconnect_min_sec(1);
                 //config_builder.with_keep_alive_seconds(30);
                 config_builder.with_custom_authorizer(
                     `${category}?jwt=${encodeURIComponent(accessTokenParts[0])}.${encodeURIComponent(accessTokenParts[1])}`,
@@ -1820,6 +1820,7 @@ class Worx extends utils.Adapter {
                 if (split_mqtt.length === 3) {
                     region = split_mqtt[2];
                 }
+                //const iob_uuid = await this.getForeignObjectAsync(`system.meta.uuid`);
                 return new this.iot({
                     clientId: `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/iobroker/${uuid}`,
                     username: "iobroker",
@@ -2057,6 +2058,16 @@ class Worx extends utils.Adapter {
                 this.isMqttConneted = false;
                 this.log.debug("Disconnected");
                 this.setMqttOnline(false);
+            });
+
+            this.mqttC.on("offline", () => {
+                this.isMqttConneted = false;
+                this.log.debug("Offline");
+                this.setMqttOnline(false);
+            });
+
+            this.mqttC.on("reconnect", () => {
+                this.log.debug("MQTT reconnect");
             });
 
             this.mqttC.on("error", error => {
