@@ -406,8 +406,6 @@ class Worx extends utils.Adapter {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
-                "user-agent": this.userAgent,
-                "accept-language": "de-de",
             },
             data: JSON.stringify({
                 client_id: this.clouds[this.config.server].clientId,
@@ -611,9 +609,7 @@ class Worx extends utils.Adapter {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
-                "user-agent": this.userAgent,
                 authorization: `Bearer ${this.session.access_token}`,
-                "accept-language": "de-de",
             },
         })
             .then(async res => {
@@ -1245,9 +1241,7 @@ class Worx extends utils.Adapter {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
-                "user-agent": this.userAgent,
                 authorization: `Bearer ${this.session.access_token}`,
-                "accept-language": "de-de",
             },
         })
             .then(async res => {
@@ -1362,9 +1356,7 @@ class Worx extends utils.Adapter {
                     headers: {
                         accept: "application/json",
                         "content-type": "application/json",
-                        "user-agent": this.userAgent,
                         authorization: `Bearer ${this.session.access_token}`,
-                        "accept-language": "de-de",
                     },
                 })
                     .then(async res => {
@@ -1493,8 +1485,6 @@ class Worx extends utils.Adapter {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
-                "user-agent": this.userAgent,
-                "accept-language": "de-de",
             },
             data: JSON.stringify({
                 client_id: this.clouds[this.config.server].clientId,
@@ -1745,11 +1735,9 @@ class Worx extends utils.Adapter {
         if (this.isBlocked()) {
             return;
         }
-        const headers = {
+        let headers = {
             accept: "application/json",
             "content-type": "application/json",
-            "user-agent": this.userAgent,
-            "accept-language": "de-de",
         };
         if (!withoutToken) {
             headers["authorization"] = `Bearer ${this.session.access_token}`;
