@@ -183,6 +183,10 @@ class Worx extends utils.Adapter {
             lastErrorDate: "",
         };
         this.modules = {};
+        this.blocking = {
+            block: false,
+            start: 0,
+        };
         this.clouds = {
             worx: {
                 url: "api.worxlandroid.com",
@@ -219,6 +223,15 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        const block = await this.getStateAsync("blocking");
+        if (block && block.val != null && typeof block.val === "string" && block.val.startsWith("{")) {
+            const blockCount = JSON.parse(block.val);
+            if (blockCount.start != null && Object.keys(blockCount).length === 2) {
+                this.log.debug(`Use old blocking data!`);
+                this.blocking = blockCount;
+            }
+        }
+        this.isBlocked();
         const check_login = await this.getStateAsync("loginInfo");
         if (check_login && check_login.val != null && typeof check_login.val === "string") {
             const info = JSON.parse(check_login.val);
@@ -384,7 +397,9 @@ class Worx extends utils.Adapter {
     }
 
     async login() {
-        //Simple login
+        if (this.isBlocked()) {
+            return;
+        }
         const data = await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token`,
             method: "post",
@@ -425,6 +440,8 @@ class Worx extends utils.Adapter {
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
+                        this.blocking.block = true;
+                        this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
                         }
@@ -434,6 +451,22 @@ class Worx extends utils.Adapter {
                 this.setLoginErrorData(error);
             });
         return data;
+    }
+
+    isBlocked() {
+        let isBlock = false;
+        if (this.blocking.block) {
+            const diff = new Date().getTime() * 1000 - this.blocking.start;
+            if (diff > 86460000) {
+                this.blocking.start = 0;
+                this.blocking.block = false;
+            } else {
+                this.log.info(`Requests are currently blocked!`);
+                isBlock = true;
+            }
+        }
+        this.setState(`blocking`, { val: JSON.stringify(this.blocking), ack: true });
+        return isBlock;
     }
 
     async loginCounterCheck() {
@@ -569,6 +602,9 @@ class Worx extends utils.Adapter {
     }
 
     async getDeviceList(check) {
+        if (this.isBlocked()) {
+            return;
+        }
         await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
@@ -650,6 +686,8 @@ class Worx extends utils.Adapter {
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
+                        this.blocking.block = true;
+                        this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Device Header: ${JSON.stringify(error.response.headers)}`);
                         }
@@ -1198,6 +1236,9 @@ class Worx extends utils.Adapter {
     }
 
     async updateCloudData() {
+        if (this.isBlocked()) {
+            return;
+        }
         await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
@@ -1287,6 +1328,8 @@ class Worx extends utils.Adapter {
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
+                        this.blocking.block = true;
+                        this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Cloud Header: ${JSON.stringify(error.response.headers)}`);
                         }
@@ -1310,6 +1353,9 @@ class Worx extends utils.Adapter {
             const status_notify = [];
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
+                if (this.isBlocked()) {
+                    return;
+                }
                 await this.requestClient({
                     method: "get",
                     url: url,
@@ -1403,6 +1449,8 @@ class Worx extends utils.Adapter {
                             this.log.error(JSON.stringify(error.response.data));
                             if (error.response.status === 429) {
                                 this.log.info("The maximum number of requests has been reached!");
+                                this.blocking.block = true;
+                                this.blocking.start = new Date().getTime() * 1000;
                                 if (error.response.headers) {
                                     this.log.error(`Update Header: ${JSON.stringify(error.response.headers)}`);
                                 }
@@ -1432,6 +1480,9 @@ class Worx extends utils.Adapter {
     }
 
     async refreshToken(first) {
+        if (this.isBlocked()) {
+            return;
+        }
         this.log.debug("Refresh token");
         if (first) {
             this.checkRainStatus();
@@ -1473,6 +1524,8 @@ class Worx extends utils.Adapter {
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
+                        this.blocking.block = true;
+                        this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Token Header: ${JSON.stringify(error.response.headers)}`);
                         }
@@ -1689,6 +1742,9 @@ class Worx extends utils.Adapter {
     }
 
     async apiRequest(path, withoutToken, method, data) {
+        if (this.isBlocked()) {
+            return;
+        }
         const headers = {
             accept: "application/json",
             "content-type": "application/json",
@@ -1731,6 +1787,8 @@ class Worx extends utils.Adapter {
                         return;
                     } else if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
+                        this.blocking.block = true;
+                        this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
                         }
@@ -2134,6 +2192,9 @@ class Worx extends utils.Adapter {
      * @param {string} command
      */
     async sendMessage(message, serial, command) {
+        if (this.isBlocked()) {
+            return;
+        }
         this.log.debug(`Worxcloud MQTT sendMessage to ${serial} Message: ${message}`);
 
         if (serial == null) {
