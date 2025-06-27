@@ -9,8 +9,8 @@ const path = require("node:path");
 const fs = require("fs");
 const axios = require("axios");
 const Json2iob = require("json2iob");
-const tough = require("tough-cookie");
-const { HttpsCookieAgent } = require("http-cookie-agent/http");
+//const tough = require("tough-cookie");
+//const { HttpsCookieAgent } = require("http-cookie-agent/http");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const objects = require(`./lib/objects`);
@@ -118,7 +118,6 @@ class Worx extends utils.Adapter {
         this.laststatus = {};
         this.lasterror = {};
         this.week = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-        this.userAgent = "ioBroker ";
         this.reLoginTimeout = null;
         this.refreshActivity = null;
         this.notifyAvailable = false;
@@ -154,16 +153,16 @@ class Worx extends utils.Adapter {
         this.createDataPoint = helper.createDataPoint;
         this.createMqttData = helper.createMqttData;
         this.json2iob = new Json2iob(this);
-        this.cookieJar = new tough.CookieJar();
+        //this.cookieJar = new tough.CookieJar();
+        //httpsAgent: new HttpsCookieAgent({
+        //    cookies: {
+        //        jar: this.cookieJar,
+        //    },
+        //}),
         this.appname = null;
         this.requestClient = axios.create({
             withCredentials: true,
             timeout: 5000,
-            httpsAgent: new HttpsCookieAgent({
-                cookies: {
-                    jar: this.cookieJar,
-                },
-            }),
         });
         this.loginInfo = {
             loginCounter: 0,
@@ -317,7 +316,6 @@ class Worx extends utils.Adapter {
         this.interruptCheck["last"] = 0;
         // Reset the connection indicator during startup
         this.setState("info.connection", false, true);
-        this.userAgent += this.version;
 
         if (!this.config.mail || !this.config.password) {
             this.log.error("Please set username and password in the instance settings");
