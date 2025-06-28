@@ -440,6 +440,14 @@ class Worx extends utils.Adapter {
                         this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                            if (error.response.headers.ma) {
+                                this.log.error(`Login ma: ${this.convertRetryAfter(error.response.headers.ma)}`);
+                            }
+                            if (error.response.headers["retry-after"]) {
+                                this.log.error(
+                                    `Login retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
+                                );
+                            }
                         }
                     }
                     this.log.error(JSON.stringify(error.response.data));
@@ -684,6 +692,14 @@ class Worx extends utils.Adapter {
                         this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Device Header: ${JSON.stringify(error.response.headers)}`);
+                            if (error.response.headers.ma) {
+                                this.log.error(`Device ma: ${this.convertRetryAfter(error.response.headers.ma)}`);
+                            }
+                            if (error.response.headers["retry-after"]) {
+                                this.log.error(
+                                    `Device retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
+                                );
+                            }
                         }
                     }
                     this.log.error(JSON.stringify(error.response.data));
@@ -1324,6 +1340,14 @@ class Worx extends utils.Adapter {
                         this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Cloud Header: ${JSON.stringify(error.response.headers)}`);
+                            if (error.response.headers.ma) {
+                                this.log.error(`Cloud ma: ${this.convertRetryAfter(error.response.headers.ma)}`);
+                            }
+                            if (error.response.headers["retry-after"]) {
+                                this.log.error(
+                                    `Cloud retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
+                                );
+                            }
                         }
                     }
                     this.log.error(JSON.stringify(error.response.data));
@@ -1443,6 +1467,16 @@ class Worx extends utils.Adapter {
                                 this.blocking.start = new Date().getTime() * 1000;
                                 if (error.response.headers) {
                                     this.log.error(`Update Header: ${JSON.stringify(error.response.headers)}`);
+                                    if (error.response.headers.ma) {
+                                        this.log.error(
+                                            `Update ma: ${this.convertRetryAfter(error.response.headers.ma)}`,
+                                        );
+                                    }
+                                    if (error.response.headers["retry-after"]) {
+                                        this.log.error(
+                                            `Update retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
+                                        );
+                                    }
                                 }
                             } else if (error.response.status === 401) {
                                 error.response && this.log.debug(JSON.stringify(error.response.data));
@@ -1516,6 +1550,14 @@ class Worx extends utils.Adapter {
                         this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
                             this.log.error(`Token Header: ${JSON.stringify(error.response.headers)}`);
+                            if (error.response.headers.ma) {
+                                this.log.error(`Token ma: ${this.convertRetryAfter(error.response.headers.ma)}`);
+                            }
+                            if (error.response.headers["retry-after"]) {
+                                this.log.error(
+                                    `Token retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
+                                );
+                            }
                         }
                     }
                     this.log.error(JSON.stringify(error.response.data));
@@ -1776,7 +1818,15 @@ class Worx extends utils.Adapter {
                         this.blocking.block = true;
                         this.blocking.start = new Date().getTime() * 1000;
                         if (error.response.headers) {
-                            this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
+                            this.log.error(`API Header: ${JSON.stringify(error.response.headers)}`);
+                            if (error.response.headers.ma) {
+                                this.log.error(`API ma: ${this.convertRetryAfter(error.response.headers.ma)}`);
+                            }
+                            if (error.response.headers["retry-after"]) {
+                                this.log.error(
+                                    `API retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
+                                );
+                            }
                         }
                     }
                 }
@@ -4595,6 +4645,28 @@ class Worx extends utils.Adapter {
             val: this.version,
             ack: true,
         });
+    }
+
+    convertRetryAfter(inputSeconds) {
+        try {
+            const days = Math.floor(inputSeconds / (60 * 60 * 24));
+            const hours = Math.floor((inputSeconds % (60 * 60 * 24)) / (60 * 60));
+            const minutes = Math.floor(((inputSeconds % (60 * 60 * 24)) % (60 * 60)) / 60);
+            const seconds = Math.floor(((inputSeconds % (60 * 60 * 24)) % (60 * 60)) % 60);
+            let day = "";
+            if (days > 0) {
+                day = `${days}d - `;
+            }
+            return (
+                day +
+                [hours, minutes, seconds]
+                    .map(v => (v < 10 ? `0${v}` : v))
+                    .filter((v, i) => v !== "00" || i > 0)
+                    .join(":")
+            );
+        } catch {
+            return 0;
+        }
     }
 }
 
