@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.6 (2025-06-29)
 
 - (Lucky-ESA) Added rate limit for API request
 
@@ -66,13 +65,6 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (Lucky-ESA) Fixed invalid object type
 - (Lucky-ESA) Error message it is raining changes to rain delay
-
-### 3.2.1 (2025-05-25)
-
-- (Lucky-ESA) Fixed starting firmware update (did not work)
-- (Lucky-ESA) Added confirm edgecut
-- (Lucky-ESA) Added notifications about instance settings toggle on/off
-- (Lucky-ESA) Small bugs fixed
 
 ## License
 
