@@ -8,6 +8,7 @@ const utils = require("@iobroker/adapter-core");
 const path = require("node:path");
 const fs = require("fs");
 const axios = require("axios");
+const rateLimit = require("axios-rate-limit");
 const Json2iob = require("json2iob");
 //const tough = require("tough-cookie");
 //const { HttpsCookieAgent } = require("http-cookie-agent/http");
@@ -101,6 +102,7 @@ const max_count = 5; // Difference of the last 10 logins > diff_time
 const loginLength = 10;
 const refreshLength = 10;
 const errorLength = 10;
+const maxRate = 180;
 
 class Worx extends utils.Adapter {
     /**
@@ -160,10 +162,14 @@ class Worx extends utils.Adapter {
         //    },
         //}),
         this.appname = null;
-        this.requestClient = axios.create({
-            withCredentials: true,
-            timeout: 5000,
-        });
+        // @ts-expect-error //Nothing
+        this.requestClient = rateLimit(
+            axios.create({
+                withCredentials: true,
+                timeout: 5000,
+            }),
+            { maxRequests: 10, perMilliseconds: 60 * 1000 * 10 },
+        );
         this.loginInfo = {
             loginCounter: 0,
             loginDiff: [],
@@ -180,6 +186,12 @@ class Worx extends utils.Adapter {
             errorCounter: 0,
             lastErrorTimestamp: 0,
             lastErrorDate: "",
+        };
+        this.rateLimit = {
+            axiosCount: 0,
+            apiCounter: 0,
+            apiLast: 0,
+            apiRequest: [],
         };
         this.modules = {};
         this.blocking = {
@@ -235,7 +247,16 @@ class Worx extends utils.Adapter {
         if (check_login && check_login.val != null && typeof check_login.val === "string") {
             const info = JSON.parse(check_login.val);
             if (info.refreshHistory != null) {
+                this.log.debug(`Use old loginInfo data!`);
                 this.loginInfo = info;
+            }
+        }
+        const reqCount = await this.getStateAsync("rateLimit");
+        if (reqCount && reqCount.val != null && typeof reqCount.val === "string" && reqCount.val.startsWith("{")) {
+            const infoCount = JSON.parse(reqCount.val);
+            if (infoCount.apiCounter != null) {
+                this.log.debug(`Use old rateLimit data!`);
+                this.trackingRequests = infoCount;
             }
         }
         if (this.config.resetLogin) {
@@ -398,6 +419,9 @@ class Worx extends utils.Adapter {
         if (this.isBlocked()) {
             return;
         }
+        if (await this.setRateLimit()) {
+            return;
+        }
         const data = await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token`,
             method: "post",
@@ -415,6 +439,9 @@ class Worx extends utils.Adapter {
         })
             .then(response => {
                 this.log.debug(JSON.stringify(response.data));
+                if (response.headers) {
+                    this.log.debug(`Login Header: ${JSON.stringify(response.headers)}`);
+                }
                 this.session = response.data;
                 this.setSessionValue();
                 this.setState("info.connection", true, true);
@@ -521,6 +548,32 @@ class Worx extends utils.Adapter {
         await this.setState("loginInfo", { val: JSON.stringify(this.loginInfo), ack: true });
     }
 
+    async setRateLimit(req) {
+        let block = false;
+        const day = 24 * 60 * 1000 * 60;
+        const diff = new Date().getTime() - this.rateLimit.apiLast;
+        if (diff > day) {
+            this.rateLimit.apiCounter = 0;
+            this.rateLimit.apiLast = new Date().getTime();
+            this.rateLimit.apiRequest = [];
+        }
+        ++this.rateLimit.apiCounter;
+        if (this.rateLimit.apiCounter > maxRate) {
+            this.log.error(`The rate limit has been reached!`);
+            block = true;
+        }
+        this.rateLimit.axiosCount = this.requestClient.getMaxRPS();
+        const val = {
+            count: this.rateLimit.apiCounter,
+            request: req,
+            time: new Date().toISOString(),
+        };
+        // @ts-expect-error no error
+        this.rateLimit.apiRequest.push(val);
+        await this.setState("rateLimit", { val: JSON.stringify(this.rateLimit), ack: true });
+        return block;
+    }
+
     async setSessionValue() {
         this.session.next = new Date().getTime() + parseInt(this.session.expires_in) * 1000;
         await this.setState("session", { val: this.encrypt(JSON.stringify(this.session)), ack: true });
@@ -530,6 +583,11 @@ class Worx extends utils.Adapter {
         this.log.debug(`Start refreshTokenInterval!`);
         this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
         this.refreshTokenInterval = null;
+        if (!this.session || this.session.expires_in == null) {
+            this.setState("info.connection", false, true);
+            this.log.error(`No session found!`);
+            return;
+        }
         if (this.session.expires_in < 3600) {
             this.session.expires_in = 3600;
         }
@@ -607,6 +665,13 @@ class Worx extends utils.Adapter {
 
     async getDeviceList(check) {
         if (this.isBlocked()) {
+            return;
+        }
+        if (
+            await this.setRateLimit(
+                `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
+            )
+        ) {
             return;
         }
         await this.requestClient({
@@ -1249,6 +1314,13 @@ class Worx extends utils.Adapter {
         if (this.isBlocked()) {
             return;
         }
+        if (
+            await this.setRateLimit(
+                `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
+            )
+        ) {
+            return;
+        }
         await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
@@ -1370,6 +1442,9 @@ class Worx extends utils.Adapter {
             for (const element of statusArray) {
                 const url = element.url.replace("$id", device.serial_number);
                 if (this.isBlocked()) {
+                    return;
+                }
+                if (await this.setRateLimit(url)) {
                     return;
                 }
                 await this.requestClient({
@@ -1510,6 +1585,9 @@ class Worx extends utils.Adapter {
         this.log.debug("Refresh token");
         if (first) {
             this.checkRainStatus();
+        }
+        if (await this.setRateLimit(`${this.clouds[this.config.server].loginUrl}oauth/token?`)) {
+            return;
         }
         return await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token?`,
@@ -1781,6 +1859,9 @@ class Worx extends utils.Adapter {
         };
         if (!withoutToken) {
             headers["authorization"] = `Bearer ${this.session.access_token}`;
+        }
+        if (await this.setRateLimit(`https://${this.clouds[this.config.server].url}/api/v2/${path}`)) {
+            return;
         }
         return await this.requestClient({
             method: method || "get",

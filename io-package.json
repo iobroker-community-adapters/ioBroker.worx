@@ -466,6 +466,31 @@
             "native": {}
         },
         {
+            "_id": "rateLimit",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": {
+                    "en": "Max 100 requests per day",
+                    "de": "Maximal 100 Anfragen pro Tag",
+                    "ru": "Макс. 100 запросов в день",
+                    "pt": "Máximo de 100 solicitações por dia",
+                    "nl": "Maximaal 100 verzoeken per dag",
+                    "fr": "Max 100 demandes par jour",
+                    "it": "Massimo 100 richieste al giorno",
+                    "es": "Máximo 100 solicitudes por día",
+                    "pl": "Maksymalnie 100 żądań dziennie",
+                    "uk": "Максимум 100 запитів на день",
+                    "zh-cn": "每天最多 100 个请求"
+                },
+                "type": "string",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
             "_id": "loginInfo",
             "type": "state",
             "common": {
