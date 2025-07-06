@@ -15,5 +15,10 @@
     "deleteText": "Usuń dane sesji",
     "Reset Login counter": "Zresetuj licznik logowania",
     "Notification": "Wyświetl błędy za pomocą powiadomień (dla wszystkich urządzeń)",
-    "Notification_tooltip": "Możesz ustawić stan Worx.x. Notowanie dla każdego urządzenia"
+    "Notification_tooltip": "Możesz ustawić stan Worx.x. Notowanie dla każdego urządzenia",
+    "Requests limit per day": "Limit żądań dziennie (50-180)",
+    "Requests limit per 10 minutes": "Prośby o limit 10 minut (4-15)",
+    "Mqtt limit per day": "Limit MQTT dziennie (urządzenie 1-250 pro)",
+    "Restart limitation per day": "Ponowne uruchomienie ograniczenia dziennie (1-10)",
+    "Rate Limiting": "Ograniczanie stawki"
 }

@@ -15,5 +15,10 @@
     "deleteText": "Elimina i dati di sessione",
     "Reset Login counter": "Ripristina il contatore di accesso",
     "Notification": "Visualizza errori tramite notifiche (per tutti i dispositivi)",
-    "Notification_tooltip": "È possibile impostare lo stato worx.x.notification per ciascun dispositivo"
+    "Notification_tooltip": "È possibile impostare lo stato worx.x.notification per ciascun dispositivo",
+    "Requests limit per day": "Limite di richieste al giorno (50-180)",
+    "Requests limit per 10 minutes": "Limite richieste per 10 minuti (4-15)",
+    "Mqtt limit per day": "Limite MQTT al giorno (dispositivo Pro 1-250)",
+    "Restart limitation per day": "Riavvia limitazione al giorno (1-10)",
+    "Rate Limiting": "Tasso limitante"
 }

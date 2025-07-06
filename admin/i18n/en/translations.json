@@ -15,5 +15,10 @@
     "deleteText": "Delete session data",
     "Reset Login counter": "Reset Login counter",
     "Notification": "Display errors via notifications (for all devices)",
-    "Notification_tooltip": "You can set the state worx.x.notification for each device"
+    "Notification_tooltip": "You can set the state worx.x.notification for each device",
+    "Requests limit per day": "Requests limit per day (50-180)",
+    "Requests limit per 10 minutes": "Requests limit per 10 minutes (4-15)",
+    "Mqtt limit per day": "MQTT limit per day (1-250 pro device)",
+    "Restart limitation per day": "Restart limitation per day (1-10)",
+    "Rate Limiting": "Rate Limiting"
 }

@@ -15,5 +15,10 @@
     "deleteText": "删除会话数据",
     "Reset Login counter": "重置登录计数器",
     "Notification": "通过通知显示错误（对于所有设备）",
-    "Notification_tooltip": "您可以为每个设备设置状态worx.x。"
+    "Notification_tooltip": "您可以为每个设备设置状态worx.x。",
+    "Requests limit per day": "请求每天限制（50-180）",
+    "Requests limit per 10 minutes": "每10分钟的要求限制（4-15）",
+    "Mqtt limit per day": "每天MQTT限制（1-250 Pro设备）",
+    "Restart limitation per day": "每天重新启动限制（1-10）",
+    "Rate Limiting": "费率限制"
 }

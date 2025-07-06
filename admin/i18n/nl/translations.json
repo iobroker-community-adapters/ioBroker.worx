@@ -15,5 +15,10 @@
     "deleteText": "Sessiegegevens verwijderen",
     "Reset Login counter": "Reset inlogteller",
     "Notification": "Fouten weergeven via meldingen (voor alle apparaten)",
-    "Notification_tooltip": "U kunt de status worx.x.notificatie instellen voor elk apparaat"
+    "Notification_tooltip": "U kunt de status worx.x.notificatie instellen voor elk apparaat",
+    "Requests limit per day": "Verzoeken limiet per dag (50-180)",
+    "Requests limit per 10 minutes": "Verzoeken limiet per 10 minuten (4-15)",
+    "Mqtt limit per day": "MQTT-limiet per dag (1-250 Pro-apparaat)",
+    "Restart limitation per day": "Start beperking per dag opnieuw op (1-10)",
+    "Rate Limiting": "Tarief beperkend"
 }

@@ -2,6 +2,24 @@
 
 # ioBroker.worx Adapter
 
+[Zurück zur README](/README.md)
+
+# Zusammenfassung
+
+- [Instanz Einstellungen](#instanz-einstellungen)
+- [Login Infos JSON](#login-infos-worx0logininfo)
+- [Ordner](#ordner)
+    - [activityLog (Draht und Vision)](#activitylog-draht-und-vision)
+    - [areas (Nur Draht)](#areas-nur-draht)
+    - [calendar (Draht)](#calendar-draht)
+    - [calendar (Vision)](#calendar-vision)
+    - [modules (Draht und Vision)](#modules-draht-und-vision)
+    - [mower (Draht und Vision)](#mower-draht-und-vision)
+    - [info_mqtt (Draht und Vision)](#info_mqtt-draht-und-vision)
+- [Zusätzlich Vision Infos](#zusätzlich-vision-infos)
+- [Rate Limiting](#rate-limiting)
+- [Beispiel Blockly sendMultiZonesJson Vision](#beispiel-blockly-sendmultizonesjson-vision)
+
 ## Wichtige Info
 
 🟢 1,1 Sekunde Pause zwischen 2 Aktive Schaltvorgänge</br>
@@ -27,7 +45,9 @@ Richtig</br>
 
 ## Beschreibung
 
-### Instanzeinstellungen
+### Instanz Einstellungen
+
+[Zusammenfassung](#zusammenfassung)
 
 - `App-Benutzername`: APP Benutzername (eMail)
 - `App-Passwort`: APP Passwort
@@ -39,11 +59,17 @@ Richtig</br>
 - `Fehler über Benachrichtigungen anzeigen (für alle Geräte)`: Benachrichtigung für alle Geräte ein/ausschalten (kann unter Objekte für jedes Greäte ein/ausgeschaltet werden)
 - `Sitzungsdaten löschen` Bei Login Probleme die aktuelle Session löschen
 - `Login-Zähler zurücksetzen` Login-Zähler zurücksetzen
+- `Anfragen Limit pro Tag (50-180)`: Requests Limitierung pro Tag. Das sind API Abfragen wie z. Bsp. der eingestellt Intervall und Updates nach Refreshtoken (In der Instanz Einstellung). Jeder Neustart verursacht 4 Requests. Zusätzlich 1 Abfrage für Firmware Status und die Abfragen vom AktivityLog (jede Status/Error Änderung vom Mäher. Diesen auf 100 Stellen und um 23:55 Uhr schauen wie viele Abfragen gesendet wurden. Diese Zahl + 10 dann eintragen.
+- `Anfragen Limit pro 10 Minuten (4-15)`: API Request Limitation - Should be set to 4 otherwise a restart would not be possible.
+- `MQTT-Limit pro Tag (1-250 Pro-Gerät)`: Request limiting via MQTT. The selection is per device.
+- `Neustartbegrenzung pro Tag (1-10)`: Schützt vor unbekannte und ungewollte Adapter Neustarts.
 
 ![Instance Settings img/instance.png](img/instance.png)</br>
 ![Instance Settings img/instance_1.png](img/instance_1.png)
 
 ### Login Infos `worx.0.loginInfo`
+
+[Zusammenfassung](#zusammenfassung)
 
 ```json
 {
@@ -67,6 +93,8 @@ Richtig</br>
 
 ### Ordner
 
+[Zusammenfassung](#zusammenfassung)
+
 - `activityLog`: Aktivitätenprotokoll (Draht & Vision / Kontrolle möglich)
 - `areas`: Zonen (Draht / Kontrolle möglich)
 - `multiZones`: Multizonen (Vision / Kontrolle möglich)
@@ -80,6 +108,8 @@ Richtig</br>
 
 ### activityLog (Draht und Vision)
 
+[Zusammenfassung](#zusammenfassung)
+
 - `last_update`: Letzte Update als Zeitstempel (nur lesen)
 - `manuell_update`: Lädt das aktuelle Aktivitätenprotokoll (automatisch nach Statusänderungen - Draht & Vision / Kontrolle möglich) 🟢
 - `payload`: Protokoll als JSON (für VIS oder Blockly) (nur lesen)
@@ -87,6 +117,8 @@ Richtig</br>
 ![Activity img/activity.png](../en/img/activity.png)
 
 ### areas (Nur Draht)
+
+[Zusammenfassung](#zusammenfassung)
 
 - `actualArea`: Aktuelle Zone (nur lesen)
 - `actualAreaIndicator`: Nächste Zonenanfahrt im Array. Bsp. 0 - [`2`,2,2,2,2,2,2,2,2,2] (nur lesen)
@@ -101,8 +133,9 @@ Richtig</br>
 
 ### calendar (Draht)
 
-- Beispiel Zeiteinstellung Mittwoch
+[Zusammenfassung](#zusammenfassung)
 
+- Beispiel Zeiteinstellung Mittwoch
     - `wednesday.borderCut`: Mit oder ohne Kantenschnitt (ohne Verzögerung setzen) (änderbar) 🔴
     - `wednesday.startTime`: Startzeit als Format hh:mm (0-23/0-59) Bsp.: 09:00 (ohne Verzögerung setzen) (änderbar) 🔴
     - `wednesday.workTime`: Arbeitszeit in Minuten (180 min = 3h) Bsp.: 30 = Endzeit 09:30 (ohne Verzögerung setzen) (änderbar) 🔴
@@ -115,9 +148,10 @@ Richtig</br>
 
 ### calendar (Vision)
 
+[Zusammenfassung](#zusammenfassung)
+
 - Beispiel Zeiteinstellung Freitag
 - Als Standard werden 2 Timeslots angelegt. Werden 3 Slots in der APP angelegt werden auch 3 in ioBroker erstellt. Wird wieder auf 2 reduziert, dann wird in ioBroker diese Slots gelöscht. Der Tag mit den meisten Slots wird als Referenz für alle Tage verwendet.
-
     - `friday.time_0.borderCut`: Mit oder ohne Kantenschnitt (ohne Verzögerung setzen) (änderbar) 🔴
     - `friday.time_0.startTime`: Startzeit als Format hh:mm (0-23/0-59) Bsp.: 09:00 (ohne Verzögerung setzen) (änderbar) 🔴
     - `friday.time_0.workTime`: Arbeitszeit in Minuten (180 min = 3h) Bsp.: 30 = Endzeit 09:30 (ohne Verzögerung setzen) (änderbar) 🔴
@@ -153,18 +187,17 @@ Richtig</br>
 
 ### modules (Draht und Vision)
 
-- Off Limit Modul (Draht und Vision)
+[Zusammenfassung](#zusammenfassung)
 
+- Off Limit Modul (Draht und Vision)
     - `DF.OLMSwitch_Cutting`: Verhindert das überfahren vom Magnetband - true-an/false-aus 🟢
     - `DF.OLMSwitch_FastHoming`: Verwendet erstellte Abkürzungen mit Magnetband - mithilfe von Abkürzungen aus Magnetstreifen - true-an/false-aus 🟢
 
 - ACS Modul (nur Draht)
-
     - `US.ACS`: ACS aktivieren oder deaktivieren - 1-on/0-off 🟢
     - `US.ACS_Status`: Status vom ACS Modul (nur lesen)
 
 - EA Modul (nur Vision)
-
     - `EA.height`: Höheneinstellung Mähwerk von 30-60 in 5mm Schritte 🟢
 
 - HL Modul (nur Vision)
@@ -177,6 +210,8 @@ Richtig</br>
 ![Module img/module_hl.png](../en/img/module_hl.png)
 
 ### mower (Draht und Vision)
+
+[Zusammenfassung](#zusammenfassung)
 
 - `AutoLock`: automatische Verriegelung true-an/false-aus (Draht & Vision/änderbar) 🟢
 - `AutoLockTimer`: Timer für automatische Verriegelung max. 10 Minuten in 30 Sekunden Schritte (Draht & Vision/änderbar) 🟢
@@ -401,6 +436,8 @@ Richtig</br>
 
 ### Zusätzlich Vision Infos
 
+[Zusammenfassung](#zusammenfassung)
+
 - multiZones
     - `multiZones.zones.zone_1.borderDistance`: Beim Kantenschnitt der Abstand zur Kante in mm - erlaubt 50mm, 100mm, 150mm und 200mm - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar) 🔴
     - `multiZones.zones.zone_1.chargingStation`: 1 Wenn sich die Ladestation in dieser Zone befindet. 0 für keine Ladestation - Mit Blockly ohne Verzögerung setzen - Änderung wird in `multiZones.multiZones` geschrieben (Vision/änderbar) 🔴
@@ -491,6 +528,8 @@ Standard ohne Zonen:
 
 ### info_mqtt (Draht und Vision)
 
+[Zusammenfassung](#zusammenfassung)
+
 - `incompleteOperationCount`: Gesamtzahl der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht quitierte Operationen sind eine Teilmenge davon.
 - `incompleteOperationSize`: Gesamtpaketgröße der an die Verbindung übermittelten Vorgänge, die noch nicht abgeschlossen sind. Nicht quitierte Operationen sind eine Teilmenge davon.
 - `unackedOperationCount`: Gesamtzahl der Vorgänge, die an den Server gesendet wurden und auf eine entsprechende Bestätigung warten, bevor sie abgeschlossen werden können.
@@ -501,7 +540,136 @@ Standard ohne Zonen:
 
 ![Vision img/mqtt_info.png](../en/img/mqtt_info.png)
 
+### Rate Limiting
+
+[Zusammenfassung](#zusammenfassung)
+
+- Inhalt worx.0.blocking
+  Die Sperrung wird nach 24h automatisch aufgehoben. Bei der nächsten Aktualisierung vom Token wird alles zurückgesetzt
+
+```json
+{
+    "block": false, // true = API Requests gesperrt wegen 429 Sperre
+    "start": 0, // Start der Sperrung als timestamp
+    "time": "", // Mit Zeitzone
+    "retry-after": 0 // Wie lange man gesperrt ist
+}
+```
+
+- Inhalt worx.0.requestsrateLimit
+  Die Counter können manuell geändert werden um eventuell zu frühe Sperren aufzuheben.
+
+```json
+{
+    "apiCounter": 6, // API Request pro Tag
+    "apiLast": 1751483518418, // Letzter API Request
+    "apiTime": "2025-07-02T19:11:58.418Z", // Letzter API Request mit Zeitzone
+    "apiRequest": [
+        // Die API Requests
+        {
+            "count": 1,
+            "request": "https://api.worxlandroid.com/api/v2/product-items?status=1&gps_status=1",
+            "time": "2025-07-02T19:11:58.418Z"
+        },
+        {
+            "count": 2,
+            "request": "https://api.worxlandroid.com/api/v2/product-items/xxx/firmware-upgrade",
+            "time": "2025-07-02T19:11:58.895Z"
+        },
+        {
+            "count": 3,
+            "request": "https://api.worxlandroid.com/api/v2/product-items/xxx/activity-log",
+            "time": "2025-07-02T19:11:59.130Z"
+        },
+        {
+            "count": 4,
+            "request": "https://api.worxlandroid.com/api/v2/products",
+            "time": "2025-07-02T19:11:59.364Z"
+        },
+        {
+            "count": 5,
+            "request": "https://api.worxlandroid.com/api/v2/users/me",
+            "time": "2025-07-02T19:12:00.318Z"
+        },
+        {
+            "count": 6,
+            "request": "https://id.worx.com/oauth/token?",
+            "time": "2025-07-03T18:12:46.628Z"
+        }
+    ],
+    "mqttDevice": {
+        // MQTT Counter pro Gerät
+        "xxxF3": {
+            "mqttCount": 6, // Counter MQTT Kommando
+            "mqttLast": 1751651797646, // Letzter Kommando als Zeitstempel
+            "mqttTime": "2025-07-04T17:56:37.646Z", // Letzter Kommando mit Zeitzone
+            "mqttBlock": true, // true = Kommandos deaktiviert / false = Kommandos aktiv
+            "mqttRequest": [
+                // Letzte Kommandos
+                {
+                    "count": 1,
+                    "message": "{\"id\":23210,\"cmd\":0,\"lg\":\"de\",\"sn\":\"xxx\",\"tm\":\"21:12:00\",\"dt\":\"02/07/2025\"}",
+                    "time": "2025-07-02T19:12:00.811Z"
+                },
+                {
+                    "count": 2,
+                    "message": "{\"id\":58731,\"cmd\":0,\"lg\":\"de\",\"sn\":\"xxx\",\"tm\":\"20:12:49\",\"dt\":\"03/07/2025\"}",
+                    "time": "2025-07-03T18:12:49.586Z"
+                },
+                {
+                    "count": 3,
+                    "message": "{\"id\":3925,\"cmd\":0,\"lg\":\"de\",\"sn\":\"xxx\",\"tm\":\"20:20:41\",\"dt\":\"03/07/2025\"}",
+                    "time": "2025-07-03T18:20:41.579Z"
+                },
+                {
+                    "count": 4,
+                    "message": "{\"id\":3265,\"cmd\":0,\"lg\":\"de\",\"sn\":\"xxx\",\"tm\":\"21:10:19\",\"dt\":\"03/07/2025\"}",
+                    "time": "2025-07-03T19:10:19.292Z"
+                },
+                {
+                    "count": 5,
+                    "message": "{\"id\":28606,\"cmd\":0,\"lg\":\"de\",\"sn\":\"xxx\",\"tm\":\"21:11:20\",\"dt\":\"03/07/2025\"}",
+                    "time": "2025-07-03T19:11:20.634Z"
+                },
+                {
+                    "count": 6,
+                    "message": "{\"id\":12891,\"cmd\":0,\"lg\":\"de\",\"sn\":\"xxx\",\"tm\":\"19:56:37\",\"dt\":\"04/07/2025\"}",
+                    "time": "2025-07-04T17:56:37.646Z"
+                }
+            ]
+        },
+        "xxxE2": {
+            "mqttCount": 0,
+            "mqttLast": 0,
+            "mqttBlock": false,
+            "mqttRequest": []
+        },
+        "xxxC5": {
+            "mqttCount": 0,
+            "mqttLast": 0,
+            "mqttBlock": false,
+            "mqttRequest": []
+        },
+        "xxx2F": {
+            "mqttCount": 0,
+            "mqttLast": 0,
+            "mqttBlock": false,
+            "mqttRequest": []
+        }
+    },
+    "mqttDay": "27-4", // Kalenderwoche-Tag. Beim wechsel wird alles zurückgesetzt
+    "restartCount": 6, // Adapter Neustart Counter
+    "restartLast": 1751569817003, // Letzter Neustart
+    "restartTime": "2025-07-03T19:10:17.003Z", // Letzter Neustart mit Zeitzone
+    "day": "27-4" // Kalenderwoche-Tag. Beim wechsel wird alles zurückgesetzt
+}
+```
+
+![img/limiting.png](/img/limiting.png)
+
 ### Beispiel Blockly sendMultiZonesJson Vision
+
+[Zusammenfassung](#zusammenfassung)
 
 ```
 <xml xmlns="https://developers.google.com/blockly/xml">

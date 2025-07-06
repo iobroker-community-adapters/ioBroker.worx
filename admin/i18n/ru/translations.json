@@ -15,5 +15,10 @@
     "deleteText": "Удалить данные сеанса",
     "Reset Login counter": "Сбросить счетчик входа в систему",
     "Notification": "Отображение ошибок с помощью уведомлений (для всех устройств)",
-    "Notification_tooltip": "Вы можете установить состояние worx.x.notification для каждого устройства"
+    "Notification_tooltip": "Вы можете установить состояние worx.x.notification для каждого устройства",
+    "Requests limit per day": "Лимит запросов в день (50-180)",
+    "Requests limit per 10 minutes": "Запрос лимит за 10 минут (4-15)",
+    "Mqtt limit per day": "MQTT Limit в день (1-250 Pro Device)",
+    "Restart limitation per day": "Перезагрузка ограничения в день (1-10)",
+    "Rate Limiting": "Ограничение скорости"
 }

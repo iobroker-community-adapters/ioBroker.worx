@@ -15,5 +15,10 @@
     "deleteText": "Видалити дані сеансу",
     "Reset Login counter": "Скидання лічильника для входу",
     "Notification": "Відображення помилок за допомогою сповіщень (для всіх пристроїв)",
-    "Notification_tooltip": "Ви можете встановити стан Worx.x.notification для кожного пристрою"
+    "Notification_tooltip": "Ви можете встановити стан Worx.x.notification для кожного пристрою",
+    "Requests limit per day": "Обмеження запитів на день (50-180)",
+    "Requests limit per 10 minutes": "Обмеження запитів за 10 хвилин (4-15)",
+    "Mqtt limit per day": "Обмеження MQTT на день (1-250 Pro пристрій)",
+    "Restart limitation per day": "Обмеження перезапуску на день (1-10)",
+    "Rate Limiting": "Обмеження швидкості"
 }

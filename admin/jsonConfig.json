@@ -190,6 +190,71 @@
             "md": 6,
             "lg": 4,
             "xl": 4
+        },
+        "_headerAdapter": {
+            "type": "header",
+            "text": "Rate Limiting",
+            "size": 2
+        },
+        "rateLimitingDay": {
+            "type": "number",
+            "label": "Requests limit per day",
+            "newLine": true,
+            "default": 70,
+            "min": 50,
+            "max": 180,
+            "step": 1,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "hidden": "data.server === \"Remote\""
+        },
+        "rateLimitingMinute": {
+            "type": "number",
+            "label": "Requests limit per 10 minutes",
+            "newLine": true,
+            "default": 5,
+            "min": 4,
+            "max": 15,
+            "step": 1,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "hidden": "data.server === \"Remote\""
+        },
+        "mqttLimit": {
+            "type": "number",
+            "label": "Mqtt limit per day",
+            "newLine": true,
+            "default": 50,
+            "min": 1,
+            "max": 250,
+            "step": 1,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "hidden": "data.server === \"Remote\""
+        },
+        "restartLimitPerDay": {
+            "type": "number",
+            "label": "Restart limitation per day",
+            "newLine": true,
+            "default": 4,
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "hidden": "data.server === \"Remote\""
         }
     }
 }

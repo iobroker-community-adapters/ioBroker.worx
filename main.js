@@ -102,7 +102,6 @@ const max_count = 5; // Difference of the last 10 logins > diff_time
 const loginLength = 10;
 const refreshLength = 10;
 const errorLength = 10;
-const maxRate = 180;
 
 class Worx extends utils.Adapter {
     /**
@@ -124,11 +123,14 @@ class Worx extends utils.Adapter {
         this.refreshActivity = null;
         this.notifyAvailable = false;
         this.loadActivity = {};
+        this.stateCheck = [];
         this.new_device = {};
         this.interruptCheck = {};
         this.refreshTokenTimeout = null;
         this.refreshStartTokenTimeout = null;
         this.timeoutedgeCutDelay = null;
+        this.updateInterval = null;
+        this.updateFW = null;
         this.mqtt_blocking = 0;
         this.mqtt_restart = null;
         this.vision = {};
@@ -154,6 +156,7 @@ class Worx extends utils.Adapter {
         this.cleanupRaw = helper.cleanupRaw;
         this.createDataPoint = helper.createDataPoint;
         this.createMqttData = helper.createMqttData;
+        this.checkObjects = helper.checkObjects;
         this.json2iob = new Json2iob(this);
         //this.cookieJar = new tough.CookieJar();
         //httpsAgent: new HttpsCookieAgent({
@@ -162,14 +165,6 @@ class Worx extends utils.Adapter {
         //    },
         //}),
         this.appname = null;
-        // @ts-expect-error //Nothing
-        this.requestClient = rateLimit(
-            axios.create({
-                withCredentials: true,
-                timeout: 5000,
-            }),
-            { maxRequests: 10, perMilliseconds: 60 * 1000 * 10 },
-        );
         this.loginInfo = {
             loginCounter: 0,
             loginDiff: [],
@@ -188,15 +183,23 @@ class Worx extends utils.Adapter {
             lastErrorDate: "",
         };
         this.rateLimit = {
-            axiosCount: 0,
             apiCounter: 0,
             apiLast: 0,
+            apiTime: "",
             apiRequest: [],
+            mqttDevice: {},
+            mqttDay: "01-01",
+            restartCount: 0,
+            restartLast: 0,
+            restartTime: "",
+            day: "01-01",
         };
         this.modules = {};
         this.blocking = {
             block: false,
             start: 0,
+            time: "",
+            "retry-after": 0,
         };
         this.clouds = {
             worx: {
@@ -234,10 +237,38 @@ class Worx extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        if (this.config.rateLimitingMinute < 4 || this.config.rateLimitingMinute > 15) {
+            this.config.rateLimitingMinute = 5;
+            this.log.info(`Set rate limit to 10 minutes`);
+        }
+        // @ts-expect-error //Nothing
+        this.requestClient = rateLimit(
+            axios.create({
+                withCredentials: true,
+                timeout: 5000,
+            }),
+            {
+                maxRequests: this.config.rateLimitingMinute,
+                perMilliseconds: 60 * 1000 * 10,
+                maxRPS: 4,
+            },
+        );
+        if (this.config.restartLimitPerDay < 1 || this.config.restartLimitPerDay > 10) {
+            this.config.restartLimitPerDay = 4;
+            this.log.info(`Set daily restart rate limit to 4`);
+        }
+        if (this.config.mqttLimit < 1 || this.config.mqttLimit > 250) {
+            this.config.mqttLimit = 50;
+            this.log.info(`Set daily mqtt rate limit to 50`);
+        }
+        if (this.config.rateLimitingDay < 50 || this.config.rateLimitingDay > 180) {
+            this.config.rateLimitingDay = 70;
+            this.log.info(`Set daily request rate limit to 70`);
+        }
         const block = await this.getStateAsync("blocking");
         if (block && block.val != null && typeof block.val === "string" && block.val.startsWith("{")) {
             const blockCount = JSON.parse(block.val);
-            if (blockCount.start != null && Object.keys(blockCount).length === 2) {
+            if (blockCount.start != null && Object.keys(blockCount).length === 4) {
                 this.log.debug(`Use old blocking data!`);
                 this.blocking = blockCount;
             }
@@ -254,9 +285,9 @@ class Worx extends utils.Adapter {
         const reqCount = await this.getStateAsync("rateLimit");
         if (reqCount && reqCount.val != null && typeof reqCount.val === "string" && reqCount.val.startsWith("{")) {
             const infoCount = JSON.parse(reqCount.val);
-            if (infoCount.apiCounter != null) {
+            if (infoCount.apiCounter != null && Object.keys(infoCount).length === 10) {
                 this.log.debug(`Use old rateLimit data!`);
-                this.trackingRequests = infoCount;
+                this.rateLimit = infoCount;
             }
         }
         if (this.config.resetLogin) {
@@ -268,6 +299,18 @@ class Worx extends utils.Adapter {
                 native: { resetLogin: false },
             });
         }
+        const diffTime = new Date().getTime() - this.rateLimit.restartLast;
+        if (diffTime > 24 * 60 * 1000 * 60) {
+            this.rateLimit.restartCount = 0;
+            this.rateLimit.restartLast = new Date().getTime();
+            this.rateLimit.restartTime = new Date().toISOString();
+        }
+        if (this.rateLimit.restartCount > this.config.restartLimitPerDay) {
+            this.log.warn(`The restart limit of ${this.config.restartLimitPerDay} per day has been reached.`);
+            return;
+        }
+        ++this.rateLimit.restartCount;
+        this.setRestartCount();
         if (await this.loginCounterCheck()) {
             this.log.error(`Login is blocked please check! Please reset the login counter in the instance settings!`);
             return;
@@ -343,8 +386,6 @@ class Worx extends utils.Adapter {
             return;
         }
 
-        this.subscribeStates("*");
-
         this.log.info(`Login to ${this.config.server}`);
         let session = 0;
         if (configChanged) {
@@ -368,7 +409,7 @@ class Worx extends utils.Adapter {
         }
         if (this.session.access_token) {
             await this.getDeviceList(false);
-            await this.updateDevices();
+            //await this.updateDevices();
             await this.createMqttData();
             this.log.info("Start MQTT connection");
             await this.start_mqtt();
@@ -409,9 +450,11 @@ class Worx extends utils.Adapter {
                 }, session);
             }
             this.refreshActivity = this.setInterval(() => {
-                this.createActivityLogStates();
+                this.createActivityLogStates(null, false);
             }, 60 * 1000); // 1 minutes
-            this.checkDeviceObjectTree();
+            await this.checkDeviceObjectTree();
+            this.subscribeStates("*");
+            this.checkObjects();
         }
     }
 
@@ -419,7 +462,7 @@ class Worx extends utils.Adapter {
         if (this.isBlocked()) {
             return;
         }
-        if (await this.setRateLimit()) {
+        if (this.setRateLimit(`${this.clouds[this.config.server].loginUrl}oauth/token`)) {
             return;
         }
         const data = await this.requestClient({
@@ -438,7 +481,16 @@ class Worx extends utils.Adapter {
             }),
         })
             .then(response => {
-                this.log.debug(JSON.stringify(response.data));
+                const token = Object.assign({}, response.data);
+                if (token) {
+                    if (token.refresh_token) {
+                        token.refresh_token = "unknown";
+                    }
+                    if (token.access_token) {
+                        token.access_token = "unknown";
+                    }
+                }
+                this.log.debug(JSON.stringify(token));
                 if (response.headers) {
                     this.log.debug(`Login Header: ${JSON.stringify(response.headers)}`);
                 }
@@ -460,11 +512,13 @@ class Worx extends utils.Adapter {
             .catch(error => {
                 this.session = {};
                 this.log.error(error);
+                this.setDeleteSession();
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
                         this.blocking.block = true;
-                        this.blocking.start = new Date().getTime() * 1000;
+                        this.blocking.start = new Date().getTime();
+                        this.blocking.time = new Date().toISOString();
                         if (error.response.headers) {
                             this.log.error(`Login Header: ${JSON.stringify(error.response.headers)}`);
                             if (error.response.headers.ma) {
@@ -474,6 +528,7 @@ class Worx extends utils.Adapter {
                                 this.log.error(
                                     `Login retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
                                 );
+                                this.blocking["retry-after"] = error.response.headers["retry-after"];
                             }
                         }
                     }
@@ -486,10 +541,12 @@ class Worx extends utils.Adapter {
 
     isBlocked() {
         let isBlock = false;
+        const blockTime = 24 * 60 * 1000 * 60;
         if (this.blocking.block) {
-            const diff = new Date().getTime() * 1000 - this.blocking.start;
-            if (diff > 86460000) {
+            const diff = new Date().getTime() - this.blocking.start;
+            if (diff > blockTime) {
                 this.blocking.start = 0;
+                this.blocking.time = "";
                 this.blocking.block = false;
             } else {
                 this.log.info(`Requests are currently blocked!`);
@@ -548,21 +605,60 @@ class Worx extends utils.Adapter {
         await this.setState("loginInfo", { val: JSON.stringify(this.loginInfo), ack: true });
     }
 
-    async setRateLimit(req) {
+    setMqttCounter(message, serial) {
+        if (!this.rateLimit.mqttDevice[serial]) {
+            this.rateLimit.mqttDevice[serial] = {
+                mqttCount: 0,
+                mqttLast: 0,
+                mqttTime: "",
+                mqttBlock: false,
+                mqttRequest: [],
+            };
+        }
+        if (this.rateLimit.mqttDay != this.getWeek()) {
+            this.rateLimit.mqttDay = this.getWeek();
+            for (const device in this.rateLimit.mqttDevice) {
+                this.rateLimit.mqttDevice[device].mqttCount = 0;
+                this.rateLimit.mqttDevice[device].mqttLast = 0;
+                this.rateLimit.mqttDevice[device].mqttTime = "";
+                this.rateLimit.mqttDevice[device].mqttBlock = false;
+                this.rateLimit.mqttDevice[device].mqttRequest = [];
+            }
+        }
+        ++this.rateLimit.mqttDevice[serial].mqttCount;
+        const value = {
+            count: this.rateLimit.mqttDevice[serial].mqttCount,
+            message: message,
+            time: new Date().toISOString(),
+        };
+        this.rateLimit.mqttDevice[serial].mqttLast = new Date().getTime();
+        this.rateLimit.mqttDevice[serial].mqttTime = new Date().toISOString();
+        this.rateLimit.mqttDevice[serial].mqttRequest.push(value);
+        if (this.rateLimit.mqttDevice[serial].mqttCount > this.config.mqttLimit) {
+            this.log.warn(`The limit of ${this.config.mqttLimit} commands has been reached!`);
+            this.setRestartCount();
+            this.rateLimit.mqttDevice[serial].mqttBlock = true;
+            return true;
+        }
+        this.rateLimit.mqttDevice[serial].mqttBlock = false;
+        this.setRestartCount();
+        return false;
+    }
+
+    setRateLimit(req) {
         let block = false;
-        const day = 24 * 60 * 1000 * 60;
-        const diff = new Date().getTime() - this.rateLimit.apiLast;
-        if (diff > day) {
+        if (this.rateLimit.day != this.getWeek()) {
             this.rateLimit.apiCounter = 0;
             this.rateLimit.apiLast = new Date().getTime();
+            this.rateLimit.apiTime = new Date().toISOString();
             this.rateLimit.apiRequest = [];
+            this.rateLimit.day = this.getWeek();
         }
         ++this.rateLimit.apiCounter;
-        if (this.rateLimit.apiCounter > maxRate) {
+        if (this.rateLimit.apiCounter > this.config.rateLimitingDay) {
             this.log.error(`The rate limit has been reached!`);
             block = true;
         }
-        this.rateLimit.axiosCount = this.requestClient.getMaxRPS();
         const val = {
             count: this.rateLimit.apiCounter,
             request: req,
@@ -570,13 +666,22 @@ class Worx extends utils.Adapter {
         };
         // @ts-expect-error no error
         this.rateLimit.apiRequest.push(val);
-        await this.setState("rateLimit", { val: JSON.stringify(this.rateLimit), ack: true });
+        this.setRestartCount();
         return block;
+    }
+
+    async setRestartCount() {
+        await this.setState("rateLimit", { val: JSON.stringify(this.rateLimit), ack: true });
     }
 
     async setSessionValue() {
         this.session.next = new Date().getTime() + parseInt(this.session.expires_in) * 1000;
         await this.setState("session", { val: this.encrypt(JSON.stringify(this.session)), ack: true });
+    }
+
+    async setDeleteSession() {
+        this.session.next = new Date().getTime() + parseInt(this.session.expires_in) * 1000;
+        await this.setState("session", { val: "", ack: true });
     }
 
     setRefreshTokenInterval() {
@@ -668,7 +773,7 @@ class Worx extends utils.Adapter {
             return;
         }
         if (
-            await this.setRateLimit(
+            this.setRateLimit(
                 `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
             )
         ) {
@@ -686,6 +791,8 @@ class Worx extends utils.Adapter {
             .then(async res => {
                 this.log.debug(JSON.stringify(res.data));
                 this.log.info(`Found ${res.data.length} devices`);
+                const err_notify = [];
+                const status_notify = [];
                 for (const device of res.data) {
                     const index = this.deviceArray.findIndex(index => index.serial_number === device.serial_number);
                     if (!this.rainCounterInterval[device.serial_number]) {
@@ -736,25 +843,77 @@ class Worx extends utils.Adapter {
                             this.lasterror[id] != null ? this.lasterror[id] : device.last_status.payload.dat.le;
                         this.loadActivity[id] = this.loadActivity[id] != null ? this.loadActivity[id] : false;
                     }
+                    if (
+                        !device.online &&
+                        this.modules[device.serial_number] &&
+                        this.modules[device.serial_number]["notify"] &&
+                        this.modules[device.serial_number]["notify_excluded"] != null &&
+                        !this.modules[device.serial_number]["notify_excluded"].includes(
+                            device.last_status.payload.dat.le,
+                        )
+                    ) {
+                        status_notify.push(device.serial_number);
+                    }
+                    try {
+                        if (!device || !device.last_status || !device.last_status.payload) {
+                            this.log.debug("No last_status found");
+                            delete device.last_status;
+                            this.log.debug("Delete last_status");
+                        } else {
+                            if (
+                                device.last_status.payload &&
+                                device.last_status.payload.dat &&
+                                device.last_status.payload.dat.le > 0 &&
+                                this.modules[device.serial_number] &&
+                                this.modules[device.serial_number]["notify"] &&
+                                this.modules[device.serial_number]["notify_excluded"] != null &&
+                                !this.modules[device.serial_number]["notify_excluded"].includes(
+                                    device.last_status.payload.dat.le,
+                                )
+                            ) {
+                                const messages = error_states[device.last_status.payload.dat.le]
+                                    ? ` ${error_states[device.last_status.payload.dat.le]}`
+                                    : ` ${device.last_status.payload.dat.le}`;
+                                err_notify.push(`${device.serial_number}${messages}`);
+                            }
+                        }
+                    } catch (e) {
+                        this.log.debug(`Delete last_status: ${e}`);
+                    }
                     if (index == -1) {
                         await this.createActivityLogStates(device, true);
                         await this.createProductStates(device);
                     }
-                    // this.json2iob.parse(`${id}.rawMqtt`, await this.cleanupRaw(device), {
-                    //     forceIndex: true,
-                    // });
+                    await this.setStates(device);
+                    const new_data = await this.cleanupRaw(device);
+                    if (new_data.last_status && new_data.last_status.timestamp != null) {
+                        delete new_data.last_status.timestamp;
+                    }
+                    this.last_update_connection(device.serial_number, 1);
+                    this.json2iob.parse(`${device.serial_number}.rawMqtt`, new_data, {
+                        forceIndex: true,
+                        preferedArrayName: "",
+                        channelName: "All raw data of the mower",
+                    });
                 }
-                if (check) {
-                    await this.updateDevices();
+                if (this.config.notification) {
+                    if (err_notify.length > 0) {
+                        await this.registerEventNotification(err_notify, "mowerError", true);
+                    }
+                    if (status_notify.length > 0) {
+                        this.registerEventNotification(status_notify, "mowerStatus", true);
+                    }
                 }
             })
             .catch(error => {
                 this.log.error(error);
+                this.setDeleteSession();
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
                         this.blocking.block = true;
-                        this.blocking.start = new Date().getTime() * 1000;
+                        this.blocking.start = new Date().getTime();
+                        this.blocking.time = new Date().toISOString();
                         if (error.response.headers) {
                             this.log.error(`Device Header: ${JSON.stringify(error.response.headers)}`);
                             if (error.response.headers.ma) {
@@ -764,6 +923,7 @@ class Worx extends utils.Adapter {
                                 this.log.error(
                                     `Device retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
                                 );
+                                this.blocking["retry-after"] = error.response.headers["retry-after"];
                             }
                         }
                     }
@@ -1315,7 +1475,7 @@ class Worx extends utils.Adapter {
             return;
         }
         if (
-            await this.setRateLimit(
+            this.setRateLimit(
                 `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
             )
         ) {
@@ -1405,11 +1565,13 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
+                this.setDeleteSession();
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
                         this.blocking.block = true;
-                        this.blocking.start = new Date().getTime() * 1000;
+                        this.blocking.start = new Date().getTime();
+                        this.blocking.time = new Date().toISOString();
                         if (error.response.headers) {
                             this.log.error(`Cloud Header: ${JSON.stringify(error.response.headers)}`);
                             if (error.response.headers.ma) {
@@ -1419,6 +1581,7 @@ class Worx extends utils.Adapter {
                                 this.log.error(
                                     `Cloud retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
                                 );
+                                this.blocking["retry-after"] = error.response.headers["retry-after"];
                             }
                         }
                     }
@@ -1444,7 +1607,7 @@ class Worx extends utils.Adapter {
                 if (this.isBlocked()) {
                     return;
                 }
-                if (await this.setRateLimit(url)) {
+                if (this.setRateLimit(url)) {
                     return;
                 }
                 await this.requestClient({
@@ -1534,12 +1697,14 @@ class Worx extends utils.Adapter {
                     })
                     .catch(error => {
                         this.setLoginErrorData(error);
+                        this.setDeleteSession();
                         if (error.response) {
                             this.log.error(JSON.stringify(error.response.data));
                             if (error.response.status === 429) {
                                 this.log.info("The maximum number of requests has been reached!");
                                 this.blocking.block = true;
-                                this.blocking.start = new Date().getTime() * 1000;
+                                this.blocking.start = new Date().getTime();
+                                this.blocking.time = new Date().toISOString();
                                 if (error.response.headers) {
                                     this.log.error(`Update Header: ${JSON.stringify(error.response.headers)}`);
                                     if (error.response.headers.ma) {
@@ -1551,6 +1716,7 @@ class Worx extends utils.Adapter {
                                         this.log.error(
                                             `Update retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
                                         );
+                                        this.blocking["retry-after"] = error.response.headers["retry-after"];
                                     }
                                 }
                             } else if (error.response.status === 401) {
@@ -1586,7 +1752,11 @@ class Worx extends utils.Adapter {
         if (first) {
             this.checkRainStatus();
         }
-        if (await this.setRateLimit(`${this.clouds[this.config.server].loginUrl}oauth/token?`)) {
+        if (this.setRateLimit(`${this.clouds[this.config.server].loginUrl}oauth/token?`)) {
+            return;
+        }
+        if (!this.session.refresh_token) {
+            this.log.error(`No refresh token found`);
             return;
         }
         return await this.requestClient({
@@ -1604,7 +1774,16 @@ class Worx extends utils.Adapter {
             }),
         })
             .then(response => {
-                this.log.debug(JSON.stringify(response.data));
+                const token = Object.assign({}, response.data);
+                if (token) {
+                    if (token.refresh_token) {
+                        token.refresh_token = "unknown";
+                    }
+                    if (token.access_token) {
+                        token.access_token = "unknown";
+                    }
+                }
+                this.log.debug(JSON.stringify(token));
                 this.session = response.data;
                 this.setSessionValue();
                 if (first) {
@@ -1621,11 +1800,13 @@ class Worx extends utils.Adapter {
             })
             .catch(error => {
                 this.log.error(error);
+                this.setDeleteSession();
                 if (error.response) {
                     if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
                         this.blocking.block = true;
-                        this.blocking.start = new Date().getTime() * 1000;
+                        this.blocking.start = new Date().getTime();
+                        this.blocking.time = new Date().toISOString();
                         if (error.response.headers) {
                             this.log.error(`Token Header: ${JSON.stringify(error.response.headers)}`);
                             if (error.response.headers.ma) {
@@ -1635,6 +1816,7 @@ class Worx extends utils.Adapter {
                                 this.log.error(
                                     `Token retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
                                 );
+                                this.blocking["retry-after"] = error.response.headers["retry-after"];
                             }
                         }
                     }
@@ -1860,7 +2042,7 @@ class Worx extends utils.Adapter {
         if (!withoutToken) {
             headers["authorization"] = `Bearer ${this.session.access_token}`;
         }
-        if (await this.setRateLimit(`https://${this.clouds[this.config.server].url}/api/v2/${path}`)) {
+        if (this.setRateLimit(`https://${this.clouds[this.config.server].url}/api/v2/${path}`)) {
             return;
         }
         return await this.requestClient({
@@ -1884,6 +2066,7 @@ class Worx extends utils.Adapter {
                 }
                 this.log.error(error);
                 this.setLoginErrorData(error);
+                this.setDeleteSession();
                 if (error.response) {
                     this.log.error(JSON.stringify(error.response.data));
                     if (error.response.status === 401) {
@@ -1897,7 +2080,8 @@ class Worx extends utils.Adapter {
                     } else if (error.response.status === 429) {
                         this.log.info("The maximum number of requests has been reached!");
                         this.blocking.block = true;
-                        this.blocking.start = new Date().getTime() * 1000;
+                        this.blocking.start = new Date().getTime();
+                        this.blocking.time = new Date().toISOString();
                         if (error.response.headers) {
                             this.log.error(`API Header: ${JSON.stringify(error.response.headers)}`);
                             if (error.response.headers.ma) {
@@ -1907,6 +2091,7 @@ class Worx extends utils.Adapter {
                                 this.log.error(
                                     `API retry-after: ${this.convertRetryAfter(error.response.headers["retry-after"])}`,
                                 );
+                                this.blocking["retry-after"] = error.response.headers["retry-after"];
                             }
                         }
                     }
@@ -1919,7 +2104,9 @@ class Worx extends utils.Adapter {
             this.log.warn("No mower found to start mqtt");
             return;
         }
-
+        if (this.isBlocked()) {
+            return;
+        }
         if (!this.userData) {
             this.userData = await this.apiRequest("users/me", false);
         }
@@ -2187,7 +2374,7 @@ class Worx extends utils.Adapter {
                             `Mqtt Coonnection CLOSED! Please restart Adapter! Connection interrupted: ${error}`,
                         );
                         if (this.mqtt != null) {
-                            this.mqttC && this.mqttC.disconnect();
+                            this.mqttC && (await this.mqttC.disconnect());
                         } else {
                             this.mqttC && this.mqttC.end();
                         }
@@ -2249,6 +2436,7 @@ class Worx extends utils.Adapter {
                 this.isMqttConneted = false;
                 this.log.info(`MQTT ERROR: ${error}`);
                 this.setMqttOnline(false);
+                this.setDeleteSession();
             });
             if (this.mqtt) {
                 await this.mqttC.connect();
@@ -2321,6 +2509,9 @@ class Worx extends utils.Adapter {
         const mower = this.deviceArray.find(mower => mower.serial_number === serial);
 
         if (mower) {
+            if (this.setMqttCounter(message, serial)) {
+                return;
+            }
             if (this.mqttC) {
                 this.requestCounter++;
                 this.log.info(`Request Counter: ${this.requestCounter}`);
@@ -2733,7 +2924,7 @@ class Worx extends utils.Adapter {
     /**
      * @param {() => void} callback Is called when adapter shuts down - callback has to be called under any circumstances!
      */
-    onUnload(callback) {
+    async onUnload(callback) {
         try {
             this.setState("info.connection", false, true);
             if (this.remoteMower) {
@@ -2761,7 +2952,7 @@ class Worx extends utils.Adapter {
             try {
                 if (this.mqtt != null) {
                     if (this.isMqttConneted) {
-                        this.mqttC && this.mqttC.disconnect();
+                        this.mqttC && (await this.mqttC.disconnect());
                     }
                 } else {
                     this.mqttC && this.mqttC.end();
@@ -4748,6 +4939,19 @@ class Worx extends utils.Adapter {
         } catch {
             return 0;
         }
+    }
+
+    getWeek() {
+        const target = new Date();
+        const getDay = target.getDay();
+        const dayNr = (target.getDay() + 6) % 7;
+        target.setDate(target.getDate() - dayNr + 3);
+        const jan4 = new Date(target.getFullYear(), 0, 4);
+        const dayDiff = (target.getTime() - jan4.getTime()) / 86400000;
+        if (new Date(target.getFullYear(), 0, 1).getDay() < 5) {
+            return `${1 + Math.ceil(dayDiff / 7)}-${getDay}`;
+        }
+        return `${Math.ceil(dayDiff / 7)}-${getDay}`;
     }
 }
 
