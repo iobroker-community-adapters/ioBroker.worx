@@ -150,6 +150,7 @@ class Worx extends utils.Adapter {
         this.lastRequest = {};
         this.remoteMower = null;
         this.mqtt_response_check = {};
+        this.iob_uuid = null;
         this.createDevices = helper.createDevices;
         this.createActivity = helper.createActivity;
         this.setStates = helper.setStates;
@@ -241,6 +242,7 @@ class Worx extends utils.Adapter {
             this.config.rateLimitingMinute = 5;
             this.log.info(`Set rate limit to 10 minutes`);
         }
+        this.iob_uuid = await this.getForeignObjectAsync(`system.meta.uuid`);
         // @ts-expect-error //Nothing
         this.requestClient = rateLimit(
             axios.create({
@@ -356,16 +358,16 @@ class Worx extends utils.Adapter {
             }
             return;
         }
-        //try {
-        //    this.iot = require("aws-iot-device-sdk-v2").iot;
-        //    this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
-        //    this.log.info(`Use new aws-iot-device-sdk-v2.`);
-        //} catch (e) {
-        this.iot = require("aws-iot-device-sdk").device;
-        this.qos = { qos: 1 };
-        //    this.log.warn(e);
-        //    this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
-        //}
+        try {
+            this.iot = require("aws-iot-device-sdk-v2").iot;
+            this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
+            this.log.info(`Use new aws-iot-device-sdk-v2.`);
+        } catch (e) {
+            this.iot = require("aws-iot-device-sdk").device;
+            this.qos = { qos: 1 };
+            this.log.warn(e);
+            this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
+        }
         if (typeof this.config.edgeCutDelay != "number" || this.config.edgeCutDelay < 1000) {
             this.log.info(`Changed timeout for edgecut to 5000`);
             this.config.edgeCutDelay = 5000;
@@ -2125,6 +2127,17 @@ class Worx extends utils.Adapter {
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
             }
+            let iobUUID = uuid;
+            if (
+                this.iob_uuid &&
+                this.iob_uuid.native &&
+                this.iob_uuid.native.uuid &&
+                typeof this.iob_uuid.native.uuid === "string" &&
+                this.iob_uuid.native.uuid.length > 30
+            ) {
+                this.log.info(`Use iobroker uuid!`);
+                iobUUID = this.iob_uuid.native.uuid;
+            }
             if (this.mqtt != null) {
                 if (this.isMqttConneted) {
                     this.mqttC && (await this.mqttC.disconnect());
@@ -2139,11 +2152,11 @@ class Worx extends utils.Adapter {
                 }
                 config_builder.with_clean_session(false);
                 config_builder.with_client_id(
-                    `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/${category}/${uuid}`,
+                    `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/${category}/${iobUUID}`,
                 );
                 config_builder.with_endpoint(this.userData.mqtt_newendpoint);
                 //config_builder.with_port(443);
-                //config_builder.with_reconnect_max_sec(0.5);
+                //config_builder.with_reconnect_max_sec(128);
                 //config_builder.with_reconnect_min_sec(1);
                 //config_builder.with_keep_alive_seconds(30);
                 config_builder.with_custom_authorizer(
@@ -2182,9 +2195,8 @@ class Worx extends utils.Adapter {
                 if (split_mqtt.length === 3) {
                     region = split_mqtt[2];
                 }
-                //const iob_uuid = await this.getForeignObjectAsync(`system.meta.uuid`);
                 return new this.iot({
-                    clientId: `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/iobroker/${uuid}`,
+                    clientId: `${this.clouds[this.config.server].mqttPrefix}/USER/${this.userData.id}/iobroker/${iobUUID}`,
                     username: "iobroker",
                     protocol: "wss-custom-auth",
                     host: this.userData.mqtt_newendpoint,
