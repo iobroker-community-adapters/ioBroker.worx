@@ -121,8 +121,19 @@
             "uk": "Адаптер для Worx, Kresss, Landxcape або Ferrex косарка через хмару.",
             "zh-cn": "Worx, Kress, Landxcape or Ferrex mower through云。."
         },
-        "authors": ["TA2k <tombox2020@gmail.com>", "MeisterTR", "Lucky-ESA"],
-        "keywords": ["mower", "Worx", "Kress", "Landxcape", "Ferrex", "Landroid IP"],
+        "authors": [
+            "TA2k <tombox2020@gmail.com>",
+            "MeisterTR",
+            "Lucky-ESA"
+        ],
+        "keywords": [
+            "mower",
+            "Worx",
+            "Kress",
+            "Landxcape",
+            "Ferrex",
+            "Landroid IP"
+        ],
         "licenseInformation": {
             "license": "MIT",
             "type": "free"
@@ -140,14 +151,21 @@
         "connectionType": "cloud",
         "dataSource": "push",
         "docs": {
-            "en": ["docs/en/README.md"],
-            "de": ["docs/de/README.md"]
+            "en": [
+                "docs/en/README.md"
+            ],
+            "de": [
+                "docs/de/README.md"
+            ]
         },
         "messages": [
             {
                 "condition": {
                     "operand": "and",
-                    "rules": ["oldVersion<2.3.4", "newVersion>=3.0.0"]
+                    "rules": [
+                        "oldVersion<2.3.4",
+                        "newVersion>=3.0.0"
+                    ]
                 },
                 "title": {
                     "en": "Important notice!",
@@ -175,12 +193,18 @@
                     "uk": "Шукати користувачів! У структурі `calendar` змінено і `multiZones` замінює `areas`. Всі скрипти повинні бути адаптовані.",
                     "zh-cn": "视觉用户! `日历 ' 的结构已经改变,`多区 ' 取代`地区 ' 。 所有剧本必须改编."
                 },
-                "buttons": ["agree", "cancel"]
+                "buttons": [
+                    "agree",
+                    "cancel"
+                ]
             },
             {
                 "condition": {
                     "operand": "and",
-                    "rules": ["oldVersion<2.0.0", "newVersion>=2.0.0"]
+                    "rules": [
+                        "oldVersion<2.0.0",
+                        "newVersion>=2.0.0"
+                    ]
                 },
                 "title": {
                     "en": "Important notice!",
@@ -208,7 +232,10 @@
                     "uk": "З v2.0.0 пароля зберігається зашифровано. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації. Текстовий сирМктт перебудовується, будь ласка, налаштуйте сценарії.",
                     "zh-cn": "自第2.0.0号密码被加密。 请更正在最新资料后在环境中的密码。 编审后,请调整你的文字。."
                 },
-                "buttons": ["agree", "cancel"]
+                "buttons": [
+                    "agree",
+                    "cancel"
+                ]
             }
         ],
         "adminUI": {
@@ -230,8 +257,14 @@
             }
         ]
     },
-    "encryptedNative": ["password", "pin"],
-    "protectedNative": ["password", "pin"],
+    "encryptedNative": [
+        "password",
+        "pin"
+    ],
+    "protectedNative": [
+        "password",
+        "pin"
+    ],
     "native": {
         "mail": "",
         "password": "",
@@ -248,7 +281,8 @@
         "rateLimitingDay": 70,
         "rateLimitingMinute": 5,
         "mqttLimit": 50,
-        "restartLimitPerDay": 4
+        "restartLimitPerDay": 4,
+        "mqttCon": "sdk"
     },
     "notifications": [
         {

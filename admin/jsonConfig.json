@@ -255,6 +255,31 @@
             "lg": 4,
             "xl": 4,
             "hidden": "data.server === \"Remote\""
+        },
+        "mqttCon": {
+            "type": "select",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "hidden": "data.server === \"Remote\"",
+            "options": [
+                {
+                    "label": "aws-iot-device-sdk",
+                    "value": "sdk"
+                },
+                {
+                    "label": "aws-iot-device-sdk-v2",
+                    "value": "sdkv2"
+                },
+                {
+                    "label": "mqtt5",
+                    "value": "mqtt5"
+                }
+            ],
+            "label": "Select MQTT Connection"
         }
     }
 }

@@ -61,9 +61,14 @@ valid</br>
 - `Requests limit per 10 minutes (4-15)`: API Requests Limitierung - Sollte auf 4 stehen da sonst ein Neustart nicht möglich wäre.
 - `MQTT limit per day (1-250 pro device)`: Request Limitierung über MQTT. Die Auswahl ist pro Geräte.
 - `Restart limitation per day (1-10)`: Protects against unknown and unwanted adapter reboots.
+- `MQTT-Verbindung auswählen`:
+    - `Alte AWS-Verbindung`: The old MQTT connection is used. Disadvantage: There is a forced disconnect every 20 minutes, and re-establishing the connection takes 1 second.
+    - `Neue AWS-Verbindung`: A new MQTT connection is used. Disadvantage: The connection is disconnected and re-established every hour due to the token. If the module encounters an error, the old connection is automatically used.
+    - `MQTT5-Verbindung (derzeit nicht verfügbar)`: Not currently available. The old connection will then be used.
 
 ![Instance Settings img/instance.png](img/instance.png)</br>
-![Instance Settings img/instance_1.png](img/instance_1.png)
+![Instance Settings img/instance_1.png](img/instance_1.png)</br>
+![Instance Settings img/instance_2.png](img/instance_2.png)
 
 ### Login Infos `worx.0.loginInfo`
 

@@ -20,5 +20,9 @@
     "Requests limit per 10 minutes": "Prośby o limit 10 minut (4-15)",
     "Mqtt limit per day": "Limit MQTT dziennie (urządzenie 1-250 pro)",
     "Restart limitation per day": "Ponowne uruchomienie ograniczenia dziennie (1-10)",
-    "Rate Limiting": "Ograniczanie stawki"
+    "Rate Limiting": "Ograniczanie stawki",
+    "aws-iot-device-sdk": "Old AWS Connectionn",
+    "aws-iot-device-sdk-v2": "Nowe połączenie AWS",
+    "mqtt5": "Połączenie MQTT5 (obecnie niedostępne)",
+    "Select MQTT Connection": "Wybierz połączenie MQTT"
 }

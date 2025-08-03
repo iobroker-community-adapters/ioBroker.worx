@@ -20,5 +20,9 @@
     "Requests limit per 10 minutes": "Verzoeken limiet per 10 minuten (4-15)",
     "Mqtt limit per day": "MQTT-limiet per dag (1-250 Pro-apparaat)",
     "Restart limitation per day": "Start beperking per dag opnieuw op (1-10)",
-    "Rate Limiting": "Tarief beperkend"
+    "Rate Limiting": "Tarief beperkend",
+    "aws-iot-device-sdk": "Oude AWS -verbinding",
+    "aws-iot-device-sdk-v2": "Nieuwe AWS -verbinding",
+    "mqtt5": "MQTT5 -verbinding (momenteel niet beschikbaar)",
+    "Select MQTT Connection": "Selecteer MQTT -verbinding"
 }

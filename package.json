@@ -33,7 +33,7 @@
     "node": ">= 20"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.2.3",
+    "@iobroker/adapter-core": "^3.3.1",
     "aws-iot-device-sdk": "^2.2.15",
     "aws-iot-device-sdk-v2": "^1.22.0",
     "axios": "^1.11.0",
@@ -49,7 +49,7 @@
     "@alcalzone/release-script-plugin-license": "^3.7.0",
     "@alcalzone/release-script-plugin-manual-review": "^3.7.0",
     "@iobroker/adapter-dev": "^1.4.0",
-    "@iobroker/eslint-config": "^2.0.2",
+    "@iobroker/eslint-config": "^2.0.3",
     "@iobroker/testing": "^5.0.4",
     "@tsconfig/node18": "^18.2.4",
     "@types/chai": "^4.3.20",

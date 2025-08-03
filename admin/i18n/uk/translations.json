@@ -20,5 +20,9 @@
     "Requests limit per 10 minutes": "Обмеження запитів за 10 хвилин (4-15)",
     "Mqtt limit per day": "Обмеження MQTT на день (1-250 Pro пристрій)",
     "Restart limitation per day": "Обмеження перезапуску на день (1-10)",
-    "Rate Limiting": "Обмеження швидкості"
+    "Rate Limiting": "Обмеження швидкості",
+    "aws-iot-device-sdk": "Старий зв'язок AWS",
+    "aws-iot-device-sdk-v2": "Нове з'єднання AWS",
+    "mqtt5": "З'єднання MQTT5 (наразі недоступне)",
+    "Select MQTT Connection": "Виберіть MQTT Connection"
 }

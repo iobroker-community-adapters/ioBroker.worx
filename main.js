@@ -358,15 +358,21 @@ class Worx extends utils.Adapter {
             }
             return;
         }
-        try {
-            this.iot = require("aws-iot-device-sdk-v2").iot;
-            this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
-            this.log.info(`Use new aws-iot-device-sdk-v2.`);
-        } catch (e) {
+        if (this.config.mqttCon === "sdkv2") {
+            try {
+                this.iot = require("aws-iot-device-sdk-v2").iot;
+                this.mqtt = require("aws-iot-device-sdk-v2").mqtt;
+                this.log.info(`Use new aws-iot-device-sdk-v2.`);
+            } catch (e) {
+                this.iot = require("aws-iot-device-sdk").device;
+                this.qos = { qos: 1 };
+                this.log.warn(e);
+                this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
+            }
+        } else {
             this.iot = require("aws-iot-device-sdk").device;
             this.qos = { qos: 1 };
-            this.log.warn(e);
-            this.log.info(`Use old aws-iot-device-sdk. Please cleanup your System with iob fix !!!!`);
+            this.log.info(`Use old aws-iot-device-sdk.`);
         }
         if (typeof this.config.edgeCutDelay != "number" || this.config.edgeCutDelay < 1000) {
             this.log.info(`Changed timeout for edgecut to 5000`);

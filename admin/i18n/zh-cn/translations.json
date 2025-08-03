@@ -20,5 +20,9 @@
     "Requests limit per 10 minutes": "每10分钟的要求限制（4-15）",
     "Mqtt limit per day": "每天MQTT限制（1-250 Pro设备）",
     "Restart limitation per day": "每天重新启动限制（1-10）",
-    "Rate Limiting": "费率限制"
+    "Rate Limiting": "费率限制",
+    "aws-iot-device-sdk": "旧的AWS连接",
+    "aws-iot-device-sdk-v2": "新的AWS连接",
+    "mqtt5": "MQTT5连接（目前尚不可用）",
+    "Select MQTT Connection": "选择MQTT连接"
 }

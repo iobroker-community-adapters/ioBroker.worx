@@ -20,5 +20,9 @@
     "Requests limit per 10 minutes": "Límite de solicitudes por 10 minutos (4-15)",
     "Mqtt limit per day": "Límite de MQTT por día (1-250 PRO dispositivo)",
     "Restart limitation per day": "Reiniciar limitación por día (1-10)",
-    "Rate Limiting": "Limitación de tasas"
+    "Rate Limiting": "Limitación de tasas",
+    "aws-iot-device-sdk": "Vieja conexión de AWS",
+    "aws-iot-device-sdk-v2": "Nueva conexión AWS",
+    "mqtt5": "Conexión MQTT5 (actualmente no disponible)",
+    "Select MQTT Connection": "Seleccione la conexión MQTT"
 }
