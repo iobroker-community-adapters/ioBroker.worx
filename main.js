@@ -2202,6 +2202,7 @@ class Worx extends utils.Adapter {
                     host: this.userData.mqtt_newendpoint,
                     region: region,
                     customAuthHeaders: headers,
+                    debug: !!this.log.debug,
                     baseReconnectTimeMs: 1000,
                 });
             }
