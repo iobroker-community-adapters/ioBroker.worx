@@ -49,6 +49,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (Lucky-ESA) MQTT connection selection added
 - (Lucky-ESA) Rate limit selection added in instance settings
+- (Lucky-ESA) Admin 7.6.17 required
 
 ### 3.2.6 (2025-06-29)
 
