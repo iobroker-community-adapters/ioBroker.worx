@@ -190,6 +190,11 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.2.2 (2025-05-29)
+
+- (Lucky-ESA) Fixed invalid object type
+- (Lucky-ESA) Error message it is raining changes to rain delay
+
 ## 3.2.1 (2025-05-25)
 
 - (Lucky-ESA) Fixed starting firmware update (did not work)

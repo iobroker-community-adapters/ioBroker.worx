@@ -44,8 +44,7 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 3.2.7 (2025-08-16)
 
 - (Lucky-ESA) MQTT connection selection added
 - (Lucky-ESA) Rate limit selection added in instance settings
@@ -67,11 +66,6 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (Lucky-ESA) All Sentry issues fixed
 - (Lucky-ESA) Add new mowers without adapter restart
-
-### 3.2.2 (2025-05-29)
-
-- (Lucky-ESA) Fixed invalid object type
-- (Lucky-ESA) Error message it is raining changes to rain delay
 
 ## License
 
