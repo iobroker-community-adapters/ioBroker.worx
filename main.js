@@ -2141,7 +2141,7 @@ class Worx extends utils.Adapter {
                 typeof this.iob_uuid.native.uuid === "string" &&
                 this.iob_uuid.native.uuid.length > 30
             ) {
-                this.log.info(`Use iobroker uuid!`);
+                this.log.debug(`Use iobroker uuid!`);
                 iobUUID = this.iob_uuid.native.uuid;
             }
             if (this.mqtt != null) {
