@@ -54,7 +54,7 @@
     "@tsconfig/node18": "^18.2.4",
     "@types/node": "^24.6.1",
     "@types/uuid": "^10.0.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "main": "main.js",
   "files": [
