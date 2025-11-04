@@ -39,7 +39,7 @@
     "axios": "^1.13.1",
     "axios-rate-limit": "^1.4.0",
     "http-cookie-agent": "^7.0.2",
-    "json2iob": "^2.6.17",
+    "json2iob": "^2.6.21",
     "tough-cookie": "^5.1.2",
     "uuid": "^13.0.0"
   },
