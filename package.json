@@ -34,9 +34,9 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
-    "aws-iot-device-sdk": "^2.2.15",
+    "aws-iot-device-sdk": "^2.2.16",
     "aws-iot-device-sdk-v2": "^1.23.1",
-    "axios": "^1.13.1",
+    "axios": "^1.13.2",
     "axios-rate-limit": "^1.4.0",
     "http-cookie-agent": "^7.0.2",
     "json2iob": "^2.6.21",
@@ -52,7 +52,7 @@
     "@iobroker/eslint-config": "^2.2.0",
     "@iobroker/testing": "^5.1.1",
     "@tsconfig/node18": "^18.2.4",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.0",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.9.3"
   },
