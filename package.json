@@ -52,7 +52,7 @@
     "@iobroker/eslint-config": "^2.2.0",
     "@iobroker/testing": "^5.2.2",
     "@tsconfig/node18": "^18.2.4",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.9.3"
   },
