@@ -40,12 +40,11 @@
     "axios-rate-limit": "^1.4.0",
     "http-cookie-agent": "^7.0.3",
     "json2iob": "^2.6.21",
-    "tough-cookie": "^5.1.2",
-    "uuid": "^13.0.0"
+    "tough-cookie": "^5.1.2"
   },
   "devDependencies": {
-    "@alcalzone/release-script-plugin-iobroker": "^4.0.0",
     "@alcalzone/release-script": "^5.0.0",
+    "@alcalzone/release-script-plugin-iobroker": "^4.0.0",
     "@alcalzone/release-script-plugin-license": "^4.0.0",
     "@alcalzone/release-script-plugin-manual-review": "^4.0.0",
     "@iobroker/adapter-dev": "^1.5.0",

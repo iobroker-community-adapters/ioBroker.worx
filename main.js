@@ -12,7 +12,6 @@ const rateLimit = require("axios-rate-limit");
 const Json2iob = require("json2iob");
 //const tough = require("tough-cookie");
 //const { HttpsCookieAgent } = require("http-cookie-agent/http");
-const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
@@ -97,6 +96,9 @@ const no_verification = [
     "zones_overlapping",
     "notification",
 ];
+const generateUuid = () => {
+    return [4, 2, 2, 2, 6].map(group => crypto.randomBytes(group).toString("hex")).join("-");
+};
 const diff_time = 10000; // 10 seconds
 const max_count = 5; // Difference of the last 10 logins > diff_time
 const loginLength = 10;
@@ -2128,7 +2130,7 @@ class Worx extends utils.Adapter {
 
     async awsMqtt() {
         try {
-            const uuid = this.randomClientid(8, 64) || uuidv4();
+            const uuid = this.randomClientid(8, 64) || generateUuid();
             this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
             if (this.deviceArray[0].mqtt_endpoint == null) {
                 this.log.warn(`Cannot read mqtt_endpoint use default`);
@@ -2935,7 +2937,7 @@ class Worx extends utils.Adapter {
     sleep(ms) {
         return new Promise(resolve => {
             this.sleepTimer = this.setTimeout(() => {
-                resolve(true);
+                resolve;
             }, ms);
         });
     }
