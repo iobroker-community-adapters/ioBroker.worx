@@ -2,17 +2,11 @@
   "name": "iobroker.worx",
   "version": "3.2.7",
   "description": "This adapter connects your ioBroker to the cloud of your  Worx, Kresss or Landxcape",
-  "author": {
-    "name": "TA2k",
-    "email": "tombox2020@gmail.com"
-  },
+  "author": "TA2k <tombox2020@gmail.com>",
   "contributors": [
-    {
-      "name": "MeisterTR"
-    },
-    {
-      "name": "Lucky-ESA"
-    }
+    "MeisterTR",
+    "Lucky-ESA",
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.worx",
   "license": "MIT",
