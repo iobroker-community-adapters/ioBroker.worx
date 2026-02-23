@@ -44,6 +44,10 @@ The adapter can control the mower and you can change config params like mowtimes
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires admin >= 7.7.22 now
+
 ### 3.2.7 (2025-08-16)
 
 - (Lucky-ESA) MQTT connection selection added
