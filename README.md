@@ -46,7 +46,9 @@ The adapter can control the mower and you can change config params like mowtimes
 ## Changelog
 
 ### **WORK IN PROGRESS**
+
 - (copilot) Adapter requires admin >= 7.7.22 now
+- (Lucky-ESA) Dependencies updated
 
 ### 3.2.7 (2025-08-16)
 
@@ -74,7 +76,6 @@ The adapter can control the mower and you can change config params like mowtimes
 ## License
 
 MIT License
-
 
 Copyright (c) 2026 iobroker-community-adapters <iobroker-community-adapters@gmx.de>  
 Copyright (c) 2023-2025 TA2k <tombox2020@gmail.com>
