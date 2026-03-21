@@ -19,7 +19,7 @@
 
 - Node 20, 22 or 24
 - JS-Controller >= 6.0.11
-- Admin >= 7.6.17
+- Admin >= 7.7.22
 
 ## Worx (Kress, Landxcape and Ferrex) adapter for ioBroker
 
