@@ -152,6 +152,7 @@ class Worx extends utils.Adapter {
         this.lastRequest = {};
         this.remoteMower = null;
         this.mqtt_response_check = {};
+        this.deviceType = {};
         this.iob_uuid = null;
         this.createDevices = helper.createDevices;
         this.createActivity = helper.createActivity;
@@ -245,7 +246,6 @@ class Worx extends utils.Adapter {
             this.log.info(`Set rate limit to 10 minutes`);
         }
         this.iob_uuid = await this.getForeignObjectAsync(`system.meta.uuid`);
-        // @ts-expect-error //Nothing
         this.requestClient = rateLimit(
             axios.create({
                 withCredentials: true,
@@ -475,6 +475,7 @@ class Worx extends utils.Adapter {
         if (this.setRateLimit(`${this.clouds[this.config.server].loginUrl}oauth/token`)) {
             return;
         }
+        // @ts-expect-error No Error
         const data = await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token`,
             method: "post",
@@ -789,6 +790,7 @@ class Worx extends utils.Adapter {
         ) {
             return;
         }
+        // @ts-expect-error No Error
         await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
@@ -812,6 +814,17 @@ class Worx extends utils.Adapter {
                         this.rainCounterInterval[device.serial_number]["last"] = 0;
                     }
                     const id = device.serial_number;
+                    this.deviceType[id] = "wire";
+                    if (device.capabilities != null && device.capabilities.includes("vision")) {
+                        if (device.capabilities.includes("rtk")) {
+                            this.deviceType[id] = "cloud";
+                        } else {
+                            this.deviceType[id] = "vision";
+                        }
+                    } else if (device.capabilities != null && device.capabilities.includes("maps")) {
+                        this.deviceType[id] = "rtk";
+                    }
+                    this.log.debug(`DeviceType: ${this.deviceType[id]}`);
                     this.vision[device.uuid] =
                         this.vision[device.uuid] != null ? this.vision[device.uuid] : device.serial_number;
                     if (!this.modules[device.serial_number]) {
@@ -821,7 +834,7 @@ class Worx extends utils.Adapter {
                     const name = device.name;
                     if (!check) {
                         this.log.info(`Found device ${name} with id ${id}`);
-                        await this.cleanOldVersion(id, device.capabilities);
+                        await this.cleanOldVersion(id);
                     }
                     if (index == -1) {
                         await this.createDevices(device, this.md5_user(device.serial_number), error_states);
@@ -1023,16 +1036,10 @@ class Worx extends utils.Adapter {
     async checkRainStatus() {
         for (const mower of this.deviceArray) {
             if (mower && mower.serial_number) {
-                let vision = "NO";
-                if (mower.capabilities != null && mower.capabilities.includes("vision")) {
-                    vision = "vision";
-                } else if (mower.capabilities != null && mower.capabilities.includes("maps")) {
-                    vision = "rtk";
-                }
                 if (
                     this.rainCounterInterval[mower.serial_number] &&
                     this.rainCounterInterval[mower.serial_number]["interval"] &&
-                    vision === "NO"
+                    this.deviceType[mower.serial_number] === "wire"
                 ) {
                     const status = await this.getStateAsync(`${mower.serial_number}.mower.online`);
                     if (!status || status.val == null || !status.val) {
@@ -1491,6 +1498,7 @@ class Worx extends utils.Adapter {
         ) {
             return;
         }
+        // @ts-expect-error No Error
         await this.requestClient({
             method: "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/product-items?status=1&gps_status=1`,
@@ -1620,6 +1628,7 @@ class Worx extends utils.Adapter {
                 if (this.setRateLimit(url)) {
                     return;
                 }
+                // @ts-expect-error No Error
                 await this.requestClient({
                     method: "get",
                     url: url,
@@ -1705,6 +1714,7 @@ class Worx extends utils.Adapter {
                         // });
                         // this.setState(element.path + ".json", JSON.stringify(data), true);
                     })
+                    // @ts-ignore
                     .catch(error => {
                         this.setLoginErrorData(error);
                         this.setDeleteSession();
@@ -1769,6 +1779,7 @@ class Worx extends utils.Adapter {
             this.log.error(`No refresh token found`);
             return;
         }
+        // @ts-expect-error No Error
         return await this.requestClient({
             url: `${this.clouds[this.config.server].loginUrl}oauth/token?`,
             method: "post",
@@ -1842,12 +1853,6 @@ class Worx extends utils.Adapter {
             this.log.debug(`No payload found for device ${mower.serial_number}`);
             return;
         }
-        let vision = "NO";
-        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
-            vision = "vision";
-        } else if (mower.capabilities != null && mower.capabilities.includes("maps")) {
-            vision = "rtk";
-        }
         const status = mower.last_status.payload;
         if (status && status.cfg && status.cfg.sc && status.cfg.sc.dd) {
             this.log.info("DoubleShedule found, create states...");
@@ -1919,7 +1924,7 @@ class Worx extends utils.Adapter {
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
-        if (vision === "NO") {
+        if (this.deviceType[mower.serial_number] === "wire") {
             await this.createDataPoint(
                 `${mower.serial_number}.calendar.${objects.calJson[0]._id}`,
                 objects.calJson[0].common,
@@ -2055,6 +2060,7 @@ class Worx extends utils.Adapter {
         if (this.setRateLimit(`https://${this.clouds[this.config.server].url}/api/v2/${path}`)) {
             return;
         }
+        // @ts-expect-error No Error
         return await this.requestClient({
             method: method || "get",
             url: `https://${this.clouds[this.config.server].url}/api/v2/${path}`,
@@ -2069,6 +2075,7 @@ class Worx extends utils.Adapter {
                 }
                 return res.data;
             })
+            // @ts-ignore
             .catch(error => {
                 if (path.includes("firmware-upgrade")) {
                     this.log.debug("Updating firmware information is currently not possible!");
@@ -2758,7 +2765,7 @@ class Worx extends utils.Adapter {
                                 o.native,
                             );
                         }
-                        if (vision === "vision") {
+                        if (vision === "vision" || vision === "cloud") {
                             for (const o of objects.calendar_vision) {
                                 await this.createDataPoint(
                                     `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}.${o._id}`,
@@ -2819,6 +2826,9 @@ class Worx extends utils.Adapter {
                     };
                     if (vision === "vision") {
                         empty_schedule.cfg.cut.b = 0;
+                    } else if (vision === "cloud") {
+                        empty_schedule.cfg.cut.b = 0;
+                        empty_schedule.cfg.cut.ob = 0;
                     }
                     let t = "00:00";
                     let wt = 0;
@@ -2846,7 +2856,7 @@ class Worx extends utils.Adapter {
                         val: wt,
                         ack: true,
                     });
-                    if (vision === "vision") {
+                    if (vision == "vision" || vision == "cloud") {
                         await this.setState(
                             `${mower.serial_number}.calendar.${i}_${this.week[i]}.time_${a}.borderCut`,
                             {
@@ -3089,27 +3099,27 @@ class Worx extends utils.Adapter {
                         this.log.debug(`Changed time wait after rain to:${val}`);
                     } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
                         if (
-                            mower.capabilities != null &&
-                            (mower.capabilities.includes("vision") || mower.capabilities.includes("maps"))
+                            this.deviceType[mower.serial_number] === "vision" ||
+                            this.deviceType[mower.serial_number] === "rtk"
                         ) {
                             this.changeVisionCfg(id, state.val, mower, false);
-                        } else {
+                        } else if (this.deviceType[mower.serial_number] === "wire") {
                             this.changeMowerCfg(id, state.val, mower, false);
                         }
                     } else if (command === "enabled_time" || command === "zones") {
                         if (
-                            mower.capabilities != null &&
-                            (mower.capabilities.includes("vision") || mower.capabilities.includes("maps"))
+                            this.deviceType[mower.serial_number] === "vision" ||
+                            this.deviceType[mower.serial_number] === "rtk"
                         ) {
                             this.changeVisionCfg(id, state.val, mower, false);
                         }
                     } else if (command === "calJson_sendto" && state.val) {
                         if (
-                            mower.capabilities != null &&
-                            (mower.capabilities.includes("vision") || mower.capabilities.includes("maps"))
+                            this.deviceType[mower.serial_number] === "vision" ||
+                            this.deviceType[mower.serial_number] === "rtk"
                         ) {
                             this.changeVisionCfg(id, state.val, mower, true);
-                        } else {
+                        } else if (this.deviceType[mower.serial_number] === "wire") {
                             this.changeMowerCfg(id, state.val, mower, true);
                         }
                     } else if (command === "add_timeslot" && state.val) {
@@ -3296,7 +3306,7 @@ class Worx extends utils.Adapter {
                         command === "tagIdFrom" ||
                         command === "tagIdTo"
                     ) {
-                        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                        if (this.deviceType[mower.serial_number] === "version") {
                             this.startSequencesVision(id, state.val, mower, false);
                         }
                     } else if (
@@ -4077,7 +4087,7 @@ class Worx extends utils.Adapter {
         const mowerSN = mower.serial_number;
         const now = new Date();
         let vision = {};
-        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+        if (this.deviceType[mower.serial_number] === "vision" || this.deviceType[mower.serial_number] === "cloud") {
             vision = {
                 uuid: mower.uuid,
                 tm: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString(),
@@ -4183,7 +4193,7 @@ class Worx extends utils.Adapter {
                     this.log.warn("Working time more than 8 hours is not allowed!");
                     return;
                 }
-                if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                if (this.deviceType[mower.serial_number] === "vision") {
                     let zone_array;
                     const zones = await this.getStateAsync(`${mower.serial_number}.mower.oneTimeZones`);
                     try {
@@ -4206,6 +4216,8 @@ class Worx extends utils.Adapter {
                             },
                         },
                     };
+                } else if (this.deviceType[mower.serial_number] === "cloud") {
+                    return;
                 } else {
                     msgJson = {
                         ots: {
@@ -4223,11 +4235,13 @@ class Worx extends utils.Adapter {
             try {
                 let time_check = null;
                 let border_check = null;
-                if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+                if (this.deviceType[mower.serial_number] === "vision") {
                     msgJson = JSON.parse(value);
                     msgJson = { once: { ...msgJson } };
                     time_check = msgJson.once.time;
                     border_check = msgJson.once.cfg.cut.b;
+                } else if (this.deviceType[mower.serial_number] === "cloud") {
+                    return;
                 } else {
                     msgJson = JSON.parse(value);
                     msgJson = { ots: { ...msgJson } };
@@ -4629,7 +4643,7 @@ class Worx extends utils.Adapter {
      * @param {any} mower
      */
     sendPartyModus(id, value, mower) {
-        if (mower.capabilities != null && mower.capabilities.includes("vision")) {
+        if (this.deviceType[mower.serial_number] === "vision" || this.deviceType[mower.serial_number] === "cloud") {
             const val = value ? 0 : 1;
             this.sendMessage(`{"sc":{ "enabled":${val}}}`, mower.serial_number, id);
         } else if (value) {
@@ -4857,7 +4871,7 @@ class Worx extends utils.Adapter {
         this.sendMessage(`{"cmd":${val}}`, mower.serial_number, id);
     }
 
-    async cleanOldVersion(serial, capabilities) {
+    async cleanOldVersion(serial) {
         if (this.version == null) {
             this.version = "";
         }
@@ -4900,12 +4914,20 @@ class Worx extends utils.Adapter {
                     }
                 }
                 if (this.version > oldVersion && oldVersion <= "2.3.4") {
-                    this.log.info(`VSION! Cleanup calendar and areas channel!!`);
-                    if (capabilities != null && capabilities.includes("vision")) {
+                    this.log.info(`VISION! Cleanup calendar and areas channel!!`);
+                    if (this.deviceType[serial] === "vision") {
                         await this.delForeignObjectAsync(`${this.name}.${this.instance}.${serial}.calendar`, {
                             recursive: true,
                         });
                         await this.delForeignObjectAsync(`${this.name}.${this.instance}.${serial}.areas`, {
+                            recursive: true,
+                        });
+                    }
+                }
+                if (this.version > oldVersion && oldVersion <= "3.3.0") {
+                    this.log.info(`VISION CLOUD CLEAN UP!`);
+                    if (this.deviceType[serial] === "cloud") {
+                        await this.delForeignObjectAsync(`${this.name}.${this.instance}.${serial}`, {
                             recursive: true,
                         });
                     }
