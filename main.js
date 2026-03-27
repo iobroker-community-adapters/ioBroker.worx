@@ -83,6 +83,7 @@ const no_verification = [
     "chargingStation",
     "borderDistance",
     "cutOverBorder",
+    "cutOverBorderCloud",
     "zoneIdFrom",
     "zoneIdTo",
     "tagIdFrom",
@@ -1085,6 +1086,8 @@ class Worx extends utils.Adapter {
         let zone_count = 0;
         let count_state = 4;
         let h = false;
+        let pw = false;
+        let ob = false;
         let sh = false;
         let lapping = false;
         if (
@@ -1116,8 +1119,23 @@ class Worx extends utils.Adapter {
                 lapping = true;
                 ++count_state;
             }
+            if (
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.cut &&
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.cut.pw != null
+            ) {
+                pw = true;
+            }
+            if (
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.cut &&
+                mower.last_status.payload.cfg.rtk.zs[0].cfg.cut.ob != null
+            ) {
+                ob = true;
+            }
         }
         if (zone_available != zone_count || count_state != zone_state_available || first) {
+            if (first) {
+                this.log.info(`Found RTK Zones, Create Zones State`);
+            }
             const zone_count = mower.last_status.payload.cfg.rtk.zs.length;
             if (zone_available < zone_count || count_state != zone_state_available || first) {
                 this.log.debug(`Smaller: Counter RTK Zone ${zone_count} - ${zone_available}`);
@@ -1140,6 +1158,20 @@ class Worx extends utils.Adapter {
                             o.common,
                             o.type,
                             o.native,
+                        );
+                    }
+                    if (this.deviceType[mower.serial_number] === "cloud") {
+                        await this.createDataPoint(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_pw[0]._id}`,
+                            objects.rtk_zones_pw[0].common,
+                            objects.rtk_zones_pw[0].type,
+                            objects.rtk_zones_pw[0].native,
+                        );
+                        await this.createDataPoint(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_ob[0]._id}`,
+                            objects.rtk_zones_ob[0].common,
+                            objects.rtk_zones_ob[0].type,
+                            objects.rtk_zones_ob[0].native,
                         );
                     }
                     if (h) {
@@ -1182,9 +1214,6 @@ class Worx extends utils.Adapter {
             }
         }
         if (zone_count > 0) {
-            if (first) {
-                this.log.info(`Found RTK Zones, Create Zones State`);
-            }
             for (let a = 0; a <= zone_count - 1; a++) {
                 await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_id`, {
                     val: mower.last_status.payload.cfg.rtk.zs[a].id,
@@ -1205,6 +1234,21 @@ class Worx extends utils.Adapter {
                 if (h) {
                     await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height`, {
                         val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h,
+                        ack: true,
+                    });
+                }
+                if (ob) {
+                    await this.setState(
+                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutOverBorder`,
+                        {
+                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.ob,
+                            ack: true,
+                        },
+                    );
+                }
+                if (pw) {
+                    await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_pw`, {
+                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw,
                         ack: true,
                     });
                 }
@@ -3064,6 +3108,16 @@ class Worx extends utils.Adapter {
                     this.setState(id, { ack: true });
                     return;
                 }
+                if (command === "oneTimeJsonRTK") {
+                    try {
+                        const one_json = JSON.parse(state.val.toString());
+                        this.sendMessage(`{"cut":{ ${JSON.stringify(one_json)}}}`, mower.serial_number, id);
+                    } catch (e) {
+                        this.log.info(`Cannot parse json! - ${e}`);
+                    }
+                    this.setState(id, { ack: true });
+                    return;
+                }
                 if (command === "notification") {
                     this.setNotification(id, mower, state);
                     return;
@@ -3097,9 +3151,15 @@ class Worx extends utils.Adapter {
                         }
                         this.sendMessage(`{"rd":${val}}`, mower.serial_number, id);
                         this.log.debug(`Changed time wait after rain to:${val}`);
-                    } else if (command === "borderCut" || command === "startTime" || command === "workTime") {
+                    } else if (
+                        command === "borderCut" ||
+                        command === "startTime" ||
+                        command === "workTime" ||
+                        command === "cutOverBorderCloud"
+                    ) {
                         if (
                             this.deviceType[mower.serial_number] === "vision" ||
+                            this.deviceType[mower.serial_number] === "cloud" ||
                             this.deviceType[mower.serial_number] === "rtk"
                         ) {
                             this.changeVisionCfg(id, state.val, mower, false);
@@ -3109,6 +3169,7 @@ class Worx extends utils.Adapter {
                     } else if (command === "enabled_time" || command === "zones") {
                         if (
                             this.deviceType[mower.serial_number] === "vision" ||
+                            this.deviceType[mower.serial_number] === "cloud" ||
                             this.deviceType[mower.serial_number] === "rtk"
                         ) {
                             this.changeVisionCfg(id, state.val, mower, false);
@@ -3116,6 +3177,7 @@ class Worx extends utils.Adapter {
                     } else if (command === "calJson_sendto" && state.val) {
                         if (
                             this.deviceType[mower.serial_number] === "vision" ||
+                            this.deviceType[mower.serial_number] === "cloud" ||
                             this.deviceType[mower.serial_number] === "rtk"
                         ) {
                             this.changeVisionCfg(id, state.val, mower, true);
@@ -3550,6 +3612,10 @@ class Worx extends utils.Adapter {
         let common = {};
         let week_count = 0;
         const higher_slot = this.modules[mower.serial_number].slots;
+        let ob = null;
+        if (this.deviceType[mower.serial_number] === "cloud") {
+            ob = { ob: 0 };
+        }
         for (const day of this.week) {
             mower.last_status.payload.cfg.sc.slots.push({
                 e: 0,
@@ -3560,6 +3626,7 @@ class Worx extends utils.Adapter {
                     cut: {
                         b: 0,
                         z: [],
+                        ...ob,
                     },
                 },
             });
@@ -3579,6 +3646,16 @@ class Worx extends utils.Adapter {
                         o.type,
                         o.native,
                     );
+                }
+                if (this.deviceType[mower.serial_number] === "cloud") {
+                    for (const o of objects.calendar_vision_cloud) {
+                        await this.createDataPoint(
+                            `${mower.serial_number}.calendar.${week_count}_${day}.time_${i}.${o._id}`,
+                            o.common,
+                            o.type,
+                            o.native,
+                        );
+                    }
                 }
             }
             ++week_count;
@@ -4434,6 +4511,8 @@ class Worx extends utils.Adapter {
         try {
             if (arr[6] === "borderCut") {
                 message[dayID].cfg.cut.b = value ? 1 : 0;
+            } else if (arr[6] === "cutOverBorderCloud") {
+                message[dayID].cfg.cut.ob = value ? 1 : 0;
             } else if (arr[6] === "workTime") {
                 const max = 1440 - message[dayID].s;
                 this.log.debug(`value: ${value} max: ${max} dID: ${dayID}`);
