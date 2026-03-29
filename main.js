@@ -6,13 +6,13 @@
 
 const utils = require("@iobroker/adapter-core");
 const path = require("node:path");
-const fs = require("fs");
+const fs = require("node:fs");
 const axios = require("axios");
 const rateLimit = require("axios-rate-limit");
 const Json2iob = require("json2iob");
 //const tough = require("tough-cookie");
 //const { HttpsCookieAgent } = require("http-cookie-agent/http");
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
 const remoteMower = require(`./lib/remote`);
