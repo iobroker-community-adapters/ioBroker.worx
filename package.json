@@ -1,6 +1,6 @@
 {
     "name": "iobroker.worx",
-    "version": "3.2.7",
+    "version": "3.3.0",
     "description": "This adapter connects your ioBroker to the cloud of your  Worx, Kresss or Landxcape",
     "author": "TA2k <tombox2020@gmail.com>",
     "contributors": [

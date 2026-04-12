@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "worx",
-        "version": "3.2.7",
+        "version": "3.3.0",
         "news": {
+            "3.3.0": {
+                "en": "Adapter requires admin >= 7.7.22 now\nDependencies updated\nError HTTP 405 fixed\nPreparation Vision Cloud Mower\nSentry Error from \"Vision Cloud\" fixed",
+                "de": "Adapter benötigt admin >= 7.7.22 jetzt\nAusgaben aktualisiert\nFehler HTTP 405 behoben\nVorbereitung Vision Cloud Mower\nFehler von \"Vision Cloud\" behoben",
+                "ru": "Адаптер требует администратора >= 7.7.22\nОбновленные зависимости\nОшибка HTTP 405 исправлена\nСистемные требования Vision Cloud Mower\nИсправлена ошибка «Vision Cloud»",
+                "pt": "Adaptador requer admin >= 7.7.22 agora\nDependências atualizadas\nErro HTTP 405 corrigido\nPreparação Vision Cloud Mower\nErro de entrada de \"Vision Cloud\" corrigido",
+                "nl": "Adapter vereist admin < 7.7.22 nu\nAfhankelijkheden bijgewerkt\nFout bij HTTP 405 vast\nVoorbereiding Vision Cloud Mower\nSentry Fout van \"Vision Cloud\" gerepareerd",
+                "fr": "Adaptateur nécessite admin >= 7.7.22 maintenant\nDépendances actualisées\nErreur HTTP 405 corrigée\nPréparation de la tondeuse Vision Cloud\nErreur de saisie de \"Vision Cloud\" corrigé",
+                "it": "Adattatore richiede admin >= 7.7.22 ora\nDipendenze aggiornate\nErrore HTTP 405 fisso\nPreparazione Vision Cloud Mower\nErrore di sensibilità da \"Vision Cloud\" fisso",
+                "es": "El adaptador requiere administrador= 7.7.22 ahora\nActualización de las dependencias\nError HTTP 405 fijo\nPreparación Vidrio Cloud Mower\nError de centinela de \"Vision Cloud\" fijo",
+                "pl": "Adapter wymaga admin > = 7.7.22\nAktualizacja zależności\nBłąd HTTP 405\nPrzygotowanie Vision Cloud Mower\nBłąd zapisu z \"Vision Cloud\" stałe",
+                "uk": "Адаптер вимагає адмін >= 7.7.22 тепер\nЗалежність оновлено\nПомилка HTTP 405 фіксована\nПідготовка Vision Cloud Mower\nПомаранчева помилка від \"Vision Cloud\" фіксована",
+                "zh-cn": "适任者需要管理员 \\ 7.7.22 现在\n更新的依赖关系\nHTTP 405 已修正错误\n准备视野云雾\n修正“ 视觉云” 中的哨兵错误"
+            },
             "3.2.7": {
                 "en": "MQTT connection selection added\nRate limit selection added in instance settings\nAdmin 7.6.17 required",
                 "de": "MQTT Anschlussauswahl hinzugefügt\nBegrenzte Auswahl hinzugefügt in Beispieleinstellungen\nAdmin 7.6.17 erforderlich",
