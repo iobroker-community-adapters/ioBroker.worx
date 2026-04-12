@@ -129,6 +129,10 @@ class Worx extends utils.Adapter {
         this.stateCheck = [];
         this.new_device = {};
         this.interruptCheck = {};
+        this.userData = {
+            id: 0,
+            mqtt_newendpoint: "",
+        };
         this.refreshTokenTimeout = null;
         this.refreshStartTokenTimeout = null;
         this.timeoutedgeCutDelay = null;
@@ -2168,11 +2172,18 @@ class Worx extends utils.Adapter {
         if (this.isBlocked()) {
             return;
         }
-        if (!this.userData) {
-            this.userData = await this.apiRequest("users/me", false);
-        }
-
         try {
+            if (this.deviceArray == null || this.deviceArray[0] == null || this.deviceArray[0].mqtt_endpoint == null) {
+                this.log.warn(`Cannot read mqtt_endpoint use default`);
+                this.userData.mqtt_newendpoint = "iot.eu-west-1.worxlandroid.com";
+            } else {
+                this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint;
+            }
+            if (this.deviceArray == null || this.deviceArray[0] == null || this.deviceArray[0].user_id == null) {
+                this.log.error(`Cannot read user_id!!! Please create a issue!`);
+                return;
+            }
+            this.userData.id = this.deviceArray[0].user_id;
             this.connectMqtt();
         } catch (e) {
             this.log.info(`connectMqtt: ${e}`);
@@ -2182,10 +2193,6 @@ class Worx extends utils.Adapter {
     async awsMqtt() {
         try {
             const uuid = this.randomClientid(8, 64) || generateUuid();
-            this.userData.mqtt_newendpoint = this.deviceArray[0].mqtt_endpoint || "iot.eu-west-1.worxlandroid.com";
-            if (this.deviceArray[0].mqtt_endpoint == null) {
-                this.log.warn(`Cannot read mqtt_endpoint use default`);
-            }
             let iobUUID = uuid;
             if (
                 this.iob_uuid &&
@@ -2215,6 +2222,7 @@ class Worx extends utils.Adapter {
                 );
                 config_builder.with_endpoint(this.userData.mqtt_newendpoint);
                 //config_builder.with_port(443);
+                //config_builder.with_certificate_authority(helper.AmazonRootCA1);
                 //config_builder.with_reconnect_max_sec(128);
                 //config_builder.with_reconnect_min_sec(1);
                 //config_builder.with_keep_alive_seconds(30);
