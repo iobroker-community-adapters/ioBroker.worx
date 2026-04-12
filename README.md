@@ -49,13 +49,15 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (copilot) Adapter requires admin >= 7.7.22 now
 - (Lucky-ESA) Dependencies updated
+- (Lucky-ESA) Error HTTP 405 fixed
+- (Lucky-ESA) Preparation Vision Cloud Mower
+- (Lucky-ESA) Sentry Error from "Vision Cloud" fixed
 
 ### 3.2.7 (2025-08-16)
 
 - (Lucky-ESA) MQTT connection selection added
 - (Lucky-ESA) Rate limit selection added in instance settings
 - (Lucky-ESA) Admin 7.6.17 required
-- (Lucky-ESA) Error HTTP 405 fixed
 
 ### 3.2.6 (2025-06-29)
 

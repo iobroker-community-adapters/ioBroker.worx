@@ -721,13 +721,15 @@ class Worx extends utils.Adapter {
     }
 
     setSession() {
-        this.extendObject("session", {
-            native: {
-                user: this.config.mail,
-                pw: this.encrypt(this.config.password),
-                server: this.config.server,
-            },
-        });
+        if (typeof this.config.password === "string" && this.config.password != "") {
+            this.extendObject("session", {
+                native: {
+                    user: this.config.mail,
+                    pw: this.encrypt(this.config.password),
+                    server: this.config.server,
+                },
+            });
+        }
     }
 
     async sessionCheck() {
@@ -1219,60 +1221,121 @@ class Worx extends utils.Adapter {
         }
         if (zone_count > 0) {
             for (let a = 0; a <= zone_count - 1; a++) {
-                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_id`, {
-                    val: mower.last_status.payload.cfg.rtk.zs[a].id,
-                    ack: true,
-                });
-                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_frequency`, {
-                    val: mower.last_status.payload.cfg.rtk.zs[a].cfg.sc.freq,
-                    ack: true,
-                });
-                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutting`, {
-                    val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.t,
-                    ack: true,
-                });
-                await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_direction`, {
-                    val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.d,
-                    ack: true,
-                });
-                if (h) {
-                    await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height`, {
-                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h,
-                        ack: true,
-                    });
-                }
-                if (ob) {
-                    await this.setState(
-                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutOverBorder`,
-                        {
-                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.ob,
+                if (mower.last_status.payload.cfg.rtk.zs[a] != null) {
+                    if (mower.last_status.payload.cfg.rtk.zs[a].id != null) {
+                        await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_id`, {
+                            val: mower.last_status.payload.cfg.rtk.zs[a].id,
                             ack: true,
-                        },
-                    );
-                }
-                if (pw) {
-                    await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_pw`, {
-                        val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw,
-                        ack: true,
-                    });
-                }
-                if (sh) {
-                    await this.setState(
-                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height_fairway`,
-                        {
-                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.sh,
+                        });
+                    }
+                    if (
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.sc != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.sc.freq != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_frequency`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.sc.freq,
+                                ack: true,
+                            },
+                        );
+                    }
+                    if (
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.t != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutting`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.t,
+                                ack: true,
+                            },
+                        );
+                    }
+                    if (
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.d != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_direction`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.d,
+                                ack: true,
+                            },
+                        );
+                    }
+                    if (
+                        h &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.modules != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.h,
+                                ack: true,
+                            },
+                        );
+                    }
+                    if (
+                        ob &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.ob != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_cutOverBorder`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.ob,
+                                ack: true,
+                            },
+                        );
+                    }
+                    if (
+                        pw &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw != null
+                    ) {
+                        await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_pw`, {
+                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw,
                             ack: true,
-                        },
-                    );
-                }
-                if (lapping) {
-                    await this.setState(
-                        `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_overlapping`,
-                        {
-                            val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.co,
-                            ack: true,
-                        },
-                    );
+                        });
+                    }
+                    if (
+                        sh &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.modules != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.sh != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_height_fairway`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.modules.EA.sh,
+                                ack: true,
+                            },
+                        );
+                    }
+                    if (
+                        lapping &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.co != null
+                    ) {
+                        await this.setState(
+                            `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_overlapping`,
+                            {
+                                val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.co,
+                                ack: true,
+                            },
+                        );
+                    }
                 }
             }
         }
