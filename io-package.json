@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "worx",
-    "version": "3.2.7",
+    "version": "3.3.0",
     "news": {
+      "3.3.0": {
+        "en": "Adapter requires admin >= 7.7.22 now\nDependencies updated\nError HTTP 405 fixed\nPreparation Vision Cloud Mower\nSentry Error from \"Vision Cloud\" fixed",
+        "de": "Adapter benötigt admin >= 7.7.22 jetzt\nAusgaben aktualisiert\nFehler HTTP 405 behoben\nVorbereitung Vision Cloud Mower\nFehler von \"Vision Cloud\" behoben",
+        "ru": "Адаптер требует администратора >= 7.7.22\nОбновленные зависимости\nОшибка HTTP 405 исправлена\nСистемные требования Vision Cloud Mower\nИсправлена ошибка «Vision Cloud»",
+        "pt": "Adaptador requer admin >= 7.7.22 agora\nDependências atualizadas\nErro HTTP 405 corrigido\nPreparação Vision Cloud Mower\nErro de entrada de \"Vision Cloud\" corrigido",
+        "nl": "Adapter vereist admin < 7.7.22 nu\nAfhankelijkheden bijgewerkt\nFout bij HTTP 405 vast\nVoorbereiding Vision Cloud Mower\nSentry Fout van \"Vision Cloud\" gerepareerd",
+        "fr": "Adaptateur nécessite admin >= 7.7.22 maintenant\nDépendances actualisées\nErreur HTTP 405 corrigée\nPréparation de la tondeuse Vision Cloud\nErreur de saisie de \"Vision Cloud\" corrigé",
+        "it": "Adattatore richiede admin >= 7.7.22 ora\nDipendenze aggiornate\nErrore HTTP 405 fisso\nPreparazione Vision Cloud Mower\nErrore di sensibilità da \"Vision Cloud\" fisso",
+        "es": "El adaptador requiere administrador= 7.7.22 ahora\nActualización de las dependencias\nError HTTP 405 fijo\nPreparación Vidrio Cloud Mower\nError de centinela de \"Vision Cloud\" fijo",
+        "pl": "Adapter wymaga admin > = 7.7.22\nAktualizacja zależności\nBłąd HTTP 405\nPrzygotowanie Vision Cloud Mower\nBłąd zapisu z \"Vision Cloud\" stałe",
+        "uk": "Адаптер вимагає адмін >= 7.7.22 тепер\nЗалежність оновлено\nПомилка HTTP 405 фіксована\nПідготовка Vision Cloud Mower\nПомаранчева помилка від \"Vision Cloud\" фіксована",
+        "zh-cn": "适任者需要管理员 \\ 7.7.22 现在\n更新的依赖关系\nHTTP 405 已修正错误\n准备视野云雾\n修正“ 视觉云” 中的哨兵错误"
+      },
       "3.2.7": {
         "en": "MQTT connection selection added\nRate limit selection added in instance settings\nAdmin 7.6.17 required",
         "de": "MQTT Anschlussauswahl hinzugefügt\nBegrenzte Auswahl hinzugefügt in Beispieleinstellungen\nAdmin 7.6.17 erforderlich",
@@ -80,19 +93,6 @@
         "pl": "Naprawiono nieprawidłowy typ obiektu\nKomunikat o błędzie to deszcz zmian w opóźnieniu deszczu",
         "uk": "Виправлено недійсний тип об'єкта\nПомилка повідомлення про дощ",
         "zh-cn": "固定无效对象类型\n错误消息是下雨更改为雨延"
-      },
-      "3.2.1": {
-        "en": "Fixed starting firmware update (did not work)\nAdded confirm edgecut\nAdded notifications about instance settings toggle on/off\nSmall bugs fixed",
-        "de": "Feste Start Firmware-Update (nicht funktionieren)\nHinzugefügt bestätigen Randcut\nHinzugefügt Benachrichtigungen über Instanzeinstellungen toggle on/off\nKleine Fehler behoben",
-        "ru": "Обновление прошивки (не работает)\nДобавлено подтверждение edgecut\nДобавленные уведомления о настройках экземпляра Toggle on/off\nНебольшие баги фиксируются",
-        "pt": "Atualização de firmware inicial fixa (não funcionou)\nAdicionado confirm edgecut\nNotificações adicionadas sobre as configurações de instância alternar / desligar\nPequenos bugs corrigidos",
-        "nl": "Fixed starting firmware update (werkte niet)\nToegevoegde bevestiging edgecut\nNotificaties toegevoegd over instantieinstellingen aan/uit schakelen\nKleine bugs hersteld",
-        "fr": "Correction de la mise à jour du firmware de démarrage (n'a pas fonctionné)\nAjout de la confirmation edgecut\nAjout de notifications sur les paramètres d'instance toggle on/off\nPetits bugs corrigés",
-        "it": "Aggiornamento firmware di avvio fisso (non funziona)\nAggiunto conferma bordo taglio\nAggiunto notifiche sulle impostazioni delle istanze per attivare / disattivare\nPiccoli bug fissi",
-        "es": "Actualización de firmware de inicio fijo (no trabajo)\nAñadido confirmar corte de borde\nNotificaciones agregadas sobre configuración de instancias para cambiar/desactivar\nPequeños errores fijos",
-        "pl": "Naprawiono aktualizację oprogramowania firmowego (nie działa)\nDodano potwierdzenie edgecut\nDodano powiadomienia o ustawieniach instancji włącza / wyłącza\nMałe błędy stałe",
-        "uk": "Виправлено початкове оновлення мікропрограми (не працює)\nДодано підтверджуючий край\nДодано повідомлення про налаштування екземпляра, що заблоковано / вимкнено\nМаленькі помилки фіксовані",
-        "zh-cn": "固定起始固件更新( 无效)\n添加确认边缘剪切\n已添加关于切换/关闭实例设置的通知\n小错误已修复"
       }
     },
     "titleLang": {

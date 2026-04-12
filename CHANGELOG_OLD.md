@@ -190,6 +190,11 @@
 ### 0.0.1
 
 -   (MeisterTR) initial release
+## 3.2.3 (2025-06-05)
+
+- (Lucky-ESA) All Sentry issues fixed
+- (Lucky-ESA) Add new mowers without adapter restart
+
 ## 3.2.2 (2025-05-29)
 
 - (Lucky-ESA) Fixed invalid object type
