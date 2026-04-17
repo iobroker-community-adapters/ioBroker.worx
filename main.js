@@ -3182,7 +3182,7 @@ class Worx extends utils.Adapter {
                 if (command === "oneTimeJsonRTK") {
                     try {
                         const one_json = JSON.parse(state.val.toString());
-                        this.sendMessage(`{"cut":{ ${JSON.stringify(one_json)}}}`, mower.serial_number, id);
+                        this.sendMessage(`{"cut":${JSON.stringify(one_json)}}`, mower.serial_number, id);
                     } catch (e) {
                         this.log.info(`Cannot parse json! - ${e}`);
                     }
