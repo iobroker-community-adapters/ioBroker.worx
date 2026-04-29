@@ -45,6 +45,9 @@ The adapter can control the mower and you can change config params like mowtimes
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
+
 ### 3.3.0 (2026-04-12)
 
 - (copilot) Adapter requires admin >= 7.7.22 now
