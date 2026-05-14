@@ -2523,6 +2523,7 @@ class Worx extends utils.Adapter {
                         }
                     }
                 }
+                this.isMqttConneted = false;
                 this.setMqttOnline(false);
                 this.interruptCheck["count_time"] = Date.now();
             });
@@ -2532,6 +2533,8 @@ class Worx extends utils.Adapter {
                 this.log.debug(`Resumed: rc: ${return_code} existing session: ${session_present}`);
                 this.log.debug(`MQTT reconnect: ${this.mqtt_blocking}`);
                 this.log.debug(`Reconnect since adapter start: ${this.reconnectCounter}`);
+                this.isMqttConneted = true;
+                this.setMqttOnline(true);
                 ++this.reconnectCounter;
                 ++this.mqtt_blocking;
                 if (this.mqtt_blocking > 15) {
