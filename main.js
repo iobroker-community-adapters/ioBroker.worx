@@ -1169,12 +1169,14 @@ class Worx extends utils.Adapter {
                         );
                     }
                     if (this.deviceType[mower.serial_number] === "cloud") {
+                        objects.rtk_zones_pw[0].common.write = false;
                         await this.createDataPoint(
                             `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_pw[0]._id}`,
                             objects.rtk_zones_pw[0].common,
                             objects.rtk_zones_pw[0].type,
                             objects.rtk_zones_pw[0].native,
                         );
+                        objects.rtk_zones_ob[0].common.write = false;
                         await this.createDataPoint(
                             `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_ob[0]._id}`,
                             objects.rtk_zones_ob[0].common,
