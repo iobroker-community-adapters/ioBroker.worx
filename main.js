@@ -10,8 +10,6 @@ const fs = require("node:fs");
 const axios = require("axios");
 const rateLimit = require("axios-rate-limit");
 const Json2iob = require("json2iob");
-//const tough = require("tough-cookie");
-//const { HttpsCookieAgent } = require("http-cookie-agent/http");
 const crypto = require("node:crypto");
 const objects = require(`./lib/objects`);
 const helper = require(`./lib/helper`);
@@ -1923,8 +1921,12 @@ class Worx extends utils.Adapter {
                     this.updateMqttData(true);
                     if (this.mqtt) {
                         this.start_mqtt();
-                    } else {
+                    } else if (this.mqttC) {
                         this.mqttC.updateCustomAuthHeaders(this.createWebsocketHeader());
+                    } else {
+                        this.log.warn("mqttC is null on token refresh, restarting MQTT");
+                        this.mqtt_restart && this.clearTimeout(this.mqtt_restart); //24h blocking
+                        this.start_mqtt();
                     }
                 }
                 this.setLoginInfoData(this.session.expires_in);

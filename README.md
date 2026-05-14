@@ -49,6 +49,7 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (copilot) Adapter requires node.js >= 22 now
 - (Lucky-ESA) MQTT connection status display fixed
+- (Lucky-ESA) NearLink module added to Vision Cloud
 
 ### 3.3.0 (2026-04-12)
 

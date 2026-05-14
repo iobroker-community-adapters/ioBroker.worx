@@ -30,6 +30,7 @@ export default [
             "jsdoc/no-defaults": "off",
             "jsdoc/require-jsdoc": "off",
             "@typescript-eslint/ban-ts-comment": "off",
+            "jsdoc/reject-any-type": "off",
         },
     },
 ];
