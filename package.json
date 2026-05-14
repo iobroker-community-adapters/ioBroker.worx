@@ -24,14 +24,14 @@
         "url": "git+https://github.com/iobroker-community-adapters/ioBroker.worx.git"
     },
     "engines": {
-        "node": ">= 20"
+        "node": ">= 22"
     },
     "dependencies": {
         "@iobroker/adapter-core": "^3.3.2",
         "aws-iot-device-sdk": "^2.2.16",
-        "aws-iot-device-sdk-v2": "^1.25.1",
-        "axios": "^1.15.0",
         "axios-rate-limit": "^1.9.0",
+        "axios": "^1.16.0",
+        "aws-iot-device-sdk-v2": "^1.26.0",
         "http-cookie-agent": "^7.0.3",
         "json2iob": "^2.6.22",
         "tough-cookie": "^6.0.1"
@@ -47,7 +47,7 @@
         "@tsconfig/node18": "^18.2.6",
         "@types/node": "^25.6.0",
         "@types/uuid": "^11.0.0",
-        "typescript": "^6.0.2"
+        "typescript": "^6.0.3"
     },
     "main": "main.js",
     "files": [
