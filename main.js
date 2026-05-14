@@ -156,6 +156,7 @@ class Worx extends utils.Adapter {
         this.remoteMower = null;
         this.mqtt_response_check = {};
         this.deviceType = {};
+        this.deviceProtocol = {};
         this.iob_uuid = null;
         this.createDevices = helper.createDevices;
         this.createActivity = helper.createActivity;
@@ -819,15 +820,18 @@ class Worx extends utils.Adapter {
                         this.rainCounterInterval[device.serial_number]["last"] = 0;
                     }
                     const id = device.serial_number;
+                    this.deviceProtocol[id] = device.protocol != null ? device.protocol : 0;
                     this.deviceType[id] = "wire";
                     if (device.capabilities != null && device.capabilities.includes("vision")) {
                         if (device.capabilities.includes("rtk")) {
                             this.deviceType[id] = "cloud";
+                            this.deviceProtocol[id] = 1;
                         } else {
                             this.deviceType[id] = "vision";
                         }
                     } else if (device.capabilities != null && device.capabilities.includes("maps")) {
                         this.deviceType[id] = "rtk";
+                        this.deviceProtocol[id] = 1;
                     }
                     this.log.debug(`DeviceType: ${this.deviceType[id]}`);
                     this.vision[device.uuid] =
@@ -1979,6 +1983,9 @@ class Worx extends utils.Adapter {
                 ++week_count;
                 await this.createDataPoint(`${mower.serial_number}.calendar.${day}2`, common, "channel");
                 for (const o of objects.calendar) {
+                    if (this.deviceProtocol[mower.serial_number] == 1 && o.common.write != null) {
+                        o.common.write = false;
+                    }
                     await this.createDataPoint(
                         `${mower.serial_number}.calendar.${day}2.${o._id}`,
                         o.common,
@@ -2025,8 +2032,20 @@ class Worx extends utils.Adapter {
         if (status && status.cfg && status.cfg.sc && status.cfg.sc.enabled != null) {
             this.log.info("PartyModus found, create states...");
             // create States
-            for (const o of objects.partyModus) {
-                await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+            if (this.deviceProtocol[mower.serial_number] == 1) {
+                await this.createDataPoint(
+                    `${mower.serial_number}.mower.${objects.partyModus[0]._id}`,
+                    objects.partyModus[0].common,
+                    objects.partyModus[0].type,
+                    objects.partyModus[0].native,
+                );
+                await this.delObjectAsync(`${mower.serial_number}.mower.${objects.partyModus[1]._id}`, {
+                    recursive: true,
+                });
+            } else {
+                for (const o of objects.partyModus) {
+                    await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
+                }
             }
         }
         // Vision Paused
@@ -2034,6 +2053,9 @@ class Worx extends utils.Adapter {
             this.log.info("Paused found, create states...");
             // create States
             for (const o of objects.paused) {
+                if (this.deviceProtocol[mower.serial_number] == 1 && o.common.write != null) {
+                    o.common.write = false;
+                }
                 await this.createDataPoint(`${mower.serial_number}.mower.${o._id}`, o.common, o.type, o.native);
             }
         }
