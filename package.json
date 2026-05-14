@@ -29,9 +29,9 @@
     "dependencies": {
         "@iobroker/adapter-core": "^3.3.2",
         "aws-iot-device-sdk": "^2.2.16",
+        "axios-rate-limit": "^1.9.0",
         "axios": "^1.16.0",
         "aws-iot-device-sdk-v2": "^1.26.0",
-        "axios-rate-limit": "^1.8.1",
         "http-cookie-agent": "^7.0.3",
         "json2iob": "^2.6.22",
         "tough-cookie": "^6.0.1"
