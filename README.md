@@ -74,6 +74,8 @@ The adapter can control the mower and you can change config params like mowtimes
 
 - (Lucky-ESA) TypeError native_excluded fixed
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 MIT License
