@@ -210,9 +210,20 @@ Richtig</br>
     - `HL.enabled`: Scheinwerfer installiert ja = 1/nein = 0 🟢
     - `HL.on`: Tageslicht = 0/Dunkelheit = 1 🟢
 
+- NL Modul (nur Vision Cloud)
+    - `NL.error`: Error Code (Code nicht bekannt) (nur lesen)
+    - `NL.status`: Status von NearLink Modul ok/err (nur lesen)
+    - `NL.connection_X.mac`: MAC Adresse (nur lesen)
+    - `NL.connection_X.rssi`: RSSI (nur lesen)
+    - `NL.connection_X.type`: Typ (nur lesen)
+    - `NL.connection_X.vers`: Firmware Release (nur lesen)
+    - `NL.connection_X.wifi_rssi`: Wifi RSSI (nur lesen)
+    - `NL.connection_X.wifi_stat`: Wifi Status (nur lesen)
+
 ![Module img/module.png](../en/img/module.png)
 ![Module img/module_ea.png](../en/img/module_ea.png)
 ![Module img/module_hl.png](../en/img/module_hl.png)
+![Module img/module_hl.png](../en/img/module_nl.png)
 
 ### mower (Draht und Vision)
 

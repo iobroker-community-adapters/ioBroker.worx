@@ -208,9 +208,20 @@ valid</br>
     - `HL.enabled`: Head light installed yes = 1/no = 0 🟢
     - `HL.on`: Daylight = 0/Darkness = 1 🟢
 
+- NL Module (Vision Cloud only)
+    - `NL.error`: Error Code (Code unknown) (readonly)
+    - `NL.status`: Status NearLink Module ok/err (readonly)
+    - `NL.connection_X.mac`: MAC Address (readonly)
+    - `NL.connection_X.rssi`: RSSI (readonly)
+    - `NL.connection_X.type`: Type (readonly)
+    - `NL.connection_X.vers`: Firmware Release (readonly)
+    - `NL.connection_X.wifi_rssi`: Wifi RSSI (readonly)
+    - `NL.connection_X.wifi_stat`: Wifi Status (readonly)
+
 ![Module img/module.png](img/module.png)
 ![Module img/module_ea.png](img/module_ea.png)
 ![Module img/module_hl.png](img/module_hl.png)
+![Module img/module_hl.png](img/module_nl.png)
 
 ### mower (Wire and Vision)
 
