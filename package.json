@@ -32,7 +32,7 @@
     "aws-iot-device-sdk-v2": "^1.26.0",
     "axios": "^1.16.1",
     "axios-rate-limit": "^1.9.0",
-    "json2iob": "^2.6.22"
+    "json2iob": "^2.6.24"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^5.2.1",
