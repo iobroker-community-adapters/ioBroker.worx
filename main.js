@@ -1168,7 +1168,7 @@ class Worx extends utils.Adapter {
                             o.native,
                         );
                     }
-                    if (this.deviceType[mower.serial_number] === "cloud") {
+                    if (this.deviceType[mower.serial_number] === "cloud" && pw) {
                         objects.rtk_zones_pw[0].common.write = false;
                         await this.createDataPoint(
                             `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_pw[0]._id}`,
@@ -1176,6 +1176,8 @@ class Worx extends utils.Adapter {
                             objects.rtk_zones_pw[0].type,
                             objects.rtk_zones_pw[0].native,
                         );
+                    }
+                    if (this.deviceType[mower.serial_number] === "cloud" && ob) {
                         objects.rtk_zones_ob[0].common.write = false;
                         await this.createDataPoint(
                             `${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.${objects.rtk_zones_ob[0]._id}`,
@@ -1304,7 +1306,8 @@ class Worx extends utils.Adapter {
                         pw &&
                         mower.last_status.payload.cfg.rtk.zs[a].cfg != null &&
                         mower.last_status.payload.cfg.rtk.zs[a].cfg.cut != null &&
-                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw != null
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw != null &&
+                        mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw > 0
                     ) {
                         await this.setState(`${mower.serial_number}.${objects.rtk_channel[0]._id}.zone_${a}.zones_pw`, {
                             val: mower.last_status.payload.cfg.rtk.zs[a].cfg.cut.pw,
