@@ -42,7 +42,7 @@
     "@iobroker/adapter-dev": "^1.5.0",
     "@iobroker/eslint-config": "^2.3.4",
     "@iobroker/testing": "^6.1.2",
-    "@tsconfig/node22": "^22.0.5",
+    "@tsconfig/node22": "^22.0.6",
     "@types/node": "^22.20.1",
     "@types/uuid": "^11.0.0",
     "typescript": "^6.0.3"
